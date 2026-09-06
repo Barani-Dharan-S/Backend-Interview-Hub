@@ -13862,5 +13862,1805 @@
     "mistakes": "How would you use ArrayBlockingQueue instead?",
     "interview": "Interview answer: I protect queue state with a lock and use conditions so producers wait while full and consumers wait while empty. The while checks are required because a condition wake-up does not guarantee the state is available.",
     "source": "V9.1"
+  },
+  {
+    "topic": "java",
+    "subtopic": "jvm",
+    "level": "L3",
+    "title": "Diagnose a Java memory leak in production",
+    "tags": [
+      "java",
+      "L3",
+      "Production"
+    ],
+    "short": "Use heap evidence and GC behavior to distinguish retained objects from high allocation.",
+    "answer": "Compare post-GC heap trends, capture a heap dump, inspect dominators and GC roots, then identify the retaining path. Common causes include unbounded caches, static collections, listeners, ThreadLocals and long-lived executors. Validate the fix with the same workload.",
+    "code": "jcmd <pid> GC.heap_dump /tmp/app.hprof",
+    "followups": [
+      "Leak vs high allocation?",
+      "How do you investigate native memory?"
+    ],
+    "mistakes": [
+      "Assuming every OOM is a heap leak."
+    ],
+    "interview": "I first prove retention after GC, then use a heap dump and GC roots to find who is keeping the objects alive. I fix the owner and verify post-GC usage stabilizes.",
+    "source": "V10",
+    "id": "v10-001"
+  },
+  {
+    "topic": "java",
+    "subtopic": "concurrency",
+    "level": "L3",
+    "title": "Explain Java Memory Model and happens-before",
+    "tags": [
+      "java",
+      "L3",
+      "Production"
+    ],
+    "short": "The JMM defines visibility and ordering between threads; happens-before gives a guarantee that one action is visible before another.",
+    "answer": "Locks, volatile writes/reads, thread start/join and concurrent utilities establish happens-before relationships. Without them, compiler and CPU reordering means another thread is not guaranteed to observe a write when expected.",
+    "code": "volatile boolean ready;\nint value;\n// value write before ready=true is visible to a reader that sees ready=true.",
+    "followups": [
+      "Why is volatile not enough for i++?",
+      "What is safe publication?"
+    ],
+    "mistakes": [
+      "Saying volatile makes every operation atomic."
+    ],
+    "interview": "I use JMM-defined happens-before relationships instead of timing assumptions. Volatile gives visibility and ordering for the variable, but not atomicity for compound operations.",
+    "source": "V10",
+    "id": "v10-002"
+  },
+  {
+    "topic": "java",
+    "subtopic": "concurrency",
+    "level": "L3",
+    "title": "When would you use Atomic classes or VarHandle?",
+    "tags": [
+      "java",
+      "L3",
+      "Production"
+    ],
+    "short": "Use them for narrow atomic state transitions where lock-free coordination is justified.",
+    "answer": "Atomic classes provide common CAS operations; VarHandle exposes lower-level memory access modes. They work well for independent counters and state machines, while locks are often clearer for multi-field invariants.",
+    "code": "AtomicInteger count = new AtomicInteger();\ncount.incrementAndGet();",
+    "followups": [
+      "Explain CAS and ABA.",
+      "When can lock-free code be slower?"
+    ],
+    "mistakes": [
+      "Assuming lock-free always means faster."
+    ],
+    "interview": "I choose the simplest correct primitive. Atomics are excellent for independent state; synchronized or Lock is preferable when several values must change together.",
+    "source": "V10",
+    "id": "v10-003"
+  },
+  {
+    "topic": "java",
+    "subtopic": "concurrency",
+    "level": "L3",
+    "title": "Explain virtual threads for backend services",
+    "tags": [
+      "java",
+      "L3",
+      "Production"
+    ],
+    "short": "Virtual threads make large numbers of blocking I/O tasks cheap to park, but do not increase CPU capacity or database capacity.",
+    "answer": "They are scheduled on carrier threads and are useful for request-per-task workloads. You still need bounded downstream resources, connection pools and backpressure because cheap concurrency can overwhelm dependencies.",
+    "code": "try (var executor = Executors.newVirtualThreadPerTaskExecutor()) { executor.submit(() -> callBlockingApi()); }",
+    "followups": [
+      "What causes virtual-thread pinning?",
+      "When would reactive programming still help?"
+    ],
+    "mistakes": [
+      "Treating virtual threads as unlimited throughput."
+    ],
+    "interview": "I would use virtual threads for I/O-heavy blocking workloads while still limiting DB connections and downstream concurrency.",
+    "source": "V10",
+    "id": "v10-004"
+  },
+  {
+    "topic": "java",
+    "subtopic": "jvm",
+    "level": "L3",
+    "title": "How do you diagnose CPU spikes in Java?",
+    "tags": [
+      "java",
+      "L3",
+      "Production"
+    ],
+    "short": "Correlate CPU, thread state, GC and code-level profiles during the spike.",
+    "answer": "Use JFR or async-profiler, thread dumps and GC logs. Check hot methods, serialization, regex, logging, busy loops, GC CPU and traffic changes. Compare with a healthy period.",
+    "code": "jcmd <pid> JFR.start duration=60s filename=/tmp/spike.jfr",
+    "followups": [
+      "How do you distinguish lock contention from CPU work?",
+      "What does a thread dump show?"
+    ],
+    "mistakes": [
+      "Changing JVM settings before profiling."
+    ],
+    "interview": "I first establish whether CPU is application code, GC or JVM overhead. Then I profile during the incident and fix the measured hotspot.",
+    "source": "V10",
+    "id": "v10-005"
+  },
+  {
+    "topic": "java",
+    "subtopic": "concurrency",
+    "level": "L3",
+    "title": "How do you prevent ThreadLocal leaks?",
+    "tags": [
+      "java",
+      "L3",
+      "Production"
+    ],
+    "short": "Clear request-specific ThreadLocal state when pooled tasks finish.",
+    "answer": "ThreadLocal values belong to worker threads, which live much longer than requests. Always remove context in finally blocks and be careful when crossing executor boundaries.",
+    "code": "try { context.set(id); work(); } finally { context.remove(); }",
+    "followups": [
+      "Does ThreadLocal propagate to async tasks?",
+      "How does ThreadLocalMap work?"
+    ],
+    "mistakes": [
+      "Assuming ThreadLocal follows tasks automatically."
+    ],
+    "interview": "ThreadLocal is thread-scoped, not request-scoped. In pools I always clean it up to prevent memory retention and context leakage.",
+    "source": "V10",
+    "id": "v10-006"
+  },
+  {
+    "topic": "java",
+    "subtopic": "concurrency",
+    "level": "L3",
+    "title": "How would you investigate a Java deadlock?",
+    "tags": [
+      "java",
+      "L3",
+      "Production"
+    ],
+    "short": "Use thread dumps to identify the circular wait and then fix lock ordering or ownership.",
+    "answer": "Look for BLOCKED threads, lock owners and cycles. Multiple dumps help confirm the condition. Durable fixes include consistent acquisition order, smaller critical sections or redesigning shared state.",
+    "code": "jcmd <pid> Thread.print > /tmp/threads.txt",
+    "followups": [
+      "Deadlock vs livelock?",
+      "How does tryLock help?"
+    ],
+    "mistakes": [
+      "Looking only at CPU usage."
+    ],
+    "interview": "I map the lock ownership cycle from a thread dump back to code, then remove the circular dependency rather than relying on a restart.",
+    "source": "V10",
+    "id": "v10-007"
+  },
+  {
+    "topic": "java",
+    "subtopic": "jvm",
+    "level": "L3",
+    "title": "How do you safely publish immutable Java state?",
+    "tags": [
+      "java",
+      "L3",
+      "Production"
+    ],
+    "short": "Construct it fully, use final fields and publish the reference through a JMM-safe mechanism.",
+    "answer": "Final fields protect construction semantics; volatile, synchronization, concurrent collections or static initialization can establish visibility of the reference. Mutable inputs should be defensively copied.",
+    "code": "private volatile Config config;\nvoid publish(Config c) { config = c; }",
+    "followups": [
+      "Why do final fields matter?",
+      "Can an immutable object be unsafely published?"
+    ],
+    "mistakes": [
+      "Assuming immutability alone guarantees visibility."
+    ],
+    "interview": "I combine immutability with safe publication. Immutability removes mutation races, while safe publication guarantees other threads see the intended state.",
+    "source": "V10",
+    "id": "v10-008"
+  },
+  {
+    "topic": "java",
+    "subtopic": "jvm",
+    "level": "L3",
+    "title": "How do you tune Java performance scientifically?",
+    "tags": [
+      "java",
+      "L3",
+      "Production"
+    ],
+    "short": "Profile first, change one bottleneck, and compare against a reproducible baseline.",
+    "answer": "Correlate throughput and p99 latency with CPU, allocation, GC, locks, DB and downstream latency. Use JFR, async-profiler and load tests. Avoid tuning from folklore.",
+    "code": "// Baseline -> profile -> targeted change -> same workload -> compare p99.",
+    "followups": [
+      "JFR vs async-profiler?",
+      "Why p99 instead of average?"
+    ],
+    "mistakes": [
+      "Changing heap/GC settings without evidence."
+    ],
+    "interview": "I do not tune the JVM blindly. I establish a baseline, identify the dominant bottleneck, make one change and verify it under the same workload.",
+    "source": "V10",
+    "id": "v10-009"
+  },
+  {
+    "topic": "java",
+    "subtopic": "concurrency",
+    "level": "L3",
+    "title": "Explain ForkJoinPool work stealing",
+    "tags": [
+      "java",
+      "L3",
+      "Production"
+    ],
+    "short": "Workers use local deques and steal tasks from other workers when idle, making it effective for CPU-bound fork/join work.",
+    "answer": "Blocking I/O can occupy workers and reduce effective parallelism. Dedicated executors are safer for blocking workloads.",
+    "code": "ForkJoinPool pool = new ForkJoinPool(8);",
+    "followups": [
+      "How does CompletableFuture choose an executor?",
+      "How do you isolate blocking calls?"
+    ],
+    "mistakes": [
+      "Using the common pool for blocking database calls."
+    ],
+    "interview": "ForkJoinPool is optimized for parallel CPU work. I avoid unbounded blocking operations in the common pool because they can starve unrelated tasks.",
+    "source": "V10",
+    "id": "v10-010"
+  },
+  {
+    "topic": "java",
+    "subtopic": "concurrency",
+    "level": "L3",
+    "title": "What is false sharing?",
+    "tags": [
+      "java",
+      "L3",
+      "Production"
+    ],
+    "short": "Independent hot variables on the same CPU cache line can cause unnecessary cache invalidation between cores.",
+    "answer": "It matters mainly in highly concurrent low-latency code. Padding or layout annotations can help, but only after measurement with a benchmark or profiler.",
+    "code": "// Validate with JMH before introducing padding.",
+    "followups": [
+      "How do you benchmark it?",
+      "What is cache-line contention?"
+    ],
+    "mistakes": [
+      "Adding padding without evidence."
+    ],
+    "interview": "I treat false sharing as a measured hardware-level optimization, not a default design rule.",
+    "source": "V10",
+    "id": "v10-011"
+  },
+  {
+    "topic": "springboot",
+    "subtopic": "core",
+    "level": "L3",
+    "title": "Explain Spring bean lifecycle at a production-debugging level",
+    "tags": [
+      "springboot",
+      "L3",
+      "Production"
+    ],
+    "short": "A bean is instantiated, dependencies injected, lifecycle callbacks run, and it becomes available from the container.",
+    "answer": "Creation includes constructor invocation, dependency population, post-processors and initialization callbacks. Destruction callbacks run when the context closes. Proxies may wrap the final bean, so initialization and interception details matter.",
+    "code": "@PostConstruct\nvoid init() { /* validate local state */ }",
+    "followups": [
+      "BeanPostProcessor vs BeanFactoryPostProcessor?",
+      "When does @PostConstruct run?"
+    ],
+    "mistakes": [
+      "Putting heavy external calls in constructors."
+    ],
+    "interview": "When debugging lifecycle problems I distinguish construction, dependency injection, post-processing and proxy creation. I avoid doing external network work in constructors.",
+    "source": "V10",
+    "id": "v10-012"
+  },
+  {
+    "topic": "springboot",
+    "subtopic": "core",
+    "level": "L3",
+    "title": "Explain the Spring three-level singleton cache",
+    "tags": [
+      "springboot",
+      "L3",
+      "Production"
+    ],
+    "short": "It allows Spring to expose early references while resolving some singleton circular dependencies.",
+    "answer": "The singleton caches distinguish fully initialized objects, early singleton references and singleton factories that can create an early reference, including proxy-aware references. Constructor cycles still cannot be resolved normally.",
+    "code": "// Conceptual: singletonObjects -> earlySingletonObjects -> singletonFactories",
+    "followups": [
+      "Why do constructor cycles fail?",
+      "What is an early proxy reference?"
+    ],
+    "mistakes": [
+      "Using circular dependencies as a normal design pattern."
+    ],
+    "interview": "I know the cache exists mainly to support certain setter/field circular references. I still prefer redesigning the dependency graph rather than depending on this mechanism.",
+    "source": "V10",
+    "id": "v10-013"
+  },
+  {
+    "topic": "springboot",
+    "subtopic": "core",
+    "level": "L3",
+    "title": "How does Spring AOP choose JDK vs class-based proxies?",
+    "tags": [
+      "springboot",
+      "L3",
+      "Production"
+    ],
+    "short": "Proxy strategy determines whether interception is based on interfaces or subclassing the target class.",
+    "answer": "JDK dynamic proxies target interfaces; class-based proxies create subclasses. Final classes/methods and self-invocation impose limitations. The important interview point is that advice is applied at a proxy boundary.",
+    "code": "// External call -> proxy -> target -> method",
+    "followups": [
+      "How does self-invocation bypass advice?",
+      "Where do final methods matter?"
+    ],
+    "mistakes": [
+      "Assuming every annotation intercepts internal calls."
+    ],
+    "interview": "I focus on proxy boundaries: the caller must cross the proxy for proxy-based advice to run.",
+    "source": "V10",
+    "id": "v10-014"
+  },
+  {
+    "topic": "springboot",
+    "subtopic": "core",
+    "level": "L3",
+    "title": "How do you prevent cache stampedes in Spring?",
+    "tags": [
+      "springboot",
+      "L3",
+      "Production"
+    ],
+    "short": "Coordinate cache misses so many requests do not simultaneously hit the database or downstream service.",
+    "answer": "Use request coalescing, short distributed locks, early refresh, jittered TTLs or stale-while-revalidate where the consistency model allows it. Bound the number of concurrent reloads.",
+    "code": "// one logical key -> one loader; other requests await the same load",
+    "followups": [
+      "Cache-aside vs write-through?",
+      "What if the cache is unavailable?"
+    ],
+    "mistakes": [
+      "Letting every request reload the same expired key."
+    ],
+    "interview": "I protect the database during a popular-key expiry by coalescing reloads and adding jitter or early refresh.",
+    "source": "V10",
+    "id": "v10-015"
+  },
+  {
+    "topic": "springboot",
+    "subtopic": "core",
+    "level": "L3",
+    "title": "How do you design Spring Boot health checks?",
+    "tags": [
+      "springboot",
+      "L3",
+      "Production"
+    ],
+    "short": "Separate process liveness from traffic readiness and expose meaningful dependency health without causing restart loops.",
+    "answer": "Liveness should detect unrecoverable application failure; readiness determines whether the instance should receive traffic. Startup probes protect slow initialization. Dependency checks should be used thoughtfully because a transient dependency outage should not necessarily restart every pod.",
+    "code": "/actuator/health/liveness\n/actuator/health/readiness",
+    "followups": [
+      "What should readiness include?",
+      "What is a startup probe?"
+    ],
+    "mistakes": [
+      "Using dependency failure as a liveness condition."
+    ],
+    "interview": "I keep liveness cheap and readiness traffic-oriented. I do not put fragile downstream checks into liveness because that can create restart storms.",
+    "source": "V10",
+    "id": "v10-016"
+  },
+  {
+    "topic": "springboot",
+    "subtopic": "core",
+    "level": "L3",
+    "title": "How do you design Spring async processing safely?",
+    "tags": [
+      "springboot",
+      "L3",
+      "Production"
+    ],
+    "short": "Use bounded executors, explicit error handling and durable state for work that must survive process failure.",
+    "answer": "@Async is thread-based and context such as transactions does not automatically move to another thread. Configure named executors, queue limits and rejection behavior. For durable business work, prefer a queue/outbox.",
+    "code": "@Async(\"orderExecutor\")\nvoid process(OrderCommand cmd) { ... }",
+    "followups": [
+      "How does @Transactional interact with @Async?",
+      "How do you propagate tracing context?"
+    ],
+    "mistakes": [
+      "Using the default executor for unbounded work."
+    ],
+    "interview": "For fire-and-forget business work I prefer durable messaging. If I use @Async, I bound the executor and make failure observable.",
+    "source": "V10",
+    "id": "v10-017"
+  },
+  {
+    "topic": "springboot",
+    "subtopic": "core",
+    "level": "L3",
+    "title": "How would you troubleshoot a slow Spring Boot endpoint?",
+    "tags": [
+      "springboot",
+      "L3",
+      "Production"
+    ],
+    "short": "Break total latency into application, database, serialization and downstream components using traces and metrics.",
+    "answer": "Inspect p50/p95/p99, DB timings, connection-pool wait, downstream spans, payload sizes and thread states. Look for N+1 queries, lock waits and pool saturation before changing code.",
+    "code": "// Trace: controller -> service -> DB -> downstream -> serialization",
+    "followups": [
+      "How do you detect pool exhaustion?",
+      "When should caching be added?"
+    ],
+    "mistakes": [
+      "Adding async just to hide latency."
+    ],
+    "interview": "I optimize the largest measured contributor. A slow endpoint is often a DB or downstream problem rather than a slow Java method.",
+    "source": "V10",
+    "id": "v10-018"
+  },
+  {
+    "topic": "springboot",
+    "subtopic": "data",
+    "level": "L3",
+    "title": "How do you perform zero-downtime Spring/database deployments?",
+    "tags": [
+      "springboot",
+      "L3",
+      "Production"
+    ],
+    "short": "Make application versions compatible with the database during rolling deployment.",
+    "answer": "Use expand-and-contract: add compatible schema, deploy code supporting both shapes, backfill, switch reads/writes, then remove the old shape after all old instances are gone.",
+    "code": "ALTER TABLE orders ADD COLUMN status_v2 VARCHAR(30);",
+    "followups": [
+      "How do you backfill millions of rows?",
+      "How do you roll back code after schema expansion?"
+    ],
+    "mistakes": [
+      "Deploying an incompatible column rename in one release."
+    ],
+    "interview": "Rolling deployment means old and new binaries coexist. Therefore database changes must be backward compatible during the whole rollout.",
+    "source": "V10",
+    "id": "v10-019"
+  },
+  {
+    "topic": "springboot",
+    "subtopic": "core",
+    "level": "L3",
+    "title": "How do you design a reliable scheduled job in Spring Boot?",
+    "tags": [
+      "springboot",
+      "L3",
+      "Production"
+    ],
+    "short": "Coordinate ownership across instances and make the job idempotent and recoverable.",
+    "answer": "@Scheduled runs independently in every JVM. Use a distributed scheduler/lease or durable job queue. Persist execution state and make retries safe.",
+    "code": "@Scheduled(fixedDelay = 60000)\nvoid reconcile() { ... }",
+    "followups": [
+      "What if a worker dies?",
+      "How do you prevent duplicate execution?"
+    ],
+    "mistakes": [
+      "Assuming @Scheduled executes once cluster-wide."
+    ],
+    "interview": "A scheduled annotation is local to a JVM. In a cluster I need distributed ownership and recovery semantics.",
+    "source": "V10",
+    "id": "v10-020"
+  },
+  {
+    "topic": "springboot",
+    "subtopic": "data",
+    "level": "L3",
+    "title": "How do you test transactional behavior in Spring?",
+    "tags": [
+      "springboot",
+      "L3",
+      "Production"
+    ],
+    "short": "Use integration tests with a production-like database for rollback, isolation, locking and lazy-loading behavior.",
+    "answer": "Mocks cannot prove database transaction semantics. A disposable real database lets tests verify commit/rollback and SQL constraints across transaction boundaries.",
+    "code": "// call service -> verify persisted state from a fresh transaction/context",
+    "followups": [
+      "Why can H2 hide issues?",
+      "How do you test deadlocks?"
+    ],
+    "mistakes": [
+      "Relying entirely on mocked repositories."
+    ],
+    "interview": "I use unit tests for business branching and integration tests for actual transaction behavior.",
+    "source": "V10",
+    "id": "v10-021"
+  },
+  {
+    "topic": "microservices",
+    "subtopic": "architecture",
+    "level": "L3",
+    "title": "How do you design a reliable order workflow across microservices?",
+    "tags": [
+      "microservices",
+      "L3",
+      "Production"
+    ],
+    "short": "Model the workflow as explicit states with local transactions, durable events, idempotency and compensations.",
+    "answer": "Order service persists its state and an outbox event. Payment and inventory own their local transactions. A saga coordinates progress and compensation when a step fails.",
+    "code": "CREATED -> PAYMENT_PENDING -> PAID -> INVENTORY_RESERVED -> CONFIRMED",
+    "followups": [
+      "Choreography vs orchestration?",
+      "How do you recover a stuck saga?"
+    ],
+    "mistakes": [
+      "Treating the workflow as one database transaction."
+    ],
+    "interview": "I avoid distributed ACID transactions. Each service owns its data, events connect local commits, and compensations handle partial failure.",
+    "source": "V10",
+    "id": "v10-022"
+  },
+  {
+    "topic": "microservices",
+    "subtopic": "messaging",
+    "level": "L3",
+    "title": "How do you prevent retry storms?",
+    "tags": [
+      "microservices",
+      "L3",
+      "Production"
+    ],
+    "short": "Use bounded retries, exponential backoff, jitter, retry budgets and a total deadline.",
+    "answer": "Nested retries multiply traffic. Retry only transient failures, preferably at one appropriate layer, and stop when the request deadline is exhausted.",
+    "code": "attempt=0..2; delay=base*2^attempt + jitter",
+    "followups": [
+      "Why jitter?",
+      "How does idempotency interact with retries?"
+    ],
+    "mistakes": [
+      "Retrying at every service layer."
+    ],
+    "interview": "Retries must fit inside a latency budget and be safe for the operation. I also monitor retry volume separately from request volume.",
+    "source": "V10",
+    "id": "v10-023"
+  },
+  {
+    "topic": "microservices",
+    "subtopic": "architecture",
+    "level": "L3",
+    "title": "How do you design a distributed rate limiter?",
+    "tags": [
+      "microservices",
+      "L3",
+      "Production"
+    ],
+    "short": "Use a shared atomic algorithm such as token bucket with per-client or per-tenant state.",
+    "answer": "Redis or another shared store can hold tokens and refill time, updated atomically. Define fail-open/closed behavior and expose 429 responses.",
+    "code": "key=tenantId; tokens/refill updated atomically",
+    "followups": [
+      "Fixed vs sliding window?",
+      "What if Redis fails?"
+    ],
+    "mistakes": [
+      "Using local counters in a horizontally scaled service."
+    ],
+    "interview": "I choose token bucket when bursts are allowed, keep state shared across instances and protect the limiter store with timeouts.",
+    "source": "V10",
+    "id": "v10-024"
+  },
+  {
+    "topic": "microservices",
+    "subtopic": "messaging",
+    "level": "L3",
+    "title": "How do you handle Kafka schema evolution safely?",
+    "tags": [
+      "microservices",
+      "L3",
+      "Production"
+    ],
+    "short": "Make event changes backward/forward compatible and roll out consumers before producers when needed.",
+    "answer": "Prefer additive fields and tolerant readers. Use explicit event versions when semantics change and enforce compatibility through a schema registry where appropriate.",
+    "code": "OrderCreated v2 { orderId, customerId, optional priority }",
+    "followups": [
+      "When do you version an event?",
+      "Avro vs JSON?"
+    ],
+    "mistakes": [
+      "Removing or renaming fields immediately."
+    ],
+    "interview": "I design events as long-lived contracts. Old and new consumers must coexist during deployment.",
+    "source": "V10",
+    "id": "v10-025"
+  },
+  {
+    "topic": "microservices",
+    "subtopic": "messaging",
+    "level": "L3",
+    "title": "Explain the outbox pattern and its limits",
+    "tags": [
+      "microservices",
+      "L3",
+      "Production"
+    ],
+    "short": "Outbox closes the database-to-message dual-write gap but still requires idempotent delivery.",
+    "answer": "Business data and an outbox row commit in one local transaction. A relay publishes later. Publishing can be duplicated, so consumers must tolerate redelivery and the relay needs retry/cleanup.",
+    "code": "INSERT business row; INSERT outbox row; COMMIT;",
+    "followups": [
+      "Polling vs CDC?",
+      "How do you clean outbox rows?"
+    ],
+    "mistakes": [
+      "Claiming outbox guarantees exactly-once end to end."
+    ],
+    "interview": "Outbox gives a durable handoff from DB to broker, not magical exactly-once business processing.",
+    "source": "V10",
+    "id": "v10-026"
+  },
+  {
+    "topic": "microservices",
+    "subtopic": "messaging",
+    "level": "L3",
+    "title": "How do you troubleshoot Kafka consumer lag?",
+    "tags": [
+      "microservices",
+      "L3",
+      "Production"
+    ],
+    "short": "Inspect partition-level lag, processing latency, rebalance rate, downstream latency and partition/consumer capacity.",
+    "answer": "If one partition is hot, adding consumers may not help. Check max poll settings, batch size, consumer throughput and broker health.",
+    "code": "metrics: lag, records/sec, processing ms, rebalances",
+    "followups": [
+      "Can consumers exceed partition count?",
+      "What causes hot partitions?"
+    ],
+    "mistakes": [
+      "Scaling consumers without checking partition distribution."
+    ],
+    "interview": "I first determine whether lag is uniform or concentrated. Then I identify whether the bottleneck is partitions, consumer code or downstream I/O.",
+    "source": "V10",
+    "id": "v10-027"
+  },
+  {
+    "topic": "microservices",
+    "subtopic": "messaging",
+    "level": "L3",
+    "title": "How do you guarantee ordering in Kafka where it matters?",
+    "tags": [
+      "microservices",
+      "L3",
+      "Production"
+    ],
+    "short": "Use a stable partition key so related events land in the same partition and process that partition sequentially.",
+    "answer": "Kafka ordering is per partition. Using orderId as the key keeps an order events events together. Global ordering is expensive and usually unnecessary.",
+    "code": "new ProducerRecord<>(\"orders\", orderId, event)",
+    "followups": [
+      "What if one key is hot?",
+      "Can one partition be processed concurrently?"
+    ],
+    "mistakes": [
+      "Claiming a topic is globally ordered."
+    ],
+    "interview": "I promise only partition ordering. For order-specific ordering, orderId is the partition key and consumers process the partition in sequence.",
+    "source": "V10",
+    "id": "v10-028"
+  },
+  {
+    "topic": "microservices",
+    "subtopic": "messaging",
+    "level": "L3",
+    "title": "How do you design a poison-message/DLT strategy?",
+    "tags": [
+      "microservices",
+      "L3",
+      "Production"
+    ],
+    "short": "Bound transient retries, preserve diagnostic metadata and provide controlled replay.",
+    "answer": "After retry exhaustion, publish to a DLT with original topic/partition/offset, exception and trace metadata. Replay only after fixing the cause and ensure idempotency.",
+    "code": "DLT metadata: topic, partition, offset, error, traceId",
+    "followups": [
+      "Retry topic vs DLT?",
+      "How do you replay safely?"
+    ],
+    "mistakes": [
+      "Dropping failed messages silently."
+    ],
+    "interview": "A DLT is a recovery mechanism, not a trash bin. I alert on growth and replay deliberately.",
+    "source": "V10",
+    "id": "v10-029"
+  },
+  {
+    "topic": "microservices",
+    "subtopic": "architecture",
+    "level": "L3",
+    "title": "How do you safely use distributed locks?",
+    "tags": [
+      "microservices",
+      "L3",
+      "Production"
+    ],
+    "short": "Prefer idempotency or database constraints; if a lock is required, use leases and fencing.",
+    "answer": "A lease can expire while a stale holder continues running. A fencing token lets the resource reject operations from an old holder.",
+    "code": "owner + leaseUntil + fencingVersion",
+    "followups": [
+      "Why is SETNX alone insufficient?",
+      "What is fencing?"
+    ],
+    "mistakes": [
+      "Assuming the lock holder is always current."
+    ],
+    "interview": "Distributed locks are not automatically safe under partitions. I use them only when simpler ownership or uniqueness mechanisms cannot solve the problem.",
+    "source": "V10",
+    "id": "v10-030"
+  },
+  {
+    "topic": "microservices",
+    "subtopic": "resilience",
+    "level": "L3",
+    "title": "How do you handle partial failure in fan-out requests?",
+    "tags": [
+      "microservices",
+      "L3",
+      "Production"
+    ],
+    "short": "Classify dependencies as required or optional and use bounded parallelism plus per-call deadlines.",
+    "answer": "Optional dependency failures can produce partial results; required failures fail the request. Bound fan-out so concurrency does not exhaust threads or downstream quotas.",
+    "code": "required=[inventory]; optional=[recommendations,ads]",
+    "followups": [
+      "How do you propagate cancellation?",
+      "When should you cache fan-out data?"
+    ],
+    "mistakes": [
+      "Calling every dependency serially with one large timeout."
+    ],
+    "interview": "I use concurrency to reduce latency but make failure policy explicit and keep the fan-out within a resource budget.",
+    "source": "V10",
+    "id": "v10-032"
+  },
+  {
+    "topic": "microservices",
+    "subtopic": "data",
+    "level": "L3",
+    "title": "How do you design zero-downtime database migrations in microservices?",
+    "tags": [
+      "microservices",
+      "L3",
+      "Production"
+    ],
+    "short": "Use expand-and-contract and keep old/new application versions compatible.",
+    "answer": "Add new schema elements first, deploy dual-compatible code, backfill, switch reads/writes, then remove old elements after rollout completion.",
+    "code": "ADD COLUMN status_v2 ...;",
+    "followups": [
+      "How do you backfill safely?",
+      "How do you roll back?"
+    ],
+    "mistakes": [
+      "Combining destructive schema changes with the code release."
+    ],
+    "interview": "Schema evolution is part of distributed deployment. Compatibility must hold while multiple service versions run simultaneously.",
+    "source": "V10",
+    "id": "v10-033"
+  },
+  {
+    "topic": "microservices",
+    "subtopic": "architecture",
+    "level": "L3",
+    "title": "How do you choose REST vs messaging?",
+    "tags": [
+      "microservices",
+      "L3",
+      "Production"
+    ],
+    "short": "Use synchronous communication when the caller needs an immediate result; messaging when buffering, decoupling or eventual consistency are valuable.",
+    "answer": "REST creates temporal coupling; messaging creates durable asynchronous handoff. Many real workflows combine both.",
+    "code": "GET /inventory/{id}\nOrderCreated -> inventory consumer",
+    "followups": [
+      "How do retries differ?",
+      "How do you trace async flows?"
+    ],
+    "mistakes": [
+      "Using messaging for every request/response."
+    ],
+    "interview": "I choose based on latency, coupling, failure and consistency requirements rather than using messaging everywhere.",
+    "source": "V10",
+    "id": "v10-034"
+  },
+  {
+    "topic": "microservices",
+    "subtopic": "architecture",
+    "level": "L3",
+    "title": "How do you design multi-region active-active services?",
+    "tags": [
+      "microservices",
+      "L3",
+      "Production"
+    ],
+    "short": "Design the data consistency and conflict model first, then route stateless compute accordingly.",
+    "answer": "Choose single-writer, region-local writes or multi-writer semantics. Define replication lag, conflict resolution, global IDs and failover.",
+    "code": "Region A/B -> regional traffic; writes follow explicit consistency policy",
+    "followups": [
+      "How do you handle split brain?",
+      "RPO/RTO?"
+    ],
+    "mistakes": [
+      "Assuming replication automatically resolves write conflicts."
+    ],
+    "interview": "Active-active is mainly a data problem. Two application clusters do not create an active-active system unless writes and failover are well defined.",
+    "source": "V10",
+    "id": "v10-035"
+  },
+  {
+    "topic": "microservices",
+    "subtopic": "architecture",
+    "level": "L3",
+    "title": "How do you design tenant isolation in microservices?",
+    "tags": [
+      "microservices",
+      "L3",
+      "Production"
+    ],
+    "short": "Make tenant identity an end-to-end invariant across authorization, data, cache and resource quotas.",
+    "answer": "Derive tenant from trusted identity, enforce it in queries, namespace caches and apply per-tenant limits. Test cross-tenant access explicitly.",
+    "code": "WHERE tenant_id = authenticatedTenant",
+    "followups": [
+      "Shared DB vs separate DB?",
+      "How do you test IDOR?"
+    ],
+    "mistakes": [
+      "Trusting client-supplied tenantId."
+    ],
+    "interview": "Tenant isolation cannot depend on a single controller check; the data boundary must enforce it too.",
+    "source": "V10",
+    "id": "v10-036"
+  },
+  {
+    "topic": "microservices",
+    "subtopic": "messaging",
+    "level": "L3",
+    "title": "How do you handle backpressure in event consumers?",
+    "tags": [
+      "microservices",
+      "L3",
+      "Production"
+    ],
+    "short": "Bound queues and concurrency so overload becomes controlled delay or rejection rather than unbounded memory growth.",
+    "answer": "Measure processing capacity and queue depth. For HTTP use bounded worker pools; for Kafka tune consumer concurrency and pause/resume or poll behavior.",
+    "code": "boundedQueue + fixedWorkers + rejectionPolicy",
+    "followups": [
+      "How does Kafka buffer?",
+      "What is load shedding?"
+    ],
+    "mistakes": [
+      "Using unbounded queues."
+    ],
+    "interview": "Backpressure is a capacity boundary. Predictable throttling is safer than allowing memory and latency to grow indefinitely.",
+    "source": "V10",
+    "id": "v10-037"
+  },
+  {
+    "topic": "microservices",
+    "subtopic": "resilience",
+    "level": "L3",
+    "title": "How do you design service-to-service timeout budgets?",
+    "tags": [
+      "microservices",
+      "L3",
+      "Production"
+    ],
+    "short": "Derive downstream deadlines from the top-level request budget rather than assigning the same timeout everywhere.",
+    "answer": "A 1-second request cannot give three downstreams one second each. Propagate a deadline and reserve time for retries, serialization and response handling.",
+    "code": "total=1000ms; payment=400ms; db=200ms; remaining=budget",
+    "followups": [
+      "How do you propagate deadlines?",
+      "What happens to async work after the request?"
+    ],
+    "mistakes": [
+      "Giving every dependency the full client timeout."
+    ],
+    "interview": "Timeouts are budgets. I make every downstream respect the remaining deadline so work stops before the caller has already timed out.",
+    "source": "V10",
+    "id": "v10-038"
+  },
+  {
+    "topic": "microservices",
+    "subtopic": "data",
+    "level": "L3",
+    "title": "How do you design an idempotent payment integration?",
+    "tags": [
+      "microservices",
+      "L3",
+      "Production"
+    ],
+    "short": "Use a durable payment intent and provider idempotency key, then reconcile ambiguous outcomes.",
+    "answer": "A timeout can happen after the provider charges the card. Retrying with a new request risks double charge. Persist provider request IDs and query/webhook state to converge.",
+    "code": "paymentIntentId -> providerIdempotencyKey",
+    "followups": [
+      "How do you handle duplicate webhooks?",
+      "What if provider has no idempotency key?"
+    ],
+    "mistakes": [
+      "Creating a new payment after every timeout."
+    ],
+    "interview": "The hardest case is an ambiguous timeout. I never create a second charge blindly; I retry the same logical operation or reconcile it.",
+    "source": "V10",
+    "id": "v10-039"
+  },
+  {
+    "topic": "microservices",
+    "subtopic": "architecture",
+    "level": "L3",
+    "title": "How do you design graceful shutdown for microservices?",
+    "tags": [
+      "microservices",
+      "L3",
+      "Production"
+    ],
+    "short": "Drain traffic, stop accepting new work, finish safe in-flight work and stop consumers cleanly.",
+    "answer": "Readiness should fail before termination, load balancers need time to drain, and consumers should stop polling and commit completed work. Long jobs need cancellation/recovery semantics.",
+    "code": "readiness=false -> drain -> stop consumers -> close resources",
+    "followups": [
+      "How does Kubernetes termination work?",
+      "How do you handle long jobs?"
+    ],
+    "mistakes": [
+      "Only adding a shutdown hook."
+    ],
+    "interview": "Graceful shutdown is an orchestration problem across the app, load balancer and worker system, not just a JVM hook.",
+    "source": "V10",
+    "id": "v10-040"
+  },
+  {
+    "topic": "microservices",
+    "subtopic": "messaging",
+    "level": "L3",
+    "title": "How do you use distributed tracing across REST and Kafka?",
+    "tags": [
+      "microservices",
+      "L3",
+      "Production"
+    ],
+    "short": "Propagate standard trace context through HTTP and message headers and create spans at asynchronous boundaries.",
+    "answer": "Inject trace context when producing, extract when consuming, and retain correlation metadata. Use sampling appropriate to volume.",
+    "code": "traceparent header -> Kafka headers -> consumer span",
+    "followups": [
+      "Trace ID vs span ID?",
+      "How do you sample high-volume topics?"
+    ],
+    "mistakes": [
+      "Starting a new unrelated trace for every message."
+    ],
+    "interview": "I use standard trace propagation so a trace can show the request, producer, broker and consumer work rather than unrelated log IDs.",
+    "source": "V10",
+    "id": "v10-041"
+  },
+  {
+    "topic": "sql",
+    "subtopic": "indexes",
+    "level": "L3",
+    "title": "How do you read an execution plan for a slow query?",
+    "tags": [
+      "sql",
+      "L3",
+      "Production"
+    ],
+    "short": "Find expensive operators, poor access paths and row-estimate errors, then compare actual behavior with the expected plan.",
+    "answer": "Look for large scans, bad join strategies, repeated loops, sorts/spills and cardinality misestimation. Use EXPLAIN ANALYZE where supported and verify indexes/statistics.",
+    "code": "EXPLAIN ANALYZE SELECT ...;",
+    "followups": [
+      "What is sargability?",
+      "When can a full scan be correct?"
+    ],
+    "mistakes": [
+      "Adding indexes without reading the plan."
+    ],
+    "interview": "I identify the most expensive operator and validate why the optimizer chose it before changing indexes or SQL.",
+    "source": "V10",
+    "id": "v10-042"
+  },
+  {
+    "topic": "sql",
+    "subtopic": "indexes",
+    "level": "L3",
+    "title": "How do you choose composite index column order?",
+    "tags": [
+      "sql",
+      "L3",
+      "Production"
+    ],
+    "short": "Match leading index columns to real equality, range and ordering predicates.",
+    "answer": "Composite B-tree indexes are ordered by leading columns. A common pattern is equality predicates followed by range/order columns, but workload and plan evidence decide the final order.",
+    "code": "CREATE INDEX idx_orders_customer_status_created ON orders(customer_id,status,created_at);",
+    "followups": [
+      "Can it support ORDER BY?",
+      "What is a covering index?"
+    ],
+    "mistakes": [
+      "Always putting the highest-cardinality column first."
+    ],
+    "interview": "I choose index order from query patterns, not a universal selectivity rule, then verify with the execution plan.",
+    "source": "V10",
+    "id": "v10-043"
+  },
+  {
+    "topic": "sql",
+    "subtopic": "transactions",
+    "level": "L3",
+    "title": "How do you prevent and recover from database deadlocks?",
+    "tags": [
+      "sql",
+      "L3",
+      "Production"
+    ],
+    "short": "Use consistent lock ordering, short transactions and appropriate indexes; retry the whole transaction when a deadlock victim is detected.",
+    "answer": "Different update orders create cycles. Consistent ordering and reduced transaction scope lower probability. Recovery must repeat the logical transaction because the database may have rolled it back.",
+    "code": "UPDATE accounts SET ... WHERE id IN (?,?) ORDER BY id;",
+    "followups": [
+      "Deadlock vs lock timeout?",
+      "Why retry the whole transaction?"
+    ],
+    "mistakes": [
+      "Retrying only one SQL statement inside a rolled-back transaction."
+    ],
+    "interview": "Deadlocks are a concurrency condition. I reduce them by design and make safe retries part of the application behavior.",
+    "source": "V10",
+    "id": "v10-044"
+  },
+  {
+    "topic": "sql",
+    "subtopic": "modeling",
+    "level": "L3",
+    "title": "When is keyset pagination better than OFFSET?",
+    "tags": [
+      "sql",
+      "L3",
+      "Production"
+    ],
+    "short": "Keyset pagination scales better for deep pages because it seeks from the last seen key instead of skipping many rows.",
+    "answer": "Use a deterministic composite ordering such as created_at plus id and query from the last tuple. It is ideal for feeds/infinite scroll but less convenient for arbitrary page numbers.",
+    "code": "WHERE (created_at,id) < (?,?) ORDER BY created_at DESC,id DESC LIMIT 50",
+    "followups": [
+      "How do you make ordering deterministic?",
+      "When is OFFSET fine?"
+    ],
+    "mistakes": [
+      "Using a non-unique sort key alone."
+    ],
+    "interview": "For large tables I prefer keyset pagination when users move sequentially through results.",
+    "source": "V10",
+    "id": "v10-045"
+  },
+  {
+    "topic": "sql",
+    "subtopic": "indexes",
+    "level": "L3",
+    "title": "How do you diagnose connection-pool exhaustion?",
+    "tags": [
+      "sql",
+      "L3",
+      "Production"
+    ],
+    "short": "Inspect pool waiters, connection hold time, slow queries and database capacity before increasing pool size.",
+    "answer": "A full pool can come from leaks, long transactions, slow queries or an undersized pool. Increasing it blindly can simply overload the database.",
+    "code": "metrics: active, idle, pending, acquireLatency, usageDuration",
+    "followups": [
+      "How do leaks appear?",
+      "How do you choose pool size?"
+    ],
+    "mistakes": [
+      "Increasing max connections until the DB saturates."
+    ],
+    "interview": "I correlate pool metrics with SQL and transaction traces to identify why connections are held too long.",
+    "source": "V10",
+    "id": "v10-046"
+  },
+  {
+    "topic": "sql",
+    "subtopic": "joins",
+    "level": "L3",
+    "title": "How do window functions differ from GROUP BY?",
+    "tags": [
+      "sql",
+      "L3",
+      "Production"
+    ],
+    "short": "GROUP BY collapses rows; window functions calculate across related rows while retaining row detail.",
+    "answer": "Use ROW_NUMBER/RANK for ranking, LAG/LEAD for comparisons and SUM OVER for running totals.",
+    "code": "RANK() OVER (PARTITION BY department_id ORDER BY salary DESC)",
+    "followups": [
+      "RANK vs DENSE_RANK?",
+      "Top N per group?"
+    ],
+    "mistakes": [
+      "Using GROUP BY and losing row-level detail."
+    ],
+    "interview": "I use GROUP BY for one row per group and window functions when I need group calculations alongside each original row.",
+    "source": "V10",
+    "id": "v10-047"
+  },
+  {
+    "topic": "sql",
+    "subtopic": "modeling",
+    "level": "L3",
+    "title": "How do you archive a huge table safely?",
+    "tags": [
+      "sql",
+      "L3",
+      "Production"
+    ],
+    "short": "Move cold data in controlled batches or partitions and avoid giant delete transactions.",
+    "answer": "Time-based partitioning can make retention a metadata operation. Otherwise archive by stable key in bounded batches while monitoring locks, WAL/redo and replication lag.",
+    "code": "-- Prefer partition detach/drop for time-based retention.",
+    "followups": [
+      "Partitioning vs sharding?",
+      "How do you preserve auditability?"
+    ],
+    "mistakes": [
+      "One huge DELETE during peak traffic."
+    ],
+    "interview": "For very large historical data I prefer partition-based retention because dropping an old partition is safer than deleting millions of rows in one transaction.",
+    "source": "V10",
+    "id": "v10-048"
+  },
+  {
+    "topic": "sql",
+    "subtopic": "transactions",
+    "level": "L3",
+    "title": "How do you design an idempotent database command?",
+    "tags": [
+      "sql",
+      "L3",
+      "Production"
+    ],
+    "short": "Use a unique business/idempotency key and atomic insert/update semantics.",
+    "answer": "A unique constraint works across instances and restarts. Handle duplicate-key outcomes by returning or loading the existing logical result.",
+    "code": "CREATE UNIQUE INDEX ux_payment_key ON payments(idempotency_key);",
+    "followups": [
+      "How do you return the original response?",
+      "How do you handle concurrent requests?"
+    ],
+    "mistakes": [
+      "Check-then-insert in separate non-atomic steps."
+    ],
+    "interview": "Database uniqueness is a strong primitive for idempotency because the database arbitrates concurrent first attempts.",
+    "source": "V10",
+    "id": "v10-049"
+  },
+  {
+    "topic": "sql",
+    "subtopic": "modeling",
+    "level": "L3",
+    "title": "How do you perform a large data backfill safely?",
+    "tags": [
+      "sql",
+      "L3",
+      "Production"
+    ],
+    "short": "Use small batches, stable keys, throttling and observability so the backfill does not starve production traffic.",
+    "answer": "Prefer primary-key ranges, commit frequently, pause on replication lag or lock pressure, and make the job restartable.",
+    "code": "UPDATE users SET new_col=... WHERE id > ? AND id <= ?;",
+    "followups": [
+      "How do you verify completeness?",
+      "How do you roll back?"
+    ],
+    "mistakes": [
+      "One massive transaction for millions of rows."
+    ],
+    "interview": "A backfill is production workload. I make it resumable, bounded and adaptive to database health.",
+    "source": "V10",
+    "id": "v10-050"
+  },
+  {
+    "topic": "sql",
+    "subtopic": "transactions",
+    "level": "L3",
+    "title": "How do you diagnose lock contention?",
+    "tags": [
+      "sql",
+      "L3",
+      "Production"
+    ],
+    "short": "Find blocked sessions, lock owners, transaction age and the SQL holding the resource.",
+    "answer": "Long transactions and missing indexes often turn small updates into long lock waits. Correlate database lock views with application traces and transaction boundaries.",
+    "code": "-- Inspect blocked/blocked-by sessions using DB-specific lock views.",
+    "followups": [
+      "Lock vs latch?",
+      "How does isolation affect locking?"
+    ],
+    "mistakes": [
+      "Only increasing timeout values."
+    ],
+    "interview": "I identify who is waiting, who holds the lock and why the holder is slow. Then I shorten the transaction or improve the access path.",
+    "source": "V10",
+    "id": "v10-051"
+  },
+  {
+    "topic": "security",
+    "subtopic": "micro",
+    "level": "L3",
+    "title": "How would you design service-to-service authentication?",
+    "tags": [
+      "security",
+      "L3",
+      "Production"
+    ],
+    "short": "Authenticate workloads with short-lived identities and authorize the requested operation with least privilege.",
+    "answer": "mTLS provides workload authentication at transport level; OAuth2 client credentials or signed service tokens provide application identity. Validate issuer, audience, expiry and scopes.",
+    "code": "Authorization: Bearer <short-lived-token>",
+    "followups": [
+      "mTLS vs OAuth2?",
+      "How do you rotate credentials?"
+    ],
+    "mistakes": [
+      "Trusting any internal network caller."
+    ],
+    "interview": "I separate workload authentication from authorization and avoid broad shared secrets. Every service validates identity and permissions at its boundary.",
+    "source": "V10",
+    "id": "v10-052"
+  },
+  {
+    "topic": "security",
+    "subtopic": "micro",
+    "level": "L3",
+    "title": "How do you secure JWT APIs beyond signature validation?",
+    "tags": [
+      "security",
+      "L3",
+      "Production"
+    ],
+    "short": "Validate issuer, audience, expiry, not-before and authorization claims, then enforce resource permissions.",
+    "answer": "A valid signature proves origin, not that the token is intended for this API or action. Keep lifetimes short and rotate signing keys.",
+    "code": "validate(iss,aud,exp,nbf); authorize(scope,resource)",
+    "followups": [
+      "How do you rotate keys?",
+      "How do you revoke sessions?"
+    ],
+    "mistakes": [
+      "Checking only signature and expiry."
+    ],
+    "interview": "JWT validation is authentication; authorization still has to decide whether this caller may access this resource.",
+    "source": "V10",
+    "id": "v10-053"
+  },
+  {
+    "topic": "security",
+    "subtopic": "micro",
+    "level": "L3",
+    "title": "How do you design refresh-token rotation?",
+    "tags": [
+      "security",
+      "L3",
+      "Production"
+    ],
+    "short": "Rotate on every use and detect reuse to limit replay after token theft.",
+    "answer": "Store a token family identifier and server-side state. A reused old token can indicate compromise, so revoke the family.",
+    "code": "old -> refresh -> new; reuse old -> revoke family",
+    "followups": [
+      "Where should refresh tokens be stored?",
+      "How do you revoke all sessions?"
+    ],
+    "mistakes": [
+      "Using one long-lived non-rotating refresh token."
+    ],
+    "interview": "Rotation reduces the replay window and reuse detection gives a strong signal of token theft.",
+    "source": "V10",
+    "id": "v10-054"
+  },
+  {
+    "topic": "security",
+    "subtopic": "micro",
+    "level": "L3",
+    "title": "How do you defend a backend against SSRF?",
+    "tags": [
+      "security",
+      "L3",
+      "Production"
+    ],
+    "short": "Restrict outbound destinations and enforce network egress controls; do not allow arbitrary user URLs.",
+    "answer": "Prefer allowlists, restrict protocols/ports, validate resolved addresses, handle redirects carefully and block access to internal/metadata ranges. Network policy is a second layer.",
+    "code": "allowlistedHost -> outbound client; reject arbitrary schemes/addresses",
+    "followups": [
+      "Why are redirects dangerous?",
+      "Why is IP blocking alone insufficient?"
+    ],
+    "mistakes": [
+      "Validating only the hostname string."
+    ],
+    "interview": "SSRF defense must exist in both application validation and network egress policy because DNS and redirects can bypass naive URL checks.",
+    "source": "V10",
+    "id": "v10-055"
+  },
+  {
+    "topic": "security",
+    "subtopic": "micro",
+    "level": "L3",
+    "title": "How do you secure file uploads?",
+    "tags": [
+      "security",
+      "L3",
+      "Production"
+    ],
+    "short": "Validate size/content, generate server-side object names, isolate storage and authorize downloads independently.",
+    "answer": "Do not trust extension or MIME type. Prevent path traversal, scan where required, and keep uploaded content outside executable web roots.",
+    "code": "UUID objectKey = UUID.randomUUID();\n// store using server-generated key",
+    "followups": [
+      "How do you handle zip bombs?",
+      "How do you secure downloads?"
+    ],
+    "mistakes": [
+      "Saving files using the original client filename."
+    ],
+    "interview": "Uploads are untrusted data. I validate content and size, isolate storage and make access authorization explicit.",
+    "source": "V10",
+    "id": "v10-056"
+  },
+  {
+    "topic": "security",
+    "subtopic": "micro",
+    "level": "L3",
+    "title": "What is confused-deputy risk in microservices?",
+    "tags": [
+      "security",
+      "L3",
+      "Production"
+    ],
+    "short": "A service may use its own broad privileges to perform an action that the original caller was not allowed to perform.",
+    "answer": "Keep service identities least-privileged and propagate user/delegation context when downstream authorization depends on the caller. Audit delegated actions.",
+    "code": "user -> service A -> privileged service B\n// B must enforce intended caller permissions",
+    "followups": [
+      "User identity vs service identity?",
+      "How do you audit delegation?"
+    ],
+    "mistakes": [
+      "Giving every service admin credentials."
+    ],
+    "interview": "Internal identity does not automatically mean unlimited authorization. I define the authorization boundary explicitly.",
+    "source": "V10",
+    "id": "v10-057"
+  },
+  {
+    "topic": "security",
+    "subtopic": "micro",
+    "level": "L3",
+    "title": "How do you rotate secrets without downtime?",
+    "tags": [
+      "security",
+      "L3",
+      "Production"
+    ],
+    "short": "Overlap old and new credentials during rollout, verify the new credential, then revoke the old one.",
+    "answer": "Use a secret manager and versioned credentials. Consumers load the new version, establish successful connections, and only then should the old version be disabled.",
+    "code": "old valid -> deploy new -> verify -> revoke old",
+    "followups": [
+      "How do you rotate DB passwords with pools?",
+      "How do you detect stale instances?"
+    ],
+    "mistakes": [
+      "Revoking the old secret before all consumers switch."
+    ],
+    "interview": "Secret rotation is a rollout problem. Overlapping validity avoids requiring a synchronized fleet restart.",
+    "source": "V10",
+    "id": "v10-058"
+  },
+  {
+    "topic": "security",
+    "subtopic": "micro",
+    "level": "L3",
+    "title": "How do you prevent cross-tenant authorization bugs?",
+    "tags": [
+      "security",
+      "L3",
+      "Production"
+    ],
+    "short": "Derive tenant identity from trusted authentication and enforce it at the data boundary.",
+    "answer": "Never trust tenantId from the request as the authorization source. Include tenant predicates in data access and test horizontal access control explicitly.",
+    "code": "SELECT * FROM orders WHERE id=? AND tenant_id=?;",
+    "followups": [
+      "How do you test IDOR?",
+      "Can database row-level security help?"
+    ],
+    "mistakes": [
+      "Using client-supplied tenantId."
+    ],
+    "interview": "Tenant isolation should survive a new endpoint being added incorrectly because the data boundary enforces it too.",
+    "source": "V10",
+    "id": "v10-059"
+  },
+  {
+    "topic": "cloud",
+    "subtopic": "kubernetes",
+    "level": "L3",
+    "title": "How would you design Kubernetes autoscaling for a Java API?",
+    "tags": [
+      "cloud",
+      "L3",
+      "Production"
+    ],
+    "short": "Scale on demand/saturation signals while respecting startup time and downstream capacity.",
+    "answer": "CPU may miss I/O saturation. Combine appropriate metrics, set min/max replicas, use readiness and graceful termination, and cap scale-out to protect the database.",
+    "code": "HPA minReplicas=3 maxReplicas=30; metric=CPU/concurrency",
+    "followups": [
+      "HPA vs VPA?",
+      "How do you prevent scale oscillation?"
+    ],
+    "mistakes": [
+      "Scaling only on CPU for an I/O-bound service."
+    ],
+    "interview": "Autoscaling is a capacity loop. I choose signals tied to demand and verify that dependencies can absorb the additional load.",
+    "source": "V10",
+    "id": "v10-060"
+  },
+  {
+    "topic": "cloud",
+    "subtopic": "kubernetes",
+    "level": "L3",
+    "title": "How do you design Kubernetes liveness/readiness correctly?",
+    "tags": [
+      "cloud",
+      "L3",
+      "Production"
+    ],
+    "short": "Readiness controls traffic; liveness detects unrecoverable process failure; startup probes protect slow initialization.",
+    "answer": "A dependency outage should generally affect readiness rather than trigger liveness restarts. Probes should be cheap and representative of their purpose.",
+    "code": "readiness=/actuator/health/readiness\nliveness=/actuator/health/liveness",
+    "followups": [
+      "What is startupProbe?",
+      "Should readiness check the DB?"
+    ],
+    "mistakes": [
+      "Putting fragile downstream checks in liveness."
+    ],
+    "interview": "I keep probe semantics separate so a transient database outage does not restart every pod and create a second incident.",
+    "source": "V10",
+    "id": "v10-061"
+  },
+  {
+    "topic": "cloud",
+    "subtopic": "kubernetes",
+    "level": "L3",
+    "title": "How do you debug Kubernetes OOMKills for Java?",
+    "tags": [
+      "cloud",
+      "L3",
+      "Production"
+    ],
+    "short": "Compare container RSS with heap, metaspace, direct buffers, thread stacks and native memory.",
+    "answer": "The container can be killed even when Java heap is below Xmx. Leave headroom for non-heap memory and inspect cgroup limits and GC behavior.",
+    "code": "-XX:MaxRAMPercentage=70\n// leave container headroom",
+    "followups": [
+      "What counts toward container memory?",
+      "Heap OOM vs OOMKill?"
+    ],
+    "mistakes": [
+      "Setting Xmx equal to the pod limit."
+    ],
+    "interview": "I distinguish Java heap OOM from container OOMKill. The JVM and native libraries need memory outside the heap.",
+    "source": "V10",
+    "id": "v10-062"
+  },
+  {
+    "topic": "cloud",
+    "subtopic": "kubernetes",
+    "level": "L3",
+    "title": "How do you design safe Kubernetes rolling releases?",
+    "tags": [
+      "cloud",
+      "L3",
+      "Production"
+    ],
+    "short": "Combine compatible application/database versions, readiness, graceful shutdown and controlled rollout parameters.",
+    "answer": "Mixed versions must work together. Use readiness gates, termination grace periods, maxSurge/maxUnavailable and automated rollback signals.",
+    "code": "maxUnavailable: 0\nmaxSurge: 1",
+    "followups": [
+      "Rolling vs canary?",
+      "How do you drain connections?"
+    ],
+    "mistakes": [
+      "Incompatible schema changes during rolling deployment."
+    ],
+    "interview": "A Kubernetes rollout is only safe if the application and schema are backward compatible during coexistence.",
+    "source": "V10",
+    "id": "v10-063"
+  },
+  {
+    "topic": "cloud",
+    "subtopic": "kubernetes",
+    "level": "L3",
+    "title": "How do you design disaster recovery for a backend?",
+    "tags": [
+      "cloud",
+      "L3",
+      "Production"
+    ],
+    "short": "Define RPO/RTO first, then choose backups/replication and recovery procedures that meet them.",
+    "answer": "Stateless services can be rebuilt from immutable artifacts; data requires tested backups or replication. Include DNS, secrets, dependencies and external providers in the recovery plan.",
+    "code": "RPO=5m; RTO=30m\n// validate through restore drills",
+    "followups": [
+      "Backup vs replication?",
+      "How do you test DR?"
+    ],
+    "mistakes": [
+      "Designing DR without RPO/RTO targets."
+    ],
+    "interview": "I start with business recovery objectives and test restores/failover rather than assuming backups are usable.",
+    "source": "V10",
+    "id": "v10-064"
+  },
+  {
+    "topic": "cloud",
+    "subtopic": "kubernetes",
+    "level": "L3",
+    "title": "How do you control noisy-neighbor behavior in cloud systems?",
+    "tags": [
+      "cloud",
+      "L3",
+      "Production"
+    ],
+    "short": "Enforce per-tenant quotas, concurrency limits and resource isolation.",
+    "answer": "Measure resource consumption by tenant and apply rate/queue/database budgets. Premium tenants may require dedicated partitions or compute.",
+    "code": "tenantQuota[tenantId] = {rate:100, concurrency:20}",
+    "followups": [
+      "Where should quotas live?",
+      "How do you handle premium tenants?"
+    ],
+    "mistakes": [
+      "Using only a global rate limit."
+    ],
+    "interview": "Noisy-neighbor protection is capacity fairness. I enforce limits at the earliest useful boundary and observe usage by tenant.",
+    "source": "V10",
+    "id": "v10-065"
+  },
+  {
+    "topic": "cloud",
+    "subtopic": "kubernetes",
+    "level": "L3",
+    "title": "How do you optimize cloud cost without harming reliability?",
+    "tags": [
+      "cloud",
+      "L3",
+      "Production"
+    ],
+    "short": "Optimize cost per useful unit of work while preserving SLOs and resilience.",
+    "answer": "Rightsize compute, autoscale, manage storage/log retention and data transfer, and use committed capacity for predictable workloads. Track cost per request/tenant alongside latency and availability.",
+    "code": "costPerRequest = infraCost / successfulRequests",
+    "followups": [
+      "Why can autoscaling increase cost?",
+      "How do you control log spend?"
+    ],
+    "mistakes": [
+      "Cutting redundancy or observability without measuring risk."
+    ],
+    "interview": "I optimize measured cost per unit of business work, not by blindly choosing the cheapest infrastructure.",
+    "source": "V10",
+    "id": "v10-066"
+  },
+  {
+    "topic": "system-design",
+    "subtopic": "distributed",
+    "level": "L3",
+    "title": "Design a high-scale notification system",
+    "tags": [
+      "system-design",
+      "L3",
+      "Production"
+    ],
+    "short": "Separate request acceptance from asynchronous delivery across channel-specific workers.",
+    "answer": "Persist a notification command, publish via an outbox, route to email/SMS/push workers, apply provider rate limits, retry transient failures and track delivery state idempotently.",
+    "code": "POST /notifications -> notificationId\nworkers -> provider adapters",
+    "followups": [
+      "How do you prevent duplicate SMS?",
+      "How do you handle provider outage?"
+    ],
+    "mistakes": [
+      "Sending provider calls synchronously in the request thread."
+    ],
+    "interview": "I would make acceptance durable and delivery asynchronous. Each channel has its own retry/rate policy and the overall state is an idempotent state machine.",
+    "source": "V10",
+    "id": "v10-067"
+  },
+  {
+    "topic": "system-design",
+    "subtopic": "distributed",
+    "level": "L3",
+    "title": "Design a payment ledger",
+    "tags": [
+      "system-design",
+      "L3",
+      "Production"
+    ],
+    "short": "Use immutable double-entry entries and idempotent transaction identifiers.",
+    "answer": "Every business transaction creates balanced debit/credit entries. Corrections are compensating entries. Derived balances can be optimized separately and reconciled.",
+    "code": "ledger(txId, accountId, debit, credit)\nSUM(debit)=SUM(credit) per tx",
+    "followups": [
+      "How do you reconcile external providers?",
+      "How do you handle concurrent writes?"
+    ],
+    "mistakes": [
+      "Overwriting a balance without an immutable ledger."
+    ],
+    "interview": "For financial systems I prefer an append-only ledger because history remains auditable and balance invariants are explicit.",
+    "source": "V10",
+    "id": "v10-068"
+  },
+  {
+    "topic": "system-design",
+    "subtopic": "distributed",
+    "level": "L3",
+    "title": "Design an inventory reservation service",
+    "tags": [
+      "system-design",
+      "L3",
+      "Production"
+    ],
+    "short": "Reserve stock atomically, expire abandoned reservations and make confirmation idempotent.",
+    "answer": "Use an atomic conditional update or row lock so available stock cannot become negative. Reservations have expiry and order identity.",
+    "code": "UPDATE inventory SET available=available-? WHERE sku=? AND available>=?;",
+    "followups": [
+      "How do you handle hot SKUs?",
+      "What if expiry runs twice?"
+    ],
+    "mistakes": [
+      "Read-then-update without protecting the invariant."
+    ],
+    "interview": "The key invariant is never reserving more than available. I enforce it atomically in the database and model expiry as a recoverable state transition.",
+    "source": "V10",
+    "id": "v10-069"
+  },
+  {
+    "topic": "system-design",
+    "subtopic": "distributed",
+    "level": "L3",
+    "title": "Design a distributed job scheduler",
+    "tags": [
+      "system-design",
+      "L3",
+      "Production"
+    ],
+    "short": "Persist jobs, claim them with leases and make execution idempotent.",
+    "answer": "Workers claim ready jobs with owner/version/lease, heartbeat while working and allow expired leases to be retried. Exactly-once execution is usually not realistic, so handlers must tolerate duplicates.",
+    "code": "UPDATE jobs SET owner=?, lease_until=? WHERE id=? AND lease_until < now();",
+    "followups": [
+      "How do you scale millions of jobs?",
+      "How do you avoid duplicate execution?"
+    ],
+    "mistakes": [
+      "Assuming a lock provides exactly-once execution."
+    ],
+    "interview": "I design for durable at-least-once execution with recovery. The job itself is responsible for idempotent side effects.",
+    "source": "V10",
+    "id": "v10-070"
+  },
+  {
+    "topic": "system-design",
+    "subtopic": "apis",
+    "level": "L3",
+    "title": "Design a large file upload service",
+    "tags": [
+      "system-design",
+      "L3",
+      "Production"
+    ],
+    "short": "Upload directly to object storage using scoped multipart/resumable URLs and keep metadata in a database.",
+    "answer": "The backend creates an upload session and signed parts; the client transfers data directly. Completion records checksum/size and triggers asynchronous scanning/processing.",
+    "code": "POST /uploads -> signed parts\nPUT -> object storage\nPOST /complete",
+    "followups": [
+      "How do you resume uploads?",
+      "How do you secure downloads?"
+    ],
+    "mistakes": [
+      "Proxying every large file through application servers."
+    ],
+    "interview": "I keep large payloads out of the application cluster. The backend controls authorization and metadata while object storage handles transfer scale.",
+    "source": "V10",
+    "id": "v10-071"
+  },
+  {
+    "topic": "system-design",
+    "subtopic": "apis",
+    "level": "L3",
+    "title": "Design a high-throughput audit platform",
+    "tags": [
+      "system-design",
+      "L3",
+      "Production"
+    ],
+    "short": "Capture structured immutable audit events asynchronously and partition storage by useful access dimensions.",
+    "answer": "Applications emit actor/action/resource/tenant/trace metadata. A durable broker buffers ingestion and consumers write searchable/retained projections.",
+    "code": "AuditEvent(actor,action,resource,tenant,traceId,timestamp)",
+    "followups": [
+      "How do you prevent loss?",
+      "How do you search years of data?"
+    ],
+    "mistakes": [
+      "Treating ordinary application logs as a complete audit trail."
+    ],
+    "interview": "Audit records are different from debug logs. I make them structured, access-controlled and durable, with retention and replay considerations.",
+    "source": "V10",
+    "id": "v10-072"
+  },
+  {
+    "topic": "system-design",
+    "subtopic": "scaling",
+    "level": "L3",
+    "title": "Design a product catalog cache",
+    "tags": [
+      "system-design",
+      "L3",
+      "Production"
+    ],
+    "short": "Use cache-aside with bounded TTL and protection against hot-key stampedes.",
+    "answer": "The database remains source of truth. Reads load on miss; writes invalidate or publish versions. Request coalescing and jittered expiry protect the database.",
+    "code": "MISS -> DB -> SET product:key TTL",
+    "followups": [
+      "Write-through vs cache-aside?",
+      "How do you handle hot keys?"
+    ],
+    "mistakes": [
+      "Assuming cache invalidation is globally instantaneous."
+    ],
+    "interview": "I define staleness tolerance first, then choose cache-aside and protect popular keys from synchronized expiry.",
+    "source": "V10",
+    "id": "v10-073"
+  },
+  {
+    "topic": "system-design",
+    "subtopic": "distributed",
+    "level": "L3",
+    "title": "Design an e-commerce checkout system",
+    "tags": [
+      "system-design",
+      "L3",
+      "Production"
+    ],
+    "short": "Use explicit order state, idempotent commands and asynchronous coordination between inventory and payment.",
+    "answer": "Create an order intent, reserve inventory, authorize payment and transition state. Outbox/events connect services; compensation handles failures.",
+    "code": "CREATED -> PAYMENT_PENDING -> CONFIRMED\n(or COMPENSATING/FAILED)",
+    "followups": [
+      "Payment succeeds but inventory fails?",
+      "How do you prevent duplicate checkout?"
+    ],
+    "mistakes": [
+      "Trying to wrap every service in one distributed ACID transaction."
+    ],
+    "interview": "I optimize checkout for correctness: durable state, idempotency and compensations rather than a distributed transaction.",
+    "source": "V10",
+    "id": "v10-074"
+  },
+  {
+    "topic": "system-design",
+    "subtopic": "scaling",
+    "level": "L3",
+    "title": "Design a public API rate limiter",
+    "tags": [
+      "system-design",
+      "L3",
+      "Production"
+    ],
+    "short": "Use a distributed token bucket or sliding-window algorithm and expose predictable client behavior.",
+    "answer": "Shared atomic state is required across instances. Return 429 with Retry-After and protect the limiter store with timeouts and a defined failure policy.",
+    "code": "X-RateLimit-Limit: 100\nRetry-After: 1",
+    "followups": [
+      "Global vs per-tenant limits?",
+      "How do you avoid hot keys?"
+    ],
+    "mistakes": [
+      "Using per-instance synchronized counters."
+    ],
+    "interview": "I choose the algorithm from burst requirements, enforce it atomically across instances and decide explicitly what happens if the limiter store fails.",
+    "source": "V10",
+    "id": "v10-075"
+  },
+  {
+    "topic": "system-design",
+    "subtopic": "scaling",
+    "level": "L3",
+    "title": "Design a distributed cache for a high-read backend",
+    "tags": [
+      "system-design",
+      "L3",
+      "Production"
+    ],
+    "short": "Use cache-aside, bounded memory and explicit invalidation/staleness semantics.",
+    "answer": "Choose keys and TTLs, protect hot keys, measure hit rate and keep the source of truth authoritative. For critical correctness, use versioning or bypass cache when stale data is unsafe.",
+    "code": "GET cache:key -> MISS -> DB -> SET",
+    "followups": [
+      "How do you handle cache failure?",
+      "What is stale-while-revalidate?"
+    ],
+    "mistakes": [
+      "Adding Redis without defining consistency or eviction."
+    ],
+    "interview": "Caching is a consistency decision as much as a performance decision. I define acceptable staleness before selecting the strategy.",
+    "source": "V10",
+    "id": "v10-076"
   }
 ]
