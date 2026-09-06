@@ -10931,5 +10931,2936 @@
     "interview": "This implementation gives average O(1) get/put behavior from LinkedHashMap. Production concurrency and distributed requirements need additional design.",
     "source": "V9",
     "id": "v9-089"
+  },
+  {
+    "id": "v91-001",
+    "topic": "microservices",
+    "level": "L2",
+    "title": "What is service discovery in microservices?",
+    "tags": [
+      "Microservices",
+      "Service Discovery"
+    ],
+    "short": "Service discovery lets a service find another service dynamically instead of hard-coding host and port.",
+    "answer": "A registry maintains service instances and their locations. A client-side or server-side discovery mechanism resolves a logical service name to a healthy instance. This becomes important when containers scale up, down or move.",
+    "code": "Client -> service registry -> Order Service instances",
+    "followups": [
+      "How does health checking work?",
+      "What is the difference between client-side and server-side discovery?"
+    ],
+    "mistakes": [
+      "Hard-coding pod IP addresses."
+    ],
+    "interview": "Service discovery removes the need for callers to know physical instance locations. A registry or platform resolves the logical service name to an available instance.",
+    "source": "V9.1"
+  },
+  {
+    "id": "v91-002",
+    "topic": "microservices",
+    "level": "L2",
+    "title": "Client-side vs server-side service discovery",
+    "tags": [
+      "Service Discovery",
+      "Load Balancing"
+    ],
+    "short": "Client-side discovery makes the caller choose an instance; server-side discovery delegates that choice to a load balancer or proxy.",
+    "answer": "With client-side discovery, the client queries a registry and performs load balancing. With server-side discovery, the client calls a stable endpoint and the load balancer or platform resolves an instance.",
+    "code": "Client -> Registry -> choose instance\nClient -> Load Balancer -> choose instance",
+    "followups": [
+      "Which approach fits Kubernetes?",
+      "What are the trade-offs?"
+    ],
+    "mistakes": [
+      "Treating service discovery and load balancing as exactly the same component."
+    ],
+    "interview": "Client-side discovery gives the application more control, while server-side discovery centralizes routing and keeps clients simpler.",
+    "source": "V9.1"
+  },
+  {
+    "id": "v91-003",
+    "topic": "microservices",
+    "level": "L2",
+    "title": "What is a circuit breaker and why is it needed?",
+    "tags": [
+      "Resilience",
+      "Circuit Breaker"
+    ],
+    "short": "A circuit breaker stops repeatedly calling an unhealthy dependency so failures do not cascade.",
+    "answer": "It normally moves through closed, open and half-open states. After repeated failures the circuit opens and fails fast; after a recovery delay it allows limited probes in half-open state.",
+    "code": "Closed -> failures -> Open -> wait -> Half-open -> success -> Closed",
+    "followups": [
+      "How do you configure failure thresholds?",
+      "Circuit breaker vs retry?"
+    ],
+    "mistakes": [
+      "Using a circuit breaker as a replacement for timeouts."
+    ],
+    "interview": "A circuit breaker protects a system from repeatedly calling a failing dependency. It fails fast while the dependency is unhealthy and periodically probes for recovery.",
+    "source": "V9.1"
+  },
+  {
+    "id": "v91-004",
+    "topic": "microservices",
+    "level": "L2",
+    "title": "Why should retries use exponential backoff and jitter?",
+    "tags": [
+      "Resilience",
+      "Retry"
+    ],
+    "short": "Backoff spaces retry attempts and jitter prevents many clients from retrying simultaneously.",
+    "answer": "Immediate retries can amplify load on a degraded service. Exponential backoff increases the delay after each failure, while jitter randomizes the delay so clients do not synchronize their retries.",
+    "code": "delay = min(maxDelay, baseDelay * 2^attempt) + randomJitter",
+    "followups": [
+      "When should retries not be used?",
+      "How can retries cause a retry storm?"
+    ],
+    "mistakes": [
+      "Retrying non-idempotent operations blindly."
+    ],
+    "interview": "I use bounded exponential backoff with jitter for transient failures and only retry operations that are safe to repeat.",
+    "source": "V9.1"
+  },
+  {
+    "id": "v91-005",
+    "topic": "microservices",
+    "level": "L2",
+    "title": "What is the bulkhead pattern?",
+    "tags": [
+      "Resilience",
+      "Bulkhead"
+    ],
+    "short": "Bulkheads isolate resources so one failing workload cannot consume capacity needed by others.",
+    "answer": "A service can maintain separate thread pools, connection pools or concurrency limits for independent dependencies. If one dependency becomes slow, its resource pool is exhausted without taking down unrelated traffic.",
+    "code": "Payments pool: 20 threads\nInventory pool: 20 threads",
+    "followups": [
+      "How is bulkhead different from circuit breaker?",
+      "Where would you apply it?"
+    ],
+    "mistakes": [
+      "Using one shared unbounded executor for every downstream call."
+    ],
+    "interview": "Bulkheads limit the blast radius of a dependency failure by isolating resources such as threads or connection pools.",
+    "source": "V9.1"
+  },
+  {
+    "id": "v91-006",
+    "topic": "microservices",
+    "level": "L3",
+    "title": "How do retries, timeouts and circuit breakers work together?",
+    "tags": [
+      "Resilience",
+      "Reliability"
+    ],
+    "short": "They solve different failure modes and must be bounded so resilience mechanisms do not amplify failure.",
+    "answer": "A typical call has a short timeout, a small number of retries with backoff, and a circuit breaker around the operation. The total retry budget must fit inside the caller SLA; otherwise retries can make latency worse.",
+    "code": "Request SLA 3s -> timeout 800ms -> at most 2 retries -> circuit breaker",
+    "followups": [
+      "What is retry amplification?",
+      "Where should the circuit breaker sit?"
+    ],
+    "mistakes": [
+      "Setting three retries with long timeouts that already exceed the SLA."
+    ],
+    "interview": "Timeouts bound each attempt, retries handle transient failures, and the circuit breaker stops repeated calls when the dependency is persistently unhealthy.",
+    "source": "V9.1"
+  },
+  {
+    "id": "v91-007",
+    "topic": "microservices",
+    "level": "L2",
+    "title": "What is idempotency in a REST API?",
+    "tags": [
+      "Reliability",
+      "Idempotency"
+    ],
+    "short": "An operation is idempotent when repeating the same request produces the same intended business result.",
+    "answer": "HTTP semantics alone are not enough for business idempotency. For operations such as payment creation, a client can send an idempotency key. The server stores the key and result and returns the same result for duplicate requests.",
+    "code": "POST /payments\nIdempotency-Key: 8f2...",
+    "followups": [
+      "How do you store idempotency keys?",
+      "What if two requests with the same key arrive concurrently?"
+    ],
+    "mistakes": [
+      "Generating a new payment every time the client retries."
+    ],
+    "interview": "Idempotency prevents duplicate business effects when clients retry. A unique key plus durable storage and atomic handling makes the operation safe to repeat.",
+    "source": "V9.1"
+  },
+  {
+    "id": "v91-008",
+    "topic": "microservices",
+    "level": "L3",
+    "title": "How would you design an idempotent payment API?",
+    "tags": [
+      "Idempotency",
+      "Payments"
+    ],
+    "short": "A payment API should atomically associate an idempotency key with the request and final business result.",
+    "answer": "Persist a unique key scoped to the merchant or account, validate that a reused key has the same request fingerprint, process the payment within a transaction, and return the stored result for duplicates. For asynchronous providers, persist provider references and state transitions.",
+    "code": "UNIQUE(merchant_id, idempotency_key)",
+    "followups": [
+      "How do you handle concurrent duplicate requests?",
+      "What if the provider times out after charging?"
+    ],
+    "mistakes": [
+      "Using an in-memory map as the only idempotency store."
+    ],
+    "interview": "For payments I need durable idempotency keys, atomic uniqueness, request validation and explicit handling of unknown provider outcomes.",
+    "source": "V9.1"
+  },
+  {
+    "id": "v91-009",
+    "topic": "microservices",
+    "level": "L3",
+    "title": "What is the Saga pattern?",
+    "tags": [
+      "Distributed Transactions",
+      "Saga"
+    ],
+    "short": "Saga coordinates a business transaction across services using a sequence of local transactions and compensating actions.",
+    "answer": "Each service commits locally and emits an event or calls the next step. If a later step fails, compensating actions undo the business effect of earlier steps. Saga can be choreography-based or orchestration-based.",
+    "code": "Order -> Reserve Inventory -> Charge Payment\nFailure -> Release Inventory",
+    "followups": [
+      "Saga vs two-phase commit?",
+      "How do you handle compensation failure?"
+    ],
+    "mistakes": [
+      "Calling compensation a database rollback."
+    ],
+    "interview": "A Saga replaces one distributed transaction with multiple local transactions and explicit compensation when a later step cannot complete.",
+    "source": "V9.1"
+  },
+  {
+    "id": "v91-010",
+    "topic": "microservices",
+    "level": "L3",
+    "title": "Saga choreography vs orchestration",
+    "tags": [
+      "Saga",
+      "Architecture"
+    ],
+    "short": "Choreography uses events between services; orchestration uses a central coordinator that directs steps.",
+    "answer": "Choreography reduces central coordination but can become difficult to understand as event dependencies grow. Orchestration makes workflow state explicit in one coordinator but introduces another component that must be reliable.",
+    "code": "Choreography: OrderCreated -> InventoryReserved -> PaymentRequested\nOrchestration: SagaCoordinator -> each service",
+    "followups": [
+      "When would you choose orchestration?",
+      "Can choreography create cyclic dependencies?"
+    ],
+    "mistakes": [
+      "Saying choreography has no coordination; the events themselves coordinate the workflow."
+    ],
+    "interview": "I prefer choreography for small, loosely coupled workflows and orchestration when the transaction has many steps, branching or compensation rules.",
+    "source": "V9.1"
+  },
+  {
+    "id": "v91-011",
+    "topic": "microservices",
+    "level": "L3",
+    "title": "What is the transactional outbox pattern?",
+    "tags": [
+      "Outbox",
+      "Consistency"
+    ],
+    "short": "The outbox pattern atomically stores a business change and the event to publish in the same local database transaction.",
+    "answer": "Instead of updating a table and publishing directly to Kafka in separate operations, the service writes the business row and an outbox row in one transaction. A relay later publishes the outbox event. Consumers must still be idempotent because publishing can be retried.",
+    "code": "BEGIN\nUPDATE orders ...\nINSERT INTO outbox ...\nCOMMIT",
+    "followups": [
+      "How does CDC fit the outbox pattern?",
+      "What happens if publishing fails?"
+    ],
+    "mistakes": [
+      "Assuming the database transaction can atomically commit with Kafka."
+    ],
+    "interview": "Outbox closes the dual-write gap between the service database and a message broker by persisting the event alongside the business transaction.",
+    "source": "V9.1"
+  },
+  {
+    "id": "v91-012",
+    "topic": "microservices",
+    "level": "L2",
+    "title": "What is change data capture (CDC)?",
+    "tags": [
+      "CDC",
+      "Events"
+    ],
+    "short": "CDC captures database changes and makes them available to downstream consumers.",
+    "answer": "A CDC connector reads database transaction changes, often from a database log, and publishes structured change events. It can feed search indexes, caches, analytics or an outbox relay without adding synchronous work to the request path.",
+    "code": "DB transaction log -> CDC connector -> Kafka -> consumers",
+    "followups": [
+      "CDC vs polling?",
+      "What are ordering considerations?"
+    ],
+    "mistakes": [
+      "Treating CDC as a replacement for business events in every use case."
+    ],
+    "interview": "CDC observes database changes and can propagate them reliably, but business events may still be preferable when consumers need domain intent rather than row-level changes.",
+    "source": "V9.1"
+  },
+  {
+    "id": "v91-013",
+    "topic": "microservices",
+    "level": "L2",
+    "title": "How do you prevent duplicate message processing?",
+    "tags": [
+      "Messaging",
+      "Idempotency"
+    ],
+    "short": "Consumers should make processing idempotent because at-least-once delivery can produce duplicates.",
+    "answer": "Store a unique event ID or business key with the processing result, or make the state transition naturally idempotent. The deduplication record and business update should be committed atomically when possible.",
+    "code": "processed_events(event_id PRIMARY KEY)",
+    "followups": [
+      "What if the consumer crashes after the DB commit?",
+      "Exactly-once vs idempotent processing?"
+    ],
+    "mistakes": [
+      "Assuming a broker will never redeliver a message."
+    ],
+    "interview": "I design consumers for at-least-once delivery and make the business effect idempotent, usually with a durable event ID or unique business constraint.",
+    "source": "V9.1"
+  },
+  {
+    "id": "v91-014",
+    "topic": "microservices",
+    "level": "L2",
+    "title": "How do you preserve message ordering in Kafka?",
+    "tags": [
+      "Kafka",
+      "Ordering"
+    ],
+    "short": "Ordering is guaranteed only within a Kafka partition, so related events should use a stable partition key.",
+    "answer": "If all events for an order use orderId as the key, Kafka routes them to the same partition and preserves their order there. Ordering across partitions is not guaranteed.",
+    "code": "producer.send(new ProducerRecord<>(\"orders\", orderId, event));",
+    "followups": [
+      "What happens if partitions increase?",
+      "Can multiple consumers process one partition concurrently?"
+    ],
+    "mistakes": [
+      "Expecting global ordering across a topic with many partitions."
+    ],
+    "interview": "Kafka guarantees order within a partition. I choose a business key such as orderId so related events stay ordered while unrelated keys can scale across partitions.",
+    "source": "V9.1"
+  },
+  {
+    "id": "v91-015",
+    "topic": "microservices",
+    "level": "L2",
+    "title": "What is a Kafka consumer group?",
+    "tags": [
+      "Kafka",
+      "Consumer Group"
+    ],
+    "short": "A consumer group is a set of consumers that jointly process a topic, with each partition assigned to at most one consumer in the group at a time.",
+    "answer": "Consumer groups provide horizontal consumption. If a topic has eight partitions, at most eight consumers in one group can actively consume partitions concurrently. Different groups receive their own copy of the stream.",
+    "code": "Topic: 8 partitions\nGroup A: 4 consumers",
+    "followups": [
+      "What triggers a rebalance?",
+      "Can two groups read the same message?"
+    ],
+    "mistakes": [
+      "Saying one partition is processed simultaneously by every consumer in the same group."
+    ],
+    "interview": "A consumer group lets multiple instances share partitions for parallel processing, while separate groups independently consume the same topic.",
+    "source": "V9.1"
+  },
+  {
+    "id": "v91-016",
+    "topic": "microservices",
+    "level": "L2",
+    "title": "What is Kafka consumer lag?",
+    "tags": [
+      "Kafka",
+      "Monitoring"
+    ],
+    "short": "Consumer lag measures how far a consumer group is behind the latest available records.",
+    "answer": "Lag can indicate slow processing, insufficient consumers, downstream bottlenecks or broker issues. I monitor lag together with processing latency and throughput instead of treating lag alone as the root cause.",
+    "code": "lag = latestOffset - committedOffset",
+    "followups": [
+      "How do you reduce lag safely?",
+      "Can adding consumers always help?"
+    ],
+    "mistakes": [
+      "Adding consumers when the topic has fewer partitions."
+    ],
+    "interview": "Lag is the gap between produced and consumed progress. I first identify whether the bottleneck is consumer CPU, downstream I/O, partitions or broker health before scaling.",
+    "source": "V9.1"
+  },
+  {
+    "id": "v91-017",
+    "topic": "microservices",
+    "level": "L3",
+    "title": "What happens during a Kafka consumer rebalance?",
+    "tags": [
+      "Kafka",
+      "Consumer Group"
+    ],
+    "short": "A rebalance redistributes partitions among consumers in a group after membership or subscription changes.",
+    "answer": "A consumer joining, leaving or failing can trigger reassignment. During the rebalance, ownership changes and processing can pause depending on the protocol and client configuration. Commit strategy matters because records may be replayed.",
+    "code": "Consumer A: P0,P1\nConsumer B: P2,P3\nJoin C -> reassignment",
+    "followups": [
+      "How can you reduce rebalance impact?",
+      "What is cooperative rebalancing?"
+    ],
+    "mistakes": [
+      "Assuming rebalancing means data loss."
+    ],
+    "interview": "A rebalance changes partition ownership. Good consumer configuration, graceful shutdown and appropriate commit behavior reduce pauses and duplicate work.",
+    "source": "V9.1"
+  },
+  {
+    "id": "v91-018",
+    "topic": "microservices",
+    "level": "L2",
+    "title": "At-most-once vs at-least-once vs exactly-once delivery",
+    "tags": [
+      "Messaging",
+      "Delivery Semantics"
+    ],
+    "short": "These describe whether messages can be lost, duplicated or processed with stronger atomicity guarantees.",
+    "answer": "At-most-once may lose messages but avoids redelivery. At-least-once can duplicate messages and is common for reliable processing. Exactly-once requires carefully scoped transactional semantics and still needs business-level reasoning across external systems.",
+    "code": "At-most-once: commit -> process\nAt-least-once: process -> commit",
+    "followups": [
+      "Why is exactly-once difficult end to end?",
+      "How do you design for at-least-once?"
+    ],
+    "mistakes": [
+      "Calling Kafka exactly-once equivalent to exactly-once business effects across databases and APIs."
+    ],
+    "interview": "I usually design business consumers for at-least-once delivery with idempotent effects. Exactly-once can be achieved in bounded systems but is not a magic end-to-end property.",
+    "source": "V9.1"
+  },
+  {
+    "id": "v91-019",
+    "topic": "microservices",
+    "level": "L3",
+    "title": "How do you handle poison messages in Kafka?",
+    "tags": [
+      "Kafka",
+      "Reliability"
+    ],
+    "short": "A poison message repeatedly fails processing and can block progress if it is not isolated.",
+    "answer": "Use bounded retries, then route the failed record to a dead-letter topic or quarantine mechanism with enough metadata for investigation. The consumer should commit or otherwise advance according to a deliberate failure policy so one bad record does not cause an infinite retry loop.",
+    "code": "orders.DLT <- failed event + error metadata",
+    "followups": [
+      "Should DLT messages be retried automatically?",
+      "What metadata should be stored?"
+    ],
+    "mistakes": [
+      "Infinite immediate retries on the main topic."
+    ],
+    "interview": "I use bounded retries and a dead-letter path for poison messages, preserving the original payload, error, attempt count and correlation information.",
+    "source": "V9.1"
+  },
+  {
+    "id": "v91-020",
+    "topic": "microservices",
+    "level": "L2",
+    "title": "What is a dead-letter queue or topic?",
+    "tags": [
+      "Messaging",
+      "DLQ"
+    ],
+    "short": "A dead-letter destination stores messages that cannot be processed successfully after the configured retry policy.",
+    "answer": "It isolates bad messages from the normal flow while preserving them for investigation or controlled replay. The DLQ should have monitoring, retention and an operational replay strategy.",
+    "code": "Main topic -> retries -> DLQ",
+    "followups": [
+      "How do you replay a DLQ safely?",
+      "Should every exception go to DLQ?"
+    ],
+    "mistakes": [
+      "Treating DLQ as permanent data deletion."
+    ],
+    "interview": "A DLQ is a controlled quarantine for failed messages. It should be observable and replayable after the underlying problem is fixed.",
+    "source": "V9.1"
+  },
+  {
+    "id": "v91-021",
+    "topic": "microservices",
+    "level": "L2",
+    "title": "What is backpressure in event-driven systems?",
+    "tags": [
+      "Messaging",
+      "Backpressure"
+    ],
+    "short": "Backpressure prevents producers or upstream work from overwhelming a slower consumer.",
+    "answer": "Controls include bounded queues, consumer concurrency limits, rate limiting, broker retention, flow control and load shedding. The right choice depends on whether data may be delayed, dropped or must be durably buffered.",
+    "code": "Producer rate: 10k/s\nConsumer capacity: 5k/s\nNeed buffering or throttling",
+    "followups": [
+      "How does Kafka help absorb bursts?",
+      "What if the backlog never drains?"
+    ],
+    "mistakes": [
+      "Using unbounded in-memory queues."
+    ],
+    "interview": "Backpressure keeps a fast producer from exhausting downstream resources. I use bounded buffering and explicit policies for delay, throttling or load shedding.",
+    "source": "V9.1"
+  },
+  {
+    "id": "v91-022",
+    "topic": "microservices",
+    "level": "L3",
+    "title": "How would you design an order event flow for reliability?",
+    "tags": [
+      "Kafka",
+      "Order Processing"
+    ],
+    "short": "A reliable order flow uses durable state, transactional event publication, idempotent consumers and observable retry paths.",
+    "answer": "Create the order and outbox event atomically. Publish to Kafka, partition by orderId, consume with idempotent inventory/payment handlers, use bounded retries and DLT, and expose correlation IDs and lag metrics.",
+    "code": "Order DB + Outbox -> Kafka(orderId) -> Inventory/Payment",
+    "followups": [
+      "How do you recover from duplicate events?",
+      "What if Kafka is temporarily unavailable?"
+    ],
+    "mistakes": [
+      "Publishing directly after the DB commit without an outbox."
+    ],
+    "interview": "I would use an outbox for atomic local persistence, Kafka keyed by orderId for ordering, idempotent consumers and explicit retry/DLT handling.",
+    "source": "V9.1"
+  },
+  {
+    "id": "v91-023",
+    "topic": "microservices",
+    "level": "L2",
+    "title": "What are correlation IDs and why are they useful?",
+    "tags": [
+      "Observability",
+      "Logging"
+    ],
+    "short": "A correlation ID is a stable request identifier propagated across logs and downstream calls.",
+    "answer": "When a request crosses several services, the same correlation or trace identifier lets operators search related logs quickly. It should not be treated as an authentication credential or sensitive data container.",
+    "code": "X-Correlation-ID: 7f2a...",
+    "followups": [
+      "Correlation ID vs trace ID?",
+      "Where should it be generated?"
+    ],
+    "mistakes": [
+      "Generating a new ID at every service without preserving the incoming context."
+    ],
+    "interview": "Correlation IDs provide a simple way to connect logs across services. In modern tracing systems, trace IDs can serve a similar purpose with richer context.",
+    "source": "V9.1"
+  },
+  {
+    "id": "v91-024",
+    "topic": "microservices",
+    "level": "L2",
+    "title": "What are the four golden signals?",
+    "tags": [
+      "Observability",
+      "Metrics"
+    ],
+    "short": "The four golden signals are latency, traffic, errors and saturation.",
+    "answer": "They provide a compact view of service health: request latency, request volume, error rate and how close resources are to capacity. They complement application-specific business metrics.",
+    "code": "latency, traffic, errors, saturation",
+    "followups": [
+      "What business metrics would you add?",
+      "How do you alert on latency?"
+    ],
+    "mistakes": [
+      "Monitoring CPU alone as service health."
+    ],
+    "interview": "The golden signals are latency, traffic, errors and saturation. They help detect user-visible degradation and resource pressure.",
+    "source": "V9.1"
+  },
+  {
+    "id": "v91-025",
+    "topic": "microservices",
+    "level": "L2",
+    "title": "Liveness vs readiness probes in Kubernetes",
+    "tags": [
+      "Kubernetes",
+      "Health"
+    ],
+    "short": "Liveness asks whether a container should be restarted; readiness asks whether it should receive traffic.",
+    "answer": "A readiness failure should remove the instance from service without necessarily restarting it. Liveness should detect an unrecoverable process state and be conservative to avoid restart loops.",
+    "code": "/actuator/health/liveness\n/actuator/health/readiness",
+    "followups": [
+      "Why should liveness not depend on a database?",
+      "What happens when readiness fails?"
+    ],
+    "mistakes": [
+      "Using a slow dependency check for liveness."
+    ],
+    "interview": "Readiness controls traffic eligibility, while liveness controls restart decisions. I keep liveness lightweight so a temporary dependency outage does not cause restart storms.",
+    "source": "V9.1"
+  },
+  {
+    "id": "v91-026",
+    "topic": "microservices",
+    "level": "L2",
+    "title": "What is graceful shutdown in a microservice?",
+    "tags": [
+      "Deployment",
+      "Reliability"
+    ],
+    "short": "Graceful shutdown stops new work, lets in-flight work finish within a deadline and closes resources cleanly.",
+    "answer": "On termination, the instance should be removed from service discovery/load balancing, stop accepting new requests, finish or cancel active work, commit/rollback transactions and close consumers or connections.",
+    "code": "SIGTERM -> stop traffic -> drain -> close",
+    "followups": [
+      "Why is readiness important during shutdown?",
+      "How do you handle long-running requests?"
+    ],
+    "mistakes": [
+      "Immediately killing the process on deployment."
+    ],
+    "interview": "Graceful shutdown prevents dropped in-flight requests and partial work by draining traffic before the process exits.",
+    "source": "V9.1"
+  },
+  {
+    "id": "v91-027",
+    "topic": "microservices",
+    "level": "L3",
+    "title": "How do you achieve zero-downtime deployments?",
+    "tags": [
+      "Deployment",
+      "Reliability"
+    ],
+    "short": "Zero-downtime deployment keeps enough healthy capacity available while replacing old instances.",
+    "answer": "Use rolling or blue-green deployment, readiness checks, backward-compatible API/database changes, connection draining and fast rollback. Database migrations should follow an expand-and-contract strategy when schemas must coexist across versions.",
+    "code": "v1 + v2 -> migrate -> switch -> remove v1",
+    "followups": [
+      "What is expand-and-contract?",
+      "How do you roll back a database change?"
+    ],
+    "mistakes": [
+      "Deploying a breaking schema and application change simultaneously."
+    ],
+    "interview": "I combine rolling or blue-green deployment with readiness, graceful shutdown and backward-compatible schema changes so old and new versions can coexist during rollout.",
+    "source": "V9.1"
+  },
+  {
+    "id": "v91-028",
+    "topic": "microservices",
+    "level": "L3",
+    "title": "How do you make database schema changes safe across microservice deployments?",
+    "tags": [
+      "Database",
+      "Deployment"
+    ],
+    "short": "Schema changes should be backward compatible while multiple application versions may run during deployment.",
+    "answer": "Use expand-and-contract: add nullable/new structures first, deploy code that can read both forms, backfill data, switch writes, then remove the old structure after all old instances are gone.",
+    "code": "1 add column -> 2 dual read/write -> 3 backfill -> 4 switch -> 5 remove",
+    "followups": [
+      "How do you handle renaming a column?",
+      "Why can a direct DROP break rolling deployments?"
+    ],
+    "mistakes": [
+      "Assuming deployment is instantaneous."
+    ],
+    "interview": "During rolling deployments, old and new application versions can coexist, so database changes must be compatible with both.",
+    "source": "V9.1"
+  },
+  {
+    "id": "v91-029",
+    "topic": "microservices",
+    "level": "L2",
+    "title": "What is a service mesh?",
+    "tags": [
+      "Networking",
+      "Service Mesh"
+    ],
+    "short": "A service mesh provides infrastructure-level communication features between services, often through sidecars or ambient proxies.",
+    "answer": "It can provide mTLS, traffic routing, retries, telemetry and policy without putting every networking concern into application code. It also adds operational complexity and another layer to debug.",
+    "code": "Service A -> proxy -> proxy -> Service B",
+    "followups": [
+      "Service mesh vs API Gateway?",
+      "When would you avoid a service mesh?"
+    ],
+    "mistakes": [
+      "Assuming a mesh removes all application-level resilience decisions."
+    ],
+    "interview": "A service mesh handles common service-to-service networking concerns consistently, but it does not replace domain logic or all application resilience design.",
+    "source": "V9.1"
+  },
+  {
+    "id": "v91-030",
+    "topic": "microservices",
+    "level": "L2",
+    "title": "How do you avoid a single point of failure in an API Gateway?",
+    "tags": [
+      "Gateway",
+      "Availability"
+    ],
+    "short": "Run multiple gateway instances behind a highly available load balancer and keep gateway state external or stateless where possible.",
+    "answer": "Gateway instances should be horizontally scalable. Authentication metadata, rate-limit state or sessions that must be shared should use a resilient external store or distributed mechanism.",
+    "code": "LB -> Gateway A/B/C -> services",
+    "followups": [
+      "What if the gateway itself is overloaded?",
+      "How do you deploy gateway configuration safely?"
+    ],
+    "mistakes": [
+      "Running one gateway instance because it is stateless."
+    ],
+    "interview": "I remove gateway single points of failure through multiple instances, health checks, horizontal scaling and externalized shared state.",
+    "source": "V9.1"
+  },
+  {
+    "id": "v91-031",
+    "topic": "microservices",
+    "level": "L3",
+    "title": "How do you prevent cascading failures in microservices?",
+    "tags": [
+      "Reliability",
+      "Cascading Failure"
+    ],
+    "short": "Cascading failures occur when one slow or failing dependency consumes resources across callers until the whole system degrades.",
+    "answer": "Use timeouts, bounded retries, circuit breakers, bulkheads, concurrency limits, load shedding, caching where appropriate and graceful degradation. Monitor dependency latency and saturation so protection activates before the caller is exhausted.",
+    "code": "A slow B -> A threads blocked -> A fails -> upstream retries A",
+    "followups": [
+      "Why can retries worsen cascading failures?",
+      "What is load shedding?"
+    ],
+    "mistakes": [
+      "Adding retries everywhere without budgets."
+    ],
+    "interview": "Cascading failures are controlled by limiting dependency impact: short timeouts, bounded retries, isolation, circuit breaking and graceful degradation.",
+    "source": "V9.1"
+  },
+  {
+    "id": "v91-032",
+    "topic": "microservices",
+    "level": "L3",
+    "title": "How do you handle partial failure in a distributed workflow?",
+    "tags": [
+      "Distributed Systems",
+      "Failure"
+    ],
+    "short": "Partial failure means some steps succeed while others fail or become unknown.",
+    "answer": "Persist workflow state, use idempotent commands, explicit statuses and compensating actions where appropriate. For external systems, design for unknown outcomes and reconciliation rather than assuming timeout means failure.",
+    "code": "Order=PAID, Inventory=UNKNOWN -> reconciliation",
+    "followups": [
+      "What is reconciliation?",
+      "How do you handle an unknown payment result?"
+    ],
+    "mistakes": [
+      "Treating a timeout as proof that the operation did not happen."
+    ],
+    "interview": "In distributed workflows, a timeout can mean unknown outcome. I persist state, use idempotency and reconciliation to converge the workflow safely.",
+    "source": "V9.1"
+  },
+  {
+    "id": "v91-033",
+    "topic": "microservices",
+    "level": "L3",
+    "title": "What is the difference between synchronous and asynchronous communication?",
+    "tags": [
+      "Communication",
+      "Messaging"
+    ],
+    "short": "Synchronous communication waits for an immediate response; asynchronous communication decouples sender and receiver in time.",
+    "answer": "REST/gRPC is commonly synchronous and useful when the caller needs an immediate result. Messaging is useful for long-running, bursty or independently scalable workflows, but introduces eventual consistency and operational complexity.",
+    "code": "Sync: A -> B -> response\nAsync: A -> broker -> B",
+    "followups": [
+      "When would you prefer async?",
+      "How do you expose async status to clients?"
+    ],
+    "mistakes": [
+      "Using async messaging for every CRUD call."
+    ],
+    "interview": "I choose synchronous calls when the caller needs an immediate answer and asynchronous messaging when decoupling, buffering or independent processing is more valuable.",
+    "source": "V9.1"
+  },
+  {
+    "id": "v91-034",
+    "topic": "microservices",
+    "level": "L2",
+    "title": "REST vs gRPC for microservice communication",
+    "tags": [
+      "Communication",
+      "Networking"
+    ],
+    "short": "REST is broadly interoperable and HTTP-friendly; gRPC uses HTTP/2 and strongly typed protobuf contracts for efficient service-to-service communication.",
+    "answer": "REST is convenient for public APIs and browser integrations. gRPC can provide compact payloads, streaming and generated clients for internal services. Choice depends on ecosystem, observability and operational requirements.",
+    "code": "REST: JSON over HTTP\ngRPC: Protobuf over HTTP/2",
+    "followups": [
+      "Can browsers call gRPC directly?",
+      "What about streaming?"
+    ],
+    "mistakes": [
+      "Choosing gRPC only because it is faster in benchmarks."
+    ],
+    "interview": "REST is often the better public API boundary, while gRPC can be attractive for internal typed, high-throughput or streaming communication.",
+    "source": "V9.1"
+  },
+  {
+    "id": "v91-035",
+    "topic": "microservices",
+    "level": "L2",
+    "title": "What is API versioning and how would you implement it?",
+    "tags": [
+      "API",
+      "Compatibility"
+    ],
+    "short": "API versioning lets a service evolve contracts while supporting existing clients during migration.",
+    "answer": "Common approaches include URI, header or media-type versioning. I prefer backward-compatible additive changes where possible and use explicit versions when semantics or contracts must break.",
+    "code": "GET /api/v1/orders\nGET /api/v2/orders",
+    "followups": [
+      "URI vs header versioning?",
+      "How do you deprecate v1?"
+    ],
+    "mistakes": [
+      "Creating a new version for every additive field."
+    ],
+    "interview": "I avoid unnecessary versions by making additive changes backward compatible. When semantics break, I expose a new contract and give clients a migration window.",
+    "source": "V9.1"
+  },
+  {
+    "id": "v91-036",
+    "topic": "microservices",
+    "level": "L2",
+    "title": "What is rate limiting in an API?",
+    "tags": [
+      "Reliability",
+      "Rate Limiting"
+    ],
+    "short": "Rate limiting controls how many requests a client can make over a period or token budget.",
+    "answer": "Algorithms include fixed window, sliding window, token bucket and leaky bucket. Distributed deployments need shared or coordinated state if limits must apply across instances.",
+    "code": "Token bucket: capacity=100, refill=10/s",
+    "followups": [
+      "Token bucket vs leaky bucket?",
+      "Where should rate limiting happen?"
+    ],
+    "mistakes": [
+      "Using only an in-memory counter behind multiple instances."
+    ],
+    "interview": "Rate limiting protects capacity and fairness. For distributed gateways, the limiting state must be coordinated or the limit becomes per-instance rather than global.",
+    "source": "V9.1"
+  },
+  {
+    "id": "v91-037",
+    "topic": "microservices",
+    "level": "L2",
+    "title": "What is load shedding?",
+    "tags": [
+      "Reliability",
+      "Capacity"
+    ],
+    "short": "Load shedding deliberately rejects lower-priority work when a system is overloaded to preserve critical functionality.",
+    "answer": "Examples include returning 429, rejecting optional requests, reducing expensive features or applying priority queues. The goal is graceful degradation rather than letting every request time out.",
+    "code": "Critical requests -> accept\nOptional requests -> 429",
+    "followups": [
+      "How is load shedding different from rate limiting?",
+      "How do you choose what to shed?"
+    ],
+    "mistakes": [
+      "Letting queues grow without bound until the process crashes."
+    ],
+    "interview": "Load shedding is an overload protection mechanism. It intentionally sacrifices some work so the core system remains responsive.",
+    "source": "V9.1"
+  },
+  {
+    "id": "v91-038",
+    "topic": "microservices",
+    "level": "L3",
+    "title": "How would you design a multi-region microservice?",
+    "tags": [
+      "Architecture",
+      "Availability"
+    ],
+    "short": "A multi-region design distributes service instances and data across geographic regions to reduce latency and improve availability.",
+    "answer": "Key decisions include active-active vs active-passive, data replication, conflict handling, traffic routing, regional failure detection and recovery objectives. Not every service needs global active-active writes.",
+    "code": "Users -> Global DNS -> Region A / Region B",
+    "followups": [
+      "How do you handle cross-region writes?",
+      "RPO vs RTO?"
+    ],
+    "mistakes": [
+      "Assuming multi-region automatically means strongly consistent global data."
+    ],
+    "interview": "Multi-region improves resilience and latency but introduces replication and failure-mode complexity. I choose a data strategy based on RPO, RTO and consistency requirements.",
+    "source": "V9.1"
+  },
+  {
+    "id": "v91-039",
+    "topic": "microservices",
+    "level": "L3",
+    "title": "RPO vs RTO in disaster recovery",
+    "tags": [
+      "DR",
+      "Availability"
+    ],
+    "short": "RPO is the maximum acceptable data loss measured in time; RTO is the maximum acceptable recovery time.",
+    "answer": "For example, RPO of five minutes means losing up to five minutes of data may be acceptable. RTO of 30 minutes means the service should recover within 30 minutes. These targets drive backup and replication architecture.",
+    "code": "RPO = 5 min\nRTO = 30 min",
+    "followups": [
+      "How do backups affect RPO?",
+      "How do you test RTO?"
+    ],
+    "mistakes": [
+      "Confusing RPO with downtime."
+    ],
+    "interview": "RPO defines tolerated data loss; RTO defines tolerated recovery time. Both should be explicit before selecting a disaster-recovery design.",
+    "source": "V9.1"
+  },
+  {
+    "id": "v91-040",
+    "topic": "microservices",
+    "level": "L3",
+    "title": "How do you design a distributed lock?",
+    "tags": [
+      "Distributed Systems",
+      "Locking"
+    ],
+    "short": "A distributed lock coordinates access to a shared resource across multiple service instances.",
+    "answer": "A robust design needs ownership, expiration/lease, safe release and behavior when the holder pauses or loses connectivity. For critical correctness, database constraints or transactional state transitions may be safer than a lock.",
+    "code": "lock(resourceId, ownerId, leaseUntil)",
+    "followups": [
+      "Why can a distributed lock expire while work is still running?",
+      "How do you avoid deleting another owner's lock?"
+    ],
+    "mistakes": [
+      "Using a random delete without checking ownership."
+    ],
+    "interview": "Distributed locks are difficult because process pauses and network partitions exist. I use leases and owner tokens, and prefer database invariants when they can express the business rule.",
+    "source": "V9.1"
+  },
+  {
+    "id": "v91-041",
+    "topic": "microservices",
+    "level": "L3",
+    "title": "What is the CAP theorem?",
+    "tags": [
+      "Distributed Systems",
+      "Consistency"
+    ],
+    "short": "CAP says that during a network partition, a distributed system cannot simultaneously guarantee both strong consistency and availability for all operations.",
+    "answer": "The practical trade-off appears when nodes cannot communicate. A system must choose whether to reject or delay some operations to preserve consistency, or continue serving potentially divergent data for availability.",
+    "code": "Partition -> choose consistency or availability",
+    "followups": [
+      "Does CAP mean you can only choose two of C,A,P?",
+      "How does this relate to databases?"
+    ],
+    "mistakes": [
+      "Saying a system permanently chooses two letters regardless of conditions."
+    ],
+    "interview": "CAP is specifically about behavior during partitions. P is a reality in distributed systems; the meaningful trade-off is consistency versus availability under that partition.",
+    "source": "V9.1"
+  },
+  {
+    "id": "v91-042",
+    "topic": "microservices",
+    "level": "L3",
+    "title": "What is event sourcing?",
+    "tags": [
+      "Event Sourcing",
+      "Architecture"
+    ],
+    "short": "Event sourcing stores the sequence of domain events as the source of truth rather than only the latest state.",
+    "answer": "Current state can be rebuilt by replaying events, and snapshots can reduce replay cost. It provides a strong audit history but complicates schema evolution, querying and operational recovery.",
+    "code": "AccountOpened -> Deposited(100) -> Withdrawn(20)",
+    "followups": [
+      "Event sourcing vs event-driven architecture?",
+      "How do you version events?"
+    ],
+    "mistakes": [
+      "Calling any Kafka-based system event sourced."
+    ],
+    "interview": "Event sourcing makes events the durable source of truth. Event-driven architecture only means components communicate through events; it does not require event history as the system of record.",
+    "source": "V9.1"
+  },
+  {
+    "id": "v91-043",
+    "topic": "microservices",
+    "level": "L2",
+    "title": "What is the strangler fig pattern?",
+    "tags": [
+      "Migration",
+      "Architecture"
+    ],
+    "short": "The strangler pattern incrementally replaces a legacy system by routing selected capabilities to new services.",
+    "answer": "A facade or gateway directs some functionality to the new implementation while the old system continues serving the rest. Over time, more capabilities move until the legacy component can be retired.",
+    "code": "Client -> Facade -> New Service / Legacy",
+    "followups": [
+      "How do you keep data consistent during migration?",
+      "What makes strangler safer than a big-bang rewrite?"
+    ],
+    "mistakes": [
+      "Trying to migrate all functionality at once."
+    ],
+    "interview": "The strangler pattern reduces migration risk by moving bounded capabilities incrementally while the legacy system continues operating.",
+    "source": "V9.1"
+  },
+  {
+    "id": "v91-044",
+    "topic": "microservices",
+    "level": "L3",
+    "title": "How would you migrate a monolith to microservices safely?",
+    "tags": [
+      "Migration",
+      "Architecture"
+    ],
+    "short": "A safe migration starts with business boundaries and incremental extraction rather than splitting classes mechanically.",
+    "answer": "Identify bounded contexts, isolate a capability, define an API/event contract, establish observability, move data ownership carefully, route traffic gradually and retire the old path only after proving correctness.",
+    "code": "Monolith -> facade -> extracted Order Service",
+    "followups": [
+      "How do you choose the first service?",
+      "What is the data migration strategy?"
+    ],
+    "mistakes": [
+      "Creating dozens of services from technical layers."
+    ],
+    "interview": "I extract cohesive business capabilities incrementally, keep contracts explicit, migrate ownership carefully and use observability plus gradual traffic shifting to reduce risk.",
+    "source": "V9.1"
+  },
+  {
+    "id": "v91-045",
+    "topic": "microservices",
+    "level": "L2",
+    "title": "What is a bounded context?",
+    "tags": [
+      "DDD",
+      "Architecture"
+    ],
+    "short": "A bounded context defines a boundary within which a domain model and terminology have a consistent meaning.",
+    "answer": "The same word can mean different things in different contexts. Bounded contexts help services own cohesive models instead of sharing one giant domain model across the system.",
+    "code": "Order context: Customer\nBilling context: Account",
+    "followups": [
+      "Bounded context vs microservice?",
+      "Can one context contain multiple services?"
+    ],
+    "mistakes": [
+      "Treating bounded context as exactly one deployable service."
+    ],
+    "interview": "A bounded context is a domain boundary, not a deployment rule. A microservice can implement a context, but the concepts are not identical.",
+    "source": "V9.1"
+  },
+  {
+    "id": "v91-046",
+    "topic": "microservices",
+    "level": "L3",
+    "title": "What is the dual-write problem?",
+    "tags": [
+      "Consistency",
+      "Data"
+    ],
+    "short": "Dual write occurs when one business operation updates two independent systems without a shared atomic transaction.",
+    "answer": "For example, writing an order to a database and then publishing Kafka can leave one side updated and the other missing if the process fails between operations. Outbox, CDC or reconciliation patterns address the gap.",
+    "code": "DB write ✓ -> process crashes -> Kafka publish ✗",
+    "followups": [
+      "Why not simply publish before the DB write?",
+      "Outbox vs two-phase commit?"
+    ],
+    "mistakes": [
+      "Assuming two sequential operations are atomic."
+    ],
+    "interview": "Two independent writes cannot be assumed atomic. I use an outbox or another consistency pattern when the database change and event publication must stay aligned.",
+    "source": "V9.1"
+  },
+  {
+    "id": "v91-047",
+    "topic": "microservices",
+    "level": "L3",
+    "title": "How do you handle an external API timeout when the operation may have succeeded?",
+    "tags": [
+      "Distributed Systems",
+      "Idempotency"
+    ],
+    "short": "A timeout creates an unknown outcome: the remote service may have completed the operation even though the response was lost.",
+    "answer": "Use an idempotency key when supported, query the provider by reference when possible, persist a pending/unknown state and reconcile asynchronously. Never blindly retry a non-idempotent operation.",
+    "code": "POST payment(idempotencyKey) -> timeout -> GET status -> reconcile",
+    "followups": [
+      "What if the provider has no status API?",
+      "How do you communicate status to the user?"
+    ],
+    "mistakes": [
+      "Immediately issuing a second charge."
+    ],
+    "interview": "A timeout is not proof of failure. I preserve an unknown state, use idempotency or reconciliation and only finalize the business state when the outcome is known.",
+    "source": "V9.1"
+  },
+  {
+    "id": "v91-048",
+    "topic": "microservices",
+    "level": "L2",
+    "title": "What is a fallback in resilience design?",
+    "tags": [
+      "Resilience",
+      "Fallback"
+    ],
+    "short": "A fallback is a deliberate degraded response used when a dependency cannot be called successfully.",
+    "answer": "Examples include cached data, default recommendations or an asynchronous acceptance response. A fallback must be semantically safe; returning fake critical data can be worse than failing.",
+    "code": "Recommendation service down -> cached recommendations",
+    "followups": [
+      "When should you not use a fallback?",
+      "Fallback vs retry?"
+    ],
+    "mistakes": [
+      "Returning stale payment status as if it were current."
+    ],
+    "interview": "A fallback provides controlled degradation when a dependency fails. I only use one when the degraded result is safe and understandable to the caller.",
+    "source": "V9.1"
+  },
+  {
+    "id": "v91-049",
+    "topic": "microservices",
+    "level": "L2",
+    "title": "What is a timeout budget or latency budget?",
+    "tags": [
+      "Resilience",
+      "Performance"
+    ],
+    "short": "A latency budget is the maximum time a request can spend across all downstream operations while meeting its SLA.",
+    "answer": "If an endpoint has a 1-second SLA, individual calls cannot each be allowed to consume one second. The service must allocate a budget across parallel and sequential dependencies and reserve time for its own work.",
+    "code": "SLA 1000ms -> downstream A 300ms + B 300ms + local 200ms + margin",
+    "followups": [
+      "Why should retries share the same budget?",
+      "How do parallel calls change budgeting?"
+    ],
+    "mistakes": [
+      "Giving every downstream call an independent full SLA timeout."
+    ],
+    "interview": "Timeouts should fit within the overall latency budget. Otherwise a service can meet each local timeout while violating the user-facing SLA.",
+    "source": "V9.1"
+  },
+  {
+    "id": "v91-050",
+    "topic": "microservices",
+    "level": "L2",
+    "title": "What is connection pooling in microservices?",
+    "tags": [
+      "Networking",
+      "Performance"
+    ],
+    "short": "Connection pooling reuses established network or database connections instead of creating one for every request.",
+    "answer": "Pools reduce handshake overhead and control concurrency. The pool size must match downstream capacity; too many connections can overload a database or remote service.",
+    "code": "pool.maxSize=20\npool.connectionTimeout=500ms",
+    "followups": [
+      "How do you choose pool size?",
+      "What happens when the pool is exhausted?"
+    ],
+    "mistakes": [
+      "Increasing the pool indefinitely to fix latency."
+    ],
+    "interview": "Connection pools improve reuse and provide a concurrency limit. I size them based on workload and downstream capacity, then monitor pool exhaustion.",
+    "source": "V9.1"
+  },
+  {
+    "id": "v91-051",
+    "topic": "microservices",
+    "level": "L3",
+    "title": "How would you troubleshoot a slow microservice endpoint?",
+    "tags": [
+      "Production",
+      "Performance"
+    ],
+    "short": "Start with user-visible latency, then trace the request across application, network and data dependencies.",
+    "answer": "Check metrics for latency/errors/saturation, inspect traces for slow spans, examine logs with correlation IDs, verify thread and connection pools, inspect database query plans and downstream latency. Reproduce under controlled load before changing limits.",
+    "code": "Request -> trace -> slow span -> DB query -> EXPLAIN",
+    "followups": [
+      "How do you distinguish CPU from I/O bottlenecks?",
+      "What metrics would you inspect first?"
+    ],
+    "mistakes": [
+      "Increasing timeouts without finding the bottleneck."
+    ],
+    "interview": "I start with metrics and traces, identify the slowest dependency or resource, validate with logs and profiling/query plans, then make a targeted change.",
+    "source": "V9.1"
+  },
+  {
+    "id": "v91-052",
+    "topic": "microservices",
+    "level": "L3",
+    "title": "How do you handle a downstream service that becomes slow but not completely unavailable?",
+    "tags": [
+      "Resilience",
+      "Latency"
+    ],
+    "short": "A slow dependency can be more dangerous than a hard failure because it holds resources for longer.",
+    "answer": "Use aggressive timeouts, concurrency limits/bulkheads, circuit breaking based on slow-call thresholds, bounded retries only where safe, and fallbacks. Protect the caller before its threads or connections are exhausted.",
+    "code": "Slow dependency -> timeout + bulkhead -> fallback",
+    "followups": [
+      "Why can slow calls open a circuit breaker?",
+      "How does queueing affect latency?"
+    ],
+    "mistakes": [
+      "Waiting indefinitely because the dependency is technically up."
+    ],
+    "interview": "I treat sustained slowness as a failure mode. Timeouts and isolation prevent slow downstream work from consuming all caller capacity.",
+    "source": "V9.1"
+  },
+  {
+    "id": "v91-053",
+    "topic": "microservices",
+    "level": "L2",
+    "title": "What is health-check endpoint design in microservices?",
+    "tags": [
+      "Observability",
+      "Health"
+    ],
+    "short": "Health endpoints should distinguish process health from dependency readiness and should be cheap enough for frequent probing.",
+    "answer": "A liveness endpoint can answer whether the process is functioning. Readiness can include critical dependency checks, but those checks should have bounded timeouts and not create a dependency storm.",
+    "code": "/health/live\n/health/ready",
+    "followups": [
+      "What should liveness check?",
+      "Should readiness check every dependency?"
+    ],
+    "mistakes": [
+      "Making health checks execute expensive business queries."
+    ],
+    "interview": "Health checks should be lightweight and purposeful: liveness for process health, readiness for whether the instance should receive traffic.",
+    "source": "V9.1"
+  },
+  {
+    "id": "v91-054",
+    "topic": "microservices",
+    "level": "L2",
+    "title": "What is centralized configuration in microservices?",
+    "tags": [
+      "Configuration",
+      "Operations"
+    ],
+    "short": "Centralized configuration keeps environment-specific settings outside application binaries and provides a consistent way to manage them.",
+    "answer": "Services can load configuration from a configuration service, environment variables or a secret manager. Sensitive values should be stored in a secret system rather than ordinary configuration.",
+    "code": "Service -> Config Store\nService -> Secret Manager",
+    "followups": [
+      "How do you refresh configuration safely?",
+      "Config service failure behavior?"
+    ],
+    "mistakes": [
+      "Storing passwords in Git."
+    ],
+    "interview": "Centralized configuration separates deployment settings from code. Secrets require stronger controls, and services need a safe startup/failure strategy when configuration is unavailable.",
+    "source": "V9.1"
+  },
+  {
+    "id": "v91-055",
+    "topic": "microservices",
+    "level": "L2",
+    "title": "Why should secrets not be stored in application.yml or Git?",
+    "tags": [
+      "Security",
+      "Operations"
+    ],
+    "short": "Secrets committed to source control can leak through repositories, logs, artifacts or developer machines.",
+    "answer": "Use a secret manager or protected runtime environment, inject secrets at runtime, rotate them and audit access. Configuration files can reference secret keys without containing secret values.",
+    "code": "DB_PASSWORD=${DB_PASSWORD_FROM_SECRET_STORE}",
+    "followups": [
+      "How do you rotate a secret without downtime?",
+      "What about encrypted Git secrets?"
+    ],
+    "mistakes": [
+      "Hard-coding credentials in source code."
+    ],
+    "interview": "Secrets should be externalized and rotated. Encryption at rest is not enough if access control, logging or rotation are weak.",
+    "source": "V9.1"
+  },
+  {
+    "id": "v91-056",
+    "topic": "microservices",
+    "level": "L2",
+    "title": "What is horizontal vs vertical scaling in microservices?",
+    "tags": [
+      "Scaling",
+      "Performance"
+    ],
+    "short": "Horizontal scaling adds more instances; vertical scaling gives an instance more resources.",
+    "answer": "Stateless services are usually easy to scale horizontally. Vertical scaling can be simpler for some workloads but has hardware limits and creates larger failure units.",
+    "code": "Horizontal: 3 pods -> 10 pods\nVertical: 2 CPU -> 8 CPU",
+    "followups": [
+      "What makes a service horizontally scalable?",
+      "How does a database scale differently?"
+    ],
+    "mistakes": [
+      "Assuming adding application instances fixes a database bottleneck."
+    ],
+    "interview": "Horizontal scaling increases instance count and resilience, while vertical scaling increases per-instance capacity. The bottleneck must be identified before choosing either.",
+    "source": "V9.1"
+  },
+  {
+    "id": "v91-057",
+    "topic": "microservices",
+    "level": "L3",
+    "title": "How do you make a microservice stateless?",
+    "tags": [
+      "Scaling",
+      "Architecture"
+    ],
+    "short": "A stateless service does not depend on local process memory for durable client session or workflow state.",
+    "answer": "Store durable state in databases, caches or external workflow stores. Local memory can still be used as a cache if losing it does not break correctness. Statelessness makes replacement and horizontal scaling easier.",
+    "code": "Request -> Service A/B -> shared DB",
+    "followups": [
+      "Can you use local caching in a stateless service?",
+      "Where should sessions live?"
+    ],
+    "mistakes": [
+      "Keeping checkout state only in one pod's memory."
+    ],
+    "interview": "Stateless means the service instance is replaceable without losing required state. Durable state belongs in shared infrastructure.",
+    "source": "V9.1"
+  },
+  {
+    "id": "v91-058",
+    "topic": "microservices",
+    "level": "L3",
+    "title": "What is distributed rate limiting?",
+    "tags": [
+      "Rate Limiting",
+      "Distributed Systems"
+    ],
+    "short": "Distributed rate limiting coordinates request limits across multiple application instances.",
+    "answer": "A shared store such as Redis can maintain counters or token buckets, or an API gateway/service mesh can enforce limits. The design must account for clocking, atomic updates and store availability.",
+    "code": "Gateway A/B/C -> shared limiter",
+    "followups": [
+      "What if Redis is unavailable?",
+      "How do token buckets work atomically?"
+    ],
+    "mistakes": [
+      "Using local counters when a global limit is required."
+    ],
+    "interview": "For a global limit, instances need coordinated state or a centralized enforcement point. The failure policy must also be explicit.",
+    "source": "V9.1"
+  },
+  {
+    "id": "v91-059",
+    "topic": "microservices",
+    "level": "L3",
+    "title": "How do you design an API for long-running asynchronous jobs?",
+    "tags": [
+      "Async",
+      "API"
+    ],
+    "short": "The API accepts work, returns a job identifier and lets the client query status or receive completion notification.",
+    "answer": "POST /reports can return 202 Accepted with a job ID. A worker processes the job and persists status such as QUEUED, RUNNING, SUCCEEDED or FAILED. The status API should be idempotent and observable.",
+    "code": "POST /reports -> 202 {jobId}\nGET /reports/jobs/{jobId}",
+    "followups": [
+      "Why use 202?",
+      "How do you handle duplicate submissions?"
+    ],
+    "mistakes": [
+      "Keeping the HTTP connection open for minutes."
+    ],
+    "interview": "For long-running work I return an asynchronous job ID, persist state, process via workers and expose a status or callback mechanism.",
+    "source": "V9.1"
+  },
+  {
+    "id": "v91-060",
+    "topic": "microservices",
+    "level": "L2",
+    "title": "What is graceful degradation?",
+    "tags": [
+      "Reliability",
+      "Availability"
+    ],
+    "short": "Graceful degradation keeps core functionality available while reducing optional functionality under failure or load.",
+    "answer": "Examples include serving cached data, disabling recommendations or reducing page detail while preserving checkout. Degraded behavior should be explicit and tested.",
+    "code": "Core checkout ✓\nRecommendations degraded",
+    "followups": [
+      "How do you decide what is optional?",
+      "How do you test degraded modes?"
+    ],
+    "mistakes": [
+      "Returning successful responses with invalid critical data."
+    ],
+    "interview": "Graceful degradation protects critical user journeys by intentionally reducing nonessential functionality rather than letting the entire request fail.",
+    "source": "V9.1"
+  },
+  {
+    "id": "v91-061",
+    "topic": "microservices",
+    "level": "L3",
+    "title": "How do you design a reliable notification microservice?",
+    "tags": [
+      "Messaging",
+      "System Design"
+    ],
+    "short": "A reliable notification service separates request acceptance, scheduling, delivery and provider-specific retries.",
+    "answer": "Persist notification intent, publish work to a queue, use provider adapters, idempotency keys and bounded retries, route permanent failures to a DLQ, and expose delivery status. Email/SMS providers can return unknown outcomes, so provider references are important.",
+    "code": "API -> DB/Outbox -> Queue -> Worker -> Provider",
+    "followups": [
+      "How do you prevent duplicate SMS?",
+      "How do you retry provider failures?"
+    ],
+    "mistakes": [
+      "Sending directly in the API request without durable work state."
+    ],
+    "interview": "I would persist the notification intent, process asynchronously, use idempotent delivery keys, bounded retries and a DLQ, and track provider outcomes.",
+    "source": "V9.1"
+  },
+  {
+    "id": "v91-062",
+    "topic": "microservices",
+    "level": "L3",
+    "title": "How do you design an order service for high traffic?",
+    "tags": [
+      "Scaling",
+      "System Design"
+    ],
+    "short": "A high-traffic order service should isolate writes, protect dependencies and scale stateless application nodes horizontally.",
+    "answer": "Use stateless APIs, database indexing and partitioning where needed, asynchronous events for downstream work, idempotent order creation, caching for read-heavy data and strong observability. Keep payment and inventory ownership in their own services.",
+    "code": "Client -> LB -> Order API -> DB\n                  -> Outbox -> Kafka",
+    "followups": [
+      "Where would you use caching?",
+      "How do you avoid duplicate orders?"
+    ],
+    "mistakes": [
+      "Sharing one database schema and transaction across every service."
+    ],
+    "interview": "I keep order ownership local, make the API idempotent, scale stateless instances, use an outbox for events and isolate downstream failures.",
+    "source": "V9.1"
+  },
+  {
+    "id": "v91-063",
+    "topic": "microservices",
+    "level": "L3",
+    "title": "What is a distributed transaction and why is it hard?",
+    "tags": [
+      "Distributed Transactions",
+      "Consistency"
+    ],
+    "short": "A distributed transaction spans multiple resource managers or services and requires coordination across failure-prone network boundaries.",
+    "answer": "A local database transaction can atomically update its own data, but another service may commit independently. Network failures create partial success. Two-phase commit can coordinate some resources but adds blocking and operational complexity.",
+    "code": "Service A commit ✓ -> network failure -> Service B unknown",
+    "followups": [
+      "Saga alternative?",
+      "Why not use one global transaction?"
+    ],
+    "mistakes": [
+      "Assuming @Transactional crosses service boundaries."
+    ],
+    "interview": "A Spring transaction is normally local to a resource manager. Cross-service transactions require distributed coordination or business-level patterns such as Saga and compensation.",
+    "source": "V9.1"
+  },
+  {
+    "id": "v91-064",
+    "topic": "microservices",
+    "level": "L2",
+    "title": "What is the role of an anti-corruption layer?",
+    "tags": [
+      "DDD",
+      "Migration"
+    ],
+    "short": "An anti-corruption layer prevents a legacy or external model from leaking into a new domain model.",
+    "answer": "The layer translates requests, responses and concepts between bounded contexts. It reduces coupling and lets the new service evolve independently of the legacy representation.",
+    "code": "Legacy DTO -> ACL -> New Domain Model",
+    "followups": [
+      "When is an ACL useful?",
+      "Can an API gateway be an ACL?"
+    ],
+    "mistakes": [
+      "Passing legacy entities directly into new business logic."
+    ],
+    "interview": "An anti-corruption layer translates models at a boundary so a new domain is not forced to adopt an external or legacy model.",
+    "source": "V9.1"
+  },
+  {
+    "id": "v91-065",
+    "topic": "microservices",
+    "level": "L2",
+    "title": "What is contract testing in microservices?",
+    "tags": [
+      "Testing",
+      "Contracts"
+    ],
+    "short": "Contract testing verifies that a service provider and consumer agree on the API contract.",
+    "answer": "Consumer-driven contracts can specify expected requests and responses. The provider verifies those expectations during CI, reducing integration surprises without requiring every consumer to run in a full environment.",
+    "code": "Consumer contract -> Provider verification",
+    "followups": [
+      "Contract test vs end-to-end test?",
+      "How do you version contracts?"
+    ],
+    "mistakes": [
+      "Testing only that a controller starts successfully."
+    ],
+    "interview": "Contract tests verify compatibility between service boundaries and catch breaking changes earlier than full end-to-end tests.",
+    "source": "V9.1"
+  },
+  {
+    "id": "v91-066",
+    "topic": "microservices",
+    "level": "L2",
+    "title": "What is consumer-driven contract testing?",
+    "tags": [
+      "Testing",
+      "Contracts"
+    ],
+    "short": "Consumer-driven contracts let consumers define the interactions they rely on, which the provider verifies.",
+    "answer": "A consumer publishes expectations for an endpoint or message. The provider runs those contracts in CI. This focuses provider compatibility on actual consumer needs.",
+    "code": "Consumer A -> contract -> Provider CI",
+    "followups": [
+      "What if multiple consumers have conflicting expectations?",
+      "How do contracts work with Kafka?"
+    ],
+    "mistakes": [
+      "Treating a contract as an implementation detail instead of an API compatibility promise."
+    ],
+    "interview": "Consumer-driven contracts make provider compatibility explicit and testable against real consumer expectations.",
+    "source": "V9.1"
+  },
+  {
+    "id": "v91-067",
+    "topic": "microservices",
+    "level": "L2",
+    "title": "How should microservices handle backward-compatible API changes?",
+    "tags": [
+      "API",
+      "Compatibility"
+    ],
+    "short": "Prefer additive changes that old clients can ignore.",
+    "answer": "Add optional fields, avoid changing existing meanings, support old enum values, and introduce new endpoints or versions only when semantics must change. Deprecate gradually with telemetry to identify remaining consumers.",
+    "code": "v1 response + new optional field",
+    "followups": [
+      "Why are enum changes risky?",
+      "How do you know when it is safe to remove old behavior?"
+    ],
+    "mistakes": [
+      "Renaming a field without supporting the old field."
+    ],
+    "interview": "I prefer additive, backward-compatible changes and use consumer telemetry to decide when deprecated contracts can be removed.",
+    "source": "V9.1"
+  },
+  {
+    "id": "v91-068",
+    "topic": "microservices",
+    "level": "L2",
+    "title": "What is a retry storm?",
+    "tags": [
+      "Resilience",
+      "Retry"
+    ],
+    "short": "A retry storm occurs when many clients retry failed or slow requests simultaneously, increasing load on an already degraded dependency.",
+    "answer": "Retries should be bounded, use exponential backoff and jitter, and respect an overall deadline. Circuit breakers and load shedding can stop repeated calls when failure persists.",
+    "code": "1000 clients x 3 retries -> 4000 requests",
+    "followups": [
+      "How does jitter help?",
+      "What is retry amplification?"
+    ],
+    "mistakes": [
+      "Immediate fixed-interval retries from every client."
+    ],
+    "interview": "A retry storm amplifies load during failure. Backoff, jitter, deadlines and circuit breaking prevent resilience logic from becoming the outage multiplier.",
+    "source": "V9.1"
+  },
+  {
+    "id": "v91-069",
+    "topic": "microservices",
+    "level": "L2",
+    "title": "How do you handle clock skew between microservices?",
+    "tags": [
+      "Distributed Systems",
+      "Time"
+    ],
+    "short": "Clock skew means different machines may disagree about the current time.",
+    "answer": "Use synchronized clocks such as NTP, avoid using wall-clock time for strict ordering, and prefer monotonic clocks for measuring durations. Distributed systems should tolerate small timestamp differences.",
+    "code": "Duration -> monotonic clock\nEvent time -> UTC timestamp",
+    "followups": [
+      "Why are monotonic clocks important?",
+      "Can timestamps establish total event order?"
+    ],
+    "mistakes": [
+      "Assuming two timestamps from different machines are perfectly comparable."
+    ],
+    "interview": "Wall clocks are useful for timestamps but not strict duration or global ordering. I use monotonic clocks for elapsed time and explicit sequence/versioning when order matters.",
+    "source": "V9.1"
+  },
+  {
+    "id": "v91-070",
+    "topic": "microservices",
+    "level": "L3",
+    "title": "How do you design distributed id generation?",
+    "tags": [
+      "Distributed Systems",
+      "IDs"
+    ],
+    "short": "Distributed IDs need to be unique across instances without requiring one central bottleneck.",
+    "answer": "Options include UUIDs, database sequences, Snowflake-style IDs or application-generated sortable IDs. The choice depends on ordering, size, index locality and coordination requirements.",
+    "code": "UUID -> globally unique\nSnowflake -> timestamp + node + sequence",
+    "followups": [
+      "UUID vs database sequence?",
+      "Why can random UUIDs affect database indexes?"
+    ],
+    "mistakes": [
+      "Using timestamps alone as unique IDs."
+    ],
+    "interview": "I choose an ID strategy based on uniqueness, ordering and database indexing needs. UUIDs remove coordination; Snowflake-style IDs add sortable structure.",
+    "source": "V9.1"
+  },
+  {
+    "id": "v91-071",
+    "topic": "microservices",
+    "level": "L2",
+    "title": "What is database-per-service and why is it recommended?",
+    "tags": [
+      "Data Ownership",
+      "Microservices"
+    ],
+    "short": "Database-per-service means each service owns its persistent data and other services access it through APIs or events.",
+    "answer": "It preserves service autonomy and prevents direct schema coupling. Cross-service queries are handled through APIs, read models, events or dedicated reporting stores.",
+    "code": "Order Service -> Order DB\nInventory Service -> Inventory DB",
+    "followups": [
+      "Can services share the same physical database server?",
+      "How do you perform cross-service reporting?"
+    ],
+    "mistakes": [
+      "Joining another service's tables directly."
+    ],
+    "interview": "The key is ownership and independent schema evolution. Physical infrastructure can be shared, but services should not directly depend on each other's tables.",
+    "source": "V9.1"
+  },
+  {
+    "id": "v91-072",
+    "topic": "microservices",
+    "level": "L3",
+    "title": "How do you handle cross-service reporting when each service owns its data?",
+    "tags": [
+      "Data Ownership",
+      "CQRS"
+    ],
+    "short": "Build a reporting/read model from events or controlled data pipelines instead of querying service tables directly.",
+    "answer": "Publish domain or CDC events into a reporting pipeline, transform them into an analytics store or read database, and accept the required freshness. This preserves ownership while supporting cross-domain queries.",
+    "code": "Orders + Payments events -> reporting store",
+    "followups": [
+      "How fresh does the report need to be?",
+      "CDC vs domain events?"
+    ],
+    "mistakes": [
+      "Creating foreign keys across service-owned databases."
+    ],
+    "interview": "Cross-service reporting should use an intentional read model or analytics pipeline. Direct table joins couple services and undermine independent ownership.",
+    "source": "V9.1"
+  },
+  {
+    "id": "v91-073",
+    "topic": "microservices",
+    "level": "L3",
+    "title": "What is a distributed cache and what problems does it introduce?",
+    "tags": [
+      "Caching",
+      "Distributed Systems"
+    ],
+    "short": "A distributed cache stores reusable data across multiple service instances, but introduces consistency, invalidation and availability concerns.",
+    "answer": "Redis is a common choice. Design TTLs, eviction, stampede protection and behavior when the cache is unavailable. Never make correctness depend solely on a cache unless the system explicitly supports that model.",
+    "code": "Service -> Redis -> DB",
+    "followups": [
+      "Cache-aside vs write-through?",
+      "How do you prevent cache stampede?"
+    ],
+    "mistakes": [
+      "Assuming cached data is always current."
+    ],
+    "interview": "A distributed cache reduces latency and database load but introduces stale data and failure modes. I define invalidation, TTL and fallback behavior explicitly.",
+    "source": "V9.1"
+  },
+  {
+    "id": "v91-074",
+    "topic": "microservices",
+    "level": "L2",
+    "title": "What is cache stampede and how do you prevent it?",
+    "tags": [
+      "Caching",
+      "Reliability"
+    ],
+    "short": "A cache stampede occurs when many requests miss or expire the same key and simultaneously hit the backend.",
+    "answer": "Use request coalescing/single-flight, randomized TTLs, stale-while-revalidate, warm-up or locking with careful timeouts. The goal is to limit concurrent backend refreshes.",
+    "code": "1000 misses -> DB overload\nSingle-flight -> 1 refresh",
+    "followups": [
+      "What is cache penetration?",
+      "Why add jitter to TTL?"
+    ],
+    "mistakes": [
+      "Using a global lock with no timeout."
+    ],
+    "interview": "Cache stampede protection prevents a synchronized set of misses from overwhelming the source of truth.",
+    "source": "V9.1"
+  },
+  {
+    "id": "v91-075",
+    "topic": "microservices",
+    "level": "L2",
+    "title": "What is cache-aside pattern?",
+    "tags": [
+      "Caching",
+      "Pattern"
+    ],
+    "short": "In cache-aside, the application reads the cache first and loads from the database on a miss, then populates the cache.",
+    "answer": "Writes normally update the database and invalidate or refresh the cache. It is simple but requires careful invalidation and tolerates temporary staleness.",
+    "code": "read -> cache miss -> DB -> cache.put()",
+    "followups": [
+      "When is write-through better?",
+      "What happens if cache.put fails after DB commit?"
+    ],
+    "mistakes": [
+      "Treating the cache as the source of truth."
+    ],
+    "interview": "Cache-aside keeps the database authoritative. The application controls cache loading and invalidation and must tolerate cache failures.",
+    "source": "V9.1"
+  },
+  {
+    "id": "v91-076",
+    "topic": "microservices",
+    "level": "L2",
+    "title": "What is eventual cache consistency?",
+    "tags": [
+      "Caching",
+      "Consistency"
+    ],
+    "short": "A cache can temporarily contain a value different from the database or another replica.",
+    "answer": "Asynchronous invalidation, TTLs or event propagation create a window where readers see stale data. The application should define whether that staleness is acceptable for each use case.",
+    "code": "DB update -> event -> cache invalidation",
+    "followups": [
+      "How do you invalidate across instances?",
+      "When is stale data unacceptable?"
+    ],
+    "mistakes": [
+      "Using a cache for authorization decisions without a freshness strategy."
+    ],
+    "interview": "Cache consistency is a business decision. I define the allowed staleness and choose invalidation or refresh mechanisms accordingly.",
+    "source": "V9.1"
+  },
+  {
+    "id": "v91-077",
+    "topic": "microservices",
+    "level": "L3",
+    "title": "How do you design retries for Kafka consumers?",
+    "tags": [
+      "Kafka",
+      "Retry"
+    ],
+    "short": "Consumer retries should avoid blocking healthy records indefinitely while preserving failed records for diagnosis.",
+    "answer": "Use bounded in-process retries for transient errors, retry topics with backoff for longer delays, and a DLT for exhausted messages. Commit/acknowledgment behavior must match the chosen retry flow.",
+    "code": "main -> retry-1 -> retry-2 -> DLT",
+    "followups": [
+      "Retry topic vs consumer sleep?",
+      "How do you preserve ordering?"
+    ],
+    "mistakes": [
+      "Sleeping a consumer thread for minutes on every failure."
+    ],
+    "interview": "I separate transient retry from permanent failure, use backoff and a DLT, and choose the retry topology based on ordering and throughput requirements.",
+    "source": "V9.1"
+  },
+  {
+    "id": "v91-078",
+    "topic": "microservices",
+    "level": "L3",
+    "title": "How do you handle schema evolution in Kafka events?",
+    "tags": [
+      "Kafka",
+      "Schema"
+    ],
+    "short": "Event schemas should evolve compatibly so producers and consumers can be deployed independently.",
+    "answer": "Use schema registries and compatibility rules where appropriate, prefer additive optional fields, and avoid changing the meaning or type of existing fields. Version events when semantics genuinely change.",
+    "code": "Event v1 + optional field -> consumers upgrade gradually",
+    "followups": [
+      "Backward vs forward compatibility?",
+      "What about Avro/Protobuf?"
+    ],
+    "mistakes": [
+      "Deleting a field while old consumers still require it."
+    ],
+    "interview": "Schema evolution is a compatibility problem. I prefer additive changes, explicit compatibility rules and versioning when the event meaning changes.",
+    "source": "V9.1"
+  },
+  {
+    "id": "v91-079",
+    "topic": "microservices",
+    "level": "L2",
+    "title": "What is a correlation between Kafka partition key and ordering?",
+    "tags": [
+      "Kafka",
+      "Partitioning"
+    ],
+    "short": "The partition key determines which partition receives a record and therefore which ordering domain it belongs to.",
+    "answer": "All events requiring order should share the same key. A poor key can create hot partitions, so ordering requirements must be balanced against distribution.",
+    "code": "orderId -> partition 3\notherOrderId -> partition 7",
+    "followups": [
+      "How do hot partitions happen?",
+      "Can you change the key later?"
+    ],
+    "mistakes": [
+      "Using random keys when per-entity ordering is required."
+    ],
+    "interview": "The key defines the ordering scope. I choose a stable business key and check its distribution so one high-volume key does not create a hot partition.",
+    "source": "V9.1"
+  },
+  {
+    "id": "v91-080",
+    "topic": "microservices",
+    "level": "L2",
+    "title": "What is a hot partition in Kafka?",
+    "tags": [
+      "Kafka",
+      "Performance"
+    ],
+    "short": "A hot partition receives disproportionately more records than others and becomes a throughput bottleneck.",
+    "answer": "It can happen when the partition key has low cardinality or one entity generates much more traffic. Mitigation may involve better keys, sharding a hot entity or increasing partitions when semantics allow.",
+    "code": "orderId=VIP -> partition 2 receives 70% traffic",
+    "followups": [
+      "How would you diagnose it?",
+      "What does increasing partitions change?"
+    ],
+    "mistakes": [
+      "Assuming adding consumers fixes a single hot partition."
+    ],
+    "interview": "A hot partition is a skew problem. I inspect partition traffic, then change the key or workload distribution while preserving required ordering.",
+    "source": "V9.1"
+  },
+  {
+    "id": "v91-081",
+    "topic": "microservices",
+    "level": "L3",
+    "title": "How do you design an event-driven system for replay?",
+    "tags": [
+      "Kafka",
+      "Events"
+    ],
+    "short": "Replayable event systems retain enough immutable event history and deterministic consumer logic to rebuild derived state.",
+    "answer": "Keep durable events for an appropriate retention period, version schemas, make consumers idempotent, isolate replay consumer groups and ensure side effects are controlled so replay does not resend real-world actions accidentally.",
+    "code": "events -> new consumer group -> rebuild read model",
+    "followups": [
+      "How do you prevent replay from charging a payment twice?",
+      "Why are deterministic consumers important?"
+    ],
+    "mistakes": [
+      "Replaying production events directly into irreversible side effects."
+    ],
+    "interview": "Replay is safest for rebuilding derived state. Irreversible side effects need deduplication, simulation or separate handling.",
+    "source": "V9.1"
+  },
+  {
+    "id": "v91-082",
+    "topic": "microservices",
+    "level": "L3",
+    "title": "What is the difference between orchestration and choreography in microservices?",
+    "tags": [
+      "Saga",
+      "Architecture"
+    ],
+    "short": "Orchestration has a coordinator directing steps; choreography lets services react to events without a central workflow controller.",
+    "answer": "Orchestration makes state and compensation explicit. Choreography can reduce central coupling but becomes harder to reason about as the number of event interactions grows.",
+    "code": "Orchestrator -> A -> B -> C\nChoreography: A event -> B event -> C",
+    "followups": [
+      "Which is easier to observe?",
+      "When does choreography become difficult?"
+    ],
+    "mistakes": [
+      "Claiming one pattern is always superior."
+    ],
+    "interview": "I choose based on workflow complexity. Explicit multi-step business processes often benefit from orchestration; simpler event reactions can work well with choreography.",
+    "source": "V9.1"
+  },
+  {
+    "id": "v91-083",
+    "topic": "microservices",
+    "level": "L3",
+    "title": "How do you design idempotent state transitions?",
+    "tags": [
+      "Idempotency",
+      "Consistency"
+    ],
+    "short": "A state transition should apply at most once for the same command or produce the same final state when repeated.",
+    "answer": "Use a unique command ID, expected-version checks, conditional updates or business uniqueness constraints. Persist the processed command with the state change atomically when possible.",
+    "code": "UPDATE orders SET status=PAID, version=version+1 WHERE id=? AND version=?",
+    "followups": [
+      "How does optimistic locking help?",
+      "What if the client retries after a timeout?"
+    ],
+    "mistakes": [
+      "Checking state in one query and updating in a separate race-prone query."
+    ],
+    "interview": "I make state transitions conditional and atomic using unique command IDs, version checks or database constraints.",
+    "source": "V9.1"
+  },
+  {
+    "id": "v91-084",
+    "topic": "microservices",
+    "level": "L2",
+    "title": "What is optimistic concurrency control?",
+    "tags": [
+      "Concurrency",
+      "Data"
+    ],
+    "short": "Optimistic concurrency assumes conflicts are uncommon and detects them at update time using a version or timestamp.",
+    "answer": "The service reads version 5 and updates with a condition requiring version 5. If another writer changes it first, the update affects zero rows and the service handles the conflict.",
+    "code": "UPDATE item SET qty=?, version=6 WHERE id=? AND version=5",
+    "followups": [
+      "Optimistic vs pessimistic locking?",
+      "What should happen on conflict?"
+    ],
+    "mistakes": [
+      "Overwriting a newer value without checking version."
+    ],
+    "interview": "Optimistic concurrency detects conflicting updates without holding database locks throughout the business operation.",
+    "source": "V9.1"
+  },
+  {
+    "id": "v91-085",
+    "topic": "microservices",
+    "level": "L2",
+    "title": "What is a bulkhead for thread pools?",
+    "tags": [
+      "Concurrency",
+      "Resilience"
+    ],
+    "short": "Separate thread pools or concurrency limits isolate slow workloads from each other.",
+    "answer": "If payment calls consume a dedicated pool, a payment outage cannot occupy every worker needed by inventory or search. Pool sizes should be bounded and monitored.",
+    "code": "paymentExecutor: 20\nsearchExecutor: 30",
+    "followups": [
+      "How do you size pools?",
+      "Virtual threads change what here?"
+    ],
+    "mistakes": [
+      "One shared unbounded executor for all remote calls."
+    ],
+    "interview": "Thread-pool bulkheads isolate dependency pressure. They should be bounded and sized from measured workload and downstream capacity.",
+    "source": "V9.1"
+  },
+  {
+    "id": "v91-086",
+    "topic": "microservices",
+    "level": "L2",
+    "title": "What is service-level objective (SLO) vs SLA?",
+    "tags": [
+      "Reliability",
+      "Observability"
+    ],
+    "short": "An SLO is a target for service reliability; an SLA is a contractual commitment that may include consequences.",
+    "answer": "For example, an internal SLO might target 99.9% successful requests. An external SLA may promise a level of availability with credits or other obligations. Error budgets connect SLOs to engineering decisions.",
+    "code": "SLO: 99.9% success\nSLA: contractual commitment",
+    "followups": [
+      "What is an error budget?",
+      "Why do SLOs matter for deployments?"
+    ],
+    "mistakes": [
+      "Using SLA and SLO as interchangeable terms."
+    ],
+    "interview": "An SLO is an engineering reliability target, while an SLA is a customer-facing or contractual commitment. SLOs help teams make explicit reliability trade-offs.",
+    "source": "V9.1"
+  },
+  {
+    "id": "v91-087",
+    "topic": "microservices",
+    "level": "L3",
+    "title": "What is an error budget?",
+    "tags": [
+      "Reliability",
+      "SLO"
+    ],
+    "short": "An error budget is the amount of unreliability allowed by an SLO over a period.",
+    "answer": "For a 99.9% monthly availability target, the remaining 0.1% is the budget for errors or downtime. Teams can use the budget to balance release velocity against reliability work.",
+    "code": "SLO 99.9% -> error budget 0.1%",
+    "followups": [
+      "How can error budgets affect deployments?",
+      "What if the budget is exhausted?"
+    ],
+    "mistakes": [
+      "Treating the budget as a target for outages."
+    ],
+    "interview": "An error budget quantifies how much unreliability is acceptable. When it is consumed, teams can slow risky changes and prioritize reliability.",
+    "source": "V9.1"
+  },
+  {
+    "id": "v91-088",
+    "topic": "sql",
+    "level": "L2",
+    "title": "How does a composite index work?",
+    "tags": [
+      "Indexes",
+      "Performance"
+    ],
+    "short": "A composite index indexes multiple columns in a defined order, and that order affects which predicates can efficiently use the index.",
+    "answer": "For an index on (customer_id, status, created_at), queries filtering by customer_id are well supported, while a query filtering only by created_at may not benefit as much.",
+    "code": "CREATE INDEX idx ON orders(customer_id, status, created_at);",
+    "followups": [
+      "What is the leftmost-prefix principle?",
+      "How do equality and range predicates affect column order?"
+    ],
+    "mistakes": [
+      "Choosing columns randomly in a composite index."
+    ],
+    "interview": "Column order matters. I design composite indexes from actual query predicates and sort requirements, not just from the list of columns in a table.",
+    "source": "V9.1"
+  },
+  {
+    "id": "v91-089",
+    "topic": "sql",
+    "level": "L3",
+    "title": "How do you read an SQL execution plan?",
+    "tags": [
+      "Indexes",
+      "Execution Plan"
+    ],
+    "short": "An execution plan shows how the optimizer intends to access tables, join rows and apply filters.",
+    "answer": "I look for full scans on large tables, unexpected join algorithms, poor row estimates, expensive sorts, repeated lookups and whether predicates use useful indexes. Then I compare estimated and actual behavior when available.",
+    "code": "EXPLAIN ANALYZE SELECT ...;",
+    "followups": [
+      "What is a cardinality estimate?",
+      "Why can an index still be ignored?"
+    ],
+    "mistakes": [
+      "Optimizing from SQL text without checking the plan."
+    ],
+    "interview": "I use the execution plan to identify the actual expensive operations and verify whether indexes, join order and row estimates match the workload.",
+    "source": "V9.1"
+  },
+  {
+    "id": "v91-090",
+    "topic": "sql",
+    "level": "L2",
+    "title": "What is a window function in SQL?",
+    "tags": [
+      "Window Functions",
+      "SQL"
+    ],
+    "short": "A window function calculates a value across related rows without collapsing them into one row per group.",
+    "answer": "Functions such as ROW_NUMBER, RANK, SUM and LAG can calculate rankings, running totals and previous-row comparisons while preserving detail rows.",
+    "code": "SELECT employee_id, salary, RANK() OVER(PARTITION BY dept_id ORDER BY salary DESC) FROM employee;",
+    "followups": [
+      "GROUP BY vs window function?",
+      "RANK vs DENSE_RANK?"
+    ],
+    "mistakes": [
+      "Using GROUP BY when row-level detail must be preserved."
+    ],
+    "interview": "Window functions calculate across a defined window while retaining individual rows, making them ideal for ranking and running calculations.",
+    "source": "V9.1"
+  },
+  {
+    "id": "v91-091",
+    "topic": "sql",
+    "level": "L2",
+    "title": "What is the difference between RANK, DENSE_RANK and ROW_NUMBER?",
+    "tags": [
+      "Window Functions",
+      "Ranking"
+    ],
+    "short": "ROW_NUMBER assigns unique sequential numbers; RANK leaves gaps after ties; DENSE_RANK does not leave gaps.",
+    "answer": "For salaries 100, 100, 90, ROW_NUMBER gives 1,2,3; RANK gives 1,1,3; DENSE_RANK gives 1,1,2.",
+    "code": "SELECT salary, ROW_NUMBER() OVER(ORDER BY salary DESC), RANK() OVER(ORDER BY salary DESC), DENSE_RANK() OVER(ORDER BY salary DESC) FROM employee;",
+    "followups": [
+      "Which should you use for top 3 distinct salaries?",
+      "How do ties affect pagination?"
+    ],
+    "mistakes": [
+      "Saying RANK and DENSE_RANK behave identically."
+    ],
+    "interview": "ROW_NUMBER is unique per row, RANK preserves tie positions with gaps, and DENSE_RANK preserves ties without gaps.",
+    "source": "V9.1"
+  },
+  {
+    "id": "v91-092",
+    "topic": "sql",
+    "level": "L2",
+    "title": "How do you find the top N records per group?",
+    "tags": [
+      "Window Functions",
+      "SQL"
+    ],
+    "short": "Use a window ranking function partitioned by the grouping key and filter the rank in an outer query.",
+    "answer": "For top three salaries per department, calculate ROW_NUMBER or DENSE_RANK over each department ordered by salary, then filter the result.",
+    "code": "SELECT * FROM (SELECT e.*, ROW_NUMBER() OVER(PARTITION BY dept_id ORDER BY salary DESC) rn FROM employee e) x WHERE rn <= 3;",
+    "followups": [
+      "ROW_NUMBER vs DENSE_RANK for ties?",
+      "How do you handle departments with fewer than N rows?"
+    ],
+    "mistakes": [
+      "Using a global LIMIT N."
+    ],
+    "interview": "Partition the ranking by the group and filter the rank in an outer query. This gives N rows or N distinct ranks per group depending on the chosen function.",
+    "source": "V9.1"
+  },
+  {
+    "id": "v91-093",
+    "topic": "sql",
+    "level": "L2",
+    "title": "What is a CTE and when would you use one?",
+    "tags": [
+      "CTE",
+      "SQL"
+    ],
+    "short": "A common table expression gives a named query expression that can simplify complex SQL.",
+    "answer": "CTEs improve readability, can support recursive queries and can make multi-step transformations easier to reason about. Whether they materialize depends on the database and query plan.",
+    "code": "WITH high_value AS (SELECT * FROM orders WHERE total > 1000) SELECT * FROM high_value;",
+    "followups": [
+      "CTE vs subquery?",
+      "When can a CTE hurt performance?"
+    ],
+    "mistakes": [
+      "Assuming every CTE is materialized."
+    ],
+    "interview": "A CTE is primarily a query-organization tool and can support recursion. I still inspect the execution plan rather than assuming a performance benefit.",
+    "source": "V9.1"
+  },
+  {
+    "id": "v91-094",
+    "topic": "sql",
+    "level": "L2",
+    "title": "What is a recursive CTE?",
+    "tags": [
+      "CTE",
+      "Hierarchy"
+    ],
+    "short": "A recursive CTE repeatedly evaluates a query to traverse hierarchical or graph-like data.",
+    "answer": "It has an anchor query and a recursive query joined by UNION ALL. It is useful for employee hierarchies, category trees and dependency chains.",
+    "code": "WITH RECURSIVE org AS (SELECT id, manager_id FROM employee WHERE manager_id IS NULL UNION ALL SELECT e.id, e.manager_id FROM employee e JOIN org o ON e.manager_id=o.id) SELECT * FROM org;",
+    "followups": [
+      "How do you prevent infinite recursion?",
+      "Can recursive CTEs traverse arbitrary graphs?"
+    ],
+    "mistakes": [
+      "Forgetting cycle handling in cyclic data."
+    ],
+    "interview": "Recursive CTEs are useful for hierarchical traversal, but cyclic data requires explicit safeguards or visited-state logic.",
+    "source": "V9.1"
+  },
+  {
+    "id": "v91-095",
+    "topic": "sql",
+    "level": "L2",
+    "title": "What is keyset pagination and why is it often better than OFFSET?",
+    "tags": [
+      "Pagination",
+      "Performance"
+    ],
+    "short": "Keyset pagination uses a stable ordering key from the last page instead of skipping N rows with OFFSET.",
+    "answer": "OFFSET can become expensive as the page number grows because the database may scan and discard many rows. Keyset pagination uses a predicate such as created_at/id > lastSeen and an appropriate index.",
+    "code": "SELECT * FROM orders WHERE (created_at,id) < (?,?) ORDER BY created_at DESC, id DESC LIMIT 50;",
+    "followups": [
+      "How do you handle non-unique sort keys?",
+      "When is OFFSET acceptable?"
+    ],
+    "mistakes": [
+      "Using only created_at when timestamps can tie."
+    ],
+    "interview": "Keyset pagination scales better for deep pages when the ordering columns are indexed and stable. I use a tie-breaker such as the primary key.",
+    "source": "V9.1"
+  },
+  {
+    "id": "v91-096",
+    "topic": "sql",
+    "level": "L2",
+    "title": "What is a database deadlock?",
+    "tags": [
+      "Transactions",
+      "Locking"
+    ],
+    "short": "A deadlock occurs when transactions hold resources while waiting for each other, creating a cycle.",
+    "answer": "For example, transaction A locks row 1 then waits for row 2 while transaction B locks row 2 then waits for row 1. Databases detect deadlocks and abort one transaction.",
+    "code": "T1: lock A -> wait B\nT2: lock B -> wait A",
+    "followups": [
+      "How do you prevent deadlocks?",
+      "Why should applications retry deadlock victims?"
+    ],
+    "mistakes": [
+      "Assuming increasing the transaction timeout fixes the cycle."
+    ],
+    "interview": "Deadlocks are cyclic waits. Consistent lock ordering, short transactions and appropriate indexes reduce them, while applications should safely retry transactions chosen as victims.",
+    "source": "V9.1"
+  },
+  {
+    "id": "v91-097",
+    "topic": "sql",
+    "level": "L2",
+    "title": "How can you reduce SQL deadlocks?",
+    "tags": [
+      "Transactions",
+      "Performance"
+    ],
+    "short": "Reduce lock duration, access rows in a consistent order and avoid unnecessary work inside transactions.",
+    "answer": "Good indexes reduce the rows locked or scanned. Consistent ordering prevents cycles, and smaller transactions reduce contention. Deadlock retry should be bounded and idempotent.",
+    "code": "Always update rows in ascending ID order",
+    "followups": [
+      "Can SELECT queries participate in locking?",
+      "Why do missing indexes increase contention?"
+    ],
+    "mistakes": [
+      "Adding random retries without fixing the lock order."
+    ],
+    "interview": "I reduce deadlocks through consistent access order, proper indexes, short transaction scope and safe retry of aborted transactions.",
+    "source": "V9.1"
+  },
+  {
+    "id": "v91-098",
+    "topic": "sql",
+    "level": "L2",
+    "title": "What is optimistic locking in JPA/SQL?",
+    "tags": [
+      "Concurrency",
+      "Locking"
+    ],
+    "short": "Optimistic locking detects concurrent updates using a version column rather than holding a long database lock.",
+    "answer": "A row includes a version. An update succeeds only if the version still matches the value read. If zero rows are updated, the application detects a conflict and decides whether to retry or report it.",
+    "code": "UPDATE product SET price=?, version=version+1 WHERE id=? AND version=?;",
+    "followups": [
+      "How is this different from SELECT FOR UPDATE?",
+      "What user experience should a conflict produce?"
+    ],
+    "mistakes": [
+      "Silently overwriting a concurrent update."
+    ],
+    "interview": "Optimistic locking is appropriate when conflicts are relatively rare and long blocking locks are undesirable.",
+    "source": "V9.1"
+  },
+  {
+    "id": "v91-099",
+    "topic": "sql",
+    "level": "L2",
+    "title": "What is SELECT FOR UPDATE?",
+    "tags": [
+      "Transactions",
+      "Locking"
+    ],
+    "short": "SELECT FOR UPDATE reads rows while acquiring locks intended to protect them from conflicting updates until the transaction ends.",
+    "answer": "It is useful when a transaction must read current state and then update it without another transaction changing the row in between. Lock duration and isolation behavior depend on the database.",
+    "code": "BEGIN; SELECT balance FROM account WHERE id=1 FOR UPDATE; UPDATE account SET balance=balance-100 WHERE id=1; COMMIT;",
+    "followups": [
+      "When is pessimistic locking appropriate?",
+      "What happens if another transaction requests the same lock?"
+    ],
+    "mistakes": [
+      "Using row locks for read-only queries."
+    ],
+    "interview": "SELECT FOR UPDATE is a pessimistic concurrency tool. It can protect a read-modify-write operation but increases contention if held too long.",
+    "source": "V9.1"
+  },
+  {
+    "id": "v91-100",
+    "topic": "sql",
+    "level": "L2",
+    "title": "What is transaction isolation and why does it matter?",
+    "tags": [
+      "Transactions",
+      "Isolation"
+    ],
+    "short": "Isolation controls which concurrent transaction effects a transaction can observe.",
+    "answer": "Higher isolation can prevent anomalies such as dirty, non-repeatable or phantom reads but may increase locking or coordination. The exact implementation differs by database.",
+    "code": "SET TRANSACTION ISOLATION LEVEL REPEATABLE READ;",
+    "followups": [
+      "Explain dirty vs non-repeatable vs phantom read.",
+      "Which isolation level does your database default to?"
+    ],
+    "mistakes": [
+      "Claiming SERIALIZABLE is always the best choice."
+    ],
+    "interview": "Isolation is a correctness/performance trade-off. I choose the lowest level that safely prevents the anomalies relevant to the business operation.",
+    "source": "V9.1"
+  },
+  {
+    "id": "v91-101",
+    "topic": "sql",
+    "level": "L2",
+    "title": "What is a dirty read?",
+    "tags": [
+      "Transactions",
+      "Isolation"
+    ],
+    "short": "A dirty read occurs when one transaction reads data written by another transaction that has not committed.",
+    "answer": "If the writer later rolls back, the reader observed a value that never became committed state. Isolation levels that prevent dirty reads are common in production systems.",
+    "code": "T1: UPDATE balance=50 (uncommitted)\nT2: SELECT balance -> 50",
+    "followups": [
+      "Which isolation levels allow dirty reads?",
+      "How is it different from a non-repeatable read?"
+    ],
+    "mistakes": [
+      "Calling a stale committed value a dirty read."
+    ],
+    "interview": "A dirty read observes uncommitted data. It is distinct from reading a committed value that later changes.",
+    "source": "V9.1"
+  },
+  {
+    "id": "v91-102",
+    "topic": "sql",
+    "level": "L2",
+    "title": "What is a phantom read?",
+    "tags": [
+      "Transactions",
+      "Isolation"
+    ],
+    "short": "A phantom read occurs when repeating a predicate query within a transaction returns a different set of rows because another transaction inserted or removed matching rows.",
+    "answer": "It differs from a non-repeatable read, which changes an already-read row. Predicate-level protection or serializable techniques are used when phantoms must be prevented.",
+    "code": "T1: SELECT COUNT(*) WHERE amount>100\nT2: INSERT amount=200\nT1: same SELECT -> different count",
+    "followups": [
+      "How do databases prevent phantoms?",
+      "What is predicate locking?"
+    ],
+    "mistakes": [
+      "Confusing phantoms with changed column values in an existing row."
+    ],
+    "interview": "A phantom is a change in the set of rows matching a predicate, often caused by concurrent inserts or deletes.",
+    "source": "V9.1"
+  },
+  {
+    "id": "v91-103",
+    "topic": "sql",
+    "level": "L2",
+    "title": "What is normalization and why is it used?",
+    "tags": [
+      "Data Modeling",
+      "Normalization"
+    ],
+    "short": "Normalization organizes data to reduce unnecessary duplication and update anomalies.",
+    "answer": "Common normal forms progressively constrain dependencies. Normalization improves consistency and write behavior but can require more joins for read-heavy workloads.",
+    "code": "Customer(id, name)\nOrder(id, customer_id, total)",
+    "followups": [
+      "When would you denormalize?",
+      "Explain 1NF, 2NF and 3NF."
+    ],
+    "mistakes": [
+      "Normalizing every system regardless of workload."
+    ],
+    "interview": "Normalization reduces redundancy and anomalies. I balance it against read performance and reporting requirements rather than treating it as an absolute rule.",
+    "source": "V9.1"
+  },
+  {
+    "id": "v91-104",
+    "topic": "sql",
+    "level": "L2",
+    "title": "What is a foreign key and what does it enforce?",
+    "tags": [
+      "Constraints",
+      "Data Modeling"
+    ],
+    "short": "A foreign key enforces that a child value refers to a valid parent key, subject to the configured actions.",
+    "answer": "It protects referential integrity and can define ON DELETE or ON UPDATE behavior. Foreign keys also influence delete/update costs and indexing choices.",
+    "code": "FOREIGN KEY (customer_id) REFERENCES customer(id)",
+    "followups": [
+      "CASCADE vs RESTRICT?",
+      "Should foreign keys always be indexed?"
+    ],
+    "mistakes": [
+      "Using application checks as the only integrity mechanism."
+    ],
+    "interview": "Foreign keys enforce referential integrity at the database boundary. I still design indexes and cascade behavior carefully for performance and safety.",
+    "source": "V9.1"
+  },
+  {
+    "id": "v91-105",
+    "topic": "sql",
+    "level": "L2",
+    "title": "What is a unique constraint vs a unique index?",
+    "tags": [
+      "Constraints",
+      "Indexes"
+    ],
+    "short": "Both can enforce uniqueness, but a constraint expresses a data rule while an index is primarily a physical access structure; exact behavior varies by database.",
+    "answer": "A UNIQUE constraint often creates or uses a unique index internally. Use constraints to express business invariants and indexes intentionally for access paths.",
+    "code": "ALTER TABLE users ADD CONSTRAINT uq_users_email UNIQUE(email);",
+    "followups": [
+      "Can a unique constraint contain NULL?",
+      "How do composite unique constraints work?"
+    ],
+    "mistakes": [
+      "Assuming NULL uniqueness behaves identically in every database."
+    ],
+    "interview": "A unique constraint expresses a uniqueness rule and is typically backed by an index. NULL semantics vary by database, so I verify the target engine.",
+    "source": "V9.1"
+  },
+  {
+    "id": "v91-106",
+    "topic": "sql",
+    "level": "L2",
+    "title": "What is a partial or filtered index?",
+    "tags": [
+      "Indexes",
+      "Performance"
+    ],
+    "short": "A partial index stores entries only for rows matching a predicate, reducing index size and focusing on a common query subset.",
+    "answer": "For example, an index on active users can exclude inactive rows. Support and syntax depend on the database.",
+    "code": "CREATE INDEX idx_active_users ON users(email) WHERE active = true;",
+    "followups": [
+      "When is a partial index useful?",
+      "Does MySQL support the same syntax?"
+    ],
+    "mistakes": [
+      "Assuming all database engines implement filtered indexes identically."
+    ],
+    "interview": "A partial index is valuable when queries repeatedly target a selective subset. The exact syntax and optimizer behavior are database-specific.",
+    "source": "V9.1"
+  },
+  {
+    "id": "v91-107",
+    "topic": "sql",
+    "level": "L2",
+    "title": "Why can functions on indexed columns hurt index usage?",
+    "tags": [
+      "Indexes",
+      "Performance"
+    ],
+    "short": "Wrapping an indexed column in a function can prevent the optimizer from using a normal index efficiently, depending on the database.",
+    "answer": "For example, WHERE LOWER(email)=? may require a functional index or a normalized stored value. Rewriting predicates to preserve sargability can help.",
+    "code": "-- Instead of: WHERE DATE(created_at)=?\n-- consider a range: created_at >= ? AND created_at < ?",
+    "followups": [
+      "What is a functional index?",
+      "What does sargable mean?"
+    ],
+    "mistakes": [
+      "Applying functions to indexed columns without checking the plan."
+    ],
+    "interview": "I prefer predicates that allow an index range scan, or I create an appropriate functional index when the database supports it.",
+    "source": "V9.1"
+  },
+  {
+    "id": "v91-108",
+    "topic": "sql",
+    "level": "L2",
+    "title": "What is a sargable query?",
+    "tags": [
+      "Indexes",
+      "Performance"
+    ],
+    "short": "A sargable predicate allows the database to use an index efficiently to locate qualifying rows.",
+    "answer": "Range and equality predicates on indexed columns are common examples. Wrapping columns in functions or leading wildcard patterns can reduce index usefulness.",
+    "code": "WHERE created_at >= ? AND created_at < ?",
+    "followups": [
+      "Why can LIKE %abc be expensive?",
+      "How do expressions affect index usage?"
+    ],
+    "mistakes": [
+      "Equating any indexed column with automatic index use."
+    ],
+    "interview": "Sargability is about writing predicates the optimizer can turn into efficient index access paths.",
+    "source": "V9.1"
+  },
+  {
+    "id": "v91-109",
+    "topic": "sql",
+    "level": "L2",
+    "title": "What is a database connection pool and why does pool size matter?",
+    "tags": [
+      "Performance",
+      "Connections"
+    ],
+    "short": "A connection pool reuses database connections and limits concurrent database work.",
+    "answer": "Too few connections can create application-side waiting; too many can overload the database with concurrent work. Pool sizing should consider database capacity, query latency and the number of application instances.",
+    "code": "maximumPoolSize=20",
+    "followups": [
+      "How do you size the pool across 10 instances?",
+      "What does pool exhaustion look like?"
+    ],
+    "mistakes": [
+      "Setting maximumPoolSize to hundreds on every pod."
+    ],
+    "interview": "Connection pools are both a performance optimization and a concurrency limit. The total pool capacity across instances must fit database capacity.",
+    "source": "V9.1"
+  },
+  {
+    "id": "v91-110",
+    "topic": "sql",
+    "level": "L3",
+    "title": "How do you optimize an N+1 query problem in SQL?",
+    "tags": [
+      "Performance",
+      "Joins"
+    ],
+    "short": "N+1 occurs when one query loads parent rows and then one additional query runs per parent.",
+    "answer": "Replace repeated lookups with an appropriate join, batch query or set-based operation. Verify the result cardinality and indexes because an overly broad join can create a different performance problem.",
+    "code": "SELECT o.id, c.name FROM orders o JOIN customer c ON c.id=o.customer_id;",
+    "followups": [
+      "N+1 in JPA vs plain JDBC?",
+      "When can a join be worse?"
+    ],
+    "mistakes": [
+      "Fixing N+1 with an enormous Cartesian join."
+    ],
+    "interview": "I replace row-by-row queries with set-based access such as joins or IN queries, then verify the execution plan and returned row count.",
+    "source": "V9.1"
+  },
+  {
+    "id": "v91-111",
+    "topic": "sql",
+    "level": "L2",
+    "title": "Why is SELECT * discouraged in production queries?",
+    "tags": [
+      "SQL",
+      "Performance"
+    ],
+    "short": "SELECT * can fetch unnecessary columns, increase network and memory usage, and make contracts unstable when schemas evolve.",
+    "answer": "Selecting only required columns can reduce I/O and allow covering indexes. It also makes application dependencies explicit.",
+    "code": "SELECT id, status, total FROM orders WHERE customer_id=?;",
+    "followups": [
+      "Can SELECT * ever be acceptable?",
+      "How can it affect covering indexes?"
+    ],
+    "mistakes": [
+      "Using SELECT * for large APIs or wide tables by default."
+    ],
+    "interview": "I select only the columns needed by the use case, especially for large or frequently executed queries.",
+    "source": "V9.1"
+  },
+  {
+    "id": "v91-112",
+    "topic": "sql",
+    "level": "L3",
+    "title": "How do you troubleshoot a query that suddenly became slow?",
+    "tags": [
+      "Performance",
+      "Production"
+    ],
+    "short": "Start by comparing the execution plan and runtime with the previously healthy state.",
+    "answer": "Check data growth, statistics, index changes, parameter sensitivity, blocking/locks, schema changes and resource saturation. Capture the exact query and parameters, then test a targeted fix and verify it under representative load.",
+    "code": "EXPLAIN ANALYZE <query>",
+    "followups": [
+      "What if the plan changed after data growth?",
+      "How can stale statistics matter?"
+    ],
+    "mistakes": [
+      "Adding an index without identifying the changed behavior."
+    ],
+    "interview": "I compare plans and runtime, then investigate data distribution, statistics, locks, indexes and resource saturation before changing the query.",
+    "source": "V9.1"
+  },
+  {
+    "id": "v91-113",
+    "topic": "sql",
+    "level": "L2",
+    "title": "What is query parameterization and why is it important?",
+    "tags": [
+      "SQL",
+      "Security"
+    ],
+    "short": "Parameterized queries separate SQL structure from user-supplied values and help prevent SQL injection.",
+    "answer": "The database driver binds values rather than concatenating them into SQL text. Parameterization also improves statement reuse in many systems.",
+    "code": "PreparedStatement ps=conn.prepareStatement(\"SELECT * FROM users WHERE email=?\");\nps.setString(1,email);",
+    "followups": [
+      "Can parameterization replace input validation?",
+      "What about dynamic table names?"
+    ],
+    "mistakes": [
+      "Building SQL by string concatenation with user input."
+    ],
+    "interview": "I use parameterized queries for values. Dynamic identifiers require a strict allowlist because they cannot usually be bound as ordinary parameters.",
+    "source": "V9.1"
+  },
+  {
+    "id": "v91-114",
+    "topic": "sql",
+    "level": "L2",
+    "title": "What is SQL injection?",
+    "tags": [
+      "SQL",
+      "Security"
+    ],
+    "short": "SQL injection occurs when untrusted input changes the structure of a SQL statement.",
+    "answer": "Concatenating user input into SQL can let an attacker alter predicates or execute unintended commands. Parameterized queries, least privilege and validation reduce the risk.",
+    "code": "BAD: \"SELECT ... WHERE name= + input + \"\nGOOD: PreparedStatement",
+    "followups": [
+      "How does least privilege help?",
+      "Can stored procedures prevent injection automatically?"
+    ],
+    "mistakes": [
+      "Relying only on escaping strings."
+    ],
+    "interview": "SQL injection is prevented primarily by separating SQL code from data using parameterized queries and by limiting database privileges.",
+    "source": "V9.1"
+  },
+  {
+    "id": "v91-115",
+    "topic": "sql",
+    "level": "L3",
+    "title": "How do indexes affect INSERT, UPDATE and DELETE performance?",
+    "tags": [
+      "Indexes",
+      "Performance"
+    ],
+    "short": "Indexes speed reads but add maintenance work to writes because affected index entries must also be updated.",
+    "answer": "A table with many indexes can make high-write workloads slower and increase storage. Indexes should be justified by important access patterns and monitored for usefulness.",
+    "code": "INSERT order -> update primary/index entries",
+    "followups": [
+      "How do you identify unused indexes?",
+      "What is index bloat?"
+    ],
+    "mistakes": [
+      "Adding an index for every query without considering writes."
+    ],
+    "interview": "Indexes are a trade-off: faster reads versus additional write, storage and maintenance cost.",
+    "source": "V9.1"
+  },
+  {
+    "id": "v91-116",
+    "topic": "sql",
+    "level": "L2",
+    "title": "What is partitioning in a database?",
+    "tags": [
+      "Partitioning",
+      "Scaling"
+    ],
+    "short": "Partitioning splits a logical table into smaller physical partitions based on a key such as date or tenant.",
+    "answer": "Partition pruning can reduce the amount of data scanned. Partitioning can also help maintenance and archival, but it does not automatically fix poorly designed queries.",
+    "code": "PARTITION BY RANGE(created_at)",
+    "followups": [
+      "Partitioning vs sharding?",
+      "How do you choose a partition key?"
+    ],
+    "mistakes": [
+      "Assuming partitioning makes every query faster."
+    ],
+    "interview": "Partitioning organizes one logical table into manageable pieces. It is useful when queries align with the partition key and data lifecycle.",
+    "source": "V9.1"
+  },
+  {
+    "id": "v91-117",
+    "topic": "sql",
+    "level": "L3",
+    "title": "Partitioning vs sharding",
+    "tags": [
+      "Partitioning",
+      "Scaling"
+    ],
+    "short": "Partitioning divides data within a database system; sharding distributes data across separate database nodes or clusters.",
+    "answer": "Partitioning can simplify pruning and maintenance within a database. Sharding adds horizontal capacity but requires routing, cross-shard query strategy and operational complexity.",
+    "code": "Partitioning: one cluster\nSharding: shard A/B/C",
+    "followups": [
+      "How do cross-shard joins work?",
+      "How do you choose a shard key?"
+    ],
+    "mistakes": [
+      "Using sharding before exhausting simpler scaling options."
+    ],
+    "interview": "Partitioning is often a database-local organization technique; sharding distributes ownership across nodes. Sharding should be driven by capacity and access-pattern requirements.",
+    "source": "V9.1"
+  },
+  {
+    "id": "v91-coding-01",
+    "topic": "coding",
+    "level": "L1",
+    "title": "Check whether a number is prime",
+    "tags": [
+      "Numbers",
+      "Basics"
+    ],
+    "short": "Determine whether an integer is prime.",
+    "answer": "Check divisibility only up to the square root because a composite number must have a factor at or below sqrt(n).",
+    "code": "import java.util.*;\n\npublic class Main {\n    static boolean isPrime(int n) {\n        if (n < 2) return false;\n        if (n % 2 == 0) return n == 2;\n        for (int i = 3; i <= n / i; i += 2) {\n            if (n % i == 0) return false;\n        }\n        return true;\n    }\n\n    public static void main(String[] args) {\n        int n = 29;\n        System.out.println(n + \" is prime: \" + isPrime(n));\n    }\n}",
+    "followups": "How would you print primes from 1 to N?",
+    "mistakes": "Checking every number from 2 to n is unnecessary.",
+    "interview": "Interview answer: I handle values below two and even numbers first, then test only odd divisors up to the square root.",
+    "source": "V9.1"
+  },
+  {
+    "id": "v91-coding-02",
+    "topic": "coding",
+    "level": "L1",
+    "title": "Calculate factorial of a number",
+    "tags": [
+      "Recursion",
+      "Numbers"
+    ],
+    "short": "Calculate n! using an iterative approach.",
+    "answer": "Factorial is the product from 1 through n. An iterative implementation avoids recursive stack growth.",
+    "code": "import java.util.*;\n\npublic class Main {\n    static long factorial(int n) {\n        if (n < 0) throw new IllegalArgumentException(\"n must be non-negative\");\n        long result = 1;\n        for (int i = 2; i <= n; i++) result *= i;\n        return result;\n    }\n\n    public static void main(String[] args) {\n        int n = 5;\n        System.out.println(n + \"! = \" + factorial(n));\n    }\n}",
+    "followups": "How would recursion change the solution?",
+    "mistakes": "What happens when long overflows?",
+    "interview": "Interview answer: I initialize the result to one and multiply by each value through n. In real code I would consider BigInteger when n can exceed long range.",
+    "source": "V9.1"
+  },
+  {
+    "id": "v91-coding-03",
+    "topic": "coding",
+    "level": "L1",
+    "title": "Print Fibonacci series up to N terms",
+    "tags": [
+      "Numbers",
+      "Iteration"
+    ],
+    "short": "Print the first N Fibonacci numbers.",
+    "answer": "Keep the previous two values and generate each next value iteratively.",
+    "code": "import java.util.*;\n\npublic class Main {\n    static void printFibonacci(int n) {\n        long a = 0, b = 1;\n        for (int i = 0; i < n; i++) {\n            System.out.print(a + (i + 1 == n ? \"\\n\" : \" \"));\n            long next = a + b;\n            a = b;\n            b = next;\n        }\n    }\n\n    public static void main(String[] args) {\n        printFibonacci(10);\n    }\n}",
+    "followups": "How would you generate Fibonacci with Streams?",
+    "mistakes": "How do you avoid overflow for large n?",
+    "interview": "Interview answer: I keep only the last two Fibonacci values, so each term is produced once with constant auxiliary space.",
+    "source": "V9.1"
+  },
+  {
+    "id": "v91-coding-04",
+    "topic": "coding",
+    "level": "L1",
+    "title": "Check whether a number is a palindrome",
+    "tags": [
+      "Numbers",
+      "Strings"
+    ],
+    "short": "Determine whether an integer reads the same forward and backward.",
+    "answer": "Reverse the digits mathematically and compare the reversed value with the original. Avoid converting to a string when the problem expects arithmetic.",
+    "code": "import java.util.*;\n\npublic class Main {\n    static boolean isPalindrome(int n) {\n        if (n < 0) return false;\n        int original = n;\n        long reversed = 0;\n        while (n > 0) {\n            reversed = reversed * 10 + n % 10;\n            n /= 10;\n        }\n        return reversed == original;\n    }\n\n    public static void main(String[] args) {\n        int n = 1221;\n        System.out.println(\"Palindrome: \" + isPalindrome(n));\n    }\n}",
+    "followups": "How do you handle negative numbers?",
+    "mistakes": "What if reversing causes integer overflow?",
+    "interview": "Interview answer: I reverse the digits mathematically and compare them with the original number, using constant extra space.",
+    "source": "V9.1"
+  },
+  {
+    "id": "v91-coding-05",
+    "topic": "coding",
+    "level": "L1",
+    "title": "Check whether a number is an Armstrong number",
+    "tags": [
+      "Numbers",
+      "Math"
+    ],
+    "short": "Check whether a number equals the sum of its digits raised to the number of digits.",
+    "answer": "First count the digits, then compute the powered sum and compare it with the original.",
+    "code": "import java.util.*;\n\npublic class Main {\n    static boolean isArmstrong(int n) {\n        if (n < 0) return false;\n        int original = n;\n        int digits = String.valueOf(n).length();\n        long sum = 0;\n        int value = n;\n        do {\n            int digit = value % 10;\n            sum += Math.pow(digit, digits);\n            value /= 10;\n        } while (value > 0);\n        return sum == original;\n    }\n\n    public static void main(String[] args) {\n        int n = 153;\n        System.out.println(n + \" is Armstrong: \" + isArmstrong(n));\n    }\n}",
+    "followups": "How would you avoid Math.pow?",
+    "mistakes": "Can the solution handle very large numbers?",
+    "interview": "Interview answer: I count the digits, raise each digit to that count and sum them. If the sum equals the original number, it is an Armstrong number.",
+    "source": "V9.1"
+  },
+  {
+    "id": "v91-coding-06",
+    "topic": "coding",
+    "level": "L2",
+    "title": "Solve the Two Sum problem",
+    "tags": [
+      "Arrays",
+      "HashMap"
+    ],
+    "short": "Find two indices whose values add up to a target.",
+    "answer": "Store previously seen values in a map from value to index. For each number, look for target minus the current value.",
+    "code": "import java.util.*;\n\npublic class Main {\n    static int[] twoSum(int[] nums, int target) {\n        Map<Integer, Integer> seen = new HashMap<>();\n        for (int i = 0; i < nums.length; i++) {\n            int need = target - nums[i];\n            if (seen.containsKey(need)) return new int[]{seen.get(need), i};\n            seen.put(nums[i], i);\n        }\n        return new int[0];\n    }\n\n    public static void main(String[] args) {\n        int[] result = twoSum(new int[]{2, 7, 11, 15}, 9);\n        System.out.println(Arrays.toString(result));\n    }\n}",
+    "followups": "How would sorting solve it?",
+    "mistakes": "Be careful not to reuse the same element twice.",
+    "interview": "Interview answer: A HashMap gives expected constant-time lookup for the complement, allowing a single pass instead of the O(n²) brute-force approach.",
+    "source": "V9.1"
+  },
+  {
+    "id": "v91-coding-07",
+    "topic": "coding",
+    "level": "L2",
+    "title": "Find the intersection of two arrays including duplicates",
+    "tags": [
+      "Arrays",
+      "HashMap"
+    ],
+    "short": "Return the common values while respecting how many times each value occurs.",
+    "answer": "Count values from one array, then consume those counts while scanning the second array.",
+    "code": "import java.util.*;\n\npublic class Main {\n    static List<Integer> intersect(int[] a, int[] b) {\n        Map<Integer, Integer> counts = new HashMap<>();\n        for (int n : a) counts.merge(n, 1, Integer::sum);\n        List<Integer> result = new ArrayList<>();\n        for (int n : b) {\n            int count = counts.getOrDefault(n, 0);\n            if (count > 0) {\n                result.add(n);\n                if (count == 1) counts.remove(n); else counts.put(n, count - 1);\n            }\n        }\n        return result;\n    }\n\n    public static void main(String[] args) {\n        System.out.println(intersect(new int[]{1,2,2,3}, new int[]{2,2,2,4}));\n    }\n}",
+    "followups": "How would sorting change the solution?",
+    "mistakes": "Do not use a Set because it loses multiplicity.",
+    "interview": "Interview answer: I store frequencies rather than just membership, so duplicate occurrences are preserved correctly.",
+    "source": "V9.1"
+  },
+  {
+    "id": "v91-coding-08",
+    "topic": "coding",
+    "level": "L2",
+    "title": "Remove duplicate characters while preserving order",
+    "tags": [
+      "Strings",
+      "HashSet"
+    ],
+    "short": "Remove repeated characters from a string while keeping the first occurrence order.",
+    "answer": "Use a LinkedHashSet to preserve insertion order, then build the result.",
+    "code": "import java.util.*;\n\npublic class Main {\n    static String removeDuplicates(String s) {\n        Set<Character> seen = new LinkedHashSet<>();\n        for (char c : s.toCharArray()) seen.add(c);\n        StringBuilder result = new StringBuilder();\n        for (char c : seen) result.append(c);\n        return result.toString();\n    }\n\n    public static void main(String[] args) {\n        String input = \"programming\";\n        System.out.println(\"Output: \" + removeDuplicates(input));\n    }\n}",
+    "followups": "How would you do this with a boolean array?",
+    "mistakes": "Why not HashSet if order matters?",
+    "interview": "Interview answer: LinkedHashSet gives uniqueness plus insertion order, and I build the final string from the retained characters.",
+    "source": "V9.1"
+  },
+  {
+    "id": "v91-coding-09",
+    "topic": "coding",
+    "level": "L2",
+    "title": "Find the majority element using Boyer-Moore",
+    "tags": [
+      "Arrays",
+      "Boyer Moore"
+    ],
+    "short": "Find the element occurring more than n/2 times when such an element exists.",
+    "answer": "Boyer-Moore treats different values as canceling pairs, leaving the majority candidate. Verify it if majority is not guaranteed.",
+    "code": "import java.util.*;\n\npublic class Main {\n    static Integer majority(int[] nums) {\n        int candidate = 0, count = 0;\n        for (int n : nums) {\n            if (count == 0) candidate = n;\n            count += n == candidate ? 1 : -1;\n        }\n        int frequency = 0;\n        for (int n : nums) if (n == candidate) frequency++;\n        return frequency > nums.length / 2 ? candidate : null;\n    }\n\n    public static void main(String[] args) {\n        System.out.println(\"Majority: \" + majority(new int[]{2,2,1,2,3,2,2}));\n    }\n}",
+    "followups": "How do you find elements occurring more than n/3?",
+    "mistakes": "Why does cancellation preserve a majority candidate?",
+    "interview": "Interview answer: Boyer-Moore keeps a candidate and balance. A true majority survives pairwise cancellation, and I verify the candidate when existence is not guaranteed.",
+    "source": "V9.1"
+  },
+  {
+    "id": "v91-coding-10",
+    "topic": "coding",
+    "level": "L2",
+    "title": "Find the kth largest element using Quickselect",
+    "tags": [
+      "Arrays",
+      "Quickselect"
+    ],
+    "short": "Find the kth largest value without fully sorting the array.",
+    "answer": "Use partitioning around a pivot so that the target index is isolated recursively or iteratively.",
+    "code": "import java.util.*;\n\npublic class Main {\n    static int kthLargest(int[] nums, int k) {\n        int target = nums.length - k;\n        int left = 0, right = nums.length - 1;\n        Random random = new Random(42);\n        while (left <= right) {\n            int pivotIndex = left + random.nextInt(right - left + 1);\n            pivotIndex = partition(nums, left, right, pivotIndex);\n            if (pivotIndex == target) return nums[pivotIndex];\n            if (pivotIndex < target) left = pivotIndex + 1;\n            else right = pivotIndex - 1;\n        }\n        throw new IllegalArgumentException(\"Invalid k\");\n    }\n\n    static int partition(int[] a, int left, int right, int pivotIndex) {\n        int pivot = a[pivotIndex];\n        int t=a[pivotIndex]; a[pivotIndex]=a[right]; a[right]=t;\n        int store=left;\n        for(int i=left;i<right;i++) if(a[i]<pivot){ t=a[i];a[i]=a[store];a[store]=t;store++; }\n        t=a[store];a[store]=a[right];a[right]=t;\n        return store;\n    }\n\n    public static void main(String[] args) {\n        System.out.println(kthLargest(new int[]{3,2,1,5,6,4}, 2));\n    }\n}",
+    "followups": "Heap vs Quickselect?",
+    "mistakes": "What causes the worst case?",
+    "interview": "Interview answer: Quickselect partitions the array and continues only on the side containing the target rank, giving average linear time without a full sort.",
+    "source": "V9.1"
+  },
+  {
+    "id": "v91-coding-11",
+    "topic": "coding",
+    "level": "L2",
+    "title": "Find the longest consecutive sequence in an array",
+    "tags": [
+      "Arrays",
+      "HashSet"
+    ],
+    "short": "Find the length of the longest consecutive integer sequence in an unsorted array.",
+    "answer": "Store all values in a set and only start counting when the previous value is absent.",
+    "code": "import java.util.*;\n\npublic class Main {\n    static int longest(int[] nums) {\n        Set<Integer> set = new HashSet<>();\n        for (int n : nums) set.add(n);\n        int best = 0;\n        for (int n : set) {\n            if (!set.contains(n - 1)) {\n                int current = n;\n                while (set.contains(current)) current++;\n                best = Math.max(best, current - n);\n            }\n        }\n        return best;\n    }\n\n    public static void main(String[] args) {\n        System.out.println(longest(new int[]{100,4,200,1,3,2}));\n    }\n}",
+    "followups": "How would sorting solve it?",
+    "mistakes": "Why is the expected complexity linear?",
+    "interview": "Interview answer: I use a set and only expand sequences from their smallest element, so each value participates in the counting work a constant number of times.",
+    "source": "V9.1"
+  },
+  {
+    "id": "v91-coding-12",
+    "topic": "coding",
+    "level": "L2",
+    "title": "Merge overlapping intervals",
+    "tags": [
+      "Arrays",
+      "Sorting"
+    ],
+    "short": "Merge intervals that overlap and return a non-overlapping list.",
+    "answer": "Sort by start time and merge each interval into the previous result when the ranges overlap.",
+    "code": "import java.util.*;\n\npublic class Main {\n    static int[][] merge(int[][] intervals) {\n        if (intervals.length == 0) return new int[0][];\n        Arrays.sort(intervals, Comparator.comparingInt(a -> a[0]));\n        List<int[]> result = new ArrayList<>();\n        for (int[] current : intervals) {\n            if (result.isEmpty() || result.get(result.size() - 1)[1] < current[0]) {\n                result.add(current.clone());\n            } else {\n                int[] last = result.get(result.size() - 1);\n                last[1] = Math.max(last[1], current[1]);\n            }\n        }\n        return result.toArray(new int[0][]);\n    }\n\n    public static void main(String[] args) {\n        int[][] result = merge(new int[][]{{1,3},{2,6},{8,10},{9,12}});\n        for (int[] interval : result) System.out.println(Arrays.toString(interval));\n    }\n}",
+    "followups": "What if intervals touch at endpoints?",
+    "mistakes": "Can it be done in linear time if already sorted?",
+    "interview": "Interview answer: Sorting by start makes it possible to decide overlap using only the last merged interval.",
+    "source": "V9.1"
+  },
+  {
+    "id": "v91-coding-13",
+    "topic": "coding",
+    "level": "L2",
+    "title": "Find the longest substring with at most K distinct characters",
+    "tags": [
+      "Sliding Window",
+      "HashMap"
+    ],
+    "short": "Find the maximum-length substring containing at most K distinct characters.",
+    "answer": "Maintain a sliding window and frequency map. Expand right, and shrink left while the number of distinct characters exceeds K.",
+    "code": "import java.util.*;\n\npublic class Main {\n    static int longest(String s, int k) {\n        if (k <= 0) return 0;\n        Map<Character, Integer> freq = new HashMap<>();\n        int left = 0, best = 0;\n        for (int right = 0; right < s.length(); right++) {\n            freq.merge(s.charAt(right), 1, Integer::sum);\n            while (freq.size() > k) {\n                char c = s.charAt(left++);\n                int count = freq.get(c);\n                if (count == 1) freq.remove(c); else freq.put(c, count - 1);\n            }\n            best = Math.max(best, right - left + 1);\n        }\n        return best;\n    }\n\n    public static void main(String[] args) {\n        System.out.println(longest(\"eceba\", 2));\n    }\n}",
+    "followups": "How does this differ from no-repeating-characters?",
+    "mistakes": "What if K is larger than the alphabet?",
+    "interview": "Interview answer: The sliding window grows until it violates the distinct-character limit, then moves its left boundary until the window is valid again.",
+    "source": "V9.1"
+  },
+  {
+    "id": "v91-coding-14",
+    "topic": "coding",
+    "level": "L2",
+    "title": "Find the minimum value in a rotated sorted array",
+    "tags": [
+      "Arrays",
+      "Binary Search"
+    ],
+    "short": "Find the minimum element in a sorted array rotated at an unknown pivot.",
+    "answer": "Compare the middle value with the right boundary to decide which half contains the minimum.",
+    "code": "import java.util.*;\n\npublic class Main {\n    static int findMin(int[] nums) {\n        int left = 0, right = nums.length - 1;\n        while (left < right) {\n            int mid = left + (right - left) / 2;\n            if (nums[mid] > nums[right]) left = mid + 1;\n            else right = mid;\n        }\n        return nums[left];\n    }\n\n    public static void main(String[] args) {\n        System.out.println(findMin(new int[]{4,5,6,7,0,1,2}));\n    }\n}",
+    "followups": "How do duplicates change the algorithm?",
+    "mistakes": "How would you find a target instead?",
+    "interview": "Interview answer: The sorted portions let me determine whether the minimum lies to the right or at/before mid, so the search interval halves each time.",
+    "source": "V9.1"
+  },
+  {
+    "id": "v91-coding-15",
+    "topic": "coding",
+    "level": "L2",
+    "title": "Find the first and last position of a target",
+    "tags": [
+      "Arrays",
+      "Binary Search"
+    ],
+    "short": "Return the first and last indices of a target in a sorted array with duplicates.",
+    "answer": "Run binary search twice: once biased left for the first occurrence and once biased right for the last occurrence.",
+    "code": "import java.util.*;\n\npublic class Main {\n    static int[] range(int[] nums, int target) {\n        return new int[]{bound(nums, target, true), bound(nums, target, false)};\n    }\n    static int bound(int[] a, int target, boolean first) {\n        int left=0,right=a.length-1,answer=-1;\n        while(left<=right){\n            int mid=left+(right-left)/2;\n            if(a[mid]==target){answer=mid;if(first)right=mid-1;else left=mid+1;}\n            else if(a[mid]<target)left=mid+1;else right=mid-1;\n        }\n        return answer;\n    }\n    public static void main(String[] args){\n        System.out.println(Arrays.toString(range(new int[]{1,2,2,2,3,4},2)));\n    }\n}",
+    "followups": "How would you count occurrences?",
+    "mistakes": "Why does ordinary binary search not give the first occurrence?",
+    "interview": "Interview answer: I modify binary search after finding the target so it continues toward the required boundary instead of stopping at the first match.",
+    "source": "V9.1"
+  },
+  {
+    "id": "v91-coding-16",
+    "topic": "coding",
+    "level": "L2",
+    "title": "Implement a stack with a minimum value in O(1)",
+    "tags": [
+      "Stack",
+      "Data Structures"
+    ],
+    "short": "Design a stack supporting push, pop, peek and retrieving the minimum in constant time.",
+    "answer": "Keep a second stack containing the minimum value seen at each relevant level.",
+    "code": "import java.util.*;\n\npublic class Main {\n    static class MinStack {\n        private final Deque<Integer> values = new ArrayDeque<>();\n        private final Deque<Integer> mins = new ArrayDeque<>();\n        void push(int x) { values.push(x); if (mins.isEmpty() || x <= mins.peek()) mins.push(x); }\n        int pop() { int x=values.pop(); if(x==mins.peek()) mins.pop(); return x; }\n        int peek() { return values.peek(); }\n        int min() { return mins.peek(); }\n    }\n    public static void main(String[] args){\n        MinStack s=new MinStack(); s.push(5);s.push(3);s.push(7);s.push(2);\n        System.out.println(\"Min: \"+s.min()); s.pop(); System.out.println(\"Min: \"+s.min());\n    }\n}",
+    "followups": "How can you reduce auxiliary space?",
+    "mistakes": "Why use <= when pushing duplicate minimums?",
+    "interview": "Interview answer: The second stack stores the minimum associated with the current stack state, so min retrieval remains constant time.",
+    "source": "V9.1"
+  },
+  {
+    "id": "v91-coding-17",
+    "topic": "coding",
+    "level": "L2",
+    "title": "Implement a binary search tree search",
+    "tags": [
+      "Trees",
+      "Binary Search Tree"
+    ],
+    "short": "Search for a value in a binary search tree.",
+    "answer": "At each node, compare the target with the node value and move left or right according to the BST ordering.",
+    "code": "import java.util.*;\n\npublic class Main {\n    static class Node { int value; Node left,right; Node(int value){this.value=value;} }\n    static boolean contains(Node root, int target) {\n        Node current=root;\n        while(current!=null){\n            if(current.value==target)return true;\n            current = target < current.value ? current.left : current.right;\n        }\n        return false;\n    }\n    public static void main(String[] args){\n        Node root=new Node(8);root.left=new Node(3);root.right=new Node(10);root.left.left=new Node(1);root.left.right=new Node(6);\n        System.out.println(contains(root,6));\n    }\n}",
+    "followups": "What happens in a skewed tree?",
+    "mistakes": "How would you insert a value?",
+    "interview": "Interview answer: BST ordering lets me discard half the subtree at each decision when the tree is balanced.",
+    "source": "V9.1"
+  },
+  {
+    "id": "v91-coding-18",
+    "topic": "coding",
+    "level": "L2",
+    "title": "Breadth-first traversal of a binary tree",
+    "tags": [
+      "Trees",
+      "Queue"
+    ],
+    "short": "Print a binary tree level by level.",
+    "answer": "Use a queue: enqueue the root, process one node, and enqueue its children.",
+    "code": "import java.util.*;\n\npublic class Main {\n    static class Node { int value; Node left,right; Node(int v){value=v;} }\n    static void bfs(Node root) {\n        if(root==null)return;\n        Queue<Node> queue=new ArrayDeque<>(); queue.offer(root);\n        while(!queue.isEmpty()){\n            int size=queue.size();\n            for(int i=0;i<size;i++){\n                Node n=queue.poll(); System.out.print(n.value+(i+1==size?\"\\n\":\" \"));\n                if(n.left!=null)queue.offer(n.left); if(n.right!=null)queue.offer(n.right);\n            }\n        }\n    }\n    public static void main(String[] args){\n        Node root=new Node(1);root.left=new Node(2);root.right=new Node(3);root.left.left=new Node(4);root.left.right=new Node(5);\n        bfs(root);\n    }\n}",
+    "followups": "DFS vs BFS?",
+    "mistakes": "How would you return List<List<Integer>> instead of printing?",
+    "interview": "Interview answer: BFS uses a queue to process nodes in level order, and I capture the current queue size to print each level separately.",
+    "source": "V9.1"
+  },
+  {
+    "id": "v91-coding-19",
+    "topic": "coding",
+    "level": "L2",
+    "title": "Detect a cycle in a linked list",
+    "tags": [
+      "Linked List",
+      "Two Pointers"
+    ],
+    "short": "Determine whether a singly linked list contains a cycle.",
+    "answer": "Floyd’s tortoise-and-hare algorithm moves one pointer by one step and another by two; if they meet, a cycle exists.",
+    "code": "import java.util.*;\n\npublic class Main {\n    static class Node { int value; Node next; Node(int v){value=v;} }\n    static boolean hasCycle(Node head) {\n        Node slow=head, fast=head;\n        while(fast!=null && fast.next!=null){\n            slow=slow.next; fast=fast.next.next;\n            if(slow==fast)return true;\n        }\n        return false;\n    }\n    public static void main(String[] args){\n        Node a=new Node(1),b=new Node(2),c=new Node(3); a.next=b;b.next=c;c.next=b;\n        System.out.println(\"Cycle: \"+hasCycle(a));\n    }\n}",
+    "followups": "How do you find the cycle entry?",
+    "mistakes": "Why is the space constant?",
+    "interview": "Interview answer: Two pointers moving at different speeds must meet inside a cycle, while the fast pointer reaches null when the list is acyclic.",
+    "source": "V9.1"
+  },
+  {
+    "id": "v91-coding-20",
+    "topic": "coding",
+    "level": "L2",
+    "title": "Find the middle node of a linked list",
+    "tags": [
+      "Linked List",
+      "Two Pointers"
+    ],
+    "short": "Return the middle node of a singly linked list.",
+    "answer": "Move slow one step and fast two steps. When fast reaches the end, slow is at the middle.",
+    "code": "import java.util.*;\n\npublic class Main {\n    static class Node { int value; Node next; Node(int v){value=v;} }\n    static Node middle(Node head) {\n        Node slow=head, fast=head;\n        while(fast!=null && fast.next!=null){ slow=slow.next; fast=fast.next.next; }\n        return slow;\n    }\n    public static void main(String[] args){\n        Node a=new Node(1),b=new Node(2),c=new Node(3),d=new Node(4),e=new Node(5);\n        a.next=b;b.next=c;c.next=d;d.next=e;\n        System.out.println(\"Middle: \"+middle(a).value);\n    }\n}",
+    "followups": "For an even-length list, which middle should be returned?",
+    "mistakes": "Can the list be traversed only once?",
+    "interview": "Interview answer: The fast pointer moves twice as quickly, so when it reaches the end the slow pointer has traversed half the list.",
+    "source": "V9.1"
+  },
+  {
+    "id": "v91-coding-21",
+    "topic": "coding",
+    "level": "L3",
+    "title": "Implement a thread-safe bounded producer-consumer queue",
+    "tags": [
+      "Concurrency",
+      "Blocking Queue"
+    ],
+    "short": "Implement a bounded queue where producers wait when full and consumers wait when empty.",
+    "answer": "Use a ReentrantLock with two Conditions: notFull and notEmpty. Conditions coordinate state changes without busy waiting.",
+    "code": "import java.util.*;\nimport java.util.concurrent.locks.*;\n\npublic class Main {\n    static class BoundedQueue<T> {\n        private final Object[] items;\n        private int head, tail, count;\n        private final Lock lock = new ReentrantLock();\n        private final Condition notFull = lock.newCondition();\n        private final Condition notEmpty = lock.newCondition();\n        BoundedQueue(int capacity){ items=new Object[capacity]; }\n        void put(T value) throws InterruptedException {\n            lock.lock();\n            try { while(count==items.length) notFull.await(); items[tail]=value; tail=(tail+1)%items.length; count++; notEmpty.signal(); }\n            finally { lock.unlock(); }\n        }\n        @SuppressWarnings(\"unchecked\") T take() throws InterruptedException {\n            lock.lock();\n            try { while(count==0) notEmpty.await(); T value=(T)items[head]; items[head]=null; head=(head+1)%items.length; count--; notFull.signal(); return value; }\n            finally { lock.unlock(); }\n        }\n    }\n    public static void main(String[] args) throws Exception {\n        BoundedQueue<Integer> q=new BoundedQueue<>(2); q.put(10);q.put(20);System.out.println(q.take());System.out.println(q.take());\n    }\n}",
+    "followups": "Why use while instead of if?",
+    "mistakes": "How would you use ArrayBlockingQueue instead?",
+    "interview": "Interview answer: I protect queue state with a lock and use conditions so producers wait while full and consumers wait while empty. The while checks are required because a condition wake-up does not guarantee the state is available.",
+    "source": "V9.1"
   }
 ]

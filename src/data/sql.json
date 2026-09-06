@@ -1,59 +1,5 @@
 [
   {
-    "id": "jpa-005",
-    "title": "N+1 query problem",
-    "level": "L2",
-    "tags": [
-      "JPA",
-      "Performance"
-    ],
-    "short": "One parent query plus one query per accessed association.",
-    "answer": "Fix with fetch joins, EntityGraphs, batch fetching or projections.",
-    "code": "SELECT o FROM Order o JOIN FETCH o.customer",
-    "followups": [
-      "How detect N+1?"
-    ],
-    "mistakes": [],
-    "interview": "One parent query plus one query per accessed association.",
-    "source": "V3"
-  },
-  {
-    "id": "system-010",
-    "title": "Database sharding",
-    "level": "L3",
-    "tags": [
-      "Databases",
-      "Scalability"
-    ],
-    "short": "Partition data across nodes using a shard key.",
-    "answer": "A good key distributes load and supports common access patterns; cross-shard queries add complexity.",
-    "code": "user_id hash -> shard",
-    "followups": [
-      "How choose shard key?"
-    ],
-    "mistakes": [],
-    "interview": "Partition data across nodes using a shard key.",
-    "source": "V3"
-  },
-  {
-    "id": "system-011",
-    "title": "Read replicas vs sharding",
-    "level": "L3",
-    "tags": [
-      "Databases",
-      "Scalability"
-    ],
-    "short": "Replicas scale reads; sharding partitions data to scale capacity/write load.",
-    "answer": "Replicas may lag; sharding complicates queries and rebalancing.",
-    "code": "Primary -> replicas\nShard A/B/C",
-    "followups": [
-      "When replicas stop helping?"
-    ],
-    "mistakes": [],
-    "interview": "Replicas scale reads; sharding partitions data to scale capacity/write load.",
-    "source": "V3"
-  },
-  {
     "id": "sql-001",
     "title": "Primary key",
     "level": "L2",
@@ -69,7 +15,8 @@
     ],
     "mistakes": [],
     "interview": "A primary key uniquely identifies rows and cannot be null.",
-    "source": "V3"
+    "source": "V3",
+    "topic": "sql"
   },
   {
     "id": "sql-002",
@@ -87,7 +34,8 @@
     ],
     "mistakes": [],
     "interview": "Both enforce uniqueness; a table has one primary key and can have multiple unique constraints.",
-    "source": "V3"
+    "source": "V3",
+    "topic": "sql"
   },
   {
     "id": "sql-003",
@@ -105,7 +53,8 @@
     ],
     "mistakes": [],
     "interview": "A foreign key enforces referential integrity.",
-    "source": "V3"
+    "source": "V3",
+    "topic": "sql"
   },
   {
     "id": "sql-004",
@@ -123,7 +72,8 @@
     ],
     "mistakes": [],
     "interview": "Normalization reduces redundant facts and update anomalies.",
-    "source": "V3"
+    "source": "V3",
+    "topic": "sql"
   },
   {
     "id": "sql-005",
@@ -141,7 +91,8 @@
     ],
     "mistakes": [],
     "interview": "Indexes accelerate reads but consume storage and add write maintenance.",
-    "source": "V3"
+    "source": "V3",
+    "topic": "sql"
   },
   {
     "id": "sql-006",
@@ -159,7 +110,8 @@
     ],
     "mistakes": [],
     "interview": "A composite index contains multiple ordered columns; order matters.",
-    "source": "V3"
+    "source": "V3",
+    "topic": "sql"
   },
   {
     "id": "sql-007",
@@ -177,7 +129,8 @@
     ],
     "mistakes": [],
     "interview": "WHERE filters rows before grouping; HAVING filters grouped results.",
-    "source": "V3"
+    "source": "V3",
+    "topic": "sql"
   },
   {
     "id": "sql-008",
@@ -195,7 +148,8 @@
     ],
     "mistakes": [],
     "interview": "INNER keeps matches; LEFT keeps every left row.",
-    "source": "V3"
+    "source": "V3",
+    "topic": "sql"
   },
   {
     "id": "sql-009",
@@ -213,7 +167,8 @@
     ],
     "mistakes": [],
     "interview": "They calculate across related rows without collapsing them.",
-    "source": "V3"
+    "source": "V3",
+    "topic": "sql"
   },
   {
     "id": "sql-010",
@@ -231,7 +186,8 @@
     "followups": [],
     "mistakes": [],
     "interview": "Group by both columns and filter count > 1.",
-    "source": "V3"
+    "source": "V3",
+    "topic": "sql"
   },
   {
     "id": "sql-012",
@@ -249,7 +205,8 @@
     ],
     "mistakes": [],
     "interview": "A transaction groups database work with commit/rollback semantics.",
-    "source": "V3"
+    "source": "V3",
+    "topic": "sql"
   },
   {
     "id": "sql-013",
@@ -267,7 +224,8 @@
     ],
     "mistakes": [],
     "interview": "Atomicity, Consistency, Isolation and Durability describe transaction guarantees.",
-    "source": "V3"
+    "source": "V3",
+    "topic": "sql"
   },
   {
     "id": "sql-014",
@@ -285,7 +243,8 @@
     ],
     "mistakes": [],
     "interview": "Transactions can wait cyclically for each other's locks.",
-    "source": "V3"
+    "source": "V3",
+    "topic": "sql"
   },
   {
     "id": "sql-015",
@@ -303,7 +262,8 @@
     ],
     "mistakes": [],
     "interview": "It shows how the database plans to execute a query.",
-    "source": "V3"
+    "source": "V3",
+    "topic": "sql"
   },
   {
     "id": "sql-016",
@@ -321,7 +281,8 @@
     ],
     "mistakes": [],
     "interview": "DELETE removes rows, TRUNCATE clears table contents as a bulk operation, DROP removes the table object.",
-    "source": "V3"
+    "source": "V3",
+    "topic": "sql"
   },
   {
     "id": "sql-017",
@@ -339,7 +300,8 @@
     ],
     "mistakes": [],
     "interview": "A normal view stores a query definition; a materialized view stores results.",
-    "source": "V3"
+    "source": "V3",
+    "topic": "sql"
   },
   {
     "id": "sql-018",
@@ -357,7 +319,27 @@
     ],
     "mistakes": [],
     "interview": "A CTE names a subquery for readable multi-step queries.",
-    "source": "V3"
+    "source": "V3",
+    "topic": "sql"
+  },
+  {
+    "id": "sql-019",
+    "title": "Optimistic vs pessimistic locking",
+    "level": "L3",
+    "tags": [
+      "Concurrency",
+      "JPA"
+    ],
+    "short": "Optimistic locking detects conflicts; pessimistic locking acquires database locks.",
+    "answer": "Version columns work well when conflicts are rare; pessimistic locking can increase contention.",
+    "code": "UPDATE account SET balance=?,version=version+1 WHERE id=? AND version=?;",
+    "followups": [
+      "When use pessimistic?"
+    ],
+    "mistakes": [],
+    "interview": "Optimistic locking detects conflicts; pessimistic locking acquires database locks.",
+    "source": "V3",
+    "topic": "sql"
   },
   {
     "id": "sql-020",
@@ -375,73 +357,76 @@
     ],
     "mistakes": [],
     "interview": "Inspect actual query, plan, indexes, locks, row counts and recent changes.",
-    "source": "V3"
+    "source": "V3",
+    "topic": "sql"
   },
   {
-    "id": "spring-009",
-    "title": "Transaction isolation",
-    "level": "L2",
-    "tags": [
-      "Transactions",
-      "Database"
-    ],
-    "short": "Isolation controls what concurrent transactions can observe.",
-    "answer": "Isolation levels trade consistency and concurrency. Exact behavior is database-specific.",
-    "code": "@Transactional(isolation=Isolation.READ_COMMITTED)",
-    "followups": [
-      "Dirty read?"
-    ],
-    "mistakes": [],
-    "interview": "Isolation controls what concurrent transactions can observe.",
-    "source": "V3"
-  },
-  {
-    "id": "iq-134",
-    "title": "What is the N+1 query problem?",
-    "level": "L2",
-    "tags": [
-      "IQ300",
-      "jpa"
-    ],
-    "short": "When fetching a list of N parent entities, and then lazily accessing an association on each one individually, Hibernate issues one query for the parents plus N additional queries (one per parent) to fetch each one's association — N+1 total ",
-    "answer": "When fetching a list of N parent entities, and then lazily accessing an association on each one individually, Hibernate issues one query for the parents plus N additional queries (one per parent) to fetch each one's association — N+1 total queries instead of one efficient join, badly hurting performance as N grows.",
-    "code": "",
-    "followups": [],
-    "mistakes": [],
-    "interview": "When fetching a list of N parent entities, and then lazily accessing an association on each one individually, Hibernate issues one query for the parents plus N additional queries (one per parent) to fetch each one's association — N+1 total queries instead of one efficient join, badly hurting performance as N grows.",
-    "source": "IQ300"
-  },
-  {
-    "id": "iq-145",
-    "title": "Difference between JPQL and native SQL.",
+    "id": "iq-221",
+    "title": "Explain normalization.",
     "level": "L1",
     "tags": [
       "IQ300",
-      "sql"
+      "java"
     ],
-    "short": "JPQL queries entities and their properties/associations in an object-oriented, database-agnostic way, and JPA translates it to the appropriate SQL dialect. Native SQL is written directly against actual database tables/columns, giving full a",
-    "answer": "JPQL queries entities and their properties/associations in an object-oriented, database-agnostic way, and JPA translates it to the appropriate SQL dialect. Native SQL is written directly against actual database tables/columns, giving full access to database-specific features (functions, hints) at the cost of portability, and typically returning raw results rather than automatically mapped entities unless explicitly configured.",
+    "short": "Normalization is the process of organizing relational tables to reduce data redundancy and avoid update/insert/delete anomalies, by progressively applying rules (normal forms): 1NF (atomic columns, no repeating groups), 2NF (no partial depe",
+    "answer": "Normalization is the process of organizing relational tables to reduce data redundancy and avoid update/insert/delete anomalies, by progressively applying rules (normal forms): 1NF (atomic columns, no repeating groups), 2NF (no partial dependency on part of a composite key), 3NF (no transitive dependency on non-key columns), and beyond.",
     "code": "",
     "followups": [],
     "mistakes": [],
-    "interview": "JPQL queries entities and their properties/associations in an object-oriented, database-agnostic way, and JPA translates it to the appropriate SQL dialect. Native SQL is written directly against actual database tables/columns, giving full access to database-specific features (functions, hints) at the cost of portabilit",
-    "source": "IQ300"
+    "interview": "Normalization is the process of organizing relational tables to reduce data redundancy and avoid update/insert/delete anomalies, by progressively applying rules (normal forms): 1NF (atomic columns, no repeating groups), 2NF (no partial dependency on part of a composite key), 3NF (no transitive dependency on non-key col",
+    "source": "IQ300",
+    "topic": "sql"
   },
   {
-    "id": "iq-146",
-    "title": "What is `@Query`?",
+    "id": "iq-222",
+    "title": "What is denormalization?",
     "level": "L1",
     "tags": [
       "IQ300",
-      "sql"
+      "java"
     ],
-    "short": "An annotation used on Spring Data JPA repository methods to supply a custom JPQL (or, with \\nativeQuery = true\\, native SQL) query explicitly, instead of relying on Spring Data's method-name-derived query generation — useful for complex que",
-    "answer": "An annotation used on Spring Data JPA repository methods to supply a custom JPQL (or, with \\<code>nativeQuery = true\\</code>, native SQL) query explicitly, instead of relying on Spring Data's method-name-derived query generation — useful for complex queries that don't map cleanly to a method name.",
+    "short": "The deliberate, controlled introduction of redundancy into a normalized schema — e.g. duplicating a column or precomputing an aggregate — to reduce the number of joins needed for common read queries, trading some write complexity/storage an",
+    "answer": "The deliberate, controlled introduction of redundancy into a normalized schema — e.g. duplicating a column or precomputing an aggregate — to reduce the number of joins needed for common read queries, trading some write complexity/storage and consistency risk for better read performance.",
     "code": "",
     "followups": [],
     "mistakes": [],
-    "interview": "An annotation used on Spring Data JPA repository methods to supply a custom JPQL (or, with \\nativeQuery = true\\, native SQL) query explicitly, instead of relying on Spring Data's method-name-derived query generation — useful for complex queries that don't map cleanly to a method name.",
-    "source": "IQ300"
+    "interview": "The deliberate, controlled introduction of redundancy into a normalized schema — e.g. duplicating a column or precomputing an aggregate — to reduce the number of joins needed for common read queries, trading some write complexity/storage and consistency risk for better read performance.",
+    "source": "IQ300",
+    "topic": "sql"
+  },
+  {
+    "id": "iq-223",
+    "title": "Primary key vs unique key.",
+    "level": "L1",
+    "tags": [
+      "IQ300",
+      "java"
+    ],
+    "short": "A primary key uniquely identifies each row, can't be null, and a table can have only one (though it may be composite). A unique key also enforces uniqueness but allows a null value (in most databases) and a table can have multiple unique ke",
+    "answer": "A primary key uniquely identifies each row, can't be null, and a table can have only one (though it may be composite). A unique key also enforces uniqueness but allows a null value (in most databases) and a table can have multiple unique keys/constraints.",
+    "code": "",
+    "followups": [],
+    "mistakes": [],
+    "interview": "A primary key uniquely identifies each row, can't be null, and a table can have only one (though it may be composite). A unique key also enforces uniqueness but allows a null value (in most databases) and a table can have multiple unique keys/constraints.",
+    "source": "IQ300",
+    "topic": "sql"
+  },
+  {
+    "id": "iq-225",
+    "title": "Composite key.",
+    "level": "L1",
+    "tags": [
+      "IQ300",
+      "java"
+    ],
+    "short": "A primary key made up of two or more columns together, used when no single column uniquely identifies a row but the combination does — common in join/association tables (e.g. a student\\_id + course\\_id pair in an enrollment table).",
+    "answer": "A primary key made up of two or more columns together, used when no single column uniquely identifies a row but the combination does — common in join/association tables (e.g. a student\\_id + course\\_id pair in an enrollment table).",
+    "code": "",
+    "followups": [],
+    "mistakes": [],
+    "interview": "A primary key made up of two or more columns together, used when no single column uniquely identifies a row but the combination does — common in join/association tables (e.g. a student\\_id + course\\_id pair in an enrollment table).",
+    "source": "IQ300",
+    "topic": "sql"
   },
   {
     "id": "iq-226",
@@ -457,7 +442,8 @@
     "followups": [],
     "mistakes": [],
     "interview": "A clustered index determines the actual physical order rows are stored on disk — a table can have only one (often the primary key). A non-clustered index is a separate structure holding pointers back to the actual rows, ordered independently of physical storage — a table can have many, useful for speeding up lookups on",
-    "source": "IQ300"
+    "source": "IQ300",
+    "topic": "sql"
   },
   {
     "id": "iq-227",
@@ -473,7 +459,8 @@
     "followups": [],
     "mistakes": [],
     "interview": "A separate data structure (typically a B-tree) built on one or more columns that speeds up lookups/filtering/sorting on those columns, at the cost of extra storage and slower writes (since indexes must be updated on every insert/update/delete).",
-    "source": "IQ300"
+    "source": "IQ300",
+    "topic": "sql"
   },
   {
     "id": "iq-228",
@@ -489,7 +476,42 @@
     "followups": [],
     "mistakes": [],
     "interview": "On columns rarely used in WHERE/JOIN/ORDER BY clauses, on small tables where a full scan is already fast, on columns with very low cardinality (few distinct values, e.g. a boolean flag) where the index doesn't help selectivity much, and on tables with very heavy write volume where index maintenance overhead outweighs r",
-    "source": "IQ300"
+    "source": "IQ300",
+    "topic": "sql"
+  },
+  {
+    "id": "iq-229",
+    "title": "Difference between `WHERE` and `HAVING`.",
+    "level": "L1",
+    "tags": [
+      "IQ300",
+      "java"
+    ],
+    "short": "\\WHERE\\ filters individual rows before any grouping/aggregation occurs and can't reference aggregate functions. \\HAVING\\ filters groups after \\GROUP BY\\ aggregation, and is specifically used to filter based on aggregate values (e.g. \\HAVING",
+    "answer": "\\<code>WHERE\\</code> filters individual rows before any grouping/aggregation occurs and can't reference aggregate functions. \\<code>HAVING\\</code> filters groups after \\<code>GROUP BY\\</code> aggregation, and is specifically used to filter based on aggregate values (e.g. \\<code>HAVING COUNT(\\*) > 5\\</code>).",
+    "code": "",
+    "followups": [],
+    "mistakes": [],
+    "interview": "\\WHERE\\ filters individual rows before any grouping/aggregation occurs and can't reference aggregate functions. \\HAVING\\ filters groups after \\GROUP BY\\ aggregation, and is specifically used to filter based on aggregate values (e.g. \\HAVING COUNT(\\*) > 5\\).",
+    "source": "IQ300",
+    "topic": "sql"
+  },
+  {
+    "id": "iq-230",
+    "title": "Difference between `DELETE`, `TRUNCATE`, and `DROP`.",
+    "level": "L1",
+    "tags": [
+      "IQ300",
+      "java"
+    ],
+    "short": "\\DELETE\\ removes rows matching a condition (or all rows), is logged row-by-row, can be rolled back, and can fire triggers. \\TRUNCATE\\ removes all rows quickly by deallocating data pages rather than logging each row, resets auto-increment co",
+    "answer": "\\<code>DELETE\\</code> removes rows matching a condition (or all rows), is logged row-by-row, can be rolled back, and can fire triggers. \\<code>TRUNCATE\\</code> removes all rows quickly by deallocating data pages rather than logging each row, resets auto-increment counters, generally can't be selectively filtered, and is minimally logged. \\<code>DROP\\</code> removes the entire table structure (and its data) from the database entirely.",
+    "code": "",
+    "followups": [],
+    "mistakes": [],
+    "interview": "\\DELETE\\ removes rows matching a condition (or all rows), is logged row-by-row, can be rolled back, and can fire triggers. \\TRUNCATE\\ removes all rows quickly by deallocating data pages rather than logging each row, resets auto-increment counters, generally can't be selectively filtered, and is minimally logged. \\DROP\\",
+    "source": "IQ300",
+    "topic": "sql"
   },
   {
     "id": "iq-231",
@@ -505,7 +527,8 @@
     "followups": [],
     "mistakes": [],
     "interview": "Returns only rows where there's a match in both joined tables based on the join condition — rows from either side without a corresponding match in the other are excluded from the result.",
-    "source": "IQ300"
+    "source": "IQ300",
+    "topic": "sql"
   },
   {
     "id": "iq-232",
@@ -521,7 +544,8 @@
     "followups": [],
     "mistakes": [],
     "interview": "Returns all rows from the left table, plus matching rows from the right table where they exist; if there's no match, the right table's columns are filled with NULL for that row.",
-    "source": "IQ300"
+    "source": "IQ300",
+    "topic": "sql"
   },
   {
     "id": "iq-233",
@@ -537,7 +561,8 @@
     "followups": [],
     "mistakes": [],
     "interview": "Returns all rows from the right table, plus matching rows from the left table where they exist; unmatched left-table columns are filled with NULL. It's functionally equivalent to swapping the table order and using a LEFT JOIN.",
-    "source": "IQ300"
+    "source": "IQ300",
+    "topic": "sql"
   },
   {
     "id": "iq-234",
@@ -553,7 +578,8 @@
     "followups": [],
     "mistakes": [],
     "interview": "Returns all rows from both tables — matched rows combined, and for rows with no match on either side, the missing side's columns are filled with NULL. Effectively the union of a LEFT JOIN and a RIGHT JOIN result.",
-    "source": "IQ300"
+    "source": "IQ300",
+    "topic": "sql"
   },
   {
     "id": "iq-235",
@@ -569,7 +595,8 @@
     "followups": [],
     "mistakes": [],
     "interview": "A join of a table with itself, typically using table aliases to distinguish the two \"copies\" — used for comparing rows within the same table, e.g. finding employees and their managers where both are stored in the same employees table.",
-    "source": "IQ300"
+    "source": "IQ300",
+    "topic": "sql"
   },
   {
     "id": "iq-236",
@@ -585,7 +612,8 @@
     "followups": [],
     "mistakes": [],
     "interview": "Produces the Cartesian product of two tables — every row from the first table paired with every row from the second, with no join condition. Result size is the product of both tables' row counts, so it's used deliberately (e.g. generating combinations) rather than accidentally.",
-    "source": "IQ300"
+    "source": "IQ300",
+    "topic": "sql"
   },
   {
     "id": "iq-237",
@@ -601,7 +629,8 @@
     "followups": [],
     "mistakes": [],
     "interview": "A query nested inside another query (in the SELECT list, FROM clause, or WHERE/HAVING condition), used to compute an intermediate result that the outer query then uses — e.g. filtering rows where a column is in the result set of a subquery.",
-    "source": "IQ300"
+    "source": "IQ300",
+    "topic": "sql"
   },
   {
     "id": "iq-238",
@@ -617,7 +646,331 @@
     "followups": [],
     "mistakes": [],
     "interview": "A subquery that references a column from the outer query, so it must be logically re-evaluated for each row processed by the outer query, rather than being computed once independently — e.g. finding employees whose salary is above the average salary of their specific department.",
-    "source": "IQ300"
+    "source": "IQ300",
+    "topic": "sql"
+  },
+  {
+    "id": "iq-239",
+    "title": "What are window functions?",
+    "level": "L1",
+    "tags": [
+      "IQ300",
+      "java"
+    ],
+    "short": "Functions that perform a calculation across a set of rows (\"window\") related to the current row — defined via an \\OVER()\\ clause with optional \\PARTITION BY\\ and \\ORDER BY\\ — without collapsing the result into one row per group like \\GROUP ",
+    "answer": "Functions that perform a calculation across a set of rows (\"window\") related to the current row — defined via an \\<code>OVER()\\</code> clause with optional \\<code>PARTITION BY\\</code> and \\<code>ORDER BY\\</code> — without collapsing the result into one row per group like \\<code>GROUP BY\\</code> does. Examples: \\<code>ROW\\_NUMBER()\\</code>, \\<code>RANK()\\</code>, running totals with \\<code>SUM() OVER (...)\\</code>.",
+    "code": "",
+    "followups": [],
+    "mistakes": [],
+    "interview": "Functions that perform a calculation across a set of rows (\"window\") related to the current row — defined via an \\OVER()\\ clause with optional \\PARTITION BY\\ and \\ORDER BY\\ — without collapsing the result into one row per group like \\GROUP BY\\ does. Examples: \\ROW\\_NUMBER()\\, \\RANK()\\, running totals with \\SUM() OVER (",
+    "source": "IQ300",
+    "topic": "sql"
+  },
+  {
+    "id": "iq-240",
+    "title": "Difference between `ROW\\_NUMBER`, `RANK`, and `DENSE\\_RANK`.",
+    "level": "L1",
+    "tags": [
+      "IQ300",
+      "java"
+    ],
+    "short": "\\ROW\\_NUMBER()\\ assigns a unique sequential number to each row regardless of ties. \\RANK()\\ assigns the same rank to tied rows but skips subsequent rank numbers accordingly (e.g. 1,2,2,4). \\DENSE\\_RANK()\\ also assigns the same rank to ties ",
+    "answer": "\\<code>ROW\\_NUMBER()\\</code> assigns a unique sequential number to each row regardless of ties. \\<code>RANK()\\</code> assigns the same rank to tied rows but skips subsequent rank numbers accordingly (e.g. 1,2,2,4). \\<code>DENSE\\_RANK()\\</code> also assigns the same rank to ties but does not skip the next rank (e.g. 1,2,2,3).",
+    "code": "",
+    "followups": [],
+    "mistakes": [],
+    "interview": "\\ROW\\_NUMBER()\\ assigns a unique sequential number to each row regardless of ties. \\RANK()\\ assigns the same rank to tied rows but skips subsequent rank numbers accordingly (e.g. 1,2,2,4). \\DENSE\\_RANK()\\ also assigns the same rank to ties but does not skip the next rank (e.g. 1,2,2,3).",
+    "source": "IQ300",
+    "topic": "sql"
+  },
+  {
+    "id": "iq-241",
+    "title": "How do you find the second highest salary?",
+    "level": "L1",
+    "tags": [
+      "IQ300",
+      "java"
+    ],
+    "short": "Common approaches: \\SELECT MAX(salary) FROM employees WHERE salary , or using \\DENSE\\_RANK() OVER (ORDER BY salary DESC)\\ and filtering where the rank equals 2, or \\ORDER BY salary DESC LIMIT 1 OFFSET 1\\ depending on the database.",
+    "answer": "Common approaches: \\<code>SELECT MAX(salary) FROM employees WHERE salary < (SELECT MAX(salary) FROM employees)\\</code>, or using \\<code>DENSE\\_RANK() OVER (ORDER BY salary DESC)\\</code> and filtering where the rank equals 2, or \\<code>ORDER BY salary DESC LIMIT 1 OFFSET 1\\</code> depending on the database.",
+    "code": "",
+    "followups": [],
+    "mistakes": [],
+    "interview": "Common approaches: \\SELECT MAX(salary) FROM employees WHERE salary , or using \\DENSE\\_RANK() OVER (ORDER BY salary DESC)\\ and filtering where the rank equals 2, or \\ORDER BY salary DESC LIMIT 1 OFFSET 1\\ depending on the database.",
+    "source": "IQ300",
+    "topic": "sql"
+  },
+  {
+    "id": "iq-242",
+    "title": "How do you find duplicate records?",
+    "level": "L1",
+    "tags": [
+      "IQ300",
+      "java"
+    ],
+    "short": "Group by the column(s) that should be unique and filter groups with a count greater than one: \\SELECT col, COUNT(\\*) FROM table GROUP BY col HAVING COUNT(\\*) > 1\\, then optionally join back to the original table to see the full duplicate ro",
+    "answer": "Group by the column(s) that should be unique and filter groups with a count greater than one: \\<code>SELECT col, COUNT(\\*) FROM table GROUP BY col HAVING COUNT(\\*) > 1\\</code>, then optionally join back to the original table to see the full duplicate rows.",
+    "code": "",
+    "followups": [],
+    "mistakes": [],
+    "interview": "Group by the column(s) that should be unique and filter groups with a count greater than one: \\SELECT col, COUNT(\\*) FROM table GROUP BY col HAVING COUNT(\\*) > 1\\, then optionally join back to the original table to see the full duplicate rows.",
+    "source": "IQ300",
+    "topic": "sql"
+  },
+  {
+    "id": "iq-243",
+    "title": "How do you delete duplicate records?",
+    "level": "L1",
+    "tags": [
+      "IQ300",
+      "java"
+    ],
+    "short": "Typically keep one row per duplicate group (e.g. the one with the minimum id) and delete the rest — using a subquery/CTE with \\ROW\\_NUMBER()\\ partitioned by the duplicate-defining columns, then deleting rows where the row number is greater ",
+    "answer": "Typically keep one row per duplicate group (e.g. the one with the minimum id) and delete the rest — using a subquery/CTE with \\<code>ROW\\_NUMBER()\\</code> partitioned by the duplicate-defining columns, then deleting rows where the row number is greater than 1, or a \\<code>DELETE ... WHERE id NOT IN (SELECT MIN(id) ... GROUP BY ...)\\</code> pattern.",
+    "code": "",
+    "followups": [],
+    "mistakes": [],
+    "interview": "Typically keep one row per duplicate group (e.g. the one with the minimum id) and delete the rest — using a subquery/CTE with \\ROW\\_NUMBER()\\ partitioned by the duplicate-defining columns, then deleting rows where the row number is greater than 1, or a \\DELETE ... WHERE id NOT IN (SELECT MIN(id) ... GROUP BY ...)\\ patt",
+    "source": "IQ300",
+    "topic": "sql"
+  },
+  {
+    "id": "iq-244",
+    "title": "What is `GROUP BY`?",
+    "level": "L1",
+    "tags": [
+      "IQ300",
+      "java"
+    ],
+    "short": "Groups rows sharing the same value(s) in specified columns into summary rows, typically used together with aggregate functions (\\COUNT\\, \\SUM\\, \\AVG\\) to compute a value per group rather than per individual row.",
+    "answer": "Groups rows sharing the same value(s) in specified columns into summary rows, typically used together with aggregate functions (\\<code>COUNT\\</code>, \\<code>SUM\\</code>, \\<code>AVG\\</code>) to compute a value per group rather than per individual row.",
+    "code": "",
+    "followups": [],
+    "mistakes": [],
+    "interview": "Groups rows sharing the same value(s) in specified columns into summary rows, typically used together with aggregate functions (\\COUNT\\, \\SUM\\, \\AVG\\) to compute a value per group rather than per individual row.",
+    "source": "IQ300",
+    "topic": "sql"
+  },
+  {
+    "id": "iq-245",
+    "title": "What is `ORDER BY`?",
+    "level": "L1",
+    "tags": [
+      "IQ300",
+      "java"
+    ],
+    "short": "Sorts the final result set by one or more columns/expressions, ascending (default, \\ASC\\) or descending (\\DESC\\) — applied after filtering, grouping, and aggregation.",
+    "answer": "Sorts the final result set by one or more columns/expressions, ascending (default, \\<code>ASC\\</code>) or descending (\\<code>DESC\\</code>) — applied after filtering, grouping, and aggregation.",
+    "code": "",
+    "followups": [],
+    "mistakes": [],
+    "interview": "Sorts the final result set by one or more columns/expressions, ascending (default, \\ASC\\) or descending (\\DESC\\) — applied after filtering, grouping, and aggregation.",
+    "source": "IQ300",
+    "topic": "sql"
+  },
+  {
+    "id": "iq-246",
+    "title": "What is a view?",
+    "level": "L1",
+    "tags": [
+      "IQ300",
+      "java"
+    ],
+    "short": "A stored, named SQL query that behaves like a virtual table — it doesn't store data itself (in the basic case) but re-executes its underlying query each time it's referenced, useful for simplifying complex queries, restricting access to spe",
+    "answer": "A stored, named SQL query that behaves like a virtual table — it doesn't store data itself (in the basic case) but re-executes its underlying query each time it's referenced, useful for simplifying complex queries, restricting access to specific columns/rows, or presenting a stable interface over an evolving schema.",
+    "code": "",
+    "followups": [],
+    "mistakes": [],
+    "interview": "A stored, named SQL query that behaves like a virtual table — it doesn't store data itself (in the basic case) but re-executes its underlying query each time it's referenced, useful for simplifying complex queries, restricting access to specific columns/rows, or presenting a stable interface over an evolving schema.",
+    "source": "IQ300",
+    "topic": "sql"
+  },
+  {
+    "id": "iq-247",
+    "title": "What is a materialized view?",
+    "level": "L1",
+    "tags": [
+      "IQ300",
+      "java"
+    ],
+    "short": "Like a view, but its result set is physically stored (materialized) and periodically refreshed, rather than recomputed on every access — trading storage and staleness (data may lag behind the source tables until refreshed) for much faster r",
+    "answer": "Like a view, but its result set is physically stored (materialized) and periodically refreshed, rather than recomputed on every access — trading storage and staleness (data may lag behind the source tables until refreshed) for much faster read performance on expensive queries.",
+    "code": "",
+    "followups": [],
+    "mistakes": [],
+    "interview": "Like a view, but its result set is physically stored (materialized) and periodically refreshed, rather than recomputed on every access — trading storage and staleness (data may lag behind the source tables until refreshed) for much faster read performance on expensive queries.",
+    "source": "IQ300",
+    "topic": "sql"
+  },
+  {
+    "id": "iq-248",
+    "title": "What is a stored procedure?",
+    "level": "L1",
+    "tags": [
+      "IQ300",
+      "java"
+    ],
+    "short": "A precompiled, named set of SQL statements (often with parameters, control flow, and variables) stored in the database and invoked as a unit, useful for encapsulating complex business logic close to the data, reducing network round-trips, a",
+    "answer": "A precompiled, named set of SQL statements (often with parameters, control flow, and variables) stored in the database and invoked as a unit, useful for encapsulating complex business logic close to the data, reducing network round-trips, and enforcing consistent logic across multiple applications.",
+    "code": "",
+    "followups": [],
+    "mistakes": [],
+    "interview": "A precompiled, named set of SQL statements (often with parameters, control flow, and variables) stored in the database and invoked as a unit, useful for encapsulating complex business logic close to the data, reducing network round-trips, and enforcing consistent logic across multiple applications.",
+    "source": "IQ300",
+    "topic": "sql"
+  },
+  {
+    "id": "iq-249",
+    "title": "What is a trigger?",
+    "level": "L1",
+    "tags": [
+      "IQ300",
+      "java"
+    ],
+    "short": "A stored procedure that automatically executes in response to a specific event (INSERT, UPDATE, DELETE) on a table, either before or after the event — used for enforcing business rules, maintaining audit trails, or keeping derived/denormali",
+    "answer": "A stored procedure that automatically executes in response to a specific event (INSERT, UPDATE, DELETE) on a table, either before or after the event — used for enforcing business rules, maintaining audit trails, or keeping derived/denormalized data in sync automatically.",
+    "code": "",
+    "followups": [],
+    "mistakes": [],
+    "interview": "A stored procedure that automatically executes in response to a specific event (INSERT, UPDATE, DELETE) on a table, either before or after the event — used for enforcing business rules, maintaining audit trails, or keeping derived/denormalized data in sync automatically.",
+    "source": "IQ300",
+    "topic": "sql"
+  },
+  {
+    "id": "iq-250",
+    "title": "What are ACID properties?",
+    "level": "L1",
+    "tags": [
+      "IQ300",
+      "java"
+    ],
+    "short": "Atomicity — a transaction's operations all succeed or all fail as one unit. Consistency — a transaction moves the database from one valid state to another, respecting constraints. Isolation — concurrent transactions don't interfere with eac",
+    "answer": "Atomicity — a transaction's operations all succeed or all fail as one unit. Consistency — a transaction moves the database from one valid state to another, respecting constraints. Isolation — concurrent transactions don't interfere with each other's intermediate states (governed by isolation levels). Durability — once committed, a transaction's changes survive even a crash.",
+    "code": "",
+    "followups": [],
+    "mistakes": [],
+    "interview": "Atomicity — a transaction's operations all succeed or all fail as one unit. Consistency — a transaction moves the database from one valid state to another, respecting constraints. Isolation — concurrent transactions don't interfere with each other's intermediate states (governed by isolation levels). Durability — once ",
+    "source": "IQ300",
+    "topic": "sql"
+  },
+  {
+    "id": "iq-251",
+    "title": "Explain transaction isolation levels.",
+    "level": "L2",
+    "tags": [
+      "IQ300",
+      "java"
+    ],
+    "short": "They control how much one transaction's in-progress changes are visible to concurrent transactions, trading off consistency against concurrency/performance: READ UNCOMMITTED (weakest, allows dirty reads), READ COMMITTED, REPEATABLE READ, an",
+    "answer": "They control how much one transaction's in-progress changes are visible to concurrent transactions, trading off consistency against concurrency/performance: READ UNCOMMITTED (weakest, allows dirty reads), READ COMMITTED, REPEATABLE READ, and SERIALIZABLE (strongest, fully isolates transactions but with the most locking overhead).",
+    "code": "",
+    "followups": [],
+    "mistakes": [],
+    "interview": "They control how much one transaction's in-progress changes are visible to concurrent transactions, trading off consistency against concurrency/performance: READ UNCOMMITTED (weakest, allows dirty reads), READ COMMITTED, REPEATABLE READ, and SERIALIZABLE (strongest, fully isolates transactions but with the most locking",
+    "source": "IQ300",
+    "topic": "sql"
+  },
+  {
+    "id": "iq-252",
+    "title": "What is dirty read?",
+    "level": "L1",
+    "tags": [
+      "IQ300",
+      "java"
+    ],
+    "short": "When a transaction reads data that has been modified by another transaction but not yet committed — if that other transaction later rolls back, the first transaction has read data that was never actually valid/final. Prevented by READ COMMI",
+    "answer": "When a transaction reads data that has been modified by another transaction but not yet committed — if that other transaction later rolls back, the first transaction has read data that was never actually valid/final. Prevented by READ COMMITTED and stricter isolation levels.",
+    "code": "",
+    "followups": [],
+    "mistakes": [],
+    "interview": "When a transaction reads data that has been modified by another transaction but not yet committed — if that other transaction later rolls back, the first transaction has read data that was never actually valid/final. Prevented by READ COMMITTED and stricter isolation levels.",
+    "source": "IQ300",
+    "topic": "sql"
+  },
+  {
+    "id": "iq-253",
+    "title": "What is non-repeatable read?",
+    "level": "L1",
+    "tags": [
+      "IQ300",
+      "java"
+    ],
+    "short": "When a transaction reads the same row twice and gets different values because another transaction committed an update to that row in between the two reads — the data isn't \"stable\" for the duration of the first transaction. Prevented by REP",
+    "answer": "When a transaction reads the same row twice and gets different values because another transaction committed an update to that row in between the two reads — the data isn't \"stable\" for the duration of the first transaction. Prevented by REPEATABLE READ and SERIALIZABLE.",
+    "code": "",
+    "followups": [],
+    "mistakes": [],
+    "interview": "When a transaction reads the same row twice and gets different values because another transaction committed an update to that row in between the two reads — the data isn't \"stable\" for the duration of the first transaction. Prevented by REPEATABLE READ and SERIALIZABLE.",
+    "source": "IQ300",
+    "topic": "sql"
+  },
+  {
+    "id": "iq-254",
+    "title": "What is phantom read?",
+    "level": "L1",
+    "tags": [
+      "IQ300",
+      "java"
+    ],
+    "short": "When a transaction re-runs a query with the same filter condition and gets a different set of rows (new rows appearing or existing ones disappearing) because another transaction inserted/deleted rows matching that condition in between — not",
+    "answer": "When a transaction re-runs a query with the same filter condition and gets a different set of rows (new rows appearing or existing ones disappearing) because another transaction inserted/deleted rows matching that condition in between — not fixed by REPEATABLE READ in all databases, but prevented by SERIALIZABLE.",
+    "code": "",
+    "followups": [],
+    "mistakes": [],
+    "interview": "When a transaction re-runs a query with the same filter condition and gets a different set of rows (new rows appearing or existing ones disappearing) because another transaction inserted/deleted rows matching that condition in between — not fixed by REPEATABLE READ in all databases, but prevented by SERIALIZABLE.",
+    "source": "IQ300",
+    "topic": "sql"
+  },
+  {
+    "id": "iq-255",
+    "title": "Explain `READ COMMITTED`.",
+    "level": "L1",
+    "tags": [
+      "IQ300",
+      "java"
+    ],
+    "short": "Each query within a transaction only ever sees data that has been committed by other transactions at the moment it runs — it prevents dirty reads, but re-running the same query later within the same transaction can see different data if ano",
+    "answer": "Each query within a transaction only ever sees data that has been committed by other transactions at the moment it runs — it prevents dirty reads, but re-running the same query later within the same transaction can see different data if another transaction committed changes in between (non-repeatable reads are still possible).",
+    "code": "",
+    "followups": [],
+    "mistakes": [],
+    "interview": "Each query within a transaction only ever sees data that has been committed by other transactions at the moment it runs — it prevents dirty reads, but re-running the same query later within the same transaction can see different data if another transaction committed changes in between (non-repeatable reads are still po",
+    "source": "IQ300",
+    "topic": "sql"
+  },
+  {
+    "id": "iq-256",
+    "title": "Explain `REPEATABLE READ`.",
+    "level": "L1",
+    "tags": [
+      "IQ300",
+      "java"
+    ],
+    "short": "Guarantees that if a transaction reads a row, it will see the same data if it reads that row again later in the same transaction — preventing both dirty reads and non-repeatable reads — typically by holding read locks or using MVCC snapshot",
+    "answer": "Guarantees that if a transaction reads a row, it will see the same data if it reads that row again later in the same transaction — preventing both dirty reads and non-repeatable reads — typically by holding read locks or using MVCC snapshots, though phantom reads may still be possible depending on the database.",
+    "code": "",
+    "followups": [],
+    "mistakes": [],
+    "interview": "Guarantees that if a transaction reads a row, it will see the same data if it reads that row again later in the same transaction — preventing both dirty reads and non-repeatable reads — typically by holding read locks or using MVCC snapshots, though phantom reads may still be possible depending on the database.",
+    "source": "IQ300",
+    "topic": "sql"
+  },
+  {
+    "id": "iq-257",
+    "title": "Explain `SERIALIZABLE`.",
+    "level": "L1",
+    "tags": [
+      "IQ300",
+      "java"
+    ],
+    "short": "The strictest isolation level — transactions are guaranteed to behave as if executed one at a time in some serial order, preventing dirty reads, non-repeatable reads, and phantom reads entirely, at the cost of the heaviest locking/contentio",
+    "answer": "The strictest isolation level — transactions are guaranteed to behave as if executed one at a time in some serial order, preventing dirty reads, non-repeatable reads, and phantom reads entirely, at the cost of the heaviest locking/contention and highest chance of transactions being aborted and retried.",
+    "code": "",
+    "followups": [],
+    "mistakes": [],
+    "interview": "The strictest isolation level — transactions are guaranteed to behave as if executed one at a time in some serial order, preventing dirty reads, non-repeatable reads, and phantom reads entirely, at the cost of the heaviest locking/contention and highest chance of transactions being aborted and retried.",
+    "source": "IQ300",
+    "topic": "sql"
   },
   {
     "id": "iq-258",
@@ -633,7 +986,25 @@
     "followups": [],
     "mistakes": [],
     "interview": "A situation where two or more transactions each hold a lock the other needs, forming a cycle where none can proceed — e.g. Transaction A locks row 1 and waits for row 2, while Transaction B locks row 2 and waits for row 1. Most databases automatically detect this and abort one transaction (a deadlock victim) to break t",
-    "source": "IQ300"
+    "source": "IQ300",
+    "topic": "sql"
+  },
+  {
+    "id": "iq-259",
+    "title": "How do you detect and resolve deadlocks?",
+    "level": "L1",
+    "tags": [
+      "IQ300",
+      "java"
+    ],
+    "short": "Most relational databases run automatic deadlock detection (analyzing the wait-for graph for cycles) and resolve it by rolling back one of the involved transactions (typically the one with the least work done), which the application should ",
+    "answer": "Most relational databases run automatic deadlock detection (analyzing the wait-for graph for cycles) and resolve it by rolling back one of the involved transactions (typically the one with the least work done), which the application should catch and retry. Prevention strategies include always acquiring locks/updating rows in a consistent order and keeping transactions short.",
+    "code": "",
+    "followups": [],
+    "mistakes": [],
+    "interview": "Most relational databases run automatic deadlock detection (analyzing the wait-for graph for cycles) and resolve it by rolling back one of the involved transactions (typically the one with the least work done), which the application should catch and retry. Prevention strategies include always acquiring locks/updating r",
+    "source": "IQ300",
+    "topic": "sql"
   },
   {
     "id": "iq-286",
@@ -649,7 +1020,8 @@
     "followups": [],
     "mistakes": [],
     "interview": "Walk through the core entities and their relationships (one-to-many, many-to-many), key constraints (primary/foreign keys, uniqueness), any denormalization decisions made for performance and why, indexing choices on frequently queried columns, and how the schema evolved as requirements changed — grounded in your actual",
-    "source": "IQ300"
+    "source": "IQ300",
+    "topic": "sql"
   },
   {
     "id": "iq-328",
@@ -665,6 +1037,921 @@
     "followups": [],
     "mistakes": [],
     "interview": "Run \\EXPLAIN\\/\\EXPLAIN ANALYZE\\ to see the actual execution plan, check whether appropriate indexes exist on filtered/joined columns and whether they're actually being used, look for full table scans, N+1 query patterns, or unnecessary columns being selected, consider rewriting subqueries as joins (or vice versa), and ",
-    "source": "IQ300"
+    "source": "IQ300",
+    "topic": "sql"
+  },
+  {
+    "topic": "sql",
+    "level": "L2",
+    "title": "What is a composite index and how does column order matter?",
+    "tags": [
+      "Indexes",
+      "Performance"
+    ],
+    "short": "A composite index covers multiple columns, and the leading column order affects which predicates and sort operations can use it efficiently.",
+    "answer": "For an index on (customer_id, created_at), queries filtering by customer_id can use the leading portion efficiently. A query filtering only by created_at may not benefit in the same way.",
+    "code": "CREATE INDEX idx_orders_customer_created\nON orders(customer_id, created_at);",
+    "followups": [
+      "How would you choose index column order?",
+      "Can an index help ORDER BY?"
+    ],
+    "mistakes": [
+      "Adding every column to an index.",
+      "Ignoring write and storage costs."
+    ],
+    "interview": "Composite index design follows actual query patterns. I consider equality predicates, range predicates, ordering and selectivity, not just individual column popularity.",
+    "source": "V9",
+    "id": "v9-053"
+  },
+  {
+    "topic": "sql",
+    "level": "L2",
+    "title": "What is a covering index?",
+    "tags": [
+      "Indexes",
+      "Performance"
+    ],
+    "short": "A covering index contains all columns needed by a query, allowing the database to answer it from the index without fetching table rows in some engines.",
+    "answer": "Whether an index is covering depends on the database and query plan. It can reduce random table access but increases index size and write cost.",
+    "code": "CREATE INDEX idx_order_lookup\nON orders(customer_id, status, created_at);\n-- may cover a query selecting those columns",
+    "followups": [
+      "How do you verify a covering index is used?",
+      "What is an index-only scan?"
+    ],
+    "mistakes": [
+      "Assuming every index lookup avoids table access.",
+      "Over-indexing large tables."
+    ],
+    "interview": "A covering index can satisfy a query from index data alone when the optimizer chooses it. I verify the actual execution plan.",
+    "source": "V9",
+    "id": "v9-054"
+  },
+  {
+    "topic": "sql",
+    "level": "L2",
+    "title": "What is a window function?",
+    "tags": [
+      "SQL",
+      "Window Functions"
+    ],
+    "short": "A window function computes a value across related rows without collapsing them into one row per group.",
+    "answer": "Functions such as ROW_NUMBER, RANK, SUM and LAG can calculate per-row analytics while retaining row detail.",
+    "code": "SELECT employee_id, department_id, salary,\n       ROW_NUMBER() OVER (PARTITION BY department_id ORDER BY salary DESC) AS rn\nFROM employee;",
+    "followups": [
+      "Window function vs GROUP BY?",
+      "RANK vs DENSE_RANK?"
+    ],
+    "mistakes": [
+      "Using GROUP BY when row-level detail is required.",
+      "Confusing RANK gaps with DENSE_RANK."
+    ],
+    "interview": "Window functions let me calculate rankings, running totals and comparisons while preserving individual rows.",
+    "source": "V9",
+    "id": "v9-055"
+  },
+  {
+    "topic": "sql",
+    "level": "L2",
+    "title": "What is a CTE?",
+    "tags": [
+      "SQL",
+      "CTE"
+    ],
+    "short": "A common table expression gives a query a named intermediate result, improving readability and enabling recursive queries where supported.",
+    "answer": "WITH creates a logical query block. It can simplify multi-step transformations and recursive hierarchy traversal. Whether it is materialized or inlined depends on the database and optimizer.",
+    "code": "WITH recent_orders AS (\n  SELECT * FROM orders WHERE created_at >= CURRENT_DATE - INTERVAL '7 days'\n)\nSELECT customer_id, COUNT(*) FROM recent_orders GROUP BY customer_id;",
+    "followups": [
+      "CTE vs subquery?",
+      "When would a recursive CTE be useful?"
+    ],
+    "mistakes": [
+      "Assuming every CTE is materialized.",
+      "Using CTEs without checking the plan for performance-critical queries."
+    ],
+    "interview": "CTEs make complex SQL easier to structure and can express recursion. I still inspect the execution plan for important queries.",
+    "source": "V9",
+    "id": "v9-056"
+  },
+  {
+    "topic": "sql",
+    "level": "L2",
+    "title": "Explain EXPLAIN and execution plans.",
+    "tags": [
+      "SQL",
+      "Performance"
+    ],
+    "short": "An execution plan shows how the database intends to execute a query, such as scans, joins, sorts and index usage.",
+    "answer": "EXPLAIN helps identify full scans, poor join order, large row estimates, expensive sorts and missing indexes. EXPLAIN ANALYZE, where supported, compares the plan with actual execution behavior.",
+    "code": "EXPLAIN SELECT * FROM orders WHERE customer_id = 42;",
+    "followups": [
+      "Estimated vs actual rows?",
+      "Why can an index still be ignored?"
+    ],
+    "mistakes": [
+      "Optimizing from SQL text alone.",
+      "Assuming an index is always faster."
+    ],
+    "interview": "I use the execution plan to understand where database time and row processing occur. I compare estimates with actuals when the database supports it.",
+    "source": "V9",
+    "id": "v9-057"
+  },
+  {
+    "topic": "sql",
+    "level": "L3",
+    "title": "What causes a database deadlock?",
+    "tags": [
+      "Transactions",
+      "Deadlock"
+    ],
+    "short": "A deadlock occurs when transactions hold resources while waiting for resources held by each other, creating a cycle.",
+    "answer": "A common pattern is transaction A locking row 1 then waiting for row 2 while transaction B locks row 2 then waits for row 1. Databases detect cycles and abort one transaction.",
+    "code": "T1: lock(A) -> wait(B)\nT2: lock(B) -> wait(A)",
+    "followups": [
+      "How do you reduce deadlocks?",
+      "Why must applications retry some deadlock failures?"
+    ],
+    "mistakes": [
+      "Saying deadlocks mean the database is broken.",
+      "Retrying without making the transaction safe to repeat."
+    ],
+    "interview": "Deadlocks are cyclic resource waits. I reduce them through consistent lock ordering, short transactions and appropriate indexing, and I handle transient deadlock failures with bounded retries when safe.",
+    "source": "V9",
+    "id": "v9-058"
+  },
+  {
+    "topic": "sql",
+    "level": "L2",
+    "title": "What is database normalization?",
+    "tags": [
+      "Data Modeling",
+      "Normalization"
+    ],
+    "short": "Normalization structures data to reduce unnecessary duplication and update anomalies.",
+    "answer": "First, second and third normal forms progressively constrain dependencies and repeating groups. Practical systems sometimes denormalize intentionally for read performance, but the trade-off should be explicit.",
+    "code": "Customer(id, name)\nOrder(id, customer_id, total)\n-- customer data is not repeated in every order row",
+    "followups": [
+      "Normalization vs denormalization?",
+      "What is an update anomaly?"
+    ],
+    "mistakes": [
+      "Treating normalization as a performance rule.",
+      "Denormalizing without a consistency strategy."
+    ],
+    "interview": "Normalization improves integrity by reducing redundancy. I denormalize only when a measured access pattern justifies the additional consistency cost.",
+    "source": "V9",
+    "id": "v9-059"
+  },
+  {
+    "topic": "sql",
+    "level": "L2",
+    "title": "What is keyset pagination?",
+    "tags": [
+      "SQL",
+      "Pagination"
+    ],
+    "short": "Keyset pagination uses a stable ordered key as the cursor instead of skipping a large number of rows with OFFSET.",
+    "answer": "For large datasets, WHERE created_at < :lastCreatedAt ORDER BY created_at DESC LIMIT 50 can avoid scanning and discarding many preceding rows. The ordering must be deterministic, often using a unique tie-breaker.",
+    "code": "SELECT id, created_at, total\nFROM orders\nWHERE (created_at, id) < (:createdAt, :id)\nORDER BY created_at DESC, id DESC\nLIMIT 50;",
+    "followups": [
+      "OFFSET vs keyset pagination?",
+      "How do you handle duplicate timestamps?"
+    ],
+    "mistakes": [
+      "Using only a non-unique timestamp as the cursor.",
+      "Assuming keyset is convenient for arbitrary page jumps."
+    ],
+    "interview": "Keyset pagination is efficient for deep scrolling because the database seeks from a cursor rather than skipping large offsets.",
+    "source": "V9",
+    "id": "v9-060"
+  },
+  {
+    "topic": "sql",
+    "level": "L2",
+    "title": "What is the difference between DELETE, TRUNCATE and DROP?",
+    "tags": [
+      "SQL",
+      "DDL",
+      "DML"
+    ],
+    "short": "DELETE removes rows, TRUNCATE removes table data in a database-specific bulk operation, and DROP removes the table object itself.",
+    "answer": "DELETE can filter rows and typically generates row-level changes. TRUNCATE is generally faster for clearing a table but has database-specific transactional and identity behavior. DROP removes the schema object.",
+    "code": "DELETE FROM orders WHERE status = 'CANCELLED';\nTRUNCATE TABLE staging_orders;\nDROP TABLE old_orders;",
+    "followups": [
+      "Which operations can be rolled back?",
+      "How does TRUNCATE affect identity values in your database?"
+    ],
+    "mistakes": [
+      "Giving database-independent rollback claims.",
+      "Using TRUNCATE when row-level filtering is required."
+    ],
+    "interview": "DELETE, TRUNCATE and DROP have different scope and transactional semantics. For interviews I state that exact behavior depends on the database engine.",
+    "source": "V9",
+    "id": "v9-061"
+  },
+  {
+    "topic": "sql",
+    "level": "L3",
+    "title": "How do isolation levels affect concurrency?",
+    "tags": [
+      "Transactions",
+      "Isolation"
+    ],
+    "short": "Isolation levels define which concurrent transaction effects can be observed, trading consistency guarantees against concurrency and locking behavior.",
+    "answer": "READ COMMITTED prevents dirty reads but can allow non-repeatable reads. REPEATABLE READ provides stronger repeatability, while SERIALIZABLE provides the strongest standard isolation at a higher concurrency cost. Exact implementation varies by database.",
+    "code": "SET TRANSACTION ISOLATION LEVEL READ COMMITTED;",
+    "followups": [
+      "Dirty vs non-repeatable vs phantom read?",
+      "How does MVCC affect isolation?"
+    ],
+    "mistakes": [
+      "Claiming isolation levels behave identically across databases.",
+      "Ignoring the cost of stronger isolation."
+    ],
+    "interview": "Isolation is a concurrency contract. I choose the weakest level that satisfies business correctness, then validate the database-specific behavior and performance.",
+    "source": "V9",
+    "id": "v9-062"
+  },
+  {
+    "topic": "sql",
+    "level": "L2",
+    "title": "How would you find duplicate records?",
+    "tags": [
+      "SQL",
+      "Queries"
+    ],
+    "short": "GROUP BY with HAVING identifies duplicate key combinations; a window function can also mark individual duplicate rows.",
+    "answer": "For duplicate emails, GROUP BY email HAVING COUNT(*) > 1 identifies duplicated values. ROW_NUMBER can then select which rows to retain or remove.",
+    "code": "SELECT email, COUNT(*)\nFROM student\nGROUP BY email\nHAVING COUNT(*) > 1;",
+    "followups": [
+      "How would you delete duplicates while keeping one row?",
+      "How do you prevent duplicates after cleanup?"
+    ],
+    "mistakes": [
+      "Grouping by unrelated columns.",
+      "Cleaning duplicates without adding a unique constraint afterward."
+    ],
+    "interview": "I first identify duplicate business keys with GROUP BY/HAVING, then use a deterministic rule to retain one row and add a constraint if uniqueness is required.",
+    "source": "V9",
+    "id": "v9-063"
+  },
+  {
+    "id": "v91-088",
+    "topic": "sql",
+    "level": "L2",
+    "title": "How does a composite index work?",
+    "tags": [
+      "Indexes",
+      "Performance"
+    ],
+    "short": "A composite index indexes multiple columns in a defined order, and that order affects which predicates can efficiently use the index.",
+    "answer": "For an index on (customer_id, status, created_at), queries filtering by customer_id are well supported, while a query filtering only by created_at may not benefit as much.",
+    "code": "CREATE INDEX idx ON orders(customer_id, status, created_at);",
+    "followups": [
+      "What is the leftmost-prefix principle?",
+      "How do equality and range predicates affect column order?"
+    ],
+    "mistakes": [
+      "Choosing columns randomly in a composite index."
+    ],
+    "interview": "Column order matters. I design composite indexes from actual query predicates and sort requirements, not just from the list of columns in a table.",
+    "source": "V9.1"
+  },
+  {
+    "id": "v91-089",
+    "topic": "sql",
+    "level": "L3",
+    "title": "How do you read an SQL execution plan?",
+    "tags": [
+      "Indexes",
+      "Execution Plan"
+    ],
+    "short": "An execution plan shows how the optimizer intends to access tables, join rows and apply filters.",
+    "answer": "I look for full scans on large tables, unexpected join algorithms, poor row estimates, expensive sorts, repeated lookups and whether predicates use useful indexes. Then I compare estimated and actual behavior when available.",
+    "code": "EXPLAIN ANALYZE SELECT ...;",
+    "followups": [
+      "What is a cardinality estimate?",
+      "Why can an index still be ignored?"
+    ],
+    "mistakes": [
+      "Optimizing from SQL text without checking the plan."
+    ],
+    "interview": "I use the execution plan to identify the actual expensive operations and verify whether indexes, join order and row estimates match the workload.",
+    "source": "V9.1"
+  },
+  {
+    "id": "v91-090",
+    "topic": "sql",
+    "level": "L2",
+    "title": "What is a window function in SQL?",
+    "tags": [
+      "Window Functions",
+      "SQL"
+    ],
+    "short": "A window function calculates a value across related rows without collapsing them into one row per group.",
+    "answer": "Functions such as ROW_NUMBER, RANK, SUM and LAG can calculate rankings, running totals and previous-row comparisons while preserving detail rows.",
+    "code": "SELECT employee_id, salary, RANK() OVER(PARTITION BY dept_id ORDER BY salary DESC) FROM employee;",
+    "followups": [
+      "GROUP BY vs window function?",
+      "RANK vs DENSE_RANK?"
+    ],
+    "mistakes": [
+      "Using GROUP BY when row-level detail must be preserved."
+    ],
+    "interview": "Window functions calculate across a defined window while retaining individual rows, making them ideal for ranking and running calculations.",
+    "source": "V9.1"
+  },
+  {
+    "id": "v91-091",
+    "topic": "sql",
+    "level": "L2",
+    "title": "What is the difference between RANK, DENSE_RANK and ROW_NUMBER?",
+    "tags": [
+      "Window Functions",
+      "Ranking"
+    ],
+    "short": "ROW_NUMBER assigns unique sequential numbers; RANK leaves gaps after ties; DENSE_RANK does not leave gaps.",
+    "answer": "For salaries 100, 100, 90, ROW_NUMBER gives 1,2,3; RANK gives 1,1,3; DENSE_RANK gives 1,1,2.",
+    "code": "SELECT salary, ROW_NUMBER() OVER(ORDER BY salary DESC), RANK() OVER(ORDER BY salary DESC), DENSE_RANK() OVER(ORDER BY salary DESC) FROM employee;",
+    "followups": [
+      "Which should you use for top 3 distinct salaries?",
+      "How do ties affect pagination?"
+    ],
+    "mistakes": [
+      "Saying RANK and DENSE_RANK behave identically."
+    ],
+    "interview": "ROW_NUMBER is unique per row, RANK preserves tie positions with gaps, and DENSE_RANK preserves ties without gaps.",
+    "source": "V9.1"
+  },
+  {
+    "id": "v91-092",
+    "topic": "sql",
+    "level": "L2",
+    "title": "How do you find the top N records per group?",
+    "tags": [
+      "Window Functions",
+      "SQL"
+    ],
+    "short": "Use a window ranking function partitioned by the grouping key and filter the rank in an outer query.",
+    "answer": "For top three salaries per department, calculate ROW_NUMBER or DENSE_RANK over each department ordered by salary, then filter the result.",
+    "code": "SELECT * FROM (SELECT e.*, ROW_NUMBER() OVER(PARTITION BY dept_id ORDER BY salary DESC) rn FROM employee e) x WHERE rn <= 3;",
+    "followups": [
+      "ROW_NUMBER vs DENSE_RANK for ties?",
+      "How do you handle departments with fewer than N rows?"
+    ],
+    "mistakes": [
+      "Using a global LIMIT N."
+    ],
+    "interview": "Partition the ranking by the group and filter the rank in an outer query. This gives N rows or N distinct ranks per group depending on the chosen function.",
+    "source": "V9.1"
+  },
+  {
+    "id": "v91-093",
+    "topic": "sql",
+    "level": "L2",
+    "title": "What is a CTE and when would you use one?",
+    "tags": [
+      "CTE",
+      "SQL"
+    ],
+    "short": "A common table expression gives a named query expression that can simplify complex SQL.",
+    "answer": "CTEs improve readability, can support recursive queries and can make multi-step transformations easier to reason about. Whether they materialize depends on the database and query plan.",
+    "code": "WITH high_value AS (SELECT * FROM orders WHERE total > 1000) SELECT * FROM high_value;",
+    "followups": [
+      "CTE vs subquery?",
+      "When can a CTE hurt performance?"
+    ],
+    "mistakes": [
+      "Assuming every CTE is materialized."
+    ],
+    "interview": "A CTE is primarily a query-organization tool and can support recursion. I still inspect the execution plan rather than assuming a performance benefit.",
+    "source": "V9.1"
+  },
+  {
+    "id": "v91-094",
+    "topic": "sql",
+    "level": "L2",
+    "title": "What is a recursive CTE?",
+    "tags": [
+      "CTE",
+      "Hierarchy"
+    ],
+    "short": "A recursive CTE repeatedly evaluates a query to traverse hierarchical or graph-like data.",
+    "answer": "It has an anchor query and a recursive query joined by UNION ALL. It is useful for employee hierarchies, category trees and dependency chains.",
+    "code": "WITH RECURSIVE org AS (SELECT id, manager_id FROM employee WHERE manager_id IS NULL UNION ALL SELECT e.id, e.manager_id FROM employee e JOIN org o ON e.manager_id=o.id) SELECT * FROM org;",
+    "followups": [
+      "How do you prevent infinite recursion?",
+      "Can recursive CTEs traverse arbitrary graphs?"
+    ],
+    "mistakes": [
+      "Forgetting cycle handling in cyclic data."
+    ],
+    "interview": "Recursive CTEs are useful for hierarchical traversal, but cyclic data requires explicit safeguards or visited-state logic.",
+    "source": "V9.1"
+  },
+  {
+    "id": "v91-095",
+    "topic": "sql",
+    "level": "L2",
+    "title": "What is keyset pagination and why is it often better than OFFSET?",
+    "tags": [
+      "Pagination",
+      "Performance"
+    ],
+    "short": "Keyset pagination uses a stable ordering key from the last page instead of skipping N rows with OFFSET.",
+    "answer": "OFFSET can become expensive as the page number grows because the database may scan and discard many rows. Keyset pagination uses a predicate such as created_at/id > lastSeen and an appropriate index.",
+    "code": "SELECT * FROM orders WHERE (created_at,id) < (?,?) ORDER BY created_at DESC, id DESC LIMIT 50;",
+    "followups": [
+      "How do you handle non-unique sort keys?",
+      "When is OFFSET acceptable?"
+    ],
+    "mistakes": [
+      "Using only created_at when timestamps can tie."
+    ],
+    "interview": "Keyset pagination scales better for deep pages when the ordering columns are indexed and stable. I use a tie-breaker such as the primary key.",
+    "source": "V9.1"
+  },
+  {
+    "id": "v91-096",
+    "topic": "sql",
+    "level": "L2",
+    "title": "What is a database deadlock?",
+    "tags": [
+      "Transactions",
+      "Locking"
+    ],
+    "short": "A deadlock occurs when transactions hold resources while waiting for each other, creating a cycle.",
+    "answer": "For example, transaction A locks row 1 then waits for row 2 while transaction B locks row 2 then waits for row 1. Databases detect deadlocks and abort one transaction.",
+    "code": "T1: lock A -> wait B\nT2: lock B -> wait A",
+    "followups": [
+      "How do you prevent deadlocks?",
+      "Why should applications retry deadlock victims?"
+    ],
+    "mistakes": [
+      "Assuming increasing the transaction timeout fixes the cycle."
+    ],
+    "interview": "Deadlocks are cyclic waits. Consistent lock ordering, short transactions and appropriate indexes reduce them, while applications should safely retry transactions chosen as victims.",
+    "source": "V9.1"
+  },
+  {
+    "id": "v91-097",
+    "topic": "sql",
+    "level": "L2",
+    "title": "How can you reduce SQL deadlocks?",
+    "tags": [
+      "Transactions",
+      "Performance"
+    ],
+    "short": "Reduce lock duration, access rows in a consistent order and avoid unnecessary work inside transactions.",
+    "answer": "Good indexes reduce the rows locked or scanned. Consistent ordering prevents cycles, and smaller transactions reduce contention. Deadlock retry should be bounded and idempotent.",
+    "code": "Always update rows in ascending ID order",
+    "followups": [
+      "Can SELECT queries participate in locking?",
+      "Why do missing indexes increase contention?"
+    ],
+    "mistakes": [
+      "Adding random retries without fixing the lock order."
+    ],
+    "interview": "I reduce deadlocks through consistent access order, proper indexes, short transaction scope and safe retry of aborted transactions.",
+    "source": "V9.1"
+  },
+  {
+    "id": "v91-098",
+    "topic": "sql",
+    "level": "L2",
+    "title": "What is optimistic locking in JPA/SQL?",
+    "tags": [
+      "Concurrency",
+      "Locking"
+    ],
+    "short": "Optimistic locking detects concurrent updates using a version column rather than holding a long database lock.",
+    "answer": "A row includes a version. An update succeeds only if the version still matches the value read. If zero rows are updated, the application detects a conflict and decides whether to retry or report it.",
+    "code": "UPDATE product SET price=?, version=version+1 WHERE id=? AND version=?;",
+    "followups": [
+      "How is this different from SELECT FOR UPDATE?",
+      "What user experience should a conflict produce?"
+    ],
+    "mistakes": [
+      "Silently overwriting a concurrent update."
+    ],
+    "interview": "Optimistic locking is appropriate when conflicts are relatively rare and long blocking locks are undesirable.",
+    "source": "V9.1"
+  },
+  {
+    "id": "v91-099",
+    "topic": "sql",
+    "level": "L2",
+    "title": "What is SELECT FOR UPDATE?",
+    "tags": [
+      "Transactions",
+      "Locking"
+    ],
+    "short": "SELECT FOR UPDATE reads rows while acquiring locks intended to protect them from conflicting updates until the transaction ends.",
+    "answer": "It is useful when a transaction must read current state and then update it without another transaction changing the row in between. Lock duration and isolation behavior depend on the database.",
+    "code": "BEGIN; SELECT balance FROM account WHERE id=1 FOR UPDATE; UPDATE account SET balance=balance-100 WHERE id=1; COMMIT;",
+    "followups": [
+      "When is pessimistic locking appropriate?",
+      "What happens if another transaction requests the same lock?"
+    ],
+    "mistakes": [
+      "Using row locks for read-only queries."
+    ],
+    "interview": "SELECT FOR UPDATE is a pessimistic concurrency tool. It can protect a read-modify-write operation but increases contention if held too long.",
+    "source": "V9.1"
+  },
+  {
+    "id": "v91-100",
+    "topic": "sql",
+    "level": "L2",
+    "title": "What is transaction isolation and why does it matter?",
+    "tags": [
+      "Transactions",
+      "Isolation"
+    ],
+    "short": "Isolation controls which concurrent transaction effects a transaction can observe.",
+    "answer": "Higher isolation can prevent anomalies such as dirty, non-repeatable or phantom reads but may increase locking or coordination. The exact implementation differs by database.",
+    "code": "SET TRANSACTION ISOLATION LEVEL REPEATABLE READ;",
+    "followups": [
+      "Explain dirty vs non-repeatable vs phantom read.",
+      "Which isolation level does your database default to?"
+    ],
+    "mistakes": [
+      "Claiming SERIALIZABLE is always the best choice."
+    ],
+    "interview": "Isolation is a correctness/performance trade-off. I choose the lowest level that safely prevents the anomalies relevant to the business operation.",
+    "source": "V9.1"
+  },
+  {
+    "id": "v91-101",
+    "topic": "sql",
+    "level": "L2",
+    "title": "What is a dirty read?",
+    "tags": [
+      "Transactions",
+      "Isolation"
+    ],
+    "short": "A dirty read occurs when one transaction reads data written by another transaction that has not committed.",
+    "answer": "If the writer later rolls back, the reader observed a value that never became committed state. Isolation levels that prevent dirty reads are common in production systems.",
+    "code": "T1: UPDATE balance=50 (uncommitted)\nT2: SELECT balance -> 50",
+    "followups": [
+      "Which isolation levels allow dirty reads?",
+      "How is it different from a non-repeatable read?"
+    ],
+    "mistakes": [
+      "Calling a stale committed value a dirty read."
+    ],
+    "interview": "A dirty read observes uncommitted data. It is distinct from reading a committed value that later changes.",
+    "source": "V9.1"
+  },
+  {
+    "id": "v91-102",
+    "topic": "sql",
+    "level": "L2",
+    "title": "What is a phantom read?",
+    "tags": [
+      "Transactions",
+      "Isolation"
+    ],
+    "short": "A phantom read occurs when repeating a predicate query within a transaction returns a different set of rows because another transaction inserted or removed matching rows.",
+    "answer": "It differs from a non-repeatable read, which changes an already-read row. Predicate-level protection or serializable techniques are used when phantoms must be prevented.",
+    "code": "T1: SELECT COUNT(*) WHERE amount>100\nT2: INSERT amount=200\nT1: same SELECT -> different count",
+    "followups": [
+      "How do databases prevent phantoms?",
+      "What is predicate locking?"
+    ],
+    "mistakes": [
+      "Confusing phantoms with changed column values in an existing row."
+    ],
+    "interview": "A phantom is a change in the set of rows matching a predicate, often caused by concurrent inserts or deletes.",
+    "source": "V9.1"
+  },
+  {
+    "id": "v91-103",
+    "topic": "sql",
+    "level": "L2",
+    "title": "What is normalization and why is it used?",
+    "tags": [
+      "Data Modeling",
+      "Normalization"
+    ],
+    "short": "Normalization organizes data to reduce unnecessary duplication and update anomalies.",
+    "answer": "Common normal forms progressively constrain dependencies. Normalization improves consistency and write behavior but can require more joins for read-heavy workloads.",
+    "code": "Customer(id, name)\nOrder(id, customer_id, total)",
+    "followups": [
+      "When would you denormalize?",
+      "Explain 1NF, 2NF and 3NF."
+    ],
+    "mistakes": [
+      "Normalizing every system regardless of workload."
+    ],
+    "interview": "Normalization reduces redundancy and anomalies. I balance it against read performance and reporting requirements rather than treating it as an absolute rule.",
+    "source": "V9.1"
+  },
+  {
+    "id": "v91-104",
+    "topic": "sql",
+    "level": "L2",
+    "title": "What is a foreign key and what does it enforce?",
+    "tags": [
+      "Constraints",
+      "Data Modeling"
+    ],
+    "short": "A foreign key enforces that a child value refers to a valid parent key, subject to the configured actions.",
+    "answer": "It protects referential integrity and can define ON DELETE or ON UPDATE behavior. Foreign keys also influence delete/update costs and indexing choices.",
+    "code": "FOREIGN KEY (customer_id) REFERENCES customer(id)",
+    "followups": [
+      "CASCADE vs RESTRICT?",
+      "Should foreign keys always be indexed?"
+    ],
+    "mistakes": [
+      "Using application checks as the only integrity mechanism."
+    ],
+    "interview": "Foreign keys enforce referential integrity at the database boundary. I still design indexes and cascade behavior carefully for performance and safety.",
+    "source": "V9.1"
+  },
+  {
+    "id": "v91-105",
+    "topic": "sql",
+    "level": "L2",
+    "title": "What is a unique constraint vs a unique index?",
+    "tags": [
+      "Constraints",
+      "Indexes"
+    ],
+    "short": "Both can enforce uniqueness, but a constraint expresses a data rule while an index is primarily a physical access structure; exact behavior varies by database.",
+    "answer": "A UNIQUE constraint often creates or uses a unique index internally. Use constraints to express business invariants and indexes intentionally for access paths.",
+    "code": "ALTER TABLE users ADD CONSTRAINT uq_users_email UNIQUE(email);",
+    "followups": [
+      "Can a unique constraint contain NULL?",
+      "How do composite unique constraints work?"
+    ],
+    "mistakes": [
+      "Assuming NULL uniqueness behaves identically in every database."
+    ],
+    "interview": "A unique constraint expresses a uniqueness rule and is typically backed by an index. NULL semantics vary by database, so I verify the target engine.",
+    "source": "V9.1"
+  },
+  {
+    "id": "v91-106",
+    "topic": "sql",
+    "level": "L2",
+    "title": "What is a partial or filtered index?",
+    "tags": [
+      "Indexes",
+      "Performance"
+    ],
+    "short": "A partial index stores entries only for rows matching a predicate, reducing index size and focusing on a common query subset.",
+    "answer": "For example, an index on active users can exclude inactive rows. Support and syntax depend on the database.",
+    "code": "CREATE INDEX idx_active_users ON users(email) WHERE active = true;",
+    "followups": [
+      "When is a partial index useful?",
+      "Does MySQL support the same syntax?"
+    ],
+    "mistakes": [
+      "Assuming all database engines implement filtered indexes identically."
+    ],
+    "interview": "A partial index is valuable when queries repeatedly target a selective subset. The exact syntax and optimizer behavior are database-specific.",
+    "source": "V9.1"
+  },
+  {
+    "id": "v91-107",
+    "topic": "sql",
+    "level": "L2",
+    "title": "Why can functions on indexed columns hurt index usage?",
+    "tags": [
+      "Indexes",
+      "Performance"
+    ],
+    "short": "Wrapping an indexed column in a function can prevent the optimizer from using a normal index efficiently, depending on the database.",
+    "answer": "For example, WHERE LOWER(email)=? may require a functional index or a normalized stored value. Rewriting predicates to preserve sargability can help.",
+    "code": "-- Instead of: WHERE DATE(created_at)=?\n-- consider a range: created_at >= ? AND created_at < ?",
+    "followups": [
+      "What is a functional index?",
+      "What does sargable mean?"
+    ],
+    "mistakes": [
+      "Applying functions to indexed columns without checking the plan."
+    ],
+    "interview": "I prefer predicates that allow an index range scan, or I create an appropriate functional index when the database supports it.",
+    "source": "V9.1"
+  },
+  {
+    "id": "v91-108",
+    "topic": "sql",
+    "level": "L2",
+    "title": "What is a sargable query?",
+    "tags": [
+      "Indexes",
+      "Performance"
+    ],
+    "short": "A sargable predicate allows the database to use an index efficiently to locate qualifying rows.",
+    "answer": "Range and equality predicates on indexed columns are common examples. Wrapping columns in functions or leading wildcard patterns can reduce index usefulness.",
+    "code": "WHERE created_at >= ? AND created_at < ?",
+    "followups": [
+      "Why can LIKE %abc be expensive?",
+      "How do expressions affect index usage?"
+    ],
+    "mistakes": [
+      "Equating any indexed column with automatic index use."
+    ],
+    "interview": "Sargability is about writing predicates the optimizer can turn into efficient index access paths.",
+    "source": "V9.1"
+  },
+  {
+    "id": "v91-109",
+    "topic": "sql",
+    "level": "L2",
+    "title": "What is a database connection pool and why does pool size matter?",
+    "tags": [
+      "Performance",
+      "Connections"
+    ],
+    "short": "A connection pool reuses database connections and limits concurrent database work.",
+    "answer": "Too few connections can create application-side waiting; too many can overload the database with concurrent work. Pool sizing should consider database capacity, query latency and the number of application instances.",
+    "code": "maximumPoolSize=20",
+    "followups": [
+      "How do you size the pool across 10 instances?",
+      "What does pool exhaustion look like?"
+    ],
+    "mistakes": [
+      "Setting maximumPoolSize to hundreds on every pod."
+    ],
+    "interview": "Connection pools are both a performance optimization and a concurrency limit. The total pool capacity across instances must fit database capacity.",
+    "source": "V9.1"
+  },
+  {
+    "id": "v91-110",
+    "topic": "sql",
+    "level": "L3",
+    "title": "How do you optimize an N+1 query problem in SQL?",
+    "tags": [
+      "Performance",
+      "Joins"
+    ],
+    "short": "N+1 occurs when one query loads parent rows and then one additional query runs per parent.",
+    "answer": "Replace repeated lookups with an appropriate join, batch query or set-based operation. Verify the result cardinality and indexes because an overly broad join can create a different performance problem.",
+    "code": "SELECT o.id, c.name FROM orders o JOIN customer c ON c.id=o.customer_id;",
+    "followups": [
+      "N+1 in JPA vs plain JDBC?",
+      "When can a join be worse?"
+    ],
+    "mistakes": [
+      "Fixing N+1 with an enormous Cartesian join."
+    ],
+    "interview": "I replace row-by-row queries with set-based access such as joins or IN queries, then verify the execution plan and returned row count.",
+    "source": "V9.1"
+  },
+  {
+    "id": "v91-111",
+    "topic": "sql",
+    "level": "L2",
+    "title": "Why is SELECT * discouraged in production queries?",
+    "tags": [
+      "SQL",
+      "Performance"
+    ],
+    "short": "SELECT * can fetch unnecessary columns, increase network and memory usage, and make contracts unstable when schemas evolve.",
+    "answer": "Selecting only required columns can reduce I/O and allow covering indexes. It also makes application dependencies explicit.",
+    "code": "SELECT id, status, total FROM orders WHERE customer_id=?;",
+    "followups": [
+      "Can SELECT * ever be acceptable?",
+      "How can it affect covering indexes?"
+    ],
+    "mistakes": [
+      "Using SELECT * for large APIs or wide tables by default."
+    ],
+    "interview": "I select only the columns needed by the use case, especially for large or frequently executed queries.",
+    "source": "V9.1"
+  },
+  {
+    "id": "v91-112",
+    "topic": "sql",
+    "level": "L3",
+    "title": "How do you troubleshoot a query that suddenly became slow?",
+    "tags": [
+      "Performance",
+      "Production"
+    ],
+    "short": "Start by comparing the execution plan and runtime with the previously healthy state.",
+    "answer": "Check data growth, statistics, index changes, parameter sensitivity, blocking/locks, schema changes and resource saturation. Capture the exact query and parameters, then test a targeted fix and verify it under representative load.",
+    "code": "EXPLAIN ANALYZE <query>",
+    "followups": [
+      "What if the plan changed after data growth?",
+      "How can stale statistics matter?"
+    ],
+    "mistakes": [
+      "Adding an index without identifying the changed behavior."
+    ],
+    "interview": "I compare plans and runtime, then investigate data distribution, statistics, locks, indexes and resource saturation before changing the query.",
+    "source": "V9.1"
+  },
+  {
+    "id": "v91-113",
+    "topic": "sql",
+    "level": "L2",
+    "title": "What is query parameterization and why is it important?",
+    "tags": [
+      "SQL",
+      "Security"
+    ],
+    "short": "Parameterized queries separate SQL structure from user-supplied values and help prevent SQL injection.",
+    "answer": "The database driver binds values rather than concatenating them into SQL text. Parameterization also improves statement reuse in many systems.",
+    "code": "PreparedStatement ps=conn.prepareStatement(\"SELECT * FROM users WHERE email=?\");\nps.setString(1,email);",
+    "followups": [
+      "Can parameterization replace input validation?",
+      "What about dynamic table names?"
+    ],
+    "mistakes": [
+      "Building SQL by string concatenation with user input."
+    ],
+    "interview": "I use parameterized queries for values. Dynamic identifiers require a strict allowlist because they cannot usually be bound as ordinary parameters.",
+    "source": "V9.1"
+  },
+  {
+    "id": "v91-114",
+    "topic": "sql",
+    "level": "L2",
+    "title": "What is SQL injection?",
+    "tags": [
+      "SQL",
+      "Security"
+    ],
+    "short": "SQL injection occurs when untrusted input changes the structure of a SQL statement.",
+    "answer": "Concatenating user input into SQL can let an attacker alter predicates or execute unintended commands. Parameterized queries, least privilege and validation reduce the risk.",
+    "code": "BAD: \"SELECT ... WHERE name= + input + \"\nGOOD: PreparedStatement",
+    "followups": [
+      "How does least privilege help?",
+      "Can stored procedures prevent injection automatically?"
+    ],
+    "mistakes": [
+      "Relying only on escaping strings."
+    ],
+    "interview": "SQL injection is prevented primarily by separating SQL code from data using parameterized queries and by limiting database privileges.",
+    "source": "V9.1"
+  },
+  {
+    "id": "v91-115",
+    "topic": "sql",
+    "level": "L3",
+    "title": "How do indexes affect INSERT, UPDATE and DELETE performance?",
+    "tags": [
+      "Indexes",
+      "Performance"
+    ],
+    "short": "Indexes speed reads but add maintenance work to writes because affected index entries must also be updated.",
+    "answer": "A table with many indexes can make high-write workloads slower and increase storage. Indexes should be justified by important access patterns and monitored for usefulness.",
+    "code": "INSERT order -> update primary/index entries",
+    "followups": [
+      "How do you identify unused indexes?",
+      "What is index bloat?"
+    ],
+    "mistakes": [
+      "Adding an index for every query without considering writes."
+    ],
+    "interview": "Indexes are a trade-off: faster reads versus additional write, storage and maintenance cost.",
+    "source": "V9.1"
+  },
+  {
+    "id": "v91-116",
+    "topic": "sql",
+    "level": "L2",
+    "title": "What is partitioning in a database?",
+    "tags": [
+      "Partitioning",
+      "Scaling"
+    ],
+    "short": "Partitioning splits a logical table into smaller physical partitions based on a key such as date or tenant.",
+    "answer": "Partition pruning can reduce the amount of data scanned. Partitioning can also help maintenance and archival, but it does not automatically fix poorly designed queries.",
+    "code": "PARTITION BY RANGE(created_at)",
+    "followups": [
+      "Partitioning vs sharding?",
+      "How do you choose a partition key?"
+    ],
+    "mistakes": [
+      "Assuming partitioning makes every query faster."
+    ],
+    "interview": "Partitioning organizes one logical table into manageable pieces. It is useful when queries align with the partition key and data lifecycle.",
+    "source": "V9.1"
+  },
+  {
+    "id": "v91-117",
+    "topic": "sql",
+    "level": "L3",
+    "title": "Partitioning vs sharding",
+    "tags": [
+      "Partitioning",
+      "Scaling"
+    ],
+    "short": "Partitioning divides data within a database system; sharding distributes data across separate database nodes or clusters.",
+    "answer": "Partitioning can simplify pruning and maintenance within a database. Sharding adds horizontal capacity but requires routing, cross-shard query strategy and operational complexity.",
+    "code": "Partitioning: one cluster\nSharding: shard A/B/C",
+    "followups": [
+      "How do cross-shard joins work?",
+      "How do you choose a shard key?"
+    ],
+    "mistakes": [
+      "Using sharding before exhausting simpler scaling options."
+    ],
+    "interview": "Partitioning is often a database-local organization technique; sharding distributes ownership across nodes. Sharding should be driven by capacity and access-pattern requirements.",
+    "source": "V9.1"
   }
 ]

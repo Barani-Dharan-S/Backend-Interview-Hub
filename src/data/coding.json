@@ -481,7 +481,7 @@
     "subtopic": "Data Structures",
     "problem": "Determine whether a singly linked list contains a cycle.",
     "example": "Input: 1 -> 2 -> 3 -> 2 ...\nOutput: true",
-    "approach": "Use Floyd\u2019s tortoise-and-hare algorithm. Move slow one step and fast two steps; if they meet, a cycle exists.",
+    "approach": "Use Floyd’s tortoise-and-hare algorithm. Move slow one step and fast two steps; if they meet, a cycle exists.",
     "complexity": "Time: O(n)\nSpace: O(1).",
     "streams": null
   },
@@ -538,5 +538,572 @@
     "approach": "Push opening brackets onto a stack. For a closing bracket, check that the stack is non-empty and its top is the matching opening bracket.",
     "complexity": "Time: O(n)\nSpace: O(n) in the worst case.",
     "streams": null
+  },
+  {
+    "topic": "coding",
+    "level": "L1",
+    "title": "Reverse a string without using StringBuilder.reverse()",
+    "tags": [
+      "Strings",
+      "Basics"
+    ],
+    "short": "Reverse characters with a two-pointer swap.",
+    "answer": "Convert to a char array and swap from both ends.",
+    "code": "import java.util.*;\npublic class Main {\n    static String reverse(String input) {\n        char[] chars = input.toCharArray();\n        int left = 0, right = chars.length - 1;\n        while (left < right) { char t = chars[left]; chars[left] = chars[right]; chars[right] = t; left++; right--; }\n        return new String(chars);\n    }\n    public static void main(String[] args) { String input = \"backend\"; System.out.println(reverse(input)); }\n}",
+    "followups": [
+      "How would you reverse words instead?"
+    ],
+    "mistakes": [
+      "Using repeated concatenation in a loop."
+    ],
+    "interview": "I use two pointers on a char array. Time is O(n). Space is O(n) for the array.",
+    "source": "V9",
+    "id": "v9-080"
+  },
+  {
+    "topic": "coding",
+    "level": "L1",
+    "title": "Check whether two strings are anagrams",
+    "tags": [
+      "Strings",
+      "Hashing"
+    ],
+    "short": "Determine whether two strings contain identical character frequencies.",
+    "answer": "Count characters in the first string and decrement counts for the second.",
+    "code": "import java.util.*;\npublic class Main {\n    static boolean isAnagram(String a, String b) {\n        if (a.length() != b.length()) return false;\n        int[] count = new int[256];\n        for (char c : a.toCharArray()) count[c]++;\n        for (char c : b.toCharArray()) if (--count[c] < 0) return false;\n        return true;\n    }\n    public static void main(String[] args) { System.out.println(isAnagram(\"listen\", \"silent\")); }\n}",
+    "followups": [
+      "How would you handle Unicode?"
+    ],
+    "mistakes": [
+      "Using a fixed array for arbitrary Unicode without stating the assumption."
+    ],
+    "interview": "For ASCII input this is O(n) time and O(1) auxiliary space.",
+    "source": "V9",
+    "id": "v9-081"
+  },
+  {
+    "topic": "coding",
+    "level": "L2",
+    "title": "Find the first non-repeated character",
+    "tags": [
+      "Strings",
+      "HashMap"
+    ],
+    "short": "Return the first character whose frequency is one.",
+    "answer": "Count frequencies, then scan the original order.",
+    "code": "import java.util.*;\npublic class Main {\n    static Character firstNonRepeated(String input) {\n        Map<Character,Integer> freq = new HashMap<>();\n        for (char c : input.toCharArray()) freq.merge(c, 1, Integer::sum);\n        for (char c : input.toCharArray()) if (freq.get(c) == 1) return c;\n        return null;\n    }\n    public static void main(String[] args) { System.out.println(firstNonRepeated(\"swiss\")); }\n}",
+    "followups": [
+      "Can you solve it with streams?"
+    ],
+    "mistakes": [
+      "Losing original order when scanning only the map."
+    ],
+    "interview": "Two passes give O(n) time and O(k) space for k distinct characters.",
+    "source": "V9",
+    "id": "v9-082"
+  },
+  {
+    "topic": "coding",
+    "level": "L2",
+    "title": "Find duplicate elements in an integer array",
+    "tags": [
+      "Arrays",
+      "HashSet"
+    ],
+    "short": "Return values that occur more than once.",
+    "answer": "Track seen values and add repeats to a second set.",
+    "code": "import java.util.*;\npublic class Main {\n    static Set<Integer> duplicates(int[] nums) {\n        Set<Integer> seen = new HashSet<>(), dup = new LinkedHashSet<>();\n        for (int n : nums) if (!seen.add(n)) dup.add(n);\n        return dup;\n    }\n    public static void main(String[] args) { System.out.println(duplicates(new int[]{1,2,3,2,4,1,2})); }\n}",
+    "followups": [
+      "Can you do it without extra space?"
+    ],
+    "mistakes": [
+      "Adding every duplicate occurrence."
+    ],
+    "interview": "Average O(n) time and O(n) extra space.",
+    "source": "V9",
+    "id": "v9-083"
+  },
+  {
+    "topic": "coding",
+    "level": "L2",
+    "title": "Find the second largest distinct number",
+    "tags": [
+      "Arrays",
+      "Algorithms"
+    ],
+    "short": "Find the second largest distinct value without sorting.",
+    "answer": "Maintain largest and second-largest distinct values in one pass.",
+    "code": "import java.util.*;\npublic class Main {\n    static int secondLargest(int[] nums) {\n        Integer largest = null, second = null;\n        for (int n : nums) {\n            if (largest == null || n > largest) { second = largest; largest = n; }\n            else if (n != largest && (second == null || n > second)) second = n;\n        }\n        if (second == null) throw new IllegalArgumentException(\"Need two distinct values\");\n        return second;\n    }\n    public static void main(String[] args) { System.out.println(secondLargest(new int[]{10,5,8,10,7})); }\n}",
+    "followups": [
+      "How would you find the kth largest?"
+    ],
+    "mistakes": [
+      "Forgetting the distinct requirement."
+    ],
+    "interview": "One pass gives O(n) time and O(1) extra space.",
+    "source": "V9",
+    "id": "v9-084"
+  },
+  {
+    "topic": "coding",
+    "level": "L2",
+    "title": "Move all zeros to the end",
+    "tags": [
+      "Arrays",
+      "Two Pointers"
+    ],
+    "short": "Move zeros to the end while preserving non-zero order.",
+    "answer": "Compact non-zero values then fill the remaining positions with zeros.",
+    "code": "import java.util.*;\npublic class Main {\n    static void moveZeros(int[] nums) {\n        int write = 0;\n        for (int n : nums) if (n != 0) nums[write++] = n;\n        while (write < nums.length) nums[write++] = 0;\n    }\n    public static void main(String[] args) { int[] a={0,1,0,3,12}; moveZeros(a); System.out.println(Arrays.toString(a)); }\n}",
+    "followups": [
+      "Can you solve it using swaps?"
+    ],
+    "mistakes": [
+      "Changing the relative order of non-zero values."
+    ],
+    "interview": "O(n) time and O(1) extra space.",
+    "source": "V9",
+    "id": "v9-085"
+  },
+  {
+    "topic": "coding",
+    "level": "L2",
+    "title": "Find the missing number from 1 to n",
+    "tags": [
+      "Arrays",
+      "Bit Manipulation"
+    ],
+    "short": "Find the missing value from 1 through n.",
+    "answer": "XOR all expected values and all input values; equal values cancel.",
+    "code": "import java.util.*;\npublic class Main {\n    static int missing(int[] nums, int n) {\n        int result = 0;\n        for (int i=1;i<=n;i++) result ^= i;\n        for (int x: nums) result ^= x;\n        return result;\n    }\n    public static void main(String[] args) { System.out.println(missing(new int[]{1,2,4,5},5)); }\n}",
+    "followups": [
+      "Why use XOR instead of the sum formula?"
+    ],
+    "mistakes": [
+      "Applying it when duplicates exist."
+    ],
+    "interview": "O(n) time and O(1) extra space.",
+    "source": "V9",
+    "id": "v9-086"
+  },
+  {
+    "topic": "coding",
+    "level": "L2",
+    "title": "Find the maximum subarray sum",
+    "tags": [
+      "Arrays",
+      "Dynamic Programming"
+    ],
+    "short": "Find the largest sum of any contiguous subarray.",
+    "answer": "Kadane keeps the best subarray ending at the current position and the global best.",
+    "code": "import java.util.*;\npublic class Main {\n    static int maxSubArray(int[] nums) {\n        int current=nums[0], best=nums[0];\n        for(int i=1;i<nums.length;i++){ current=Math.max(nums[i],current+nums[i]); best=Math.max(best,current); }\n        return best;\n    }\n    public static void main(String[] args) { System.out.println(maxSubArray(new int[]{-2,1,-3,4,-1,2,1,-5,4})); }\n}",
+    "followups": [
+      "How do you return the subarray indices?"
+    ],
+    "mistakes": [
+      "Initializing best to zero fails for all-negative arrays."
+    ],
+    "interview": "Kadane is O(n) time and O(1) space.",
+    "source": "V9",
+    "id": "v9-087"
+  },
+  {
+    "topic": "coding",
+    "level": "L2",
+    "title": "Validate balanced parentheses",
+    "tags": [
+      "Stack",
+      "Strings"
+    ],
+    "short": "Check whether brackets are correctly nested and closed.",
+    "answer": "Push openings and match each closing bracket against the top of the stack.",
+    "code": "import java.util.*;\npublic class Main {\n    static boolean isBalanced(String s) {\n        Deque<Character> stack=new ArrayDeque<>();\n        Map<Character,Character> pairs=Map.of(')', '(', ']', '[', '}', '{');\n        for(char c:s.toCharArray()){\n            if(c=='('||c=='['||c=='{') stack.push(c);\n            else if(pairs.containsKey(c) && (stack.isEmpty() || stack.pop()!=pairs.get(c))) return false;\n        }\n        return stack.isEmpty();\n    }\n    public static void main(String[] args) { System.out.println(isBalanced(\"{[()]}\")); }\n}",
+    "followups": [
+      "Why use Deque instead of Stack?"
+    ],
+    "mistakes": [
+      "Checking only bracket counts."
+    ],
+    "interview": "O(n) time and O(n) worst-case space.",
+    "source": "V9",
+    "id": "v9-088"
+  },
+  {
+    "topic": "coding",
+    "level": "L3",
+    "title": "Implement an LRU cache",
+    "tags": [
+      "Collections",
+      "Design"
+    ],
+    "short": "Build a fixed-capacity cache that evicts the least recently used entry.",
+    "answer": "LinkedHashMap can maintain access order and remove the eldest entry.",
+    "code": "import java.util.*;\npublic class Main {\n    static class LruCache<K,V> extends LinkedHashMap<K,V> {\n        private final int capacity;\n        LruCache(int capacity){ super(capacity,0.75f,true); this.capacity=capacity; }\n        protected boolean removeEldestEntry(Map.Entry<K,V> e){ return size()>capacity; }\n    }\n    public static void main(String[] args){\n        LruCache<Integer,String> cache=new LruCache<>(2);\n        cache.put(1,\"A\"); cache.put(2,\"B\"); cache.get(1); cache.put(3,\"C\");\n        System.out.println(cache);\n    }\n}",
+    "followups": [
+      "How would you implement LRU from scratch?"
+    ],
+    "mistakes": [
+      "Forgetting access-order=true."
+    ],
+    "interview": "This implementation gives average O(1) get/put behavior from LinkedHashMap. Production concurrency and distributed requirements need additional design.",
+    "source": "V9",
+    "id": "v9-089"
+  },
+  {
+    "id": "v91-coding-01",
+    "topic": "coding",
+    "level": "L1",
+    "title": "Check whether a number is prime",
+    "tags": [
+      "Numbers",
+      "Basics"
+    ],
+    "short": "Determine whether an integer is prime.",
+    "answer": "Check divisibility only up to the square root because a composite number must have a factor at or below sqrt(n).",
+    "code": "import java.util.*;\n\npublic class Main {\n    static boolean isPrime(int n) {\n        if (n < 2) return false;\n        if (n % 2 == 0) return n == 2;\n        for (int i = 3; i <= n / i; i += 2) {\n            if (n % i == 0) return false;\n        }\n        return true;\n    }\n\n    public static void main(String[] args) {\n        int n = 29;\n        System.out.println(n + \" is prime: \" + isPrime(n));\n    }\n}",
+    "followups": "How would you print primes from 1 to N?",
+    "mistakes": "Checking every number from 2 to n is unnecessary.",
+    "interview": "Interview answer: I handle values below two and even numbers first, then test only odd divisors up to the square root.",
+    "source": "V9.1"
+  },
+  {
+    "id": "v91-coding-02",
+    "topic": "coding",
+    "level": "L1",
+    "title": "Calculate factorial of a number",
+    "tags": [
+      "Recursion",
+      "Numbers"
+    ],
+    "short": "Calculate n! using an iterative approach.",
+    "answer": "Factorial is the product from 1 through n. An iterative implementation avoids recursive stack growth.",
+    "code": "import java.util.*;\n\npublic class Main {\n    static long factorial(int n) {\n        if (n < 0) throw new IllegalArgumentException(\"n must be non-negative\");\n        long result = 1;\n        for (int i = 2; i <= n; i++) result *= i;\n        return result;\n    }\n\n    public static void main(String[] args) {\n        int n = 5;\n        System.out.println(n + \"! = \" + factorial(n));\n    }\n}",
+    "followups": "How would recursion change the solution?",
+    "mistakes": "What happens when long overflows?",
+    "interview": "Interview answer: I initialize the result to one and multiply by each value through n. In real code I would consider BigInteger when n can exceed long range.",
+    "source": "V9.1"
+  },
+  {
+    "id": "v91-coding-03",
+    "topic": "coding",
+    "level": "L1",
+    "title": "Print Fibonacci series up to N terms",
+    "tags": [
+      "Numbers",
+      "Iteration"
+    ],
+    "short": "Print the first N Fibonacci numbers.",
+    "answer": "Keep the previous two values and generate each next value iteratively.",
+    "code": "import java.util.*;\n\npublic class Main {\n    static void printFibonacci(int n) {\n        long a = 0, b = 1;\n        for (int i = 0; i < n; i++) {\n            System.out.print(a + (i + 1 == n ? \"\\n\" : \" \"));\n            long next = a + b;\n            a = b;\n            b = next;\n        }\n    }\n\n    public static void main(String[] args) {\n        printFibonacci(10);\n    }\n}",
+    "followups": "How would you generate Fibonacci with Streams?",
+    "mistakes": "How do you avoid overflow for large n?",
+    "interview": "Interview answer: I keep only the last two Fibonacci values, so each term is produced once with constant auxiliary space.",
+    "source": "V9.1"
+  },
+  {
+    "id": "v91-coding-04",
+    "topic": "coding",
+    "level": "L1",
+    "title": "Check whether a number is a palindrome",
+    "tags": [
+      "Numbers",
+      "Strings"
+    ],
+    "short": "Determine whether an integer reads the same forward and backward.",
+    "answer": "Reverse the digits mathematically and compare the reversed value with the original. Avoid converting to a string when the problem expects arithmetic.",
+    "code": "import java.util.*;\n\npublic class Main {\n    static boolean isPalindrome(int n) {\n        if (n < 0) return false;\n        int original = n;\n        long reversed = 0;\n        while (n > 0) {\n            reversed = reversed * 10 + n % 10;\n            n /= 10;\n        }\n        return reversed == original;\n    }\n\n    public static void main(String[] args) {\n        int n = 1221;\n        System.out.println(\"Palindrome: \" + isPalindrome(n));\n    }\n}",
+    "followups": "How do you handle negative numbers?",
+    "mistakes": "What if reversing causes integer overflow?",
+    "interview": "Interview answer: I reverse the digits mathematically and compare them with the original number, using constant extra space.",
+    "source": "V9.1"
+  },
+  {
+    "id": "v91-coding-05",
+    "topic": "coding",
+    "level": "L1",
+    "title": "Check whether a number is an Armstrong number",
+    "tags": [
+      "Numbers",
+      "Math"
+    ],
+    "short": "Check whether a number equals the sum of its digits raised to the number of digits.",
+    "answer": "First count the digits, then compute the powered sum and compare it with the original.",
+    "code": "import java.util.*;\n\npublic class Main {\n    static boolean isArmstrong(int n) {\n        if (n < 0) return false;\n        int original = n;\n        int digits = String.valueOf(n).length();\n        long sum = 0;\n        int value = n;\n        do {\n            int digit = value % 10;\n            sum += Math.pow(digit, digits);\n            value /= 10;\n        } while (value > 0);\n        return sum == original;\n    }\n\n    public static void main(String[] args) {\n        int n = 153;\n        System.out.println(n + \" is Armstrong: \" + isArmstrong(n));\n    }\n}",
+    "followups": "How would you avoid Math.pow?",
+    "mistakes": "Can the solution handle very large numbers?",
+    "interview": "Interview answer: I count the digits, raise each digit to that count and sum them. If the sum equals the original number, it is an Armstrong number.",
+    "source": "V9.1"
+  },
+  {
+    "id": "v91-coding-06",
+    "topic": "coding",
+    "level": "L2",
+    "title": "Solve the Two Sum problem",
+    "tags": [
+      "Arrays",
+      "HashMap"
+    ],
+    "short": "Find two indices whose values add up to a target.",
+    "answer": "Store previously seen values in a map from value to index. For each number, look for target minus the current value.",
+    "code": "import java.util.*;\n\npublic class Main {\n    static int[] twoSum(int[] nums, int target) {\n        Map<Integer, Integer> seen = new HashMap<>();\n        for (int i = 0; i < nums.length; i++) {\n            int need = target - nums[i];\n            if (seen.containsKey(need)) return new int[]{seen.get(need), i};\n            seen.put(nums[i], i);\n        }\n        return new int[0];\n    }\n\n    public static void main(String[] args) {\n        int[] result = twoSum(new int[]{2, 7, 11, 15}, 9);\n        System.out.println(Arrays.toString(result));\n    }\n}",
+    "followups": "How would sorting solve it?",
+    "mistakes": "Be careful not to reuse the same element twice.",
+    "interview": "Interview answer: A HashMap gives expected constant-time lookup for the complement, allowing a single pass instead of the O(n²) brute-force approach.",
+    "source": "V9.1"
+  },
+  {
+    "id": "v91-coding-07",
+    "topic": "coding",
+    "level": "L2",
+    "title": "Find the intersection of two arrays including duplicates",
+    "tags": [
+      "Arrays",
+      "HashMap"
+    ],
+    "short": "Return the common values while respecting how many times each value occurs.",
+    "answer": "Count values from one array, then consume those counts while scanning the second array.",
+    "code": "import java.util.*;\n\npublic class Main {\n    static List<Integer> intersect(int[] a, int[] b) {\n        Map<Integer, Integer> counts = new HashMap<>();\n        for (int n : a) counts.merge(n, 1, Integer::sum);\n        List<Integer> result = new ArrayList<>();\n        for (int n : b) {\n            int count = counts.getOrDefault(n, 0);\n            if (count > 0) {\n                result.add(n);\n                if (count == 1) counts.remove(n); else counts.put(n, count - 1);\n            }\n        }\n        return result;\n    }\n\n    public static void main(String[] args) {\n        System.out.println(intersect(new int[]{1,2,2,3}, new int[]{2,2,2,4}));\n    }\n}",
+    "followups": "How would sorting change the solution?",
+    "mistakes": "Do not use a Set because it loses multiplicity.",
+    "interview": "Interview answer: I store frequencies rather than just membership, so duplicate occurrences are preserved correctly.",
+    "source": "V9.1"
+  },
+  {
+    "id": "v91-coding-08",
+    "topic": "coding",
+    "level": "L2",
+    "title": "Remove duplicate characters while preserving order",
+    "tags": [
+      "Strings",
+      "HashSet"
+    ],
+    "short": "Remove repeated characters from a string while keeping the first occurrence order.",
+    "answer": "Use a LinkedHashSet to preserve insertion order, then build the result.",
+    "code": "import java.util.*;\n\npublic class Main {\n    static String removeDuplicates(String s) {\n        Set<Character> seen = new LinkedHashSet<>();\n        for (char c : s.toCharArray()) seen.add(c);\n        StringBuilder result = new StringBuilder();\n        for (char c : seen) result.append(c);\n        return result.toString();\n    }\n\n    public static void main(String[] args) {\n        String input = \"programming\";\n        System.out.println(\"Output: \" + removeDuplicates(input));\n    }\n}",
+    "followups": "How would you do this with a boolean array?",
+    "mistakes": "Why not HashSet if order matters?",
+    "interview": "Interview answer: LinkedHashSet gives uniqueness plus insertion order, and I build the final string from the retained characters.",
+    "source": "V9.1"
+  },
+  {
+    "id": "v91-coding-09",
+    "topic": "coding",
+    "level": "L2",
+    "title": "Find the majority element using Boyer-Moore",
+    "tags": [
+      "Arrays",
+      "Boyer Moore"
+    ],
+    "short": "Find the element occurring more than n/2 times when such an element exists.",
+    "answer": "Boyer-Moore treats different values as canceling pairs, leaving the majority candidate. Verify it if majority is not guaranteed.",
+    "code": "import java.util.*;\n\npublic class Main {\n    static Integer majority(int[] nums) {\n        int candidate = 0, count = 0;\n        for (int n : nums) {\n            if (count == 0) candidate = n;\n            count += n == candidate ? 1 : -1;\n        }\n        int frequency = 0;\n        for (int n : nums) if (n == candidate) frequency++;\n        return frequency > nums.length / 2 ? candidate : null;\n    }\n\n    public static void main(String[] args) {\n        System.out.println(\"Majority: \" + majority(new int[]{2,2,1,2,3,2,2}));\n    }\n}",
+    "followups": "How do you find elements occurring more than n/3?",
+    "mistakes": "Why does cancellation preserve a majority candidate?",
+    "interview": "Interview answer: Boyer-Moore keeps a candidate and balance. A true majority survives pairwise cancellation, and I verify the candidate when existence is not guaranteed.",
+    "source": "V9.1"
+  },
+  {
+    "id": "v91-coding-10",
+    "topic": "coding",
+    "level": "L2",
+    "title": "Find the kth largest element using Quickselect",
+    "tags": [
+      "Arrays",
+      "Quickselect"
+    ],
+    "short": "Find the kth largest value without fully sorting the array.",
+    "answer": "Use partitioning around a pivot so that the target index is isolated recursively or iteratively.",
+    "code": "import java.util.*;\n\npublic class Main {\n    static int kthLargest(int[] nums, int k) {\n        int target = nums.length - k;\n        int left = 0, right = nums.length - 1;\n        Random random = new Random(42);\n        while (left <= right) {\n            int pivotIndex = left + random.nextInt(right - left + 1);\n            pivotIndex = partition(nums, left, right, pivotIndex);\n            if (pivotIndex == target) return nums[pivotIndex];\n            if (pivotIndex < target) left = pivotIndex + 1;\n            else right = pivotIndex - 1;\n        }\n        throw new IllegalArgumentException(\"Invalid k\");\n    }\n\n    static int partition(int[] a, int left, int right, int pivotIndex) {\n        int pivot = a[pivotIndex];\n        int t=a[pivotIndex]; a[pivotIndex]=a[right]; a[right]=t;\n        int store=left;\n        for(int i=left;i<right;i++) if(a[i]<pivot){ t=a[i];a[i]=a[store];a[store]=t;store++; }\n        t=a[store];a[store]=a[right];a[right]=t;\n        return store;\n    }\n\n    public static void main(String[] args) {\n        System.out.println(kthLargest(new int[]{3,2,1,5,6,4}, 2));\n    }\n}",
+    "followups": "Heap vs Quickselect?",
+    "mistakes": "What causes the worst case?",
+    "interview": "Interview answer: Quickselect partitions the array and continues only on the side containing the target rank, giving average linear time without a full sort.",
+    "source": "V9.1"
+  },
+  {
+    "id": "v91-coding-11",
+    "topic": "coding",
+    "level": "L2",
+    "title": "Find the longest consecutive sequence in an array",
+    "tags": [
+      "Arrays",
+      "HashSet"
+    ],
+    "short": "Find the length of the longest consecutive integer sequence in an unsorted array.",
+    "answer": "Store all values in a set and only start counting when the previous value is absent.",
+    "code": "import java.util.*;\n\npublic class Main {\n    static int longest(int[] nums) {\n        Set<Integer> set = new HashSet<>();\n        for (int n : nums) set.add(n);\n        int best = 0;\n        for (int n : set) {\n            if (!set.contains(n - 1)) {\n                int current = n;\n                while (set.contains(current)) current++;\n                best = Math.max(best, current - n);\n            }\n        }\n        return best;\n    }\n\n    public static void main(String[] args) {\n        System.out.println(longest(new int[]{100,4,200,1,3,2}));\n    }\n}",
+    "followups": "How would sorting solve it?",
+    "mistakes": "Why is the expected complexity linear?",
+    "interview": "Interview answer: I use a set and only expand sequences from their smallest element, so each value participates in the counting work a constant number of times.",
+    "source": "V9.1"
+  },
+  {
+    "id": "v91-coding-12",
+    "topic": "coding",
+    "level": "L2",
+    "title": "Merge overlapping intervals",
+    "tags": [
+      "Arrays",
+      "Sorting"
+    ],
+    "short": "Merge intervals that overlap and return a non-overlapping list.",
+    "answer": "Sort by start time and merge each interval into the previous result when the ranges overlap.",
+    "code": "import java.util.*;\n\npublic class Main {\n    static int[][] merge(int[][] intervals) {\n        if (intervals.length == 0) return new int[0][];\n        Arrays.sort(intervals, Comparator.comparingInt(a -> a[0]));\n        List<int[]> result = new ArrayList<>();\n        for (int[] current : intervals) {\n            if (result.isEmpty() || result.get(result.size() - 1)[1] < current[0]) {\n                result.add(current.clone());\n            } else {\n                int[] last = result.get(result.size() - 1);\n                last[1] = Math.max(last[1], current[1]);\n            }\n        }\n        return result.toArray(new int[0][]);\n    }\n\n    public static void main(String[] args) {\n        int[][] result = merge(new int[][]{{1,3},{2,6},{8,10},{9,12}});\n        for (int[] interval : result) System.out.println(Arrays.toString(interval));\n    }\n}",
+    "followups": "What if intervals touch at endpoints?",
+    "mistakes": "Can it be done in linear time if already sorted?",
+    "interview": "Interview answer: Sorting by start makes it possible to decide overlap using only the last merged interval.",
+    "source": "V9.1"
+  },
+  {
+    "id": "v91-coding-13",
+    "topic": "coding",
+    "level": "L2",
+    "title": "Find the longest substring with at most K distinct characters",
+    "tags": [
+      "Sliding Window",
+      "HashMap"
+    ],
+    "short": "Find the maximum-length substring containing at most K distinct characters.",
+    "answer": "Maintain a sliding window and frequency map. Expand right, and shrink left while the number of distinct characters exceeds K.",
+    "code": "import java.util.*;\n\npublic class Main {\n    static int longest(String s, int k) {\n        if (k <= 0) return 0;\n        Map<Character, Integer> freq = new HashMap<>();\n        int left = 0, best = 0;\n        for (int right = 0; right < s.length(); right++) {\n            freq.merge(s.charAt(right), 1, Integer::sum);\n            while (freq.size() > k) {\n                char c = s.charAt(left++);\n                int count = freq.get(c);\n                if (count == 1) freq.remove(c); else freq.put(c, count - 1);\n            }\n            best = Math.max(best, right - left + 1);\n        }\n        return best;\n    }\n\n    public static void main(String[] args) {\n        System.out.println(longest(\"eceba\", 2));\n    }\n}",
+    "followups": "How does this differ from no-repeating-characters?",
+    "mistakes": "What if K is larger than the alphabet?",
+    "interview": "Interview answer: The sliding window grows until it violates the distinct-character limit, then moves its left boundary until the window is valid again.",
+    "source": "V9.1"
+  },
+  {
+    "id": "v91-coding-14",
+    "topic": "coding",
+    "level": "L2",
+    "title": "Find the minimum value in a rotated sorted array",
+    "tags": [
+      "Arrays",
+      "Binary Search"
+    ],
+    "short": "Find the minimum element in a sorted array rotated at an unknown pivot.",
+    "answer": "Compare the middle value with the right boundary to decide which half contains the minimum.",
+    "code": "import java.util.*;\n\npublic class Main {\n    static int findMin(int[] nums) {\n        int left = 0, right = nums.length - 1;\n        while (left < right) {\n            int mid = left + (right - left) / 2;\n            if (nums[mid] > nums[right]) left = mid + 1;\n            else right = mid;\n        }\n        return nums[left];\n    }\n\n    public static void main(String[] args) {\n        System.out.println(findMin(new int[]{4,5,6,7,0,1,2}));\n    }\n}",
+    "followups": "How do duplicates change the algorithm?",
+    "mistakes": "How would you find a target instead?",
+    "interview": "Interview answer: The sorted portions let me determine whether the minimum lies to the right or at/before mid, so the search interval halves each time.",
+    "source": "V9.1"
+  },
+  {
+    "id": "v91-coding-15",
+    "topic": "coding",
+    "level": "L2",
+    "title": "Find the first and last position of a target",
+    "tags": [
+      "Arrays",
+      "Binary Search"
+    ],
+    "short": "Return the first and last indices of a target in a sorted array with duplicates.",
+    "answer": "Run binary search twice: once biased left for the first occurrence and once biased right for the last occurrence.",
+    "code": "import java.util.*;\n\npublic class Main {\n    static int[] range(int[] nums, int target) {\n        return new int[]{bound(nums, target, true), bound(nums, target, false)};\n    }\n    static int bound(int[] a, int target, boolean first) {\n        int left=0,right=a.length-1,answer=-1;\n        while(left<=right){\n            int mid=left+(right-left)/2;\n            if(a[mid]==target){answer=mid;if(first)right=mid-1;else left=mid+1;}\n            else if(a[mid]<target)left=mid+1;else right=mid-1;\n        }\n        return answer;\n    }\n    public static void main(String[] args){\n        System.out.println(Arrays.toString(range(new int[]{1,2,2,2,3,4},2)));\n    }\n}",
+    "followups": "How would you count occurrences?",
+    "mistakes": "Why does ordinary binary search not give the first occurrence?",
+    "interview": "Interview answer: I modify binary search after finding the target so it continues toward the required boundary instead of stopping at the first match.",
+    "source": "V9.1"
+  },
+  {
+    "id": "v91-coding-16",
+    "topic": "coding",
+    "level": "L2",
+    "title": "Implement a stack with a minimum value in O(1)",
+    "tags": [
+      "Stack",
+      "Data Structures"
+    ],
+    "short": "Design a stack supporting push, pop, peek and retrieving the minimum in constant time.",
+    "answer": "Keep a second stack containing the minimum value seen at each relevant level.",
+    "code": "import java.util.*;\n\npublic class Main {\n    static class MinStack {\n        private final Deque<Integer> values = new ArrayDeque<>();\n        private final Deque<Integer> mins = new ArrayDeque<>();\n        void push(int x) { values.push(x); if (mins.isEmpty() || x <= mins.peek()) mins.push(x); }\n        int pop() { int x=values.pop(); if(x==mins.peek()) mins.pop(); return x; }\n        int peek() { return values.peek(); }\n        int min() { return mins.peek(); }\n    }\n    public static void main(String[] args){\n        MinStack s=new MinStack(); s.push(5);s.push(3);s.push(7);s.push(2);\n        System.out.println(\"Min: \"+s.min()); s.pop(); System.out.println(\"Min: \"+s.min());\n    }\n}",
+    "followups": "How can you reduce auxiliary space?",
+    "mistakes": "Why use <= when pushing duplicate minimums?",
+    "interview": "Interview answer: The second stack stores the minimum associated with the current stack state, so min retrieval remains constant time.",
+    "source": "V9.1"
+  },
+  {
+    "id": "v91-coding-17",
+    "topic": "coding",
+    "level": "L2",
+    "title": "Implement a binary search tree search",
+    "tags": [
+      "Trees",
+      "Binary Search Tree"
+    ],
+    "short": "Search for a value in a binary search tree.",
+    "answer": "At each node, compare the target with the node value and move left or right according to the BST ordering.",
+    "code": "import java.util.*;\n\npublic class Main {\n    static class Node { int value; Node left,right; Node(int value){this.value=value;} }\n    static boolean contains(Node root, int target) {\n        Node current=root;\n        while(current!=null){\n            if(current.value==target)return true;\n            current = target < current.value ? current.left : current.right;\n        }\n        return false;\n    }\n    public static void main(String[] args){\n        Node root=new Node(8);root.left=new Node(3);root.right=new Node(10);root.left.left=new Node(1);root.left.right=new Node(6);\n        System.out.println(contains(root,6));\n    }\n}",
+    "followups": "What happens in a skewed tree?",
+    "mistakes": "How would you insert a value?",
+    "interview": "Interview answer: BST ordering lets me discard half the subtree at each decision when the tree is balanced.",
+    "source": "V9.1"
+  },
+  {
+    "id": "v91-coding-18",
+    "topic": "coding",
+    "level": "L2",
+    "title": "Breadth-first traversal of a binary tree",
+    "tags": [
+      "Trees",
+      "Queue"
+    ],
+    "short": "Print a binary tree level by level.",
+    "answer": "Use a queue: enqueue the root, process one node, and enqueue its children.",
+    "code": "import java.util.*;\n\npublic class Main {\n    static class Node { int value; Node left,right; Node(int v){value=v;} }\n    static void bfs(Node root) {\n        if(root==null)return;\n        Queue<Node> queue=new ArrayDeque<>(); queue.offer(root);\n        while(!queue.isEmpty()){\n            int size=queue.size();\n            for(int i=0;i<size;i++){\n                Node n=queue.poll(); System.out.print(n.value+(i+1==size?\"\\n\":\" \"));\n                if(n.left!=null)queue.offer(n.left); if(n.right!=null)queue.offer(n.right);\n            }\n        }\n    }\n    public static void main(String[] args){\n        Node root=new Node(1);root.left=new Node(2);root.right=new Node(3);root.left.left=new Node(4);root.left.right=new Node(5);\n        bfs(root);\n    }\n}",
+    "followups": "DFS vs BFS?",
+    "mistakes": "How would you return List<List<Integer>> instead of printing?",
+    "interview": "Interview answer: BFS uses a queue to process nodes in level order, and I capture the current queue size to print each level separately.",
+    "source": "V9.1"
+  },
+  {
+    "id": "v91-coding-19",
+    "topic": "coding",
+    "level": "L2",
+    "title": "Detect a cycle in a linked list",
+    "tags": [
+      "Linked List",
+      "Two Pointers"
+    ],
+    "short": "Determine whether a singly linked list contains a cycle.",
+    "answer": "Floyd’s tortoise-and-hare algorithm moves one pointer by one step and another by two; if they meet, a cycle exists.",
+    "code": "import java.util.*;\n\npublic class Main {\n    static class Node { int value; Node next; Node(int v){value=v;} }\n    static boolean hasCycle(Node head) {\n        Node slow=head, fast=head;\n        while(fast!=null && fast.next!=null){\n            slow=slow.next; fast=fast.next.next;\n            if(slow==fast)return true;\n        }\n        return false;\n    }\n    public static void main(String[] args){\n        Node a=new Node(1),b=new Node(2),c=new Node(3); a.next=b;b.next=c;c.next=b;\n        System.out.println(\"Cycle: \"+hasCycle(a));\n    }\n}",
+    "followups": "How do you find the cycle entry?",
+    "mistakes": "Why is the space constant?",
+    "interview": "Interview answer: Two pointers moving at different speeds must meet inside a cycle, while the fast pointer reaches null when the list is acyclic.",
+    "source": "V9.1"
+  },
+  {
+    "id": "v91-coding-20",
+    "topic": "coding",
+    "level": "L2",
+    "title": "Find the middle node of a linked list",
+    "tags": [
+      "Linked List",
+      "Two Pointers"
+    ],
+    "short": "Return the middle node of a singly linked list.",
+    "answer": "Move slow one step and fast two steps. When fast reaches the end, slow is at the middle.",
+    "code": "import java.util.*;\n\npublic class Main {\n    static class Node { int value; Node next; Node(int v){value=v;} }\n    static Node middle(Node head) {\n        Node slow=head, fast=head;\n        while(fast!=null && fast.next!=null){ slow=slow.next; fast=fast.next.next; }\n        return slow;\n    }\n    public static void main(String[] args){\n        Node a=new Node(1),b=new Node(2),c=new Node(3),d=new Node(4),e=new Node(5);\n        a.next=b;b.next=c;c.next=d;d.next=e;\n        System.out.println(\"Middle: \"+middle(a).value);\n    }\n}",
+    "followups": "For an even-length list, which middle should be returned?",
+    "mistakes": "Can the list be traversed only once?",
+    "interview": "Interview answer: The fast pointer moves twice as quickly, so when it reaches the end the slow pointer has traversed half the list.",
+    "source": "V9.1"
+  },
+  {
+    "id": "v91-coding-21",
+    "topic": "coding",
+    "level": "L3",
+    "title": "Implement a thread-safe bounded producer-consumer queue",
+    "tags": [
+      "Concurrency",
+      "Blocking Queue"
+    ],
+    "short": "Implement a bounded queue where producers wait when full and consumers wait when empty.",
+    "answer": "Use a ReentrantLock with two Conditions: notFull and notEmpty. Conditions coordinate state changes without busy waiting.",
+    "code": "import java.util.*;\nimport java.util.concurrent.locks.*;\n\npublic class Main {\n    static class BoundedQueue<T> {\n        private final Object[] items;\n        private int head, tail, count;\n        private final Lock lock = new ReentrantLock();\n        private final Condition notFull = lock.newCondition();\n        private final Condition notEmpty = lock.newCondition();\n        BoundedQueue(int capacity){ items=new Object[capacity]; }\n        void put(T value) throws InterruptedException {\n            lock.lock();\n            try { while(count==items.length) notFull.await(); items[tail]=value; tail=(tail+1)%items.length; count++; notEmpty.signal(); }\n            finally { lock.unlock(); }\n        }\n        @SuppressWarnings(\"unchecked\") T take() throws InterruptedException {\n            lock.lock();\n            try { while(count==0) notEmpty.await(); T value=(T)items[head]; items[head]=null; head=(head+1)%items.length; count--; notFull.signal(); return value; }\n            finally { lock.unlock(); }\n        }\n    }\n    public static void main(String[] args) throws Exception {\n        BoundedQueue<Integer> q=new BoundedQueue<>(2); q.put(10);q.put(20);System.out.println(q.take());System.out.println(q.take());\n    }\n}",
+    "followups": "Why use while instead of if?",
+    "mistakes": "How would you use ArrayBlockingQueue instead?",
+    "interview": "Interview answer: I protect queue state with a lock and use conditions so producers wait while full and consumers wait while empty. The while checks are required because a condition wake-up does not guarantee the state is available.",
+    "source": "V9.1"
   }
 ]
