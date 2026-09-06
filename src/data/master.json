@@ -2567,7 +2567,7 @@
     "mistakes": [],
     "interview": "Propagation applies when the call crosses the Spring proxy boundary.",
     "source": "V3",
-    "topic": "java"
+    "topic": "springboot"
   },
   {
     "id": "adv-007",
@@ -2586,7 +2586,7 @@
     "mistakes": [],
     "interview": "The transaction interceptor decides rollback; controller advice formats the HTTP response.",
     "source": "V3",
-    "topic": "java"
+    "topic": "springboot"
   },
   {
     "id": "adv-008",
@@ -2605,7 +2605,7 @@
     "mistakes": [],
     "interview": "SpringApplication bootstraps the application context and infrastructure.",
     "source": "V3",
-    "topic": "java"
+    "topic": "springboot"
   },
   {
     "id": "spring-001",
@@ -5198,7 +5198,7 @@
     "mistakes": [],
     "interview": "Use Spring Security to enforce authentication (verifying identity, e.g. via JWT bearer tokens or OAuth2) and authorization (checking permissions, via role/method-level security like \\@PreAuthorize\\), enforce HTTPS, validate/sanitize input, apply rate limiting, and configure CORS appropriately rather than allowing all o",
     "source": "IQ300",
-    "topic": "springboot"
+    "topic": "security"
   },
   {
     "id": "iq-120",
@@ -5215,7 +5215,7 @@
     "mistakes": [],
     "interview": "A comprehensive framework for authentication and authorization in Spring applications, providing a filter-chain architecture that intercepts requests to enforce login mechanisms (form login, basic auth, OAuth2/JWT), method- and URL-level access control, CSRF protection, session management, and integration with identity",
     "source": "IQ300",
-    "topic": "springboot"
+    "topic": "security"
   },
   {
     "id": "iq-121",
