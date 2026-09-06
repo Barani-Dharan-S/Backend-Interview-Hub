@@ -1,4 +1,4 @@
-# Backend Interview Preparation — V10.5
+# Backend Interview Preparation — V10.6
 
 A focused, client-side Java Backend interview preparation site for GitHub Pages.
 
@@ -24,7 +24,7 @@ npm run build
 ```
 
 
-## V10.5 Content Expansion
+## V10.6 Content Expansion
 - Coding questions now include complete runnable Java programs instead of one-line snippets.
 - Programs include imports, `public class Main`, `main` method, sample data/input, implementation, and output-oriented demonstration.
 - Coding questions are grouped into focused subtopics.
@@ -33,12 +33,17 @@ npm run build
 - Added 30 SQL questions focused on execution plans, indexes, transactions, concurrency, pagination, modeling and performance.
 
 
-## V10.5 Coding Answer Completeness
+## V10.6 Coding Answer Completeness
 All coding questions now include a consistent problem statement, example, approach, complete runnable Java program, complexity analysis, interview delivery guidance, and follow-ups where applicable.
 
 
-## V10.5
+## V10.6
 - 897 total questions.
 - 75 coding problems with complete runnable Java programs.
 - 26 additional production scenario questions.
 - Coding and scenario records are merged into the master dataset used by the UI.
+
+
+## V10.6
+
+Content expansion to 1,000 backend interview questions. Focused on Java, Spring Boot, Microservices, SQL, Security and Coding, with additional L2/L3 depth and 18 new fully runnable Java coding programs.

@@ -2644,5 +2644,428 @@
     "scenario": "p99 latency increases because occasional GC pauses grow from tens of milliseconds to over a second after traffic increases.",
     "investigation": "Inspect allocation rate, heap occupancy, GC pause times, old-generation promotion and object-retention patterns. Correlate GC events with request latency.",
     "prevention": "Reduce unnecessary allocations, investigate retained objects, choose/tune the collector based on measured behavior, size the heap appropriately and validate changes with production-like load."
+  },
+  {
+    "id": "v10.6-java-01",
+    "topic": "java",
+    "level": "L3",
+    "title": "What is the happens-before relationship in Java?",
+    "tags": [
+      "JMM",
+      "Concurrency"
+    ],
+    "short": "Happens-before defines an ordering that guarantees visibility of one action to another thread.",
+    "answer": "It is established by synchronization actions such as unlocking then locking the same monitor, volatile writes/read pairs, thread start/join and other concurrency constructs. It is stronger than simply saying one line executed earlier in wall-clock time.",
+    "code": null,
+    "followups": [
+      "Does volatile create happens-before?",
+      "Can instruction reordering break an unsynchronized program?"
+    ],
+    "mistakes": [],
+    "interview": "Happens-before is the JMM visibility and ordering guarantee. I look for an established synchronization edge rather than assuming timing makes a write visible.",
+    "source": "V10.6",
+    "subtopic": "concurrency",
+    "subtopicName": "Concurrency & Multithreading",
+    "scenario": "Happens-before defines an ordering that guarantees visibility of one action to another thread.",
+    "investigation": "Start with metrics and traces, identify the failing boundary, compare latency/error rates and inspect resource saturation before changing configuration.",
+    "prevention": "Use explicit timeouts, bounded resources, automated tests and alerts around the failure mode so the same issue is detected early."
+  },
+  {
+    "id": "v10.6-java-02",
+    "topic": "java",
+    "level": "L3",
+    "title": "Why is double-checked locking safe only with volatile?",
+    "tags": [
+      "Concurrency",
+      "Singleton"
+    ],
+    "short": "The singleton reference must be volatile so publication and initialization writes are correctly ordered.",
+    "answer": "Without volatile, a thread can observe a non-null reference before all constructor writes are visible because publication and initialization can be reordered. Volatile prevents that unsafe publication pattern.",
+    "code": null,
+    "followups": [
+      "Why is the first null check needed?",
+      "Can an enum singleton avoid this complexity?"
+    ],
+    "mistakes": [],
+    "interview": "Double-checked locking needs a volatile instance reference. The volatile write publishes the fully initialized object with the required visibility and ordering guarantees.",
+    "source": "V10.6",
+    "subtopic": "concurrency",
+    "subtopicName": "Concurrency & Multithreading"
+  },
+  {
+    "id": "v10.6-java-03",
+    "topic": "java",
+    "level": "L3",
+    "title": "What is CAS and how is it used in Java concurrency?",
+    "tags": [
+      "Concurrency",
+      "Atomic"
+    ],
+    "short": "Compare-and-set atomically changes a value only if it still equals an expected value.",
+    "answer": "AtomicInteger and many concurrent structures use CAS loops. CAS avoids blocking for some operations, but high contention can cause repeated retries and does not automatically solve multi-variable invariants.",
+    "code": null,
+    "followups": [
+      "CAS vs synchronized?",
+      "What happens under high contention?"
+    ],
+    "mistakes": [],
+    "interview": "CAS is an optimistic atomic primitive: compare the current value with the expected value and update only when they match. Java atomics build lock-free algorithms from it.",
+    "source": "V10.6",
+    "subtopic": "concurrency",
+    "subtopicName": "Concurrency & Multithreading"
+  },
+  {
+    "id": "v10.6-java-04",
+    "topic": "java",
+    "level": "L3",
+    "title": "What is a lock-free algorithm?",
+    "tags": [
+      "Concurrency",
+      "Performance"
+    ],
+    "short": "A lock-free algorithm guarantees that system-wide progress continues even if individual threads are delayed.",
+    "answer": "It commonly uses atomic operations such as CAS. Lock-free does not mean wait-free: one thread can still starve while others make progress.",
+    "code": null,
+    "followups": [
+      "Lock-free vs wait-free?",
+      "Where are lock-free structures useful?"
+    ],
+    "mistakes": [],
+    "interview": "Lock-free means some thread can always make progress. I would use it only when the workload justifies the complexity and after measuring contention.",
+    "source": "V10.6",
+    "subtopic": "concurrency",
+    "subtopicName": "Concurrency & Multithreading"
+  },
+  {
+    "id": "v10.6-java-05",
+    "topic": "java",
+    "level": "L3",
+    "title": "What is the ABA problem?",
+    "tags": [
+      "Concurrency",
+      "CAS"
+    ],
+    "short": "ABA occurs when a value changes from A to B and back to A, making a CAS unable to detect that an intermediate change happened.",
+    "answer": "Algorithms can use stamped or versioned references to distinguish logically different states that have the same raw value. It matters in non-blocking algorithms and reused nodes.",
+    "code": null,
+    "followups": [
+      "How does AtomicStampedReference help?",
+      "Can ABA matter in ordinary HashMap code?"
+    ],
+    "mistakes": [],
+    "interview": "The ABA problem is a false assumption that A is unchanged because the current value is A. Version stamps can make the state transition detectable.",
+    "source": "V10.6",
+    "subtopic": "concurrency",
+    "subtopicName": "Concurrency & Multithreading"
+  },
+  {
+    "id": "v10.6-java-06",
+    "topic": "java",
+    "level": "L2",
+    "title": "How does String.intern() work?",
+    "tags": [
+      "String",
+      "JVM"
+    ],
+    "short": "intern returns a canonical pooled representation of a string.",
+    "answer": "The JVM maintains a string pool. Interning can reduce duplicate string storage when there are many repeated values, but excessive interning can increase pool pressure and should not be used as a generic performance trick.",
+    "code": null,
+    "followups": [
+      "Is the string pool on the heap?",
+      "When can interning hurt performance?"
+    ],
+    "mistakes": [],
+    "interview": "intern gives equal strings a shared canonical instance. I use it only when profiling and data characteristics justify it.",
+    "source": "V10.6",
+    "subtopic": "jvm",
+    "subtopicName": "JVM, Internals & Performance"
+  },
+  {
+    "id": "v10.6-java-07",
+    "topic": "java",
+    "level": "L3",
+    "title": "What is escape analysis in the JVM?",
+    "tags": [
+      "JVM",
+      "Performance"
+    ],
+    "short": "Escape analysis lets the JVM determine whether an object or lock escapes a method or thread.",
+    "answer": "The JIT can use that information for optimizations such as scalar replacement and lock elimination in suitable cases. It is an optimization, so application code should not depend on a specific optimization occurring.",
+    "code": null,
+    "followups": [
+      "What is scalar replacement?",
+      "Can all short-lived objects be stack allocated?"
+    ],
+    "mistakes": [],
+    "interview": "Escape analysis can let the JIT eliminate allocations or synchronization when it proves they are unnecessary. I treat it as a runtime optimization and verify with profiling.",
+    "source": "V10.6",
+    "subtopic": "jvm",
+    "subtopicName": "JVM, Internals & Performance"
+  },
+  {
+    "id": "v10.6-java-08",
+    "topic": "java",
+    "level": "L2",
+    "title": "How does JIT compilation improve Java performance?",
+    "tags": [
+      "JVM",
+      "JIT"
+    ],
+    "short": "The JIT compiles frequently executed bytecode into optimized native machine code at runtime.",
+    "answer": "It uses runtime profiling to optimize hot paths, inline calls, eliminate checks and apply speculative optimizations. Deoptimization can occur when assumptions stop being valid.",
+    "code": null,
+    "followups": [
+      "What is deoptimization?",
+      "Why are cold-start benchmarks different?"
+    ],
+    "mistakes": [],
+    "interview": "Java starts with bytecode execution and the JIT optimizes hot code using runtime information. Warm-up and workload shape therefore matter in benchmarks.",
+    "source": "V10.6",
+    "subtopic": "jvm",
+    "subtopicName": "JVM, Internals & Performance"
+  },
+  {
+    "id": "v10.6-java-09",
+    "topic": "java",
+    "level": "L2",
+    "title": "What is class initialization order in Java?",
+    "tags": [
+      "JVM",
+      "Classes"
+    ],
+    "short": "Class initialization runs static initialization when the class is first actively used.",
+    "answer": "Superclass initialization precedes subclass initialization, and static fields/blocks execute in textual order within a class. Initialization is synchronized by the JVM so the class is initialized once.",
+    "code": null,
+    "followups": [
+      "When is a class initialized?",
+      "Does loading equal initialization?"
+    ],
+    "mistakes": [],
+    "interview": "I remember the order as parent class initialization first, then the subclass, with static fields and blocks following source order.",
+    "source": "V10.6",
+    "subtopic": "jvm",
+    "subtopicName": "JVM, Internals & Performance"
+  },
+  {
+    "id": "v10.6-java-10",
+    "topic": "java",
+    "level": "L3",
+    "title": "How can ClassLoader leaks happen in application servers?",
+    "tags": [
+      "JVM",
+      "ClassLoader"
+    ],
+    "short": "A class loader can remain reachable through threads, ThreadLocals, static references or registered callbacks after an application is undeployed.",
+    "answer": "If the loader cannot be garbage collected, all classes and metadata it loaded may remain reachable, causing metaspace growth across redeployments.",
+    "code": null,
+    "followups": [
+      "How do you diagnose a classloader leak?",
+      "Why are thread pools involved?"
+    ],
+    "mistakes": [],
+    "interview": "In containers I look for long-lived threads, ThreadLocals, static caches and libraries that retain the application ClassLoader. Cleanup at shutdown is essential.",
+    "source": "V10.6",
+    "subtopic": "jvm",
+    "subtopicName": "JVM, Internals & Performance"
+  },
+  {
+    "id": "v10.6-java-11",
+    "topic": "java",
+    "level": "L2",
+    "title": "What is the difference between heap and metaspace?",
+    "tags": [
+      "JVM",
+      "Memory"
+    ],
+    "short": "Heap stores ordinary Java objects, while metaspace stores class metadata outside the traditional Java heap.",
+    "answer": "Heap pressure usually manifests as GC and heap OOMs. Metaspace pressure can grow when many classes or class loaders are created, especially in plugin or redeployment scenarios.",
+    "code": null,
+    "followups": [
+      "Can metaspace trigger OutOfMemoryError?",
+      "What causes metaspace growth?"
+    ],
+    "mistakes": [],
+    "interview": "Heap and metaspace are different memory areas with different failure symptoms. I check the correct metric before tuning -Xmx or metaspace settings.",
+    "source": "V10.6",
+    "subtopic": "jvm",
+    "subtopicName": "JVM, Internals & Performance"
+  },
+  {
+    "id": "v10.6-java-12",
+    "topic": "java",
+    "level": "L2",
+    "title": "How do records affect equality and immutability?",
+    "tags": [
+      "Java 17",
+      "Records"
+    ],
+    "short": "Records provide concise data carriers with generated accessors, equals, hashCode and toString based on components.",
+    "answer": "A record is shallowly immutable: its component references are final, but referenced mutable objects can still change. Records are excellent for value-like DTOs and keys.",
+    "code": null,
+    "followups": [
+      "Are records deeply immutable?",
+      "Can records extend a class?"
+    ],
+    "mistakes": [],
+    "interview": "Records reduce boilerplate for value objects. I still consider defensive copies when a component is a mutable collection or array.",
+    "source": "V10.6",
+    "subtopic": "java8",
+    "subtopicName": "Java 8+ & Functional"
+  },
+  {
+    "id": "v10.6-java-13",
+    "topic": "java",
+    "level": "L2",
+    "title": "What are sealed classes useful for?",
+    "tags": [
+      "Java 17",
+      "OOP"
+    ],
+    "short": "Sealed classes restrict which classes can extend or implement a type.",
+    "answer": "They make a closed hierarchy explicit and can improve modeling and exhaustiveness in pattern matching. The permitted subclasses must follow the sealing rules.",
+    "code": null,
+    "followups": [
+      "Sealed vs final?",
+      "Can a sealed class have an indirect subclass?"
+    ],
+    "mistakes": [],
+    "interview": "Sealed classes are useful when a domain has a deliberately closed set of variants, such as payment states or command results.",
+    "source": "V10.6",
+    "subtopic": "java8",
+    "subtopicName": "Java 8+ & Functional"
+  },
+  {
+    "id": "v10.6-java-14",
+    "topic": "java",
+    "level": "L2",
+    "title": "What is pattern matching for instanceof?",
+    "tags": [
+      "Java 17",
+      "Language Features"
+    ],
+    "short": "Pattern matching lets an instanceof test declare and bind the matching variable.",
+    "answer": "It reduces repetitive casts and makes conditional logic clearer. The variable's scope follows the compiler's flow analysis.",
+    "code": null,
+    "followups": [
+      "How does flow scoping work?",
+      "Does it eliminate ClassCastException?"
+    ],
+    "mistakes": [],
+    "interview": "It combines the type check and cast, improving readability without changing the underlying object model.",
+    "source": "V10.6",
+    "subtopic": "java8",
+    "subtopicName": "Java 8+ & Functional"
+  },
+  {
+    "id": "v10.6-java-15",
+    "topic": "java",
+    "level": "L3",
+    "title": "What is structured concurrency conceptually?",
+    "tags": [
+      "Java 21",
+      "Concurrency"
+    ],
+    "short": "Structured concurrency treats related concurrent tasks as one scoped unit of work.",
+    "answer": "The parent task controls the lifetime of child tasks, making cancellation, failure propagation and resource management easier to reason about. In Java it is associated with newer concurrency APIs and remains a design concept worth understanding.",
+    "code": null,
+    "followups": [
+      "How does cancellation propagate?",
+      "How is it different from CompletableFuture?"
+    ],
+    "mistakes": [],
+    "interview": "Structured concurrency makes concurrent subtasks have a clear parent scope, so failures and cancellation can be handled together instead of leaving orphaned work.",
+    "source": "V10.6",
+    "subtopic": "concurrency",
+    "subtopicName": "Concurrency & Multithreading"
+  },
+  {
+    "id": "v10.6-java-16",
+    "topic": "java",
+    "level": "L2",
+    "title": "How does interruption work in Java?",
+    "tags": [
+      "Concurrency",
+      "Threads"
+    ],
+    "short": "Interruption is a cooperative cancellation signal delivered to a thread.",
+    "answer": "Blocking methods may throw InterruptedException, while code should either propagate it or restore the interrupt flag after handling it. Swallowing interruption can break shutdown and cancellation behavior.",
+    "code": null,
+    "followups": [
+      "Why restore the flag?",
+      "Is interrupt the same as stopping a thread?"
+    ],
+    "mistakes": [],
+    "interview": "I treat interruption as a cancellation request. If I catch InterruptedException and cannot propagate it, I restore the interrupt flag with Thread.currentThread().interrupt().",
+    "source": "V10.6",
+    "subtopic": "concurrency",
+    "subtopicName": "Concurrency & Multithreading"
+  },
+  {
+    "id": "v10.6-java-19",
+    "topic": "java",
+    "level": "L2",
+    "title": "How do you benchmark Java code correctly?",
+    "tags": [
+      "Performance",
+      "JMH"
+    ],
+    "short": "Microbenchmarks must account for warm-up, JIT optimization, dead-code elimination and measurement noise.",
+    "answer": "JMH handles forks, warm-up iterations and measurement infrastructure. For production decisions, microbenchmarks should complement end-to-end profiling rather than replace it.",
+    "code": null,
+    "followups": [
+      "Why are warm-ups needed?",
+      "What is dead-code elimination?"
+    ],
+    "mistakes": [],
+    "interview": "I use JMH for small JVM benchmarks and real workload tests for service behavior. I never trust a single System.nanoTime loop as a performance conclusion.",
+    "source": "V10.6",
+    "subtopic": "java8",
+    "subtopicName": "Java 8+ & Functional"
+  },
+  {
+    "id": "v10.6-java-20",
+    "topic": "java",
+    "level": "L2",
+    "title": "What is the difference between fail-fast and fail-safe iteration?",
+    "tags": [
+      "Collections",
+      "Iterator"
+    ],
+    "short": "Fail-fast iterators may detect structural modification and throw ConcurrentModificationException, while snapshot or concurrent collections use different semantics.",
+    "answer": "Fail-fast is a best-effort bug detector, not a thread-safety guarantee. CopyOnWriteArrayList iterates over a snapshot, while concurrent collections provide their own weakly consistent semantics.",
+    "code": null,
+    "followups": [
+      "Why is ConcurrentModificationException not guaranteed?",
+      "How does CopyOnWriteArrayList work?"
+    ],
+    "mistakes": [],
+    "interview": "Concurrent iteration semantics depend on the collection. I never use fail-fast behavior as synchronization.",
+    "source": "V10.6",
+    "subtopic": "collections",
+    "subtopicName": "Collections & Generics"
+  },
+  {
+    "id": "v10.6-java-21",
+    "topic": "java",
+    "level": "L3",
+    "title": "What is the difference between AtomicReference and synchronized state?",
+    "tags": [
+      "Concurrency",
+      "Atomic"
+    ],
+    "short": "AtomicReference updates one reference atomically without a traditional monitor.",
+    "answer": "AtomicReference uses CAS-style updates for a single reference. It is useful for lock-free state transitions, but if several fields must change together a monitor or another coordinated design may be clearer.",
+    "code": null,
+    "followups": [
+      "What is compareAndSet?",
+      "When is synchronized simpler?"
+    ],
+    "mistakes": [
+      "Do not assume atomic reference updates make a multi-step workflow atomic."
+    ],
+    "interview": "I choose AtomicReference when one state reference can be updated atomically. If the invariant spans multiple mutable fields, I prefer a lock or immutable state object swapped as one reference.",
+    "source": "V10.6",
+    "subtopic": "concurrency",
+    "subtopicName": "Concurrency & Multithreading"
   }
 ]

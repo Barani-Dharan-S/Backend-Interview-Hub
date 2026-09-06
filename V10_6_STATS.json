@@ -1,0 +1,17 @@
+{
+  "version": "10.6.0",
+  "total_questions": 1000,
+  "new_questions": 103,
+  "new_focus": {
+    "java": 21,
+    "springboot": 21,
+    "microservices": 21,
+    "sql": 15,
+    "security": 10,
+    "coding": 18
+  },
+  "coding_total": 93,
+  "new_coding": 18,
+  "coding_programs_compiled": 93,
+  "production_scenarios": 100
+}

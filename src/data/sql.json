@@ -2461,5 +2461,344 @@
     "scenario": "A nightly batch update causes daytime API requests to wait on locked rows.",
     "investigation": "Inspect transaction duration, lock wait events, batch size and whether the batch scans or updates rows in a conflicting order.",
     "prevention": "Break work into smaller committed batches, process in deterministic key order, use appropriate indexes, schedule heavy work carefully and avoid holding locks while doing unrelated work."
+  },
+  {
+    "id": "v10.6-sql-01",
+    "topic": "sql",
+    "level": "L3",
+    "title": "What is a partial index and when is it useful?",
+    "tags": [
+      "Indexes",
+      "Performance"
+    ],
+    "short": "A partial or filtered index indexes only rows satisfying a predicate.",
+    "answer": "It can reduce index size and improve targeted queries when a stable subset is frequently accessed, such as active records. Support and syntax vary by database.",
+    "code": null,
+    "followups": [
+      "Can every database create one?",
+      "What happens when the predicate changes?"
+    ],
+    "mistakes": [],
+    "interview": "A partial index is useful when a query repeatedly targets a subset of rows. I verify that the optimizer can use it and that the predicate matches the workload.",
+    "source": "V10.6",
+    "subtopic": "indexes",
+    "subtopicName": "Indexes & Query Performance"
+  },
+  {
+    "id": "v10.6-sql-02",
+    "topic": "sql",
+    "level": "L3",
+    "title": "What is an index-only scan?",
+    "tags": [
+      "Indexes",
+      "Performance"
+    ],
+    "short": "An index-only scan can satisfy a query using index data without visiting the base table when visibility and required columns permit.",
+    "answer": "It can reduce I/O, especially for covering indexes, but maintenance cost and visibility rules still matter.",
+    "code": null,
+    "followups": [
+      "How is it different from a covering index?",
+      "Can MVCC prevent index-only scans?"
+    ],
+    "mistakes": [],
+    "interview": "Index-only access can be very fast for read-heavy queries, but I balance wider indexes against write and storage overhead.",
+    "source": "V10.6",
+    "subtopic": "indexes",
+    "subtopicName": "Indexes & Query Performance"
+  },
+  {
+    "id": "v10.6-sql-03",
+    "topic": "sql",
+    "level": "L2",
+    "title": "How do foreign keys affect performance?",
+    "tags": [
+      "Constraints",
+      "Performance"
+    ],
+    "short": "Foreign keys enforce referential integrity but can add work to inserts, updates and deletes.",
+    "answer": "Referenced and referencing columns should be indexed appropriately for common operations. Constraints are usually worth the correctness they provide, but large cascades need careful design.",
+    "code": null,
+    "followups": [
+      "Why index a foreign key?",
+      "Can foreign keys cause locking?"
+    ],
+    "mistakes": [],
+    "interview": "Foreign keys protect correctness. I index the referencing columns when needed and pay attention to cascade behavior on large tables.",
+    "source": "V10.6",
+    "subtopic": "indexes",
+    "subtopicName": "Indexes & Query Performance"
+  },
+  {
+    "id": "v10.6-sql-04",
+    "topic": "sql",
+    "level": "L2",
+    "title": "What is a database connection leak?",
+    "tags": [
+      "Connection Pool",
+      "Production"
+    ],
+    "short": "A connection leak occurs when application code fails to return a borrowed connection to the pool.",
+    "answer": "Over time active connections reach the pool maximum and requests wait or fail. Proper resource management, pool leak detection and metrics help diagnose it.",
+    "code": null,
+    "followups": [
+      "How do you detect leaks?",
+      "Why does traffic make the issue worse?"
+    ],
+    "mistakes": [],
+    "interview": "I correlate pool active count and pending acquisition with code paths. In JDBC, try-with-resources and framework-managed transactions prevent many leaks.",
+    "source": "V10.6",
+    "subtopic": "transactions",
+    "subtopicName": "ACID & Concurrency"
+  },
+  {
+    "id": "v10.6-sql-05",
+    "topic": "sql",
+    "level": "L3",
+    "title": "What is MVCC?",
+    "tags": [
+      "Transactions",
+      "Concurrency"
+    ],
+    "short": "Multi-version concurrency control lets readers and writers operate using versions of rows rather than blocking each other in the simplest cases.",
+    "answer": "Different databases implement MVCC differently. It improves read/write concurrency but creates version cleanup and isolation considerations.",
+    "code": null,
+    "followups": [
+      "How does MVCC affect vacuum/cleanup?",
+      "Does MVCC eliminate locks?"
+    ],
+    "mistakes": [],
+    "interview": "MVCC maintains multiple row versions so readers can see a consistent snapshot while writers proceed. Exact semantics depend on the database.",
+    "source": "V10.6",
+    "subtopic": "transactions",
+    "subtopicName": "ACID & Concurrency"
+  },
+  {
+    "id": "v10.6-sql-06",
+    "topic": "sql",
+    "level": "L3",
+    "title": "How do database locks escalate?",
+    "tags": [
+      "Transactions",
+      "Locking"
+    ],
+    "short": "Some database systems can replace many fine-grained locks with a coarser lock to reduce lock-management overhead.",
+    "answer": "Escalation can increase contention and cause unexpected blocking during large operations. Batching and appropriate indexes can reduce the number of locked rows.",
+    "code": null,
+    "followups": [
+      "Can you disable escalation?",
+      "How does batching help?"
+    ],
+    "mistakes": [],
+    "interview": "Lock escalation is a database-specific behavior where many locks can become a larger lock. Large batch operations should be designed with this possibility in mind.",
+    "source": "V10.6",
+    "subtopic": "transactions",
+    "subtopicName": "ACID & Concurrency",
+    "scenario": "Some database systems can replace many fine-grained locks with a coarser lock to reduce lock-management overhead.",
+    "investigation": "Start with metrics and traces, identify the failing boundary, compare latency/error rates and inspect resource saturation before changing configuration.",
+    "prevention": "Use explicit timeouts, bounded resources, automated tests and alerts around the failure mode so the same issue is detected early."
+  },
+  {
+    "id": "v10.6-sql-07",
+    "topic": "sql",
+    "level": "L1",
+    "title": "What is parameterized SQL and why does it matter?",
+    "tags": [
+      "SQL Injection",
+      "Security"
+    ],
+    "short": "Parameterized SQL separates SQL structure from user-supplied values.",
+    "answer": "Prepared statements prevent input from being interpreted as SQL syntax and can also improve plan reuse depending on the database.",
+    "code": null,
+    "followups": [
+      "Does escaping replace parameterization?",
+      "What about dynamic table names?"
+    ],
+    "mistakes": [],
+    "interview": "I always bind user values through prepared statements or framework parameters. String concatenation is both unsafe and harder to maintain.",
+    "source": "V10.6",
+    "subtopic": "fundamentals",
+    "subtopicName": "Query Fundamentals"
+  },
+  {
+    "id": "v10.6-sql-08",
+    "topic": "sql",
+    "level": "L2",
+    "title": "How do you implement an idempotent database command?",
+    "tags": [
+      "Transactions",
+      "Idempotency"
+    ],
+    "short": "An idempotent command produces the same final state when safely repeated.",
+    "answer": "Use unique business keys, upserts, compare-and-set updates or state checks. The database constraint should enforce uniqueness where correctness depends on it.",
+    "code": null,
+    "followups": [
+      "How do you handle duplicate requests?",
+      "Can DELETE be idempotent?"
+    ],
+    "mistakes": [],
+    "interview": "I prefer database-enforced uniqueness and conditional state transitions over relying only on application checks.",
+    "source": "V10.6",
+    "subtopic": "transactions",
+    "subtopicName": "ACID & Concurrency"
+  },
+  {
+    "id": "v10.6-sql-09",
+    "topic": "sql",
+    "level": "L2",
+    "title": "What is a covering query and why can SELECT * be harmful?",
+    "tags": [
+      "Indexes",
+      "Performance"
+    ],
+    "short": "A query is easier to cover when it selects only the columns it needs.",
+    "answer": "SELECT * increases network payload, deserialization and the set of columns an index must cover. Schema changes can also unexpectedly change its cost.",
+    "code": null,
+    "followups": [
+      "Can SELECT * prevent index-only access?",
+      "Why is it a maintenance risk?"
+    ],
+    "mistakes": [],
+    "interview": "I select only required columns, especially in APIs and hot queries. It keeps payloads smaller and gives indexes a realistic chance to cover the access path.",
+    "source": "V10.6",
+    "subtopic": "indexes",
+    "subtopicName": "Indexes & Query Performance"
+  },
+  {
+    "id": "v10.6-sql-10",
+    "topic": "sql",
+    "level": "L2",
+    "title": "How do you find gaps in sequential IDs?",
+    "tags": [
+      "SQL",
+      "Window Functions"
+    ],
+    "short": "Gaps can be identified by comparing each value with the previous value or expected sequence.",
+    "answer": "Window functions such as LAG can reveal discontinuities. Whether gaps are a problem depends on the ID generation strategy; auto-increment sequences commonly allow gaps.",
+    "code": null,
+    "followups": [
+      "Why are auto-increment IDs not gapless?",
+      "When do you need a business sequence?"
+    ],
+    "mistakes": [],
+    "interview": "I can detect gaps with LAG or generate an expected sequence, but I don't assume IDs must be gapless because transaction rollback and sequence caching can create gaps.",
+    "source": "V10.6",
+    "subtopic": "fundamentals",
+    "subtopicName": "Query Fundamentals"
+  },
+  {
+    "id": "v10.6-sql-11",
+    "topic": "sql",
+    "level": "L2",
+    "title": "What is a recursive CTE useful for?",
+    "tags": [
+      "CTE",
+      "SQL"
+    ],
+    "short": "A recursive CTE queries hierarchical or graph-like relationships such as employee-manager trees.",
+    "answer": "It has an anchor query and a recursive member and needs termination conditions. Large or cyclic graphs require safeguards.",
+    "code": null,
+    "followups": [
+      "How do you prevent cycles?",
+      "When would you use application traversal?"
+    ],
+    "mistakes": [],
+    "interview": "Recursive CTEs are useful for hierarchies when the database supports them. I define a clear termination condition and protect against cycles or excessive depth.",
+    "source": "V10.6",
+    "subtopic": "fundamentals",
+    "subtopicName": "Query Fundamentals"
+  },
+  {
+    "id": "v10.6-sql-12",
+    "topic": "sql",
+    "level": "L3",
+    "title": "How do you detect skew in a database workload?",
+    "tags": [
+      "Performance",
+      "Operations"
+    ],
+    "short": "Skew means a small subset of keys or queries receives disproportionate traffic or data.",
+    "answer": "Hot tenants, hot rows and popular products can create contention even when average load looks healthy. Partitioning, caching and sharding strategies must account for skew.",
+    "code": null,
+    "followups": [
+      "How do hot rows cause contention?",
+      "How do you mitigate hot keys?"
+    ],
+    "mistakes": [],
+    "interview": "I look at per-key and per-query distributions, not just averages. A hot key can dominate latency and CPU even when overall utilization seems moderate.",
+    "source": "V10.6",
+    "subtopic": "indexes",
+    "subtopicName": "Indexes & Query Performance",
+    "scenario": "Skew means a small subset of keys or queries receives disproportionate traffic or data.",
+    "investigation": "Start with metrics and traces, identify the failing boundary, compare latency/error rates and inspect resource saturation before changing configuration.",
+    "prevention": "Use explicit timeouts, bounded resources, automated tests and alerts around the failure mode so the same issue is detected early."
+  },
+  {
+    "id": "v10.6-sql-13",
+    "topic": "sql",
+    "level": "L3",
+    "title": "What is write amplification in databases?",
+    "tags": [
+      "Performance",
+      "Storage"
+    ],
+    "short": "Write amplification means the system performs more physical or logical writes than the application-level change suggests.",
+    "answer": "Indexes, WAL/redo logs, page splits, replication and secondary structures can all add write work. It affects storage, I/O and throughput.",
+    "code": null,
+    "followups": [
+      "How do indexes increase writes?",
+      "How does page fragmentation matter?"
+    ],
+    "mistakes": [],
+    "interview": "Adding indexes improves reads but increases write amplification because every insert/update may maintain more structures.",
+    "source": "V10.6",
+    "subtopic": "indexes",
+    "subtopicName": "Indexes & Query Performance"
+  },
+  {
+    "id": "v10.6-sql-14",
+    "topic": "sql",
+    "level": "L3",
+    "title": "How do you safely change a primary key type on a large table?",
+    "tags": [
+      "Migration",
+      "Schema"
+    ],
+    "short": "Changing a key type on a large table can require coordinated changes to indexes, foreign keys and application code.",
+    "answer": "Use an expand-and-contract migration: introduce the new key representation, backfill, support both versions, migrate references, validate, then remove the old structure.",
+    "code": null,
+    "followups": [
+      "How do you backfill without blocking?",
+      "What about foreign keys?"
+    ],
+    "mistakes": [],
+    "interview": "I avoid an in-place destructive change. I introduce the new representation compatibly, migrate references incrementally and remove the old key only after all consumers are moved.",
+    "source": "V10.6",
+    "subtopic": "modeling",
+    "subtopicName": "Data Modeling & Constraints"
+  },
+  {
+    "id": "v10.6-sql-15",
+    "topic": "sql",
+    "level": "L3",
+    "title": "How do you investigate lock contention without a deadlock?",
+    "tags": [
+      "Locking",
+      "Production"
+    ],
+    "short": "Blocking can occur even without a cycle when one transaction holds a resource for a long time.",
+    "answer": "Identify the blocking session, SQL statement, transaction age and lock resource. Reduce transaction scope, add indexes, commit sooner or redesign access patterns.",
+    "code": null,
+    "followups": [
+      "How do you find the blocker?",
+      "Can a slow query cause blocking?"
+    ],
+    "mistakes": [],
+    "interview": "A lock wait is not automatically a deadlock. I find the blocker, inspect why its transaction is long, and fix the root cause rather than merely increasing timeouts.",
+    "source": "V10.6",
+    "subtopic": "transactions",
+    "subtopicName": "ACID & Concurrency",
+    "scenario": "Blocking can occur even without a cycle when one transaction holds a resource for a long time.",
+    "investigation": "Start with metrics and traces, identify the failing boundary, compare latency/error rates and inspect resource saturation before changing configuration.",
+    "prevention": "Use explicit timeouts, bounded resources, automated tests and alerts around the failure mode so the same issue is detected early."
   }
 ]

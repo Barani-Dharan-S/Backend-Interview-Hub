@@ -10743,7 +10743,7 @@
     "source": "V9",
     "id": "v9-080",
     "problem": "Reverse a string without using StringBuilder.reverse()",
-    "example": "",
+    "example": "Input: \"hello\"\nOutput: \"olleh\"",
     "approach": "Convert to a char array and swap from both ends.",
     "complexity": "Analyze time and space complexity for the implementation shown.",
     "streams": ""
@@ -10769,7 +10769,7 @@
     "source": "V9",
     "id": "v9-081",
     "problem": "Check whether two strings are anagrams",
-    "example": "",
+    "example": "Input: \"listen\", \"silent\"\nOutput: true",
     "approach": "Count characters in the first string and decrement counts for the second.",
     "complexity": "Analyze time and space complexity for the implementation shown.",
     "streams": ""
@@ -10795,7 +10795,7 @@
     "source": "V9",
     "id": "v9-082",
     "problem": "Find the first non-repeated character",
-    "example": "",
+    "example": "Input: \"swiss\"\nOutput: \"w\"",
     "approach": "Count frequencies, then scan the original order.",
     "complexity": "Analyze time and space complexity for the implementation shown.",
     "streams": ""
@@ -10821,7 +10821,7 @@
     "source": "V9",
     "id": "v9-083",
     "problem": "Find duplicate elements in an integer array",
-    "example": "",
+    "example": "Input: [1,2,3,1,2]\nOutput: [1,2]",
     "approach": "Track seen values and add repeats to a second set.",
     "complexity": "Analyze time and space complexity for the implementation shown.",
     "streams": ""
@@ -10847,7 +10847,7 @@
     "source": "V9",
     "id": "v9-084",
     "problem": "Find the second largest distinct number",
-    "example": "",
+    "example": "Input: [10,5,8,10,3]\nOutput: 8",
     "approach": "Maintain largest and second-largest distinct values in one pass.",
     "complexity": "Analyze time and space complexity for the implementation shown.",
     "streams": ""
@@ -10873,7 +10873,7 @@
     "source": "V9",
     "id": "v9-085",
     "problem": "Move all zeros to the end",
-    "example": "",
+    "example": "Input: [0,1,0,3,12]\nOutput: [1,3,12,0,0]",
     "approach": "Compact non-zero values then fill the remaining positions with zeros.",
     "complexity": "Analyze time and space complexity for the implementation shown.",
     "streams": ""
@@ -10899,7 +10899,7 @@
     "source": "V9",
     "id": "v9-086",
     "problem": "Find the missing number from 1 to n",
-    "example": "",
+    "example": "Input: [3,0,1]\nOutput: 2",
     "approach": "XOR all expected values and all input values; equal values cancel.",
     "complexity": "Analyze time and space complexity for the implementation shown.",
     "streams": ""
@@ -10925,7 +10925,7 @@
     "source": "V9",
     "id": "v9-087",
     "problem": "Find the maximum subarray sum",
-    "example": "",
+    "example": "Input: [-2,1,-3,4,-1,2,1,-5,4]\nOutput: 6",
     "approach": "Kadane keeps the best subarray ending at the current position and the global best.",
     "complexity": "Analyze time and space complexity for the implementation shown.",
     "streams": ""
@@ -10951,7 +10951,7 @@
     "source": "V9",
     "id": "v9-088",
     "problem": "Validate balanced parentheses",
-    "example": "",
+    "example": "Input: \"({[]})\"\nOutput: true",
     "approach": "Push openings and match each closing bracket against the top of the stack.",
     "complexity": "Analyze time and space complexity for the implementation shown.",
     "streams": ""
@@ -10977,7 +10977,7 @@
     "source": "V9",
     "id": "v9-089",
     "problem": "Implement an LRU cache",
-    "example": "",
+    "example": "Capacity: 2; operations: put(1,1), put(2,2), get(1), put(3,3)\nOutput: 1",
     "approach": "LinkedHashMap can maintain access order and remove the eldest entry.",
     "complexity": "Analyze time and space complexity for the implementation shown.",
     "streams": ""
@@ -13573,7 +13573,7 @@
     "interview": "Interview answer: I handle values below two and even numbers first, then test only odd divisors up to the square root.",
     "source": "V9.1",
     "problem": "Check whether a number is prime",
-    "example": "",
+    "example": "Input: 29\nOutput: true",
     "approach": "Check divisibility only up to the square root because a composite number must have a factor at or below sqrt(n).",
     "complexity": "Analyze time and space complexity for the implementation shown.",
     "streams": ""
@@ -13595,7 +13595,7 @@
     "interview": "Interview answer: I initialize the result to one and multiply by each value through n. In real code I would consider BigInteger when n can exceed long range.",
     "source": "V9.1",
     "problem": "Calculate factorial of a number",
-    "example": "",
+    "example": "Input: 5\nOutput: 120",
     "approach": "Factorial is the product from 1 through n. An iterative implementation avoids recursive stack growth.",
     "complexity": "Analyze time and space complexity for the implementation shown.",
     "streams": ""
@@ -13617,7 +13617,7 @@
     "interview": "Interview answer: I keep only the last two Fibonacci values, so each term is produced once with constant auxiliary space.",
     "source": "V9.1",
     "problem": "Print Fibonacci series up to N terms",
-    "example": "",
+    "example": "Input: 7 terms\nOutput: 0 1 1 2 3 5 8",
     "approach": "Keep the previous two values and generate each next value iteratively.",
     "complexity": "Analyze time and space complexity for the implementation shown.",
     "streams": ""
@@ -13639,7 +13639,7 @@
     "interview": "Interview answer: I reverse the digits mathematically and compare them with the original number, using constant extra space.",
     "source": "V9.1",
     "problem": "Check whether a number is a palindrome",
-    "example": "",
+    "example": "Input: 121\nOutput: true",
     "approach": "Reverse the digits mathematically and compare the reversed value with the original. Avoid converting to a string when the problem expects arithmetic.",
     "complexity": "Analyze time and space complexity for the implementation shown.",
     "streams": ""
@@ -13661,7 +13661,7 @@
     "interview": "Interview answer: I count the digits, raise each digit to that count and sum them. If the sum equals the original number, it is an Armstrong number.",
     "source": "V9.1",
     "problem": "Check whether a number is an Armstrong number",
-    "example": "",
+    "example": "Input: 153\nOutput: true",
     "approach": "First count the digits, then compute the powered sum and compare it with the original.",
     "complexity": "Analyze time and space complexity for the implementation shown.",
     "streams": ""
@@ -13683,7 +13683,7 @@
     "interview": "Interview answer: A HashMap gives expected constant-time lookup for the complement, allowing a single pass instead of the O(n²) brute-force approach.",
     "source": "V9.1",
     "problem": "Solve the Two Sum problem",
-    "example": "",
+    "example": "Input: [2,7,11,15], target=9\nOutput: [0,1]",
     "approach": "Store previously seen values in a map from value to index. For each number, look for target minus the current value.",
     "complexity": "Analyze time and space complexity for the implementation shown.",
     "streams": ""
@@ -13705,7 +13705,7 @@
     "interview": "Interview answer: I store frequencies rather than just membership, so duplicate occurrences are preserved correctly.",
     "source": "V9.1",
     "problem": "Find the intersection of two arrays including duplicates",
-    "example": "",
+    "example": "Input: [1,2,2,1], [2,2]\nOutput: [2]",
     "approach": "Count values from one array, then consume those counts while scanning the second array.",
     "complexity": "Analyze time and space complexity for the implementation shown.",
     "streams": ""
@@ -13727,7 +13727,7 @@
     "interview": "Interview answer: LinkedHashSet gives uniqueness plus insertion order, and I build the final string from the retained characters.",
     "source": "V9.1",
     "problem": "Remove duplicate characters while preserving order",
-    "example": "",
+    "example": "Input: \"programming\"\nOutput: \"progamin\"",
     "approach": "Use a LinkedHashSet to preserve insertion order, then build the result.",
     "complexity": "Analyze time and space complexity for the implementation shown.",
     "streams": ""
@@ -13749,7 +13749,7 @@
     "interview": "Interview answer: Boyer-Moore keeps a candidate and balance. A true majority survives pairwise cancellation, and I verify the candidate when existence is not guaranteed.",
     "source": "V9.1",
     "problem": "Find the majority element using Boyer-Moore",
-    "example": "",
+    "example": "Input: [2,2,1,1,1,2,2]\nOutput: 2",
     "approach": "Boyer-Moore treats different values as canceling pairs, leaving the majority candidate. Verify it if majority is not guaranteed.",
     "complexity": "Analyze time and space complexity for the implementation shown.",
     "streams": ""
@@ -13771,7 +13771,7 @@
     "interview": "Interview answer: Quickselect partitions the array and continues only on the side containing the target rank, giving average linear time without a full sort.",
     "source": "V9.1",
     "problem": "Find the kth largest element using Quickselect",
-    "example": "",
+    "example": "Input: [3,2,1,5,6,4], k=2\nOutput: 5",
     "approach": "Use partitioning around a pivot so that the target index is isolated recursively or iteratively.",
     "complexity": "Analyze time and space complexity for the implementation shown.",
     "streams": ""
@@ -13793,7 +13793,7 @@
     "interview": "Interview answer: I use a set and only expand sequences from their smallest element, so each value participates in the counting work a constant number of times.",
     "source": "V9.1",
     "problem": "Find the longest consecutive sequence in an array",
-    "example": "",
+    "example": "Input: [100,4,200,1,3,2]\nOutput: 4",
     "approach": "Store all values in a set and only start counting when the previous value is absent.",
     "complexity": "Analyze time and space complexity for the implementation shown.",
     "streams": ""
@@ -13815,7 +13815,7 @@
     "interview": "Interview answer: Sorting by start makes it possible to decide overlap using only the last merged interval.",
     "source": "V9.1",
     "problem": "Merge overlapping intervals",
-    "example": "",
+    "example": "Input: sample data for \"Merge overlapping intervals\"\nOutput: expected result according to the problem statement.",
     "approach": "Sort by start time and merge each interval into the previous result when the ranges overlap.",
     "complexity": "Analyze time and space complexity for the implementation shown.",
     "streams": ""
@@ -13837,7 +13837,7 @@
     "interview": "Interview answer: The sliding window grows until it violates the distinct-character limit, then moves its left boundary until the window is valid again.",
     "source": "V9.1",
     "problem": "Find the longest substring with at most K distinct characters",
-    "example": "",
+    "example": "Input: \"abcabcbb\"\nOutput: 3",
     "approach": "Maintain a sliding window and frequency map. Expand right, and shrink left while the number of distinct characters exceeds K.",
     "complexity": "Analyze time and space complexity for the implementation shown.",
     "streams": ""
@@ -13859,7 +13859,7 @@
     "interview": "Interview answer: The sorted portions let me determine whether the minimum lies to the right or at/before mid, so the search interval halves each time.",
     "source": "V9.1",
     "problem": "Find the minimum value in a rotated sorted array",
-    "example": "",
+    "example": "Input: [4,5,6,7,0,1,2], target=0\nOutput: 4",
     "approach": "Compare the middle value with the right boundary to decide which half contains the minimum.",
     "complexity": "Analyze time and space complexity for the implementation shown.",
     "streams": ""
@@ -13881,7 +13881,7 @@
     "interview": "Interview answer: I modify binary search after finding the target so it continues toward the required boundary instead of stopping at the first match.",
     "source": "V9.1",
     "problem": "Find the first and last position of a target",
-    "example": "",
+    "example": "Input: [5,7,7,8,8,10], target=8\nOutput: [3,4]",
     "approach": "Run binary search twice: once biased left for the first occurrence and once biased right for the last occurrence.",
     "complexity": "Analyze time and space complexity for the implementation shown.",
     "streams": ""
@@ -13903,7 +13903,7 @@
     "interview": "Interview answer: The second stack stores the minimum associated with the current stack state, so min retrieval remains constant time.",
     "source": "V9.1",
     "problem": "Implement a stack with a minimum value in O(1)",
-    "example": "",
+    "example": "Operations: push(2), push(0), push(3), getMin()\nOutput: 0",
     "approach": "Keep a second stack containing the minimum value seen at each relevant level.",
     "complexity": "Analyze time and space complexity for the implementation shown.",
     "streams": ""
@@ -13925,7 +13925,7 @@
     "interview": "Interview answer: BST ordering lets me discard half the subtree at each decision when the tree is balanced.",
     "source": "V9.1",
     "problem": "Implement a binary search tree search",
-    "example": "",
+    "example": "BST: [4,2,7,1,3], target=2\nOutput: node 2",
     "approach": "At each node, compare the target with the node value and move left or right according to the BST ordering.",
     "complexity": "Analyze time and space complexity for the implementation shown.",
     "streams": ""
@@ -13947,7 +13947,7 @@
     "interview": "Interview answer: BFS uses a queue to process nodes in level order, and I capture the current queue size to print each level separately.",
     "source": "V9.1",
     "problem": "Breadth-first traversal of a binary tree",
-    "example": "",
+    "example": "Tree: [3,9,20,null,null,15,7]\nOutput: [3,9,20,15,7]",
     "approach": "Use a queue: enqueue the root, process one node, and enqueue its children.",
     "complexity": "Analyze time and space complexity for the implementation shown.",
     "streams": ""
@@ -13969,7 +13969,7 @@
     "interview": "Interview answer: Two pointers moving at different speeds must meet inside a cycle, while the fast pointer reaches null when the list is acyclic.",
     "source": "V9.1",
     "problem": "Detect a cycle in a linked list",
-    "example": "",
+    "example": "List: 3 -> 2 -> 0 -> -4 -> back to 2\nOutput: true",
     "approach": "Floyd’s tortoise-and-hare algorithm moves one pointer by one step and another by two; if they meet, a cycle exists.",
     "complexity": "Analyze time and space complexity for the implementation shown.",
     "streams": ""
@@ -13991,7 +13991,7 @@
     "interview": "Interview answer: The fast pointer moves twice as quickly, so when it reaches the end the slow pointer has traversed half the list.",
     "source": "V9.1",
     "problem": "Find the middle node of a linked list",
-    "example": "",
+    "example": "List: 1 -> 2 -> 3 -> 4 -> 5\nOutput: 3",
     "approach": "Move slow one step and fast two steps. When fast reaches the end, slow is at the middle.",
     "complexity": "Analyze time and space complexity for the implementation shown.",
     "streams": ""
@@ -14013,7 +14013,7 @@
     "interview": "Interview answer: I protect queue state with a lock and use conditions so producers wait while full and consumers wait while empty. The while checks are required because a condition wake-up does not guarantee the state is available.",
     "source": "V9.1",
     "problem": "Implement a thread-safe bounded producer-consumer queue",
-    "example": "",
+    "example": "Capacity: 2; producers add 1,2,3; consumer removes items in FIFO order.",
     "approach": "Use a ReentrantLock with two Conditions: notFull and notEmpty. Conditions coordinate state changes without busy waiting.",
     "complexity": "Analyze time and space complexity for the implementation shown.",
     "streams": ""
@@ -18846,5 +18846,2520 @@
     "scenario": "p99 latency increases because occasional GC pauses grow from tens of milliseconds to over a second after traffic increases.",
     "investigation": "Inspect allocation rate, heap occupancy, GC pause times, old-generation promotion and object-retention patterns. Correlate GC events with request latency.",
     "prevention": "Reduce unnecessary allocations, investigate retained objects, choose/tune the collector based on measured behavior, size the heap appropriately and validate changes with production-like load."
+  },
+  {
+    "id": "v10.6-java-01",
+    "topic": "java",
+    "level": "L3",
+    "title": "What is the happens-before relationship in Java?",
+    "tags": [
+      "JMM",
+      "Concurrency"
+    ],
+    "short": "Happens-before defines an ordering that guarantees visibility of one action to another thread.",
+    "answer": "It is established by synchronization actions such as unlocking then locking the same monitor, volatile writes/read pairs, thread start/join and other concurrency constructs. It is stronger than simply saying one line executed earlier in wall-clock time.",
+    "code": null,
+    "followups": [
+      "Does volatile create happens-before?",
+      "Can instruction reordering break an unsynchronized program?"
+    ],
+    "mistakes": [],
+    "interview": "Happens-before is the JMM visibility and ordering guarantee. I look for an established synchronization edge rather than assuming timing makes a write visible.",
+    "source": "V10.6",
+    "subtopic": "concurrency",
+    "subtopicName": "Concurrency & Multithreading",
+    "scenario": "Happens-before defines an ordering that guarantees visibility of one action to another thread.",
+    "investigation": "Start with metrics and traces, identify the failing boundary, compare latency/error rates and inspect resource saturation before changing configuration.",
+    "prevention": "Use explicit timeouts, bounded resources, automated tests and alerts around the failure mode so the same issue is detected early."
+  },
+  {
+    "id": "v10.6-java-02",
+    "topic": "java",
+    "level": "L3",
+    "title": "Why is double-checked locking safe only with volatile?",
+    "tags": [
+      "Concurrency",
+      "Singleton"
+    ],
+    "short": "The singleton reference must be volatile so publication and initialization writes are correctly ordered.",
+    "answer": "Without volatile, a thread can observe a non-null reference before all constructor writes are visible because publication and initialization can be reordered. Volatile prevents that unsafe publication pattern.",
+    "code": null,
+    "followups": [
+      "Why is the first null check needed?",
+      "Can an enum singleton avoid this complexity?"
+    ],
+    "mistakes": [],
+    "interview": "Double-checked locking needs a volatile instance reference. The volatile write publishes the fully initialized object with the required visibility and ordering guarantees.",
+    "source": "V10.6",
+    "subtopic": "concurrency",
+    "subtopicName": "Concurrency & Multithreading"
+  },
+  {
+    "id": "v10.6-java-03",
+    "topic": "java",
+    "level": "L3",
+    "title": "What is CAS and how is it used in Java concurrency?",
+    "tags": [
+      "Concurrency",
+      "Atomic"
+    ],
+    "short": "Compare-and-set atomically changes a value only if it still equals an expected value.",
+    "answer": "AtomicInteger and many concurrent structures use CAS loops. CAS avoids blocking for some operations, but high contention can cause repeated retries and does not automatically solve multi-variable invariants.",
+    "code": null,
+    "followups": [
+      "CAS vs synchronized?",
+      "What happens under high contention?"
+    ],
+    "mistakes": [],
+    "interview": "CAS is an optimistic atomic primitive: compare the current value with the expected value and update only when they match. Java atomics build lock-free algorithms from it.",
+    "source": "V10.6",
+    "subtopic": "concurrency",
+    "subtopicName": "Concurrency & Multithreading"
+  },
+  {
+    "id": "v10.6-java-04",
+    "topic": "java",
+    "level": "L3",
+    "title": "What is a lock-free algorithm?",
+    "tags": [
+      "Concurrency",
+      "Performance"
+    ],
+    "short": "A lock-free algorithm guarantees that system-wide progress continues even if individual threads are delayed.",
+    "answer": "It commonly uses atomic operations such as CAS. Lock-free does not mean wait-free: one thread can still starve while others make progress.",
+    "code": null,
+    "followups": [
+      "Lock-free vs wait-free?",
+      "Where are lock-free structures useful?"
+    ],
+    "mistakes": [],
+    "interview": "Lock-free means some thread can always make progress. I would use it only when the workload justifies the complexity and after measuring contention.",
+    "source": "V10.6",
+    "subtopic": "concurrency",
+    "subtopicName": "Concurrency & Multithreading"
+  },
+  {
+    "id": "v10.6-java-05",
+    "topic": "java",
+    "level": "L3",
+    "title": "What is the ABA problem?",
+    "tags": [
+      "Concurrency",
+      "CAS"
+    ],
+    "short": "ABA occurs when a value changes from A to B and back to A, making a CAS unable to detect that an intermediate change happened.",
+    "answer": "Algorithms can use stamped or versioned references to distinguish logically different states that have the same raw value. It matters in non-blocking algorithms and reused nodes.",
+    "code": null,
+    "followups": [
+      "How does AtomicStampedReference help?",
+      "Can ABA matter in ordinary HashMap code?"
+    ],
+    "mistakes": [],
+    "interview": "The ABA problem is a false assumption that A is unchanged because the current value is A. Version stamps can make the state transition detectable.",
+    "source": "V10.6",
+    "subtopic": "concurrency",
+    "subtopicName": "Concurrency & Multithreading"
+  },
+  {
+    "id": "v10.6-java-06",
+    "topic": "java",
+    "level": "L2",
+    "title": "How does String.intern() work?",
+    "tags": [
+      "String",
+      "JVM"
+    ],
+    "short": "intern returns a canonical pooled representation of a string.",
+    "answer": "The JVM maintains a string pool. Interning can reduce duplicate string storage when there are many repeated values, but excessive interning can increase pool pressure and should not be used as a generic performance trick.",
+    "code": null,
+    "followups": [
+      "Is the string pool on the heap?",
+      "When can interning hurt performance?"
+    ],
+    "mistakes": [],
+    "interview": "intern gives equal strings a shared canonical instance. I use it only when profiling and data characteristics justify it.",
+    "source": "V10.6",
+    "subtopic": "jvm",
+    "subtopicName": "JVM, Internals & Performance"
+  },
+  {
+    "id": "v10.6-java-07",
+    "topic": "java",
+    "level": "L3",
+    "title": "What is escape analysis in the JVM?",
+    "tags": [
+      "JVM",
+      "Performance"
+    ],
+    "short": "Escape analysis lets the JVM determine whether an object or lock escapes a method or thread.",
+    "answer": "The JIT can use that information for optimizations such as scalar replacement and lock elimination in suitable cases. It is an optimization, so application code should not depend on a specific optimization occurring.",
+    "code": null,
+    "followups": [
+      "What is scalar replacement?",
+      "Can all short-lived objects be stack allocated?"
+    ],
+    "mistakes": [],
+    "interview": "Escape analysis can let the JIT eliminate allocations or synchronization when it proves they are unnecessary. I treat it as a runtime optimization and verify with profiling.",
+    "source": "V10.6",
+    "subtopic": "jvm",
+    "subtopicName": "JVM, Internals & Performance"
+  },
+  {
+    "id": "v10.6-java-08",
+    "topic": "java",
+    "level": "L2",
+    "title": "How does JIT compilation improve Java performance?",
+    "tags": [
+      "JVM",
+      "JIT"
+    ],
+    "short": "The JIT compiles frequently executed bytecode into optimized native machine code at runtime.",
+    "answer": "It uses runtime profiling to optimize hot paths, inline calls, eliminate checks and apply speculative optimizations. Deoptimization can occur when assumptions stop being valid.",
+    "code": null,
+    "followups": [
+      "What is deoptimization?",
+      "Why are cold-start benchmarks different?"
+    ],
+    "mistakes": [],
+    "interview": "Java starts with bytecode execution and the JIT optimizes hot code using runtime information. Warm-up and workload shape therefore matter in benchmarks.",
+    "source": "V10.6",
+    "subtopic": "jvm",
+    "subtopicName": "JVM, Internals & Performance"
+  },
+  {
+    "id": "v10.6-java-09",
+    "topic": "java",
+    "level": "L2",
+    "title": "What is class initialization order in Java?",
+    "tags": [
+      "JVM",
+      "Classes"
+    ],
+    "short": "Class initialization runs static initialization when the class is first actively used.",
+    "answer": "Superclass initialization precedes subclass initialization, and static fields/blocks execute in textual order within a class. Initialization is synchronized by the JVM so the class is initialized once.",
+    "code": null,
+    "followups": [
+      "When is a class initialized?",
+      "Does loading equal initialization?"
+    ],
+    "mistakes": [],
+    "interview": "I remember the order as parent class initialization first, then the subclass, with static fields and blocks following source order.",
+    "source": "V10.6",
+    "subtopic": "jvm",
+    "subtopicName": "JVM, Internals & Performance"
+  },
+  {
+    "id": "v10.6-java-10",
+    "topic": "java",
+    "level": "L3",
+    "title": "How can ClassLoader leaks happen in application servers?",
+    "tags": [
+      "JVM",
+      "ClassLoader"
+    ],
+    "short": "A class loader can remain reachable through threads, ThreadLocals, static references or registered callbacks after an application is undeployed.",
+    "answer": "If the loader cannot be garbage collected, all classes and metadata it loaded may remain reachable, causing metaspace growth across redeployments.",
+    "code": null,
+    "followups": [
+      "How do you diagnose a classloader leak?",
+      "Why are thread pools involved?"
+    ],
+    "mistakes": [],
+    "interview": "In containers I look for long-lived threads, ThreadLocals, static caches and libraries that retain the application ClassLoader. Cleanup at shutdown is essential.",
+    "source": "V10.6",
+    "subtopic": "jvm",
+    "subtopicName": "JVM, Internals & Performance"
+  },
+  {
+    "id": "v10.6-java-11",
+    "topic": "java",
+    "level": "L2",
+    "title": "What is the difference between heap and metaspace?",
+    "tags": [
+      "JVM",
+      "Memory"
+    ],
+    "short": "Heap stores ordinary Java objects, while metaspace stores class metadata outside the traditional Java heap.",
+    "answer": "Heap pressure usually manifests as GC and heap OOMs. Metaspace pressure can grow when many classes or class loaders are created, especially in plugin or redeployment scenarios.",
+    "code": null,
+    "followups": [
+      "Can metaspace trigger OutOfMemoryError?",
+      "What causes metaspace growth?"
+    ],
+    "mistakes": [],
+    "interview": "Heap and metaspace are different memory areas with different failure symptoms. I check the correct metric before tuning -Xmx or metaspace settings.",
+    "source": "V10.6",
+    "subtopic": "jvm",
+    "subtopicName": "JVM, Internals & Performance"
+  },
+  {
+    "id": "v10.6-java-12",
+    "topic": "java",
+    "level": "L2",
+    "title": "How do records affect equality and immutability?",
+    "tags": [
+      "Java 17",
+      "Records"
+    ],
+    "short": "Records provide concise data carriers with generated accessors, equals, hashCode and toString based on components.",
+    "answer": "A record is shallowly immutable: its component references are final, but referenced mutable objects can still change. Records are excellent for value-like DTOs and keys.",
+    "code": null,
+    "followups": [
+      "Are records deeply immutable?",
+      "Can records extend a class?"
+    ],
+    "mistakes": [],
+    "interview": "Records reduce boilerplate for value objects. I still consider defensive copies when a component is a mutable collection or array.",
+    "source": "V10.6",
+    "subtopic": "java8",
+    "subtopicName": "Java 8+ & Functional"
+  },
+  {
+    "id": "v10.6-java-13",
+    "topic": "java",
+    "level": "L2",
+    "title": "What are sealed classes useful for?",
+    "tags": [
+      "Java 17",
+      "OOP"
+    ],
+    "short": "Sealed classes restrict which classes can extend or implement a type.",
+    "answer": "They make a closed hierarchy explicit and can improve modeling and exhaustiveness in pattern matching. The permitted subclasses must follow the sealing rules.",
+    "code": null,
+    "followups": [
+      "Sealed vs final?",
+      "Can a sealed class have an indirect subclass?"
+    ],
+    "mistakes": [],
+    "interview": "Sealed classes are useful when a domain has a deliberately closed set of variants, such as payment states or command results.",
+    "source": "V10.6",
+    "subtopic": "java8",
+    "subtopicName": "Java 8+ & Functional"
+  },
+  {
+    "id": "v10.6-java-14",
+    "topic": "java",
+    "level": "L2",
+    "title": "What is pattern matching for instanceof?",
+    "tags": [
+      "Java 17",
+      "Language Features"
+    ],
+    "short": "Pattern matching lets an instanceof test declare and bind the matching variable.",
+    "answer": "It reduces repetitive casts and makes conditional logic clearer. The variable's scope follows the compiler's flow analysis.",
+    "code": null,
+    "followups": [
+      "How does flow scoping work?",
+      "Does it eliminate ClassCastException?"
+    ],
+    "mistakes": [],
+    "interview": "It combines the type check and cast, improving readability without changing the underlying object model.",
+    "source": "V10.6",
+    "subtopic": "java8",
+    "subtopicName": "Java 8+ & Functional"
+  },
+  {
+    "id": "v10.6-java-15",
+    "topic": "java",
+    "level": "L3",
+    "title": "What is structured concurrency conceptually?",
+    "tags": [
+      "Java 21",
+      "Concurrency"
+    ],
+    "short": "Structured concurrency treats related concurrent tasks as one scoped unit of work.",
+    "answer": "The parent task controls the lifetime of child tasks, making cancellation, failure propagation and resource management easier to reason about. In Java it is associated with newer concurrency APIs and remains a design concept worth understanding.",
+    "code": null,
+    "followups": [
+      "How does cancellation propagate?",
+      "How is it different from CompletableFuture?"
+    ],
+    "mistakes": [],
+    "interview": "Structured concurrency makes concurrent subtasks have a clear parent scope, so failures and cancellation can be handled together instead of leaving orphaned work.",
+    "source": "V10.6",
+    "subtopic": "concurrency",
+    "subtopicName": "Concurrency & Multithreading"
+  },
+  {
+    "id": "v10.6-java-16",
+    "topic": "java",
+    "level": "L2",
+    "title": "How does interruption work in Java?",
+    "tags": [
+      "Concurrency",
+      "Threads"
+    ],
+    "short": "Interruption is a cooperative cancellation signal delivered to a thread.",
+    "answer": "Blocking methods may throw InterruptedException, while code should either propagate it or restore the interrupt flag after handling it. Swallowing interruption can break shutdown and cancellation behavior.",
+    "code": null,
+    "followups": [
+      "Why restore the flag?",
+      "Is interrupt the same as stopping a thread?"
+    ],
+    "mistakes": [],
+    "interview": "I treat interruption as a cancellation request. If I catch InterruptedException and cannot propagate it, I restore the interrupt flag with Thread.currentThread().interrupt().",
+    "source": "V10.6",
+    "subtopic": "concurrency",
+    "subtopicName": "Concurrency & Multithreading"
+  },
+  {
+    "id": "v10.6-java-19",
+    "topic": "java",
+    "level": "L2",
+    "title": "How do you benchmark Java code correctly?",
+    "tags": [
+      "Performance",
+      "JMH"
+    ],
+    "short": "Microbenchmarks must account for warm-up, JIT optimization, dead-code elimination and measurement noise.",
+    "answer": "JMH handles forks, warm-up iterations and measurement infrastructure. For production decisions, microbenchmarks should complement end-to-end profiling rather than replace it.",
+    "code": null,
+    "followups": [
+      "Why are warm-ups needed?",
+      "What is dead-code elimination?"
+    ],
+    "mistakes": [],
+    "interview": "I use JMH for small JVM benchmarks and real workload tests for service behavior. I never trust a single System.nanoTime loop as a performance conclusion.",
+    "source": "V10.6",
+    "subtopic": "java8",
+    "subtopicName": "Java 8+ & Functional"
+  },
+  {
+    "id": "v10.6-java-20",
+    "topic": "java",
+    "level": "L2",
+    "title": "What is the difference between fail-fast and fail-safe iteration?",
+    "tags": [
+      "Collections",
+      "Iterator"
+    ],
+    "short": "Fail-fast iterators may detect structural modification and throw ConcurrentModificationException, while snapshot or concurrent collections use different semantics.",
+    "answer": "Fail-fast is a best-effort bug detector, not a thread-safety guarantee. CopyOnWriteArrayList iterates over a snapshot, while concurrent collections provide their own weakly consistent semantics.",
+    "code": null,
+    "followups": [
+      "Why is ConcurrentModificationException not guaranteed?",
+      "How does CopyOnWriteArrayList work?"
+    ],
+    "mistakes": [],
+    "interview": "Concurrent iteration semantics depend on the collection. I never use fail-fast behavior as synchronization.",
+    "source": "V10.6",
+    "subtopic": "collections",
+    "subtopicName": "Collections & Generics"
+  },
+  {
+    "id": "v10.6-springboot-01",
+    "topic": "springboot",
+    "level": "L3",
+    "title": "How does Spring resolve bean dependencies?",
+    "tags": [
+      "Spring Core",
+      "IoC"
+    ],
+    "short": "Spring resolves required beans from the ApplicationContext using type, qualifiers, primary candidates and other metadata.",
+    "answer": "Dependency resolution considers type and qualifiers and can fail on ambiguity or missing beans. Constructor injection makes required dependencies explicit and supports immutable components.",
+    "code": null,
+    "followups": [
+      "What happens with two beans of the same type?",
+      "How does @Primary work?"
+    ],
+    "mistakes": [],
+    "interview": "I prefer constructor injection because dependencies are explicit and the object cannot be created without them. Qualifier or primary resolves intentional ambiguity.",
+    "source": "V10.6",
+    "subtopic": "core",
+    "subtopicName": "Spring Core & IoC"
+  },
+  {
+    "id": "v10.6-springboot-02",
+    "topic": "springboot",
+    "level": "L2",
+    "title": "Why is constructor injection preferred over field injection?",
+    "tags": [
+      "Spring Core",
+      "DI"
+    ],
+    "short": "Constructor injection makes required dependencies explicit and supports immutability and easier testing.",
+    "answer": "The object can be instantiated with all required collaborators, fields can be final, and missing dependencies fail early. Field injection hides dependencies and complicates plain unit tests.",
+    "code": null,
+    "followups": [
+      "Can Spring inject optional dependencies?",
+      "What about circular dependencies?"
+    ],
+    "mistakes": [],
+    "interview": "For required dependencies I use constructors. It improves design and makes the class valid immediately after construction.",
+    "source": "V10.6",
+    "subtopic": "core",
+    "subtopicName": "Spring Core & IoC"
+  },
+  {
+    "id": "v10.6-springboot-03",
+    "topic": "springboot",
+    "level": "L3",
+    "title": "How does Spring handle circular dependencies?",
+    "tags": [
+      "Spring Core",
+      "Beans"
+    ],
+    "short": "A circular dependency occurs when bean A requires B while B requires A.",
+    "answer": "Some setter/field injection cases can be resolved through early references, but constructor cycles cannot be satisfied normally. The best fix is usually redesigning responsibilities rather than relying on lazy workarounds.",
+    "code": null,
+    "followups": [
+      "Can @Lazy break a cycle?",
+      "Why are constructor cycles harder?"
+    ],
+    "mistakes": [],
+    "interview": "I treat circular dependencies as a design smell. I first split responsibilities or introduce a domain service rather than hiding the cycle with @Lazy.",
+    "source": "V10.6",
+    "subtopic": "core",
+    "subtopicName": "Spring Core & IoC"
+  },
+  {
+    "id": "v10.6-springboot-04",
+    "topic": "springboot",
+    "level": "L3",
+    "title": "What is BeanPostProcessor?",
+    "tags": [
+      "Spring Core",
+      "Internals"
+    ],
+    "short": "BeanPostProcessor hooks into bean creation before and after initialization.",
+    "answer": "Spring uses post-processors for concerns such as dependency injection, annotation processing and proxy creation. This is a major extension point in the container lifecycle.",
+    "code": null,
+    "followups": [
+      "Where does AOP proxying happen?",
+      "What is BeanFactoryPostProcessor?"
+    ],
+    "mistakes": [],
+    "interview": "BeanPostProcessor lets Spring inspect or wrap beans during creation. Many framework features are implemented through these lifecycle extension points.",
+    "source": "V10.6",
+    "subtopic": "config",
+    "subtopicName": "Configuration & Production",
+    "scenario": "BeanPostProcessor hooks into bean creation before and after initialization.",
+    "investigation": "Start with metrics and traces, identify the failing boundary, compare latency/error rates and inspect resource saturation before changing configuration.",
+    "prevention": "Use explicit timeouts, bounded resources, automated tests and alerts around the failure mode so the same issue is detected early."
+  },
+  {
+    "id": "v10.6-springboot-05",
+    "topic": "springboot",
+    "level": "L3",
+    "title": "What is BeanFactoryPostProcessor?",
+    "tags": [
+      "Spring Core",
+      "Internals"
+    ],
+    "short": "It can modify bean definitions before regular beans are instantiated.",
+    "answer": "It operates on metadata rather than bean instances. This distinction is important when understanding configuration processing and how Spring prepares the container.",
+    "code": null,
+    "followups": [
+      "Give an example.",
+      "Why must it run early?"
+    ],
+    "mistakes": [],
+    "interview": "BeanFactoryPostProcessor changes bean definitions before bean instantiation; BeanPostProcessor works with bean instances during lifecycle processing.",
+    "source": "V10.6",
+    "subtopic": "config",
+    "subtopicName": "Configuration & Production"
+  },
+  {
+    "id": "v10.6-springboot-06",
+    "topic": "springboot",
+    "level": "L2",
+    "title": "How does @Lazy affect Spring bean creation?",
+    "tags": [
+      "Spring Core",
+      "Performance"
+    ],
+    "short": "@Lazy defers bean creation until it is first needed.",
+    "answer": "It can reduce startup cost but moves initialization latency to first use and can hide configuration errors until runtime. It should not be used to paper over dependency design problems.",
+    "code": null,
+    "followups": [
+      "Can @Lazy solve circular dependencies?",
+      "When is it a bad idea?"
+    ],
+    "mistakes": [],
+    "interview": "Lazy initialization can improve startup, but it trades startup work for first-use latency and delayed failures.",
+    "source": "V10.6",
+    "subtopic": "config",
+    "subtopicName": "Configuration & Production"
+  },
+  {
+    "id": "v10.6-springboot-07",
+    "topic": "springboot",
+    "level": "L3",
+    "title": "How does Spring's transaction interceptor decide commit or rollback?",
+    "tags": [
+      "Transactions",
+      "AOP"
+    ],
+    "short": "The transaction interceptor starts or joins a transaction, invokes the target, then commits or rolls back based on outcome and rollback rules.",
+    "answer": "By default, runtime exceptions and errors trigger rollback in typical declarative transaction handling, while checked exceptions may require explicit rollback configuration. The actual behavior depends on the transaction manager and rules.",
+    "code": null,
+    "followups": [
+      "How do you roll back for checked exceptions?",
+      "What if an exception is caught inside the method?"
+    ],
+    "mistakes": [],
+    "interview": "I explain that the proxy surrounds the method, begins or joins a transaction, and commits on successful completion or rolls back according to configured rollback rules.",
+    "source": "V10.6",
+    "subtopic": "aop",
+    "subtopicName": "AOP & Cross-cutting Concerns"
+  },
+  {
+    "id": "v10.6-springboot-08",
+    "topic": "springboot",
+    "level": "L2",
+    "title": "What is read-only transaction optimization?",
+    "tags": [
+      "Transactions",
+      "JPA"
+    ],
+    "short": "readOnly is a transaction hint indicating that the transaction is intended for reads.",
+    "answer": "It can influence ORM flush behavior or database handling depending on the stack, but it is not a universal enforcement that prevents writes. It should not replace authorization or application-level rules.",
+    "code": null,
+    "followups": [
+      "Does readOnly prevent INSERT?",
+      "How does Hibernate use it?"
+    ],
+    "mistakes": [],
+    "interview": "readOnly communicates intent and may reduce unnecessary flush work, but I don't treat it as a hard write prohibition.",
+    "source": "V10.6",
+    "subtopic": "data",
+    "subtopicName": "Transactions & Data"
+  },
+  {
+    "id": "v10.6-springboot-09",
+    "topic": "springboot",
+    "level": "L2",
+    "title": "How does Spring Retry differ from manual retries?",
+    "tags": [
+      "Resilience",
+      "Retry"
+    ],
+    "short": "Spring Retry centralizes retry policy through annotations or interceptors.",
+    "answer": "It can manage attempts, backoff and exception classification, but retrying still requires idempotency and timeout boundaries. A framework does not make unsafe operations safe to repeat.",
+    "code": null,
+    "followups": [
+      "How do you add backoff?",
+      "What should never be retried?"
+    ],
+    "mistakes": [],
+    "interview": "Retry policy should be explicit and bounded. Whether implemented with Spring Retry or manually, I need idempotency, backoff and a clear list of retryable failures.",
+    "source": "V10.6",
+    "subtopic": "data",
+    "subtopicName": "Transactions & Data"
+  },
+  {
+    "id": "v10.6-springboot-10",
+    "topic": "springboot",
+    "level": "L2",
+    "title": "How do you test a transactional service correctly?",
+    "tags": [
+      "Testing",
+      "Transactions"
+    ],
+    "short": "Transactional tests should verify both database state and transaction boundaries.",
+    "answer": "Use integration tests when behavior depends on real transaction semantics, rollback, isolation or JPA flush behavior. Unit tests can cover business branching without requiring a database.",
+    "code": null,
+    "followups": [
+      "Why can @Transactional test hide commits?",
+      "When do you use Testcontainers?"
+    ],
+    "mistakes": [],
+    "interview": "I use unit tests for business logic and integration tests for actual transaction behavior, especially rollback and persistence-context semantics.",
+    "source": "V10.6",
+    "subtopic": "data",
+    "subtopicName": "Transactions & Data"
+  },
+  {
+    "id": "v10.6-springboot-11",
+    "topic": "springboot",
+    "level": "L2",
+    "title": "What is Testcontainers useful for?",
+    "tags": [
+      "Testing",
+      "Integration"
+    ],
+    "short": "Testcontainers runs real infrastructure such as databases or brokers in disposable containers for tests.",
+    "answer": "It improves fidelity compared with mocks or embedded substitutes and is valuable for SQL dialect, migrations and integration behavior.",
+    "code": null,
+    "followups": [
+      "Testcontainers vs mocks?",
+      "How do you keep tests fast?"
+    ],
+    "mistakes": [],
+    "interview": "For persistence or messaging integration tests, Testcontainers gives me the real dependency and catches environment-specific behavior earlier.",
+    "source": "V10.6",
+    "subtopic": "core",
+    "subtopicName": "Spring Core & IoC"
+  },
+  {
+    "id": "v10.6-springboot-12",
+    "topic": "springboot",
+    "level": "L2",
+    "title": "How do you avoid leaking sensitive actuator information?",
+    "tags": [
+      "Actuator",
+      "Security"
+    ],
+    "short": "Operational endpoints can expose environment, mappings or metrics that may reveal sensitive details.",
+    "answer": "Expose only required endpoints, secure them with authentication/authorization, and avoid returning secrets in configuration or error payloads. Network restrictions can provide another layer.",
+    "code": null,
+    "followups": [
+      "Which endpoints are sensitive?",
+      "Should /env be public?"
+    ],
+    "mistakes": [],
+    "interview": "Actuator should be treated as an operational API. I expose the minimum surface and secure sensitive endpoints separately from public application endpoints.",
+    "source": "V10.6",
+    "subtopic": "config",
+    "subtopicName": "Configuration & Production"
+  },
+  {
+    "id": "v10.6-springboot-13",
+    "topic": "springboot",
+    "level": "L2",
+    "title": "How should correlation IDs be propagated in Spring services?",
+    "tags": [
+      "Observability",
+      "Logging"
+    ],
+    "short": "A correlation ID links logs and traces belonging to the same request flow.",
+    "answer": "Generate one at the edge if absent, validate/limit incoming values, put it into request context and propagate it to downstream calls and logs. Distributed tracing can provide richer context.",
+    "code": null,
+    "followups": [
+      "MDC vs tracing?",
+      "How do you propagate across async execution?"
+    ],
+    "mistakes": [],
+    "interview": "I establish correlation at the ingress boundary and propagate it consistently. I also ensure it cannot be used to inject arbitrary log control characters or sensitive data.",
+    "source": "V10.6",
+    "subtopic": "core",
+    "subtopicName": "Spring Core & IoC"
+  },
+  {
+    "id": "v10.6-springboot-14",
+    "topic": "springboot",
+    "level": "L2",
+    "title": "What is Spring's application event mechanism good for?",
+    "tags": [
+      "Events",
+      "Spring Core"
+    ],
+    "short": "Application events decouple in-process publishers from listeners.",
+    "answer": "They are useful for local domain notifications, but they are not a durable distributed message broker. If a business event must survive process failure, use durable messaging or an outbox.",
+    "code": null,
+    "followups": [
+      "Are events synchronous by default?",
+      "How do you make listeners async?"
+    ],
+    "mistakes": [],
+    "interview": "Spring events are in-process. I use them for local decoupling, not as a replacement for Kafka when durability and cross-service delivery matter.",
+    "source": "V10.6",
+    "subtopic": "core",
+    "subtopicName": "Spring Core & IoC"
+  },
+  {
+    "id": "v10.6-springboot-15",
+    "topic": "springboot",
+    "level": "L3",
+    "title": "How does @TransactionalEventListener work?",
+    "tags": [
+      "Transactions",
+      "Events"
+    ],
+    "short": "It can execute a listener at a transaction phase such as after commit.",
+    "answer": "This is useful when an in-process action should occur only after successful commit. It is still local to the application and can be lost if the process dies before the listener executes.",
+    "code": null,
+    "followups": [
+      "AFTER_COMMIT vs AFTER_ROLLBACK?",
+      "Can it replace the outbox?"
+    ],
+    "mistakes": [],
+    "interview": "For post-commit local work I can use @TransactionalEventListener, but for durable external events I prefer an outbox because application events are not a durable queue.",
+    "source": "V10.6",
+    "subtopic": "data",
+    "subtopicName": "Transactions & Data"
+  },
+  {
+    "id": "v10.6-springboot-16",
+    "topic": "springboot",
+    "level": "L2",
+    "title": "How do you handle large file uploads in Spring Boot?",
+    "tags": [
+      "REST",
+      "Files"
+    ],
+    "short": "Large uploads should avoid buffering entire files in application memory.",
+    "answer": "Use streaming or multipart handling with size limits, content validation, temporary storage and preferably object storage for large payloads. Scan or validate files before making them available.",
+    "code": null,
+    "followups": [
+      "How do you prevent disk exhaustion?",
+      "How do you secure uploaded files?"
+    ],
+    "mistakes": [],
+    "interview": "I enforce request-size limits, stream large content, validate type and size, and use object storage rather than keeping large files in JVM memory.",
+    "source": "V10.6",
+    "subtopic": "web",
+    "subtopicName": "REST, MVC & APIs"
+  },
+  {
+    "id": "v10.6-springboot-17",
+    "topic": "springboot",
+    "level": "L2",
+    "title": "How should pagination be implemented in a REST API?",
+    "tags": [
+      "REST",
+      "Pagination"
+    ],
+    "short": "Pagination limits response size and controls database work.",
+    "answer": "For large mutable datasets, stable ordering plus keyset pagination is often safer than deep offsets. The API should define limits and deterministic ordering.",
+    "code": null,
+    "followups": [
+      "Offset vs keyset?",
+      "How do you handle deleted rows?"
+    ],
+    "mistakes": [],
+    "interview": "I cap page size and use deterministic ordering. For large sequential datasets I prefer keyset pagination to avoid deep OFFSET costs.",
+    "source": "V10.6",
+    "subtopic": "web",
+    "subtopicName": "REST, MVC & APIs"
+  },
+  {
+    "id": "v10.6-springboot-18",
+    "topic": "springboot",
+    "level": "L3",
+    "title": "How do you design API idempotency in Spring Boot?",
+    "tags": [
+      "REST",
+      "Idempotency"
+    ],
+    "short": "Idempotency keys let clients safely retry operations without creating duplicate business effects.",
+    "answer": "Store a key scoped to the client and operation with a unique constraint and outcome. Handle concurrent duplicate requests atomically.",
+    "code": null,
+    "followups": [
+      "What if two requests arrive simultaneously?",
+      "How long should keys live?"
+    ],
+    "mistakes": [],
+    "interview": "I implement idempotency at the service boundary with a durable key and unique constraint, then return the original result for safe retries.",
+    "source": "V10.6",
+    "subtopic": "web",
+    "subtopicName": "REST, MVC & APIs"
+  },
+  {
+    "id": "v10.6-springboot-19",
+    "topic": "springboot",
+    "level": "L3",
+    "title": "How do you handle timeouts in WebClient?",
+    "tags": [
+      "REST",
+      "Resilience"
+    ],
+    "short": "HTTP client calls need bounded connection, response and overall operation timeouts.",
+    "answer": "A timeout should align with the end-to-end deadline and be observable. Retrying after a timeout is only safe when the operation is idempotent or otherwise protected.",
+    "code": null,
+    "followups": [
+      "Connect vs response timeout?",
+      "How do you prevent hanging connections?"
+    ],
+    "mistakes": [],
+    "interview": "I set bounded timeouts at the client and propagate the request deadline. I don't treat timeout as automatically retryable because the downstream may have already processed the request.",
+    "source": "V10.6",
+    "subtopic": "web",
+    "subtopicName": "REST, MVC & APIs"
+  },
+  {
+    "id": "v10.6-springboot-20",
+    "topic": "springboot",
+    "level": "L3",
+    "title": "How do you make scheduled Spring jobs safe in multiple instances?",
+    "tags": [
+      "Scheduling",
+      "Distributed Systems"
+    ],
+    "short": "A scheduled method runs in every application instance unless coordinated.",
+    "answer": "For cluster-wide singleton work, use a distributed lock, leader election or move the job to a dedicated scheduler/queue. The job itself should also be idempotent.",
+    "code": null,
+    "followups": [
+      "ShedLock vs Quartz?",
+      "What if the lock holder crashes?"
+    ],
+    "mistakes": [],
+    "interview": "In a horizontally scaled service I never assume @Scheduled runs once globally. I use a distributed coordination mechanism or a dedicated job runner.",
+    "source": "V10.6",
+    "subtopic": "config",
+    "subtopicName": "Configuration & Production",
+    "scenario": "A scheduled method runs in every application instance unless coordinated.",
+    "investigation": "Start with metrics and traces, identify the failing boundary, compare latency/error rates and inspect resource saturation before changing configuration.",
+    "prevention": "Use explicit timeouts, bounded resources, automated tests and alerts around the failure mode so the same issue is detected early."
+  },
+  {
+    "id": "v10.6-microservices-01",
+    "topic": "microservices",
+    "level": "L3",
+    "title": "What is the difference between orchestration and choreography in Saga?",
+    "tags": [
+      "Saga",
+      "Transactions"
+    ],
+    "short": "Orchestration uses a coordinator to direct steps; choreography lets services react to events without a central coordinator.",
+    "answer": "Orchestration makes workflow visibility and compensation ordering explicit, while choreography reduces central coupling but can become difficult to trace as the number of participants grows.",
+    "code": null,
+    "followups": [
+      "How do compensations work?",
+      "What are the failure trade-offs?"
+    ],
+    "mistakes": [],
+    "interview": "I choose orchestration when the workflow is complex and needs centralized visibility; choreography can work well for simpler event-driven flows.",
+    "source": "V10.6",
+    "subtopic": "data",
+    "subtopicName": "Distributed Data & Transactions",
+    "scenario": "Orchestration uses a coordinator to direct steps; choreography lets services react to events without a central coordinator.",
+    "investigation": "Start with metrics and traces, identify the failing boundary, compare latency/error rates and inspect resource saturation before changing configuration.",
+    "prevention": "Use explicit timeouts, bounded resources, automated tests and alerts around the failure mode so the same issue is detected early."
+  },
+  {
+    "id": "v10.6-microservices-02",
+    "topic": "microservices",
+    "level": "L3",
+    "title": "How do you make a Saga compensation idempotent?",
+    "tags": [
+      "Saga",
+      "Idempotency"
+    ],
+    "short": "A compensation may be retried, so it must safely produce the same final state when applied more than once.",
+    "answer": "Use a unique operation ID, state checks and conditional updates. Compensation should be a business action rather than assuming the exact inverse of every original operation exists.",
+    "code": null,
+    "followups": [
+      "What if compensation partially succeeds?",
+      "Can compensation restore exact state?"
+    ],
+    "mistakes": [],
+    "interview": "I give each Saga step and compensation a stable operation ID and make the state transition conditional and repeatable.",
+    "source": "V10.6",
+    "subtopic": "data",
+    "subtopicName": "Distributed Data & Transactions",
+    "scenario": "A compensation may be retried, so it must safely produce the same final state when applied more than once.",
+    "investigation": "Start with metrics and traces, identify the failing boundary, compare latency/error rates and inspect resource saturation before changing configuration.",
+    "prevention": "Use explicit timeouts, bounded resources, automated tests and alerts around the failure mode so the same issue is detected early."
+  },
+  {
+    "id": "v10.6-microservices-03",
+    "topic": "microservices",
+    "level": "L3",
+    "title": "What is a distributed lock and what are its risks?",
+    "tags": [
+      "Distributed Systems",
+      "Lock"
+    ],
+    "short": "A distributed lock coordinates access to a resource across multiple service instances.",
+    "answer": "Risks include lease expiry, clock assumptions, client pauses and split-brain behavior. Use fencing tokens or database constraints where correctness is critical rather than relying solely on a lock.",
+    "code": null,
+    "followups": [
+      "Why can a lock expire while work continues?",
+      "What is a fencing token?"
+    ],
+    "mistakes": [],
+    "interview": "A distributed lock is not magic mutual exclusion. For critical correctness I combine leases with fencing or durable database constraints.",
+    "source": "V10.6",
+    "subtopic": "data",
+    "subtopicName": "Distributed Data & Transactions",
+    "scenario": "A distributed lock coordinates access to a resource across multiple service instances.",
+    "investigation": "Start with metrics and traces, identify the failing boundary, compare latency/error rates and inspect resource saturation before changing configuration.",
+    "prevention": "Use explicit timeouts, bounded resources, automated tests and alerts around the failure mode so the same issue is detected early."
+  },
+  {
+    "id": "v10.6-microservices-04",
+    "topic": "microservices",
+    "level": "L3",
+    "title": "What is a fencing token?",
+    "tags": [
+      "Distributed Systems",
+      "Lock"
+    ],
+    "short": "A fencing token is a monotonically increasing value that lets a resource reject stale lock holders.",
+    "answer": "When a new lock owner gets a higher token, the storage layer accepts only operations carrying the current or newer token. This protects against a paused old owner resuming later.",
+    "code": null,
+    "followups": [
+      "Where is the token checked?",
+      "Can Redis alone guarantee correctness?"
+    ],
+    "mistakes": [],
+    "interview": "Fencing converts a time-based lock into a verifiable ordering at the resource, preventing stale owners from corrupting state.",
+    "source": "V10.6",
+    "subtopic": "data",
+    "subtopicName": "Distributed Data & Transactions",
+    "scenario": "A fencing token is a monotonically increasing value that lets a resource reject stale lock holders.",
+    "investigation": "Start with metrics and traces, identify the failing boundary, compare latency/error rates and inspect resource saturation before changing configuration.",
+    "prevention": "Use explicit timeouts, bounded resources, automated tests and alerts around the failure mode so the same issue is detected early."
+  },
+  {
+    "id": "v10.6-microservices-05",
+    "topic": "microservices",
+    "level": "L3",
+    "title": "How do you handle clock skew in distributed systems?",
+    "tags": [
+      "Distributed Systems",
+      "Time"
+    ],
+    "short": "Different machines can have clocks that differ, so wall-clock timestamps are not safe for every ordering decision.",
+    "answer": "Use logical clocks, sequence numbers, database ordering or server-side timestamps when strict ordering matters. Keep NTP synchronized but don't assume perfect clocks.",
+    "code": null,
+    "followups": [
+      "Wall clock vs monotonic clock?",
+      "How does clock skew affect JWT expiry?"
+    ],
+    "mistakes": [],
+    "interview": "I use monotonic sequence numbers or authoritative storage for ordering. Wall-clock time is useful for observability but not always for correctness.",
+    "source": "V10.6",
+    "subtopic": "data",
+    "subtopicName": "Distributed Data & Transactions",
+    "scenario": "Different machines can have clocks that differ, so wall-clock timestamps are not safe for every ordering decision.",
+    "investigation": "Start with metrics and traces, identify the failing boundary, compare latency/error rates and inspect resource saturation before changing configuration.",
+    "prevention": "Use explicit timeouts, bounded resources, automated tests and alerts around the failure mode so the same issue is detected early."
+  },
+  {
+    "id": "v10.6-microservices-06",
+    "topic": "microservices",
+    "level": "L3",
+    "title": "What is backpressure and where should it be applied?",
+    "tags": [
+      "Resilience",
+      "Messaging"
+    ],
+    "short": "Backpressure limits producers when consumers cannot keep up.",
+    "answer": "It can be implemented with bounded queues, concurrency limits, broker flow control and admission control. Without it, queues grow until latency or memory becomes unacceptable.",
+    "code": null,
+    "followups": [
+      "Backpressure vs rate limiting?",
+      "What should happen when capacity is exhausted?"
+    ],
+    "mistakes": [],
+    "interview": "Backpressure is a capacity-protection mechanism. I prefer bounded queues and explicit overload behavior over unlimited buffering.",
+    "source": "V10.6",
+    "subtopic": "resilience",
+    "subtopicName": "Resilience & Reliability",
+    "scenario": "Backpressure limits producers when consumers cannot keep up.",
+    "investigation": "Start with metrics and traces, identify the failing boundary, compare latency/error rates and inspect resource saturation before changing configuration.",
+    "prevention": "Use explicit timeouts, bounded resources, automated tests and alerts around the failure mode so the same issue is detected early."
+  },
+  {
+    "id": "v10.6-microservices-08",
+    "topic": "microservices",
+    "level": "L3",
+    "title": "What is hedged request processing?",
+    "tags": [
+      "Latency",
+      "Resilience"
+    ],
+    "short": "Hedging sends a duplicate request after a delay to reduce tail latency.",
+    "answer": "It can improve p99 when latency variance is high, but it increases load and can duplicate side effects. It is best suited to idempotent reads with capacity headroom.",
+    "code": null,
+    "followups": [
+      "Hedging vs retry?",
+      "How do you choose the hedge delay?"
+    ],
+    "mistakes": [],
+    "interview": "Hedging is a latency optimization that spends extra capacity. I use it only for safe idempotent operations and after measuring tail latency.",
+    "source": "V10.6",
+    "subtopic": "resilience",
+    "subtopicName": "Resilience & Reliability",
+    "scenario": "Hedging sends a duplicate request after a delay to reduce tail latency.",
+    "investigation": "Start with metrics and traces, identify the failing boundary, compare latency/error rates and inspect resource saturation before changing configuration.",
+    "prevention": "Use explicit timeouts, bounded resources, automated tests and alerts around the failure mode so the same issue is detected early."
+  },
+  {
+    "id": "v10.6-microservices-09",
+    "topic": "microservices",
+    "level": "L3",
+    "title": "How do you prevent a thundering herd during cache recovery?",
+    "tags": [
+      "Caching",
+      "Resilience"
+    ],
+    "short": "Many clients may simultaneously miss a cache after restart or mass expiry.",
+    "answer": "Use request coalescing, staggered warming, TTL jitter and bounded database concurrency. A single lock around every key can become another bottleneck.",
+    "code": null,
+    "followups": [
+      "What is single-flight?",
+      "How do you warm a cache safely?"
+    ],
+    "mistakes": [],
+    "interview": "I protect the backing store with coalescing and bounded concurrency, then warm hot keys gradually rather than letting every request rebuild them.",
+    "source": "V10.6",
+    "subtopic": "messaging",
+    "subtopicName": "Messaging & Event-driven",
+    "scenario": "Many clients may simultaneously miss a cache after restart or mass expiry.",
+    "investigation": "Start with metrics and traces, identify the failing boundary, compare latency/error rates and inspect resource saturation before changing configuration.",
+    "prevention": "Use explicit timeouts, bounded resources, automated tests and alerts around the failure mode so the same issue is detected early."
+  },
+  {
+    "id": "v10.6-microservices-10",
+    "topic": "microservices",
+    "level": "L2",
+    "title": "What is a dead-letter queue versus a retry topic?",
+    "tags": [
+      "Kafka",
+      "Messaging"
+    ],
+    "short": "A retry topic delays another processing attempt, while a dead-letter destination holds messages that exceeded the retry policy or are otherwise non-processable.",
+    "answer": "Retry destinations are part of normal transient-failure handling. DLTs are an operational quarantine and should include metadata for diagnosis and replay.",
+    "code": null,
+    "followups": [
+      "Should DLT messages expire?",
+      "How do you preserve headers?"
+    ],
+    "mistakes": [],
+    "interview": "I use retry topics for transient failures and a DLT for exhausted or invalid messages. Both need observability and a safe replay path.",
+    "source": "V10.6",
+    "subtopic": "messaging",
+    "subtopicName": "Messaging & Event-driven"
+  },
+  {
+    "id": "v10.6-microservices-11",
+    "topic": "microservices",
+    "level": "L3",
+    "title": "How do Kafka transactions help exactly-once processing?",
+    "tags": [
+      "Kafka",
+      "Transactions"
+    ],
+    "short": "Kafka transactions can atomically publish records and commit consumer offsets for Kafka-to-Kafka processing.",
+    "answer": "Exactly-once semantics are bounded by the Kafka processing model; external side effects such as a database update still need idempotency or transactional integration.",
+    "code": null,
+    "followups": [
+      "EOS vs at-least-once?",
+      "What about a DB write?"
+    ],
+    "mistakes": [],
+    "interview": "Kafka transactions can provide strong semantics within Kafka, but they do not magically make a database and Kafka one atomic transaction. External effects still need a design.",
+    "source": "V10.6",
+    "subtopic": "messaging",
+    "subtopicName": "Messaging & Event-driven",
+    "scenario": "Kafka transactions can atomically publish records and commit consumer offsets for Kafka-to-Kafka processing.",
+    "investigation": "Start with metrics and traces, identify the failing boundary, compare latency/error rates and inspect resource saturation before changing configuration.",
+    "prevention": "Use explicit timeouts, bounded resources, automated tests and alerts around the failure mode so the same issue is detected early."
+  },
+  {
+    "id": "v10.6-microservices-12",
+    "topic": "microservices",
+    "level": "L3",
+    "title": "How do you design Kafka partition keys?",
+    "tags": [
+      "Kafka",
+      "Partitions"
+    ],
+    "short": "The partition key determines which partition receives a record and therefore where per-key ordering is preserved.",
+    "answer": "Choose a key that matches the business ordering requirement and distributes load. A hot key can overload one partition even when the topic has many partitions.",
+    "code": null,
+    "followups": [
+      "Can you change the key later?",
+      "What is a hot partition?"
+    ],
+    "mistakes": [],
+    "interview": "I choose the key based on ordering first, then validate distribution. If one entity is extremely hot, I may need a different model because ordering and parallelism conflict.",
+    "source": "V10.6",
+    "subtopic": "messaging",
+    "subtopicName": "Messaging & Event-driven",
+    "scenario": "The partition key determines which partition receives a record and therefore where per-key ordering is preserved.",
+    "investigation": "Start with metrics and traces, identify the failing boundary, compare latency/error rates and inspect resource saturation before changing configuration.",
+    "prevention": "Use explicit timeouts, bounded resources, automated tests and alerts around the failure mode so the same issue is detected early."
+  },
+  {
+    "id": "v10.6-microservices-13",
+    "topic": "microservices",
+    "level": "L2",
+    "title": "What is consumer group parallelism in Kafka?",
+    "tags": [
+      "Kafka",
+      "Consumer Group"
+    ],
+    "short": "Within a consumer group, a partition is processed by one consumer at a time.",
+    "answer": "Adding consumers increases parallelism only until all partitions are assigned. More partitions can increase throughput but also affect ordering, storage and operational cost.",
+    "code": null,
+    "followups": [
+      "Can two consumers read the same partition?",
+      "How does rebalancing affect this?"
+    ],
+    "mistakes": [],
+    "interview": "Consumer count cannot exceed useful partition parallelism. I size partitions for expected throughput and future concurrency, not just current traffic.",
+    "source": "V10.6",
+    "subtopic": "messaging",
+    "subtopicName": "Messaging & Event-driven"
+  },
+  {
+    "id": "v10.6-microservices-14",
+    "topic": "microservices",
+    "level": "L3",
+    "title": "How do you design a reliable webhook delivery system?",
+    "tags": [
+      "Events",
+      "Webhooks"
+    ],
+    "short": "Webhook delivery should assume receivers are slow, unavailable and duplicate-prone.",
+    "answer": "Persist delivery attempts, sign payloads, use bounded retries with backoff, timeouts, idempotency guidance and a dead-letter state. Track delivery status for operators.",
+    "code": null,
+    "followups": [
+      "How do you verify signatures?",
+      "How do you avoid retry storms?"
+    ],
+    "mistakes": [],
+    "interview": "I persist the event and delivery state, sign requests, retry transient failures with backoff, and make the receiver contract idempotent because duplicate delivery is expected.",
+    "source": "V10.6",
+    "subtopic": "messaging",
+    "subtopicName": "Messaging & Event-driven",
+    "scenario": "Webhook delivery should assume receivers are slow, unavailable and duplicate-prone.",
+    "investigation": "Start with metrics and traces, identify the failing boundary, compare latency/error rates and inspect resource saturation before changing configuration.",
+    "prevention": "Use explicit timeouts, bounded resources, automated tests and alerts around the failure mode so the same issue is detected early."
+  },
+  {
+    "id": "v10.6-microservices-15",
+    "topic": "microservices",
+    "level": "L2",
+    "title": "How do you version a microservice event without breaking consumers?",
+    "tags": [
+      "Events",
+      "Schema"
+    ],
+    "short": "Event compatibility requires planned evolution rather than ad-hoc field changes.",
+    "answer": "Prefer additive changes and tolerant readers. For breaking semantics, use an explicit version or new event type and migrate consumers gradually.",
+    "code": null,
+    "followups": [
+      "Backward vs forward compatibility?",
+      "Can consumers ignore unknown fields?"
+    ],
+    "mistakes": [],
+    "interview": "I treat events as contracts. Additive changes are preferred; semantic or structural breaks get explicit versioning and a migration window.",
+    "source": "V10.6",
+    "subtopic": "messaging",
+    "subtopicName": "Messaging & Event-driven"
+  },
+  {
+    "id": "v10.6-microservices-16",
+    "topic": "microservices",
+    "level": "L3",
+    "title": "What is service mesh and when would you use it?",
+    "tags": [
+      "Service Mesh",
+      "Networking"
+    ],
+    "short": "A service mesh moves common service-to-service networking concerns into infrastructure sidecars or nodes.",
+    "answer": "It can provide mTLS, traffic policy, retries, telemetry and routing without duplicating logic in every service, but adds operational complexity and another failure surface.",
+    "code": null,
+    "followups": [
+      "What does a sidecar do?",
+      "Mesh vs API gateway?"
+    ],
+    "mistakes": [],
+    "interview": "A service mesh can standardize cross-service networking, but I adopt it only when the organization can operate the added control plane and data-plane complexity.",
+    "source": "V10.6",
+    "subtopic": "communication",
+    "subtopicName": "Communication & Networking",
+    "scenario": "A service mesh moves common service-to-service networking concerns into infrastructure sidecars or nodes.",
+    "investigation": "Start with metrics and traces, identify the failing boundary, compare latency/error rates and inspect resource saturation before changing configuration.",
+    "prevention": "Use explicit timeouts, bounded resources, automated tests and alerts around the failure mode so the same issue is detected early."
+  },
+  {
+    "id": "v10.6-microservices-17",
+    "topic": "microservices",
+    "level": "L2",
+    "title": "How do you design a circuit breaker around a flaky dependency?",
+    "tags": [
+      "Resilience",
+      "Circuit Breaker"
+    ],
+    "short": "A circuit breaker prevents repeated calls to an unhealthy dependency.",
+    "answer": "It transitions among closed, open and half-open states based on failures or slow calls. Thresholds should reflect business impact and avoid treating every transient error as permanent.",
+    "code": null,
+    "followups": [
+      "What is half-open?",
+      "Should 4xx open the circuit?"
+    ],
+    "mistakes": [],
+    "interview": "I use a bounded timeout first, then circuit breaking to stop repeated load when failure rates or latency cross thresholds. Recovery probes happen gradually.",
+    "source": "V10.6",
+    "subtopic": "resilience",
+    "subtopicName": "Resilience & Reliability"
+  },
+  {
+    "id": "v10.6-microservices-18",
+    "topic": "microservices",
+    "level": "L3",
+    "title": "How do you distinguish an application retry from a broker redelivery?",
+    "tags": [
+      "Kafka",
+      "Reliability"
+    ],
+    "short": "Application retry is an explicit second attempt, while broker redelivery happens when offsets are not committed or delivery semantics cause a record to be seen again.",
+    "answer": "Observability should record attempt count and event ID. Treat both as expected duplicate paths and keep processing idempotent.",
+    "code": null,
+    "followups": [
+      "How do you count attempts?",
+      "When is offset committed?"
+    ],
+    "mistakes": [],
+    "interview": "I distinguish transport-level redelivery from business-level retries in telemetry. Both can create duplicates, so the consumer must remain idempotent.",
+    "source": "V10.6",
+    "subtopic": "messaging",
+    "subtopicName": "Messaging & Event-driven",
+    "scenario": "Application retry is an explicit second attempt, while broker redelivery happens when offsets are not committed or delivery semantics cause a record to be seen again.",
+    "investigation": "Start with metrics and traces, identify the failing boundary, compare latency/error rates and inspect resource saturation before changing configuration.",
+    "prevention": "Use explicit timeouts, bounded resources, automated tests and alerts around the failure mode so the same issue is detected early."
+  },
+  {
+    "id": "v10.6-microservices-19",
+    "topic": "microservices",
+    "level": "L3",
+    "title": "How do you handle a downstream dependency that returns slow 200 responses?",
+    "tags": [
+      "Resilience",
+      "Timeout"
+    ],
+    "short": "A successful but slow dependency can exhaust threads and connections just like errors.",
+    "answer": "Use deadlines, connection limits, concurrency bulkheads, circuit breakers based on slow-call rate, and fallbacks where safe. Monitor p95/p99 rather than only error rate.",
+    "code": null,
+    "followups": [
+      "What is a slow-call circuit breaker?",
+      "How do you protect the thread pool?"
+    ],
+    "mistakes": [],
+    "interview": "Latency is a failure mode. I configure slow-call thresholds and capacity controls, not just error retries, because slow success can still take down callers.",
+    "source": "V10.6",
+    "subtopic": "resilience",
+    "subtopicName": "Resilience & Reliability",
+    "scenario": "A successful but slow dependency can exhaust threads and connections just like errors.",
+    "investigation": "Start with metrics and traces, identify the failing boundary, compare latency/error rates and inspect resource saturation before changing configuration.",
+    "prevention": "Use explicit timeouts, bounded resources, automated tests and alerts around the failure mode so the same issue is detected early."
+  },
+  {
+    "id": "v10.6-microservices-20",
+    "topic": "microservices",
+    "level": "L3",
+    "title": "What is the difference between at-most-once, at-least-once and effectively-once processing?",
+    "tags": [
+      "Messaging",
+      "Delivery"
+    ],
+    "short": "These describe how many times processing may occur from the application's perspective.",
+    "answer": "At-most-once may lose messages but avoids duplicates; at-least-once may duplicate; effectively-once combines at-least-once transport with idempotent business processing so the observable effect occurs once.",
+    "code": null,
+    "followups": [
+      "When would at-most-once be acceptable?",
+      "How do you make a consumer idempotent?"
+    ],
+    "mistakes": [],
+    "interview": "I prefer at-least-once delivery plus idempotent consumers for many backend systems. Exactly-once transport alone does not solve external side effects.",
+    "source": "V10.6",
+    "subtopic": "messaging",
+    "subtopicName": "Messaging & Event-driven",
+    "scenario": "These describe how many times processing may occur from the application's perspective.",
+    "investigation": "Start with metrics and traces, identify the failing boundary, compare latency/error rates and inspect resource saturation before changing configuration.",
+    "prevention": "Use explicit timeouts, bounded resources, automated tests and alerts around the failure mode so the same issue is detected early."
+  },
+  {
+    "id": "v10.6-sql-01",
+    "topic": "sql",
+    "level": "L3",
+    "title": "What is a partial index and when is it useful?",
+    "tags": [
+      "Indexes",
+      "Performance"
+    ],
+    "short": "A partial or filtered index indexes only rows satisfying a predicate.",
+    "answer": "It can reduce index size and improve targeted queries when a stable subset is frequently accessed, such as active records. Support and syntax vary by database.",
+    "code": null,
+    "followups": [
+      "Can every database create one?",
+      "What happens when the predicate changes?"
+    ],
+    "mistakes": [],
+    "interview": "A partial index is useful when a query repeatedly targets a subset of rows. I verify that the optimizer can use it and that the predicate matches the workload.",
+    "source": "V10.6",
+    "subtopic": "indexes",
+    "subtopicName": "Indexes & Query Performance"
+  },
+  {
+    "id": "v10.6-sql-02",
+    "topic": "sql",
+    "level": "L3",
+    "title": "What is an index-only scan?",
+    "tags": [
+      "Indexes",
+      "Performance"
+    ],
+    "short": "An index-only scan can satisfy a query using index data without visiting the base table when visibility and required columns permit.",
+    "answer": "It can reduce I/O, especially for covering indexes, but maintenance cost and visibility rules still matter.",
+    "code": null,
+    "followups": [
+      "How is it different from a covering index?",
+      "Can MVCC prevent index-only scans?"
+    ],
+    "mistakes": [],
+    "interview": "Index-only access can be very fast for read-heavy queries, but I balance wider indexes against write and storage overhead.",
+    "source": "V10.6",
+    "subtopic": "indexes",
+    "subtopicName": "Indexes & Query Performance"
+  },
+  {
+    "id": "v10.6-sql-03",
+    "topic": "sql",
+    "level": "L2",
+    "title": "How do foreign keys affect performance?",
+    "tags": [
+      "Constraints",
+      "Performance"
+    ],
+    "short": "Foreign keys enforce referential integrity but can add work to inserts, updates and deletes.",
+    "answer": "Referenced and referencing columns should be indexed appropriately for common operations. Constraints are usually worth the correctness they provide, but large cascades need careful design.",
+    "code": null,
+    "followups": [
+      "Why index a foreign key?",
+      "Can foreign keys cause locking?"
+    ],
+    "mistakes": [],
+    "interview": "Foreign keys protect correctness. I index the referencing columns when needed and pay attention to cascade behavior on large tables.",
+    "source": "V10.6",
+    "subtopic": "indexes",
+    "subtopicName": "Indexes & Query Performance"
+  },
+  {
+    "id": "v10.6-sql-04",
+    "topic": "sql",
+    "level": "L2",
+    "title": "What is a database connection leak?",
+    "tags": [
+      "Connection Pool",
+      "Production"
+    ],
+    "short": "A connection leak occurs when application code fails to return a borrowed connection to the pool.",
+    "answer": "Over time active connections reach the pool maximum and requests wait or fail. Proper resource management, pool leak detection and metrics help diagnose it.",
+    "code": null,
+    "followups": [
+      "How do you detect leaks?",
+      "Why does traffic make the issue worse?"
+    ],
+    "mistakes": [],
+    "interview": "I correlate pool active count and pending acquisition with code paths. In JDBC, try-with-resources and framework-managed transactions prevent many leaks.",
+    "source": "V10.6",
+    "subtopic": "transactions",
+    "subtopicName": "ACID & Concurrency"
+  },
+  {
+    "id": "v10.6-sql-05",
+    "topic": "sql",
+    "level": "L3",
+    "title": "What is MVCC?",
+    "tags": [
+      "Transactions",
+      "Concurrency"
+    ],
+    "short": "Multi-version concurrency control lets readers and writers operate using versions of rows rather than blocking each other in the simplest cases.",
+    "answer": "Different databases implement MVCC differently. It improves read/write concurrency but creates version cleanup and isolation considerations.",
+    "code": null,
+    "followups": [
+      "How does MVCC affect vacuum/cleanup?",
+      "Does MVCC eliminate locks?"
+    ],
+    "mistakes": [],
+    "interview": "MVCC maintains multiple row versions so readers can see a consistent snapshot while writers proceed. Exact semantics depend on the database.",
+    "source": "V10.6",
+    "subtopic": "transactions",
+    "subtopicName": "ACID & Concurrency"
+  },
+  {
+    "id": "v10.6-sql-06",
+    "topic": "sql",
+    "level": "L3",
+    "title": "How do database locks escalate?",
+    "tags": [
+      "Transactions",
+      "Locking"
+    ],
+    "short": "Some database systems can replace many fine-grained locks with a coarser lock to reduce lock-management overhead.",
+    "answer": "Escalation can increase contention and cause unexpected blocking during large operations. Batching and appropriate indexes can reduce the number of locked rows.",
+    "code": null,
+    "followups": [
+      "Can you disable escalation?",
+      "How does batching help?"
+    ],
+    "mistakes": [],
+    "interview": "Lock escalation is a database-specific behavior where many locks can become a larger lock. Large batch operations should be designed with this possibility in mind.",
+    "source": "V10.6",
+    "subtopic": "transactions",
+    "subtopicName": "ACID & Concurrency",
+    "scenario": "Some database systems can replace many fine-grained locks with a coarser lock to reduce lock-management overhead.",
+    "investigation": "Start with metrics and traces, identify the failing boundary, compare latency/error rates and inspect resource saturation before changing configuration.",
+    "prevention": "Use explicit timeouts, bounded resources, automated tests and alerts around the failure mode so the same issue is detected early."
+  },
+  {
+    "id": "v10.6-sql-07",
+    "topic": "sql",
+    "level": "L1",
+    "title": "What is parameterized SQL and why does it matter?",
+    "tags": [
+      "SQL Injection",
+      "Security"
+    ],
+    "short": "Parameterized SQL separates SQL structure from user-supplied values.",
+    "answer": "Prepared statements prevent input from being interpreted as SQL syntax and can also improve plan reuse depending on the database.",
+    "code": null,
+    "followups": [
+      "Does escaping replace parameterization?",
+      "What about dynamic table names?"
+    ],
+    "mistakes": [],
+    "interview": "I always bind user values through prepared statements or framework parameters. String concatenation is both unsafe and harder to maintain.",
+    "source": "V10.6",
+    "subtopic": "fundamentals",
+    "subtopicName": "Query Fundamentals"
+  },
+  {
+    "id": "v10.6-sql-08",
+    "topic": "sql",
+    "level": "L2",
+    "title": "How do you implement an idempotent database command?",
+    "tags": [
+      "Transactions",
+      "Idempotency"
+    ],
+    "short": "An idempotent command produces the same final state when safely repeated.",
+    "answer": "Use unique business keys, upserts, compare-and-set updates or state checks. The database constraint should enforce uniqueness where correctness depends on it.",
+    "code": null,
+    "followups": [
+      "How do you handle duplicate requests?",
+      "Can DELETE be idempotent?"
+    ],
+    "mistakes": [],
+    "interview": "I prefer database-enforced uniqueness and conditional state transitions over relying only on application checks.",
+    "source": "V10.6",
+    "subtopic": "transactions",
+    "subtopicName": "ACID & Concurrency"
+  },
+  {
+    "id": "v10.6-sql-09",
+    "topic": "sql",
+    "level": "L2",
+    "title": "What is a covering query and why can SELECT * be harmful?",
+    "tags": [
+      "Indexes",
+      "Performance"
+    ],
+    "short": "A query is easier to cover when it selects only the columns it needs.",
+    "answer": "SELECT * increases network payload, deserialization and the set of columns an index must cover. Schema changes can also unexpectedly change its cost.",
+    "code": null,
+    "followups": [
+      "Can SELECT * prevent index-only access?",
+      "Why is it a maintenance risk?"
+    ],
+    "mistakes": [],
+    "interview": "I select only required columns, especially in APIs and hot queries. It keeps payloads smaller and gives indexes a realistic chance to cover the access path.",
+    "source": "V10.6",
+    "subtopic": "indexes",
+    "subtopicName": "Indexes & Query Performance"
+  },
+  {
+    "id": "v10.6-sql-10",
+    "topic": "sql",
+    "level": "L2",
+    "title": "How do you find gaps in sequential IDs?",
+    "tags": [
+      "SQL",
+      "Window Functions"
+    ],
+    "short": "Gaps can be identified by comparing each value with the previous value or expected sequence.",
+    "answer": "Window functions such as LAG can reveal discontinuities. Whether gaps are a problem depends on the ID generation strategy; auto-increment sequences commonly allow gaps.",
+    "code": null,
+    "followups": [
+      "Why are auto-increment IDs not gapless?",
+      "When do you need a business sequence?"
+    ],
+    "mistakes": [],
+    "interview": "I can detect gaps with LAG or generate an expected sequence, but I don't assume IDs must be gapless because transaction rollback and sequence caching can create gaps.",
+    "source": "V10.6",
+    "subtopic": "fundamentals",
+    "subtopicName": "Query Fundamentals"
+  },
+  {
+    "id": "v10.6-sql-11",
+    "topic": "sql",
+    "level": "L2",
+    "title": "What is a recursive CTE useful for?",
+    "tags": [
+      "CTE",
+      "SQL"
+    ],
+    "short": "A recursive CTE queries hierarchical or graph-like relationships such as employee-manager trees.",
+    "answer": "It has an anchor query and a recursive member and needs termination conditions. Large or cyclic graphs require safeguards.",
+    "code": null,
+    "followups": [
+      "How do you prevent cycles?",
+      "When would you use application traversal?"
+    ],
+    "mistakes": [],
+    "interview": "Recursive CTEs are useful for hierarchies when the database supports them. I define a clear termination condition and protect against cycles or excessive depth.",
+    "source": "V10.6",
+    "subtopic": "fundamentals",
+    "subtopicName": "Query Fundamentals"
+  },
+  {
+    "id": "v10.6-sql-12",
+    "topic": "sql",
+    "level": "L3",
+    "title": "How do you detect skew in a database workload?",
+    "tags": [
+      "Performance",
+      "Operations"
+    ],
+    "short": "Skew means a small subset of keys or queries receives disproportionate traffic or data.",
+    "answer": "Hot tenants, hot rows and popular products can create contention even when average load looks healthy. Partitioning, caching and sharding strategies must account for skew.",
+    "code": null,
+    "followups": [
+      "How do hot rows cause contention?",
+      "How do you mitigate hot keys?"
+    ],
+    "mistakes": [],
+    "interview": "I look at per-key and per-query distributions, not just averages. A hot key can dominate latency and CPU even when overall utilization seems moderate.",
+    "source": "V10.6",
+    "subtopic": "indexes",
+    "subtopicName": "Indexes & Query Performance",
+    "scenario": "Skew means a small subset of keys or queries receives disproportionate traffic or data.",
+    "investigation": "Start with metrics and traces, identify the failing boundary, compare latency/error rates and inspect resource saturation before changing configuration.",
+    "prevention": "Use explicit timeouts, bounded resources, automated tests and alerts around the failure mode so the same issue is detected early."
+  },
+  {
+    "id": "v10.6-sql-13",
+    "topic": "sql",
+    "level": "L3",
+    "title": "What is write amplification in databases?",
+    "tags": [
+      "Performance",
+      "Storage"
+    ],
+    "short": "Write amplification means the system performs more physical or logical writes than the application-level change suggests.",
+    "answer": "Indexes, WAL/redo logs, page splits, replication and secondary structures can all add write work. It affects storage, I/O and throughput.",
+    "code": null,
+    "followups": [
+      "How do indexes increase writes?",
+      "How does page fragmentation matter?"
+    ],
+    "mistakes": [],
+    "interview": "Adding indexes improves reads but increases write amplification because every insert/update may maintain more structures.",
+    "source": "V10.6",
+    "subtopic": "indexes",
+    "subtopicName": "Indexes & Query Performance"
+  },
+  {
+    "id": "v10.6-sql-14",
+    "topic": "sql",
+    "level": "L3",
+    "title": "How do you safely change a primary key type on a large table?",
+    "tags": [
+      "Migration",
+      "Schema"
+    ],
+    "short": "Changing a key type on a large table can require coordinated changes to indexes, foreign keys and application code.",
+    "answer": "Use an expand-and-contract migration: introduce the new key representation, backfill, support both versions, migrate references, validate, then remove the old structure.",
+    "code": null,
+    "followups": [
+      "How do you backfill without blocking?",
+      "What about foreign keys?"
+    ],
+    "mistakes": [],
+    "interview": "I avoid an in-place destructive change. I introduce the new representation compatibly, migrate references incrementally and remove the old key only after all consumers are moved.",
+    "source": "V10.6",
+    "subtopic": "modeling",
+    "subtopicName": "Data Modeling & Constraints"
+  },
+  {
+    "id": "v10.6-sql-15",
+    "topic": "sql",
+    "level": "L3",
+    "title": "How do you investigate lock contention without a deadlock?",
+    "tags": [
+      "Locking",
+      "Production"
+    ],
+    "short": "Blocking can occur even without a cycle when one transaction holds a resource for a long time.",
+    "answer": "Identify the blocking session, SQL statement, transaction age and lock resource. Reduce transaction scope, add indexes, commit sooner or redesign access patterns.",
+    "code": null,
+    "followups": [
+      "How do you find the blocker?",
+      "Can a slow query cause blocking?"
+    ],
+    "mistakes": [],
+    "interview": "A lock wait is not automatically a deadlock. I find the blocker, inspect why its transaction is long, and fix the root cause rather than merely increasing timeouts.",
+    "source": "V10.6",
+    "subtopic": "transactions",
+    "subtopicName": "ACID & Concurrency",
+    "scenario": "Blocking can occur even without a cycle when one transaction holds a resource for a long time.",
+    "investigation": "Start with metrics and traces, identify the failing boundary, compare latency/error rates and inspect resource saturation before changing configuration.",
+    "prevention": "Use explicit timeouts, bounded resources, automated tests and alerts around the failure mode so the same issue is detected early."
+  },
+  {
+    "id": "v10.6-security-01",
+    "topic": "security",
+    "level": "L2",
+    "title": "What is OAuth2 PKCE and why is it important?",
+    "tags": [
+      "OAuth2",
+      "PKCE"
+    ],
+    "short": "PKCE binds an authorization code exchange to a client-generated verifier.",
+    "answer": "The client creates a verifier and sends its challenge to the authorization server. Later it must present the verifier to redeem the code, reducing the impact of an intercepted authorization code.",
+    "code": null,
+    "followups": [
+      "What is code_verifier?",
+      "Does PKCE replace TLS?"
+    ],
+    "mistakes": [],
+    "interview": "PKCE protects the authorization-code flow by proving that the party redeeming the code started the flow. It is especially important for public clients.",
+    "source": "V10.6",
+    "subtopic": "jwt",
+    "subtopicName": "JWT & Token Security"
+  },
+  {
+    "id": "v10.6-security-02",
+    "topic": "security",
+    "level": "L2",
+    "title": "What is OpenID Connect?",
+    "tags": [
+      "OIDC",
+      "Authentication"
+    ],
+    "short": "OpenID Connect adds an identity layer on top of OAuth2.",
+    "answer": "It defines an ID token and user identity claims so a client can authenticate a user, while OAuth2 itself primarily defines delegated authorization.",
+    "code": null,
+    "followups": [
+      "What is an ID token?",
+      "Access token vs ID token?"
+    ],
+    "mistakes": [],
+    "interview": "OAuth2 answers what access a client gets; OpenID Connect adds standardized user authentication and identity claims.",
+    "source": "V10.6",
+    "subtopic": "auth",
+    "subtopicName": "Authentication & Authorization"
+  },
+  {
+    "id": "v10.6-security-03",
+    "topic": "security",
+    "level": "L2",
+    "title": "How do you validate JWT claims beyond the signature?",
+    "tags": [
+      "JWT",
+      "Security"
+    ],
+    "short": "Signature validation proves integrity, but a service must also validate claims relevant to its trust model.",
+    "answer": "Check issuer, audience, expiry, not-before and required scopes/roles as appropriate. Algorithm and key selection must be constrained rather than blindly trusting token headers.",
+    "code": null,
+    "followups": [
+      "Why validate audience?",
+      "Can a valid token still be unauthorized?"
+    ],
+    "mistakes": [],
+    "interview": "I validate signature plus issuer, audience and time-based claims, then enforce scopes or roles for the requested operation.",
+    "source": "V10.6",
+    "subtopic": "jwt",
+    "subtopicName": "JWT & Token Security"
+  },
+  {
+    "id": "v10.6-security-04",
+    "topic": "security",
+    "level": "L2",
+    "title": "What is token audience and why does it matter?",
+    "tags": [
+      "JWT",
+      "Authorization"
+    ],
+    "short": "The audience identifies the intended recipient of a token.",
+    "answer": "A service should reject a token minted for a different service even if its signature is valid. This limits token replay across APIs.",
+    "code": null,
+    "followups": [
+      "Who sets aud?",
+      "What if aud is missing?"
+    ],
+    "mistakes": [],
+    "interview": "A valid JWT is not automatically valid for every service. I check aud so a token intended for one API cannot be reused against another.",
+    "source": "V10.6",
+    "subtopic": "jwt",
+    "subtopicName": "JWT & Token Security"
+  },
+  {
+    "id": "v10.6-security-05",
+    "topic": "security",
+    "level": "L3",
+    "title": "How should secrets be rotated without downtime?",
+    "tags": [
+      "Secrets",
+      "Operations"
+    ],
+    "short": "Secret rotation should allow old and new credentials to overlap briefly while clients switch.",
+    "answer": "Read new secrets from a managed store, reload them safely, and retire old credentials only after consumers have migrated. For signing keys, key IDs and overlapping public keys help.",
+    "code": null,
+    "followups": [
+      "How do you rotate DB passwords?",
+      "How do you rotate JWT keys?"
+    ],
+    "mistakes": [],
+    "interview": "I use versioned secrets and an overlap window. Rotation must be automated and observable so a credential change does not become an outage.",
+    "source": "V10.6",
+    "subtopic": "fundamentals",
+    "subtopicName": "Security Fundamentals"
+  },
+  {
+    "id": "v10.6-security-06",
+    "topic": "security",
+    "level": "L1",
+    "title": "What is least privilege in backend authorization?",
+    "tags": [
+      "Authorization",
+      "Security"
+    ],
+    "short": "Least privilege grants only the permissions required for a task.",
+    "answer": "Apply it to users, service identities, database roles and cloud IAM. Review permissions periodically and separate read, write and administrative actions.",
+    "code": null,
+    "followups": [
+      "Role vs permission?",
+      "How do you review service permissions?"
+    ],
+    "mistakes": [],
+    "interview": "I start with the minimum permissions required and grant broader access only when there is a documented need.",
+    "source": "V10.6",
+    "subtopic": "auth",
+    "subtopicName": "Authentication & Authorization"
+  },
+  {
+    "id": "v10.6-security-07",
+    "topic": "security",
+    "level": "L2",
+    "title": "How do you prevent sensitive data from leaking into logs?",
+    "tags": [
+      "Security",
+      "Logging"
+    ],
+    "short": "Sensitive fields should be excluded, masked or tokenized before logging.",
+    "answer": "Define structured logging policies, redact authorization headers, passwords, tokens and personal data, and review exception logging paths because stack traces and request dumps can expose data.",
+    "code": null,
+    "followups": [
+      "How do you redact nested objects?",
+      "What about debug logging in production?"
+    ],
+    "mistakes": [],
+    "interview": "I use structured logs with explicit redaction and never log credentials or full sensitive payloads. Logging policy should be tested, not assumed.",
+    "source": "V10.6",
+    "subtopic": "fundamentals",
+    "subtopicName": "Security Fundamentals"
+  },
+  {
+    "id": "v10.6-security-08",
+    "topic": "security",
+    "level": "L3",
+    "title": "What is SSRF DNS rebinding?",
+    "tags": [
+      "SSRF",
+      "Networking"
+    ],
+    "short": "DNS rebinding can make a hostname resolve to a benign address during validation and a private address during the actual request.",
+    "answer": "Mitigation requires validating the resolved address at connection time or using a trusted egress proxy/allowlist rather than trusting one DNS lookup.",
+    "code": null,
+    "followups": [
+      "Why is resolving once insufficient?",
+      "How can egress policy help?"
+    ],
+    "mistakes": [],
+    "interview": "A URL allowlist based only on the initial DNS result can be bypassed. The network control must validate the actual destination or route requests through a controlled proxy.",
+    "source": "V10.6",
+    "subtopic": "fundamentals",
+    "subtopicName": "Security Fundamentals"
+  },
+  {
+    "id": "v10.6-security-09",
+    "topic": "security",
+    "level": "L3",
+    "title": "What is replay attack protection for APIs?",
+    "tags": [
+      "API Security",
+      "Authentication"
+    ],
+    "short": "Replay protection prevents an attacker from reusing a previously valid request or credential.",
+    "answer": "Use short-lived tokens, nonce or timestamp validation for signed requests, idempotency keys for commands, TLS and server-side replay tracking where required.",
+    "code": null,
+    "followups": [
+      "How do nonces work?",
+      "Is JWT expiry enough?"
+    ],
+    "mistakes": [],
+    "interview": "For sensitive commands I combine TLS with short-lived credentials and idempotency or nonce mechanisms so captured requests cannot simply be repeated.",
+    "source": "V10.6",
+    "subtopic": "auth",
+    "subtopicName": "Authentication & Authorization",
+    "scenario": "Replay protection prevents an attacker from reusing a previously valid request or credential.",
+    "investigation": "Start with metrics and traces, identify the failing boundary, compare latency/error rates and inspect resource saturation before changing configuration.",
+    "prevention": "Use explicit timeouts, bounded resources, automated tests and alerts around the failure mode so the same issue is detected early."
+  },
+  {
+    "id": "v10.6-security-10",
+    "topic": "security",
+    "level": "L3",
+    "title": "How do you secure internal admin APIs?",
+    "tags": [
+      "Authorization",
+      "API Security"
+    ],
+    "short": "Internal location alone should not be treated as sufficient authorization.",
+    "answer": "Require strong identity, explicit authorization, network restrictions, audit logging and possibly step-up authentication for sensitive actions. Keep admin endpoints separate where practical.",
+    "code": null,
+    "followups": [
+      "Should internal APIs skip JWT?",
+      "How do you audit admin actions?"
+    ],
+    "mistakes": [],
+    "interview": "I protect admin APIs with strong authentication and fine-grained authorization even inside the network, then add network controls and audit trails as defense in depth.",
+    "source": "V10.6",
+    "subtopic": "auth",
+    "subtopicName": "Authentication & Authorization",
+    "scenario": "Internal location alone should not be treated as sufficient authorization.",
+    "investigation": "Start with metrics and traces, identify the failing boundary, compare latency/error rates and inspect resource saturation before changing configuration.",
+    "prevention": "Use explicit timeouts, bounded resources, automated tests and alerts around the failure mode so the same issue is detected early."
+  },
+  {
+    "id": "v10.6-coding-01",
+    "topic": "coding",
+    "level": "L2",
+    "title": "Find the longest common prefix",
+    "tags": [
+      "Strings",
+      "Complete Program",
+      "Interview Ready"
+    ],
+    "short": "Return the longest prefix shared by all strings.",
+    "answer": "Compare characters column by column, or shrink a prefix until every string starts with it.",
+    "code": "import java.util.*;\npublic class Main {\n    static String longestCommonPrefix(String[] a) {\n        if (a.length == 0) return \"\";\n        String p = a[0];\n        for (int i = 1; i < a.length; i++) {\n            while (!a[i].startsWith(p)) {\n                p = p.substring(0, p.length() - 1);\n                if (p.isEmpty()) return \"\";\n            }\n        }\n        return p;\n    }\n    public static void main(String[] args) {\n        String[] input = {\"flower\", \"flow\", \"flight\"};\n        System.out.println(\"Output: \" + longestCommonPrefix(input));\n    }\n}",
+    "followups": [
+      "Can you solve it with a different data structure?",
+      "What edge cases would you test?"
+    ],
+    "mistakes": [
+      "Do not skip boundary conditions.",
+      "State why the chosen data structure gives the required complexity."
+    ],
+    "interview": "I would start with the core invariant, explain why each operation is safe, then state the complexity and mention the main edge case.",
+    "source": "V10.6",
+    "problem": "Return the longest prefix shared by all strings.",
+    "example": "Input: [\"flower\",\"flow\",\"flight\"]\nOutput: \"fl\"",
+    "approach": "Compare characters column by column, or shrink a prefix until every string starts with it.",
+    "complexity": "Time: O(n*m)\nSpace: O(1) excluding the returned string.",
+    "streams": null,
+    "subtopic": "hashing",
+    "subtopicName": "Strings & Hashing"
+  },
+  {
+    "id": "v10.6-coding-02",
+    "topic": "coding",
+    "level": "L2",
+    "title": "Check whether an array contains a duplicate",
+    "tags": [
+      "Arrays",
+      "Hashing",
+      "Complete Program",
+      "Interview Ready"
+    ],
+    "short": "Determine whether any value appears more than once.",
+    "answer": "Track values in a HashSet and return as soon as an insertion fails because the value already exists.",
+    "code": "import java.util.*;\npublic class Main {\n    static boolean containsDuplicate(int[] a) {\n        Set<Integer> seen = new HashSet<>();\n        for (int n : a) if (!seen.add(n)) return true;\n        return false;\n    }\n    public static void main(String[] args) {\n        int[] input = {1, 2, 3, 1};\n        System.out.println(\"Output: \" + containsDuplicate(input));\n    }\n}",
+    "followups": [
+      "Can you solve it with a different data structure?",
+      "What edge cases would you test?"
+    ],
+    "mistakes": [
+      "Do not skip boundary conditions.",
+      "State why the chosen data structure gives the required complexity."
+    ],
+    "interview": "I would start with the core invariant, explain why each operation is safe, then state the complexity and mention the main edge case.",
+    "source": "V10.6",
+    "problem": "Determine whether any value appears more than once.",
+    "example": "Input: [1,2,3,1]\nOutput: true",
+    "approach": "Track values in a HashSet and return as soon as an insertion fails because the value already exists.",
+    "complexity": "Time: O(n) average\nSpace: O(n)",
+    "streams": null,
+    "subtopic": "hashing",
+    "subtopicName": "Strings & Hashing"
+  },
+  {
+    "id": "v10.6-coding-03",
+    "topic": "coding",
+    "level": "L2",
+    "title": "Find the intersection of two arrays without duplicates",
+    "tags": [
+      "Arrays",
+      "Hashing",
+      "Complete Program",
+      "Interview Ready"
+    ],
+    "short": "Return the unique values present in both arrays.",
+    "answer": "Put the first array into a set, scan the second, and add matches to a result set.",
+    "code": "import java.util.*;\npublic class Main {\n    static int[] intersection(int[] a, int[] b) {\n        Set<Integer> set = new HashSet<>();\n        for (int x : a) set.add(x);\n        Set<Integer> out = new LinkedHashSet<>();\n        for (int x : b) if (set.contains(x)) out.add(x);\n        return out.stream().mapToInt(Integer::intValue).toArray();\n    }\n    public static void main(String[] args) {\n        int[] a = {1,2,2,1}, b = {2,2};\n        System.out.println(Arrays.toString(intersection(a,b)));\n    }\n}",
+    "followups": [
+      "Can you solve it with a different data structure?",
+      "What edge cases would you test?"
+    ],
+    "mistakes": [
+      "Do not skip boundary conditions.",
+      "State why the chosen data structure gives the required complexity."
+    ],
+    "interview": "I would start with the core invariant, explain why each operation is safe, then state the complexity and mention the main edge case.",
+    "source": "V10.6",
+    "problem": "Return the unique values present in both arrays.",
+    "example": "Input: [1,2,2,1], [2,2]\nOutput: [2]",
+    "approach": "Put the first array into a set, scan the second, and add matches to a result set.",
+    "complexity": "Time: O(n + m) average\nSpace: O(n + m)",
+    "streams": null,
+    "subtopic": "hashing",
+    "subtopicName": "Strings & Hashing"
+  },
+  {
+    "id": "v10.6-coding-04",
+    "topic": "coding",
+    "level": "L2",
+    "title": "Best time to buy and sell stock once",
+    "tags": [
+      "Arrays",
+      "Greedy",
+      "Complete Program",
+      "Interview Ready"
+    ],
+    "short": "Find the maximum profit from one buy followed by one sell.",
+    "answer": "Track the minimum price seen so far and the best profit if selling at the current price.",
+    "code": "public class Main {\n    static int maxProfit(int[] prices) {\n        int min = Integer.MAX_VALUE, best = 0;\n        for (int p : prices) { min = Math.min(min, p); best = Math.max(best, p - min); }\n        return best;\n    }\n    public static void main(String[] args) {\n        int[] prices = {7,1,5,3,6,4};\n        System.out.println(\"Max profit: \" + maxProfit(prices));\n    }\n}",
+    "followups": [
+      "Can you solve it with a different data structure?",
+      "What edge cases would you test?"
+    ],
+    "mistakes": [
+      "Do not skip boundary conditions.",
+      "State why the chosen data structure gives the required complexity."
+    ],
+    "interview": "I would start with the core invariant, explain why each operation is safe, then state the complexity and mention the main edge case.",
+    "source": "V10.6",
+    "problem": "Find the maximum profit from one buy followed by one sell.",
+    "example": "Input: [7,1,5,3,6,4]\nOutput: 5",
+    "approach": "Track the minimum price seen so far and the best profit if selling at the current price.",
+    "complexity": "Time: O(n)\nSpace: O(1)",
+    "streams": null,
+    "subtopic": "hashing",
+    "subtopicName": "Strings & Hashing"
+  },
+  {
+    "id": "v10.6-coding-05",
+    "topic": "coding",
+    "level": "L2",
+    "title": "Find the majority element using a frequency map",
+    "tags": [
+      "Arrays",
+      "Hashing",
+      "Complete Program",
+      "Interview Ready"
+    ],
+    "short": "Find a value that appears more than half the length of the array.",
+    "answer": "Count frequencies with a HashMap and return the first value whose count exceeds n/2.",
+    "code": "import java.util.*;\npublic class Main {\n    static int majority(int[] a) {\n        Map<Integer,Integer> count = new HashMap<>();\n        for (int x : a) {\n            int c = count.merge(x, 1, Integer::sum);\n            if (c > a.length / 2) return x;\n        }\n        throw new IllegalArgumentException(\"No majority element\");\n    }\n    public static void main(String[] args) {\n        int[] a = {2,2,1,1,1,2,2};\n        System.out.println(majority(a));\n    }\n}",
+    "followups": [
+      "Can you solve it with a different data structure?",
+      "What edge cases would you test?"
+    ],
+    "mistakes": [
+      "Do not skip boundary conditions.",
+      "State why the chosen data structure gives the required complexity."
+    ],
+    "interview": "I would start with the core invariant, explain why each operation is safe, then state the complexity and mention the main edge case.",
+    "source": "V10.6",
+    "problem": "Find a value that appears more than half the length of the array.",
+    "example": "Input: [2,2,1,1,1,2,2]\nOutput: 2",
+    "approach": "Count frequencies with a HashMap and return the first value whose count exceeds n/2.",
+    "complexity": "Time: O(n) average\nSpace: O(n)",
+    "streams": null,
+    "subtopic": "hashing",
+    "subtopicName": "Strings & Hashing"
+  },
+  {
+    "id": "v10.6-coding-06",
+    "topic": "coding",
+    "level": "L2",
+    "title": "Find the missing number from 0 to n",
+    "tags": [
+      "Arrays",
+      "Bit Manipulation",
+      "Complete Program",
+      "Interview Ready"
+    ],
+    "short": "An array contains n distinct numbers from 0 through n with one number missing.",
+    "answer": "XOR all indices and values. Equal values cancel, leaving the missing number.",
+    "code": "public class Main {\n    static int missing(int[] a) {\n        int x = a.length;\n        for (int i = 0; i < a.length; i++) x ^= i ^ a[i];\n        return x;\n    }\n    public static void main(String[] args) {\n        int[] a = {3,0,1};\n        System.out.println(\"Missing: \" + missing(a));\n    }\n}",
+    "followups": [
+      "Can you solve it with a different data structure?",
+      "What edge cases would you test?"
+    ],
+    "mistakes": [
+      "Do not skip boundary conditions.",
+      "State why the chosen data structure gives the required complexity."
+    ],
+    "interview": "I would start with the core invariant, explain why each operation is safe, then state the complexity and mention the main edge case.",
+    "source": "V10.6",
+    "problem": "An array contains n distinct numbers from 0 through n with one number missing.",
+    "example": "Input: [3,0,1]\nOutput: 2",
+    "approach": "XOR all indices and values. Equal values cancel, leaving the missing number.",
+    "complexity": "Time: O(n)\nSpace: O(1)",
+    "streams": null,
+    "subtopic": "hashing",
+    "subtopicName": "Strings & Hashing"
+  },
+  {
+    "id": "v10.6-coding-07",
+    "topic": "coding",
+    "level": "L2",
+    "title": "Find the duplicate number using Floyd's cycle detection",
+    "tags": [
+      "Arrays",
+      "Two Pointers",
+      "Complete Program",
+      "Interview Ready"
+    ],
+    "short": "Find a duplicate in an array of n+1 integers where values are in 1..n.",
+    "answer": "Treat values as next pointers. Floyd's tortoise and hare finds the cycle entry, which is the duplicate.",
+    "code": "public class Main {\n    static int findDuplicate(int[] a) {\n        int slow = a[0], fast = a[0];\n        do { slow = a[slow]; fast = a[a[fast]]; } while (slow != fast);\n        slow = a[0];\n        while (slow != fast) { slow = a[slow]; fast = a[fast]; }\n        return slow;\n    }\n    public static void main(String[] args) {\n        int[] a = {1,3,4,2,2};\n        System.out.println(\"Duplicate: \" + findDuplicate(a));\n    }\n}",
+    "followups": [
+      "Can you solve it with a different data structure?",
+      "What edge cases would you test?"
+    ],
+    "mistakes": [
+      "Do not skip boundary conditions.",
+      "State why the chosen data structure gives the required complexity."
+    ],
+    "interview": "I would start with the core invariant, explain why each operation is safe, then state the complexity and mention the main edge case.",
+    "source": "V10.6",
+    "problem": "Find a duplicate in an array of n+1 integers where values are in 1..n.",
+    "example": "Input: [1,3,4,2,2]\nOutput: 2",
+    "approach": "Treat values as next pointers. Floyd's tortoise and hare finds the cycle entry, which is the duplicate.",
+    "complexity": "Time: O(n)\nSpace: O(1)",
+    "streams": null,
+    "subtopic": "hashing",
+    "subtopicName": "Strings & Hashing"
+  },
+  {
+    "id": "v10.6-coding-08",
+    "topic": "coding",
+    "level": "L2",
+    "title": "Merge two sorted linked lists",
+    "tags": [
+      "Linked List",
+      "Pointers",
+      "Complete Program",
+      "Interview Ready"
+    ],
+    "short": "Merge two sorted singly linked lists into one sorted list.",
+    "answer": "Use a dummy head and repeatedly attach the smaller current node.",
+    "code": "public class Main {\n    static class Node { int v; Node next; Node(int v){this.v=v;} }\n    static Node merge(Node a, Node b) {\n        Node dummy = new Node(0), cur = dummy;\n        while (a != null && b != null) {\n            if (a.v <= b.v) { cur.next = a; a = a.next; }\n            else { cur.next = b; b = b.next; }\n            cur = cur.next;\n        }\n        cur.next = a != null ? a : b;\n        return dummy.next;\n    }\n    static void print(Node n){ while(n!=null){System.out.print(n.v + (n.next==null?\"\\\\n\":\" -> \")); n=n.next;} }\n    public static void main(String[] args) {\n        Node a=new Node(1); a.next=new Node(2); a.next.next=new Node(4);\n        Node b=new Node(1); b.next=new Node(3); b.next.next=new Node(4);\n        print(merge(a,b));\n    }\n}",
+    "followups": [
+      "Can you solve it with a different data structure?",
+      "What edge cases would you test?"
+    ],
+    "mistakes": [
+      "Do not skip boundary conditions.",
+      "State why the chosen data structure gives the required complexity."
+    ],
+    "interview": "I would start with the core invariant, explain why each operation is safe, then state the complexity and mention the main edge case.",
+    "source": "V10.6",
+    "problem": "Merge two sorted singly linked lists into one sorted list.",
+    "example": "Input: 1->2->4 and 1->3->4\nOutput: 1->1->2->3->4->4",
+    "approach": "Use a dummy head and repeatedly attach the smaller current node.",
+    "complexity": "Time: O(n + m)\nSpace: O(1) extra",
+    "streams": null,
+    "subtopic": "pointers",
+    "subtopicName": "Two Pointers & Linked Lists"
+  },
+  {
+    "id": "v10.6-coding-09",
+    "topic": "coding",
+    "level": "L2",
+    "title": "Remove the nth node from the end of a linked list",
+    "tags": [
+      "Linked List",
+      "Two Pointers",
+      "Complete Program",
+      "Interview Ready"
+    ],
+    "short": "Remove the nth node counting from the end.",
+    "answer": "Advance a fast pointer n nodes, then move fast and slow together until fast reaches the end.",
+    "code": "public class Main {\n    static class Node { int v; Node next; Node(int v){this.v=v;} }\n    static Node remove(Node head, int n) {\n        Node dummy = new Node(0); dummy.next = head;\n        Node fast = dummy, slow = dummy;\n        for(int i=0;i<n;i++) fast=fast.next;\n        while(fast.next!=null){fast=fast.next; slow=slow.next;}\n        slow.next=slow.next.next;\n        return dummy.next;\n    }\n    static void print(Node n){while(n!=null){System.out.print(n.v+(n.next==null?\"\\\\n\":\" -> \"));n=n.next;}}\n    public static void main(String[] args){\n        Node h=new Node(1); h.next=new Node(2); h.next.next=new Node(3); h.next.next.next=new Node(4); h.next.next.next.next=new Node(5);\n        print(remove(h,2));\n    }\n}",
+    "followups": [
+      "Can you solve it with a different data structure?",
+      "What edge cases would you test?"
+    ],
+    "mistakes": [
+      "Do not skip boundary conditions.",
+      "State why the chosen data structure gives the required complexity."
+    ],
+    "interview": "I would start with the core invariant, explain why each operation is safe, then state the complexity and mention the main edge case.",
+    "source": "V10.6",
+    "problem": "Remove the nth node counting from the end.",
+    "example": "Input: 1->2->3->4->5, n=2\nOutput: 1->2->3->5",
+    "approach": "Advance a fast pointer n nodes, then move fast and slow together until fast reaches the end.",
+    "complexity": "Time: O(n)\nSpace: O(1)",
+    "streams": null,
+    "subtopic": "pointers",
+    "subtopicName": "Two Pointers & Linked Lists"
+  },
+  {
+    "id": "v10.6-coding-10",
+    "topic": "coding",
+    "level": "L2",
+    "title": "Implement a queue using two stacks",
+    "tags": [
+      "Stack",
+      "Queue",
+      "Complete Program",
+      "Interview Ready"
+    ],
+    "short": "Implement FIFO queue operations using two LIFO stacks.",
+    "answer": "Use an input stack for pushes and transfer to an output stack only when the output stack is empty.",
+    "code": "import java.util.*;\npublic class Main {\n    static class MyQueue {\n        Deque<Integer> in=new ArrayDeque<>(), out=new ArrayDeque<>();\n        void push(int x){in.push(x);}\n        int pop(){move(); return out.pop();}\n        int peek(){move(); return out.peek();}\n        boolean empty(){return in.isEmpty()&&out.isEmpty();}\n        void move(){if(out.isEmpty()) while(!in.isEmpty()) out.push(in.pop());}\n    }\n    public static void main(String[] args){\n        MyQueue q=new MyQueue(); q.push(1); q.push(2); q.push(3);\n        System.out.println(q.pop());\n    }\n}",
+    "followups": [
+      "Can you solve it with a different data structure?",
+      "What edge cases would you test?"
+    ],
+    "mistakes": [
+      "Do not skip boundary conditions.",
+      "State why the chosen data structure gives the required complexity."
+    ],
+    "interview": "I would start with the core invariant, explain why each operation is safe, then state the complexity and mention the main edge case.",
+    "source": "V10.6",
+    "problem": "Implement FIFO queue operations using two LIFO stacks.",
+    "example": "Input: push 1,2,3; pop\nOutput: 1",
+    "approach": "Use an input stack for pushes and transfer to an output stack only when the output stack is empty.",
+    "complexity": "Amortized Time: O(1) per operation\nSpace: O(n)",
+    "streams": null,
+    "subtopic": "stackheap",
+    "subtopicName": "Stacks, Heaps & Search"
+  },
+  {
+    "id": "v10.6-coding-11",
+    "topic": "coding",
+    "level": "L2",
+    "title": "Evaluate a postfix expression",
+    "tags": [
+      "Stack",
+      "Expressions",
+      "Complete Program",
+      "Interview Ready"
+    ],
+    "short": "Evaluate an arithmetic expression written in postfix notation.",
+    "answer": "Push operands. For an operator, pop the right and left operands, apply the operator, and push the result.",
+    "code": "import java.util.*;\npublic class Main {\n    static int eval(String[] tokens){\n        Deque<Integer> s=new ArrayDeque<>();\n        for(String t:tokens){\n            if(\"+-*/\".contains(t) && t.length()==1){int b=s.pop(),a=s.pop(); switch(t){case \"+\":s.push(a+b);break;case \"-\":s.push(a-b);break;case \"*\":s.push(a*b);break;default:s.push(a/b);}} else s.push(Integer.parseInt(t));\n        }\n        return s.pop();\n    }\n    public static void main(String[] args){System.out.println(eval(new String[]{\"2\",\"1\",\"+\",\"3\",\"*\"}));}\n}",
+    "followups": [
+      "Can you solve it with a different data structure?",
+      "What edge cases would you test?"
+    ],
+    "mistakes": [
+      "Do not skip boundary conditions.",
+      "State why the chosen data structure gives the required complexity."
+    ],
+    "interview": "I would start with the core invariant, explain why each operation is safe, then state the complexity and mention the main edge case.",
+    "source": "V10.6",
+    "problem": "Evaluate an arithmetic expression written in postfix notation.",
+    "example": "Input: [\"2\",\"1\",\"+\",\"3\",\"*\"]\nOutput: 9",
+    "approach": "Push operands. For an operator, pop the right and left operands, apply the operator, and push the result.",
+    "complexity": "Time: O(n)\nSpace: O(n)",
+    "streams": null,
+    "subtopic": "stackheap",
+    "subtopicName": "Stacks, Heaps & Search"
+  },
+  {
+    "id": "v10.6-coding-12",
+    "topic": "coding",
+    "level": "L2",
+    "title": "Find the kth smallest element in an array",
+    "tags": [
+      "Heap",
+      "Arrays",
+      "Complete Program",
+      "Interview Ready"
+    ],
+    "short": "Find the kth smallest value without fully sorting the array.",
+    "answer": "Maintain a max-heap of size k. The heap root is the kth smallest after scanning the array.",
+    "code": "import java.util.*;\npublic class Main {\n    static int kthSmallest(int[] a,int k){\n        PriorityQueue<Integer> pq=new PriorityQueue<>(Comparator.reverseOrder());\n        for(int x:a){pq.offer(x); if(pq.size()>k)pq.poll();}\n        return pq.peek();\n    }\n    public static void main(String[] args){System.out.println(kthSmallest(new int[]{7,10,4,3,20,15},3));}\n}",
+    "followups": [
+      "Can you solve it with a different data structure?",
+      "What edge cases would you test?"
+    ],
+    "mistakes": [
+      "Do not skip boundary conditions.",
+      "State why the chosen data structure gives the required complexity."
+    ],
+    "interview": "I would start with the core invariant, explain why each operation is safe, then state the complexity and mention the main edge case.",
+    "source": "V10.6",
+    "problem": "Find the kth smallest value without fully sorting the array.",
+    "example": "Input: [7,10,4,3,20,15], k=3\nOutput: 7",
+    "approach": "Maintain a max-heap of size k. The heap root is the kth smallest after scanning the array.",
+    "complexity": "Time: O(n log k)\nSpace: O(k)",
+    "streams": null,
+    "subtopic": "stackheap",
+    "subtopicName": "Stacks, Heaps & Search"
+  },
+  {
+    "id": "v10.6-coding-14",
+    "topic": "coding",
+    "level": "L2",
+    "title": "Search in a rotated sorted array",
+    "tags": [
+      "Binary Search",
+      "Arrays",
+      "Complete Program",
+      "Interview Ready"
+    ],
+    "short": "Find a target in a sorted array rotated at an unknown pivot.",
+    "answer": "At every step, one half is sorted. Decide whether the target belongs to that sorted half and discard the other half.",
+    "code": "public class Main {\n    static int search(int[] a,int target){int l=0,r=a.length-1;while(l<=r){int m=l+(r-l)/2;if(a[m]==target)return m;if(a[l]<=a[m]){if(a[l]<=target&&target<a[m])r=m-1;else l=m+1;}else{if(a[m]<target&&target<=a[r])l=m+1;else r=m-1;}}return -1;}\n    public static void main(String[] args){System.out.println(search(new int[]{4,5,6,7,0,1,2},0));}\n}",
+    "followups": [
+      "Can you solve it with a different data structure?",
+      "What edge cases would you test?"
+    ],
+    "mistakes": [
+      "Do not skip boundary conditions.",
+      "State why the chosen data structure gives the required complexity."
+    ],
+    "interview": "I would start with the core invariant, explain why each operation is safe, then state the complexity and mention the main edge case.",
+    "source": "V10.6",
+    "problem": "Find a target in a sorted array rotated at an unknown pivot.",
+    "example": "Input: [4,5,6,7,0,1,2], target=0\nOutput: 4",
+    "approach": "At every step, one half is sorted. Decide whether the target belongs to that sorted half and discard the other half.",
+    "complexity": "Time: O(log n)\nSpace: O(1)",
+    "streams": null,
+    "subtopic": "stackheap",
+    "subtopicName": "Stacks, Heaps & Search"
+  },
+  {
+    "id": "v10.6-coding-15",
+    "topic": "coding",
+    "level": "L2",
+    "title": "Find all permutations of a string",
+    "tags": [
+      "Backtracking",
+      "Strings",
+      "Complete Program",
+      "Interview Ready"
+    ],
+    "short": "Generate every permutation of the input characters.",
+    "answer": "Use backtracking: choose an unused character, recurse, then undo the choice.",
+    "code": "import java.util.*;\npublic class Main {\n    static void permute(char[] a,int idx){\n        if(idx==a.length){System.out.println(new String(a));return;}\n        for(int i=idx;i<a.length;i++){swap(a,idx,i);permute(a,idx+1);swap(a,idx,i);}\n    }\n    static void swap(char[] a,int i,int j){char t=a[i];a[i]=a[j];a[j]=t;}\n    public static void main(String[] args){permute(\"ABC\".toCharArray(),0);}\n}",
+    "followups": [
+      "Can you solve it with a different data structure?",
+      "What edge cases would you test?"
+    ],
+    "mistakes": [
+      "Do not skip boundary conditions.",
+      "State why the chosen data structure gives the required complexity."
+    ],
+    "interview": "I would start with the core invariant, explain why each operation is safe, then state the complexity and mention the main edge case.",
+    "source": "V10.6",
+    "problem": "Generate every permutation of the input characters.",
+    "example": "Input: \"ABC\"\nOutput: ABC, ACB, BAC, BCA, CAB, CBA",
+    "approach": "Use backtracking: choose an unused character, recurse, then undo the choice.",
+    "complexity": "Time: O(n*n!)\nSpace: O(n) recursion plus output.",
+    "streams": null,
+    "subtopic": "stackheap",
+    "subtopicName": "Stacks, Heaps & Search"
+  },
+  {
+    "id": "v10.6-coding-16",
+    "topic": "coding",
+    "level": "L3",
+    "title": "Find the shortest transformation sequence in Word Ladder",
+    "tags": [
+      "BFS",
+      "Graphs",
+      "Complete Program",
+      "Interview Ready"
+    ],
+    "short": "Transform one word to another by changing one character at a time, using only dictionary words.",
+    "answer": "Use BFS because every valid transformation has equal cost. Generate one-letter neighbors and visit each word once.",
+    "code": "import java.util.*;\npublic class Main {\n    static int ladder(String begin,String end,List<String> words){\n        Set<String> dict=new HashSet<>(words); if(!dict.contains(end))return 0;\n        Queue<String> q=new ArrayDeque<>(); q.add(begin); int steps=1;\n        while(!q.isEmpty()){for(int size=q.size();size>0;size--){String w=q.poll();if(w.equals(end))return steps;char[] a=w.toCharArray();for(int i=0;i<a.length;i++){char old=a[i];for(char c='a';c<='z';c++){if(c==old)continue;a[i]=c;String n=new String(a);if(dict.remove(n))q.add(n);}a[i]=old;}}steps++;}\n        return 0;\n    }\n    public static void main(String[] args){System.out.println(ladder(\"hit\",\"cog\",Arrays.asList(\"hot\",\"dot\",\"dog\",\"lot\",\"log\",\"cog\")));}\n}",
+    "followups": [
+      "Can you solve it with a different data structure?",
+      "What edge cases would you test?"
+    ],
+    "mistakes": [
+      "Do not skip boundary conditions.",
+      "State why the chosen data structure gives the required complexity."
+    ],
+    "interview": "I would start with the core invariant, explain why each operation is safe, then state the complexity and mention the main edge case.",
+    "source": "V10.6",
+    "problem": "Transform one word to another by changing one character at a time, using only dictionary words.",
+    "example": "Input: hit -> cog with [hot,dot,dog,lot,log,cog]\nOutput: 5",
+    "approach": "Use BFS because every valid transformation has equal cost. Generate one-letter neighbors and visit each word once.",
+    "complexity": "Time: O(N * L^2) typical with neighbor generation\nSpace: O(N)",
+    "streams": null,
+    "subtopic": "stackheap",
+    "subtopicName": "Stacks, Heaps & Search"
+  },
+  {
+    "id": "v10.6-coding-17",
+    "topic": "coding",
+    "level": "L3",
+    "title": "Find the number of ways to climb stairs with 1 or 2 steps",
+    "tags": [
+      "Dynamic Programming",
+      "Complete Program",
+      "Interview Ready"
+    ],
+    "short": "Count distinct ways to reach the nth stair when each move is 1 or 2 steps.",
+    "answer": "The number of ways to reach n is ways(n-1)+ways(n-2). Keep only the previous two values.",
+    "code": "public class Main {\n    static long ways(int n){if(n<=1)return 1;long a=1,b=1;for(int i=2;i<=n;i++){long c=a+b;a=b;b=c;}return b;}\n    public static void main(String[] args){System.out.println(ways(5));}\n}",
+    "followups": [
+      "Can you solve it with a different data structure?",
+      "What edge cases would you test?"
+    ],
+    "mistakes": [
+      "Do not skip boundary conditions.",
+      "State why the chosen data structure gives the required complexity."
+    ],
+    "interview": "I would start with the core invariant, explain why each operation is safe, then state the complexity and mention the main edge case.",
+    "source": "V10.6",
+    "problem": "Count distinct ways to reach the nth stair when each move is 1 or 2 steps.",
+    "example": "Input: n=5\nOutput: 8",
+    "approach": "The number of ways to reach n is ways(n-1)+ways(n-2). Keep only the previous two values.",
+    "complexity": "Time: O(n)\nSpace: O(1)",
+    "streams": null,
+    "subtopic": "arrays",
+    "subtopicName": "Arrays & Strings"
+  },
+  {
+    "id": "v10.6-coding-18",
+    "topic": "coding",
+    "level": "L3",
+    "title": "Find the longest increasing subsequence length",
+    "tags": [
+      "Dynamic Programming",
+      "Arrays",
+      "Complete Program",
+      "Interview Ready"
+    ],
+    "short": "Find the length of the longest strictly increasing subsequence.",
+    "answer": "Maintain the smallest possible tail value for each subsequence length using binary search. This gives O(n log n).",
+    "code": "import java.util.*;\npublic class Main {\n    static int lis(int[] a){\n        int[] tails=new int[a.length]; int size=0;\n        for(int x:a){int l=0,r=size;while(l<r){int m=(l+r)/2;if(tails[m]<x)l=m+1;else r=m;}tails[l]=x;if(l==size)size++;}\n        return size;\n    }\n    public static void main(String[] args){System.out.println(lis(new int[]{10,9,2,5,3,7,101,18}));}\n}",
+    "followups": [
+      "Can you solve it with a different data structure?",
+      "What edge cases would you test?"
+    ],
+    "mistakes": [
+      "Do not skip boundary conditions.",
+      "State why the chosen data structure gives the required complexity."
+    ],
+    "interview": "I would start with the core invariant, explain why each operation is safe, then state the complexity and mention the main edge case.",
+    "source": "V10.6",
+    "problem": "Find the length of the longest strictly increasing subsequence.",
+    "example": "Input: [10,9,2,5,3,7,101,18]\nOutput: 4",
+    "approach": "Maintain the smallest possible tail value for each subsequence length using binary search. This gives O(n log n).",
+    "complexity": "Time: O(n log n)\nSpace: O(n)",
+    "streams": null,
+    "subtopic": "arrays",
+    "subtopicName": "Arrays & Strings"
+  },
+  {
+    "id": "v10.6-coding-13",
+    "topic": "coding",
+    "level": "L2",
+    "title": "Group anagrams together",
+    "tags": [
+      "Strings",
+      "Hashing",
+      "Complete Program",
+      "Interview Ready"
+    ],
+    "short": "Group words that contain the same characters with the same frequencies.",
+    "answer": "Use a canonical key for each word, such as its sorted characters, and map that key to a list of words.",
+    "code": "import java.util.*;\npublic class Main {\n    static List<List<String>> groupAnagrams(String[] words) {\n        Map<String,List<String>> groups=new LinkedHashMap<>();\n        for(String word:words){\n            char[] chars=word.toCharArray(); Arrays.sort(chars);\n            String key=new String(chars);\n            groups.computeIfAbsent(key,k->new ArrayList<>()).add(word);\n        }\n        return new ArrayList<>(groups.values());\n    }\n    public static void main(String[] args){\n        String[] words={\"eat\",\"tea\",\"tan\",\"ate\",\"nat\",\"bat\"};\n        System.out.println(groupAnagrams(words));\n    }\n}",
+    "followups": [
+      "Can you do it without sorting each word?",
+      "How does the solution change for Unicode?"
+    ],
+    "mistakes": [
+      "Do not use the original word as the key.",
+      "Clarify whether case and punctuation are significant."
+    ],
+    "interview": "I create a canonical representation for each word. Words with the same sorted characters belong to the same HashMap bucket. This gives average O(n * k log k) time when sorting each word.",
+    "source": "V10.6",
+    "problem": "Given an array of strings, group all anagrams together.",
+    "example": "Input: [eat, tea, tan, ate, nat, bat]\nOutput: [[eat, tea, ate], [tan, nat], [bat]]",
+    "approach": "Sort the characters of each word to form a canonical key, then use a HashMap from that key to the words sharing it.",
+    "complexity": "Time: O(n * k log k), where n is the number of words and k is the maximum word length.\nSpace: O(n * k) for grouped output and keys.",
+    "streams": null,
+    "subtopic": "hashing",
+    "subtopicName": "Strings & Hashing"
+  },
+  {
+    "id": "v10.6-java-21",
+    "topic": "java",
+    "level": "L3",
+    "title": "What is the difference between AtomicReference and synchronized state?",
+    "tags": [
+      "Concurrency",
+      "Atomic"
+    ],
+    "short": "AtomicReference updates one reference atomically without a traditional monitor.",
+    "answer": "AtomicReference uses CAS-style updates for a single reference. It is useful for lock-free state transitions, but if several fields must change together a monitor or another coordinated design may be clearer.",
+    "code": null,
+    "followups": [
+      "What is compareAndSet?",
+      "When is synchronized simpler?"
+    ],
+    "mistakes": [
+      "Do not assume atomic reference updates make a multi-step workflow atomic."
+    ],
+    "interview": "I choose AtomicReference when one state reference can be updated atomically. If the invariant spans multiple mutable fields, I prefer a lock or immutable state object swapped as one reference.",
+    "source": "V10.6",
+    "subtopic": "concurrency",
+    "subtopicName": "Concurrency & Multithreading"
+  },
+  {
+    "id": "v10.6-springboot-21",
+    "topic": "springboot",
+    "level": "L3",
+    "title": "How do you avoid blocking calls in a reactive Spring application?",
+    "tags": [
+      "WebFlux",
+      "Performance"
+    ],
+    "short": "Blocking work can occupy reactive event-loop threads and destroy throughput.",
+    "answer": "Reactive applications rely on a small number of event-loop threads. Blocking JDBC, file I/O or long CPU work on those threads can stall unrelated requests. Blocking work should use an appropriate scheduler or, preferably, a non-blocking client.",
+    "code": null,
+    "followups": [
+      "How do you detect blocking calls?",
+      "WebFlux vs MVC for JDBC?"
+    ],
+    "mistakes": [],
+    "interview": "In WebFlux I keep the event loop non-blocking. If a legacy blocking dependency cannot be replaced, I isolate it on a bounded scheduler and monitor its queue and latency rather than blocking event-loop threads.",
+    "source": "V10.6",
+    "subtopic": "core",
+    "subtopicName": "Spring Core & IoC"
+  },
+  {
+    "id": "v10.6-microservices-21",
+    "topic": "microservices",
+    "level": "L3",
+    "title": "How would you handle duplicate webhook delivery at the receiver?",
+    "tags": [
+      "Webhooks",
+      "Idempotency"
+    ],
+    "short": "Webhook receivers should assume the same event can arrive more than once.",
+    "answer": "Use the provider's stable event ID as an idempotency key, persist processing state with a unique constraint, and return success for an already completed event. Keep the transaction that changes business state and records the event ID atomic where possible.",
+    "code": null,
+    "followups": [
+      "What if processing crashes after the business update?",
+      "Should the receiver return 2xx for a duplicate?"
+    ],
+    "mistakes": [],
+    "interview": "I treat webhook delivery as at-least-once. The receiver stores a unique event ID and makes the business update idempotent, so a retry returns the same outcome instead of applying the business change twice.",
+    "source": "V10.6",
+    "subtopic": "messaging",
+    "subtopicName": "Messaging & Event-driven"
   }
 ]

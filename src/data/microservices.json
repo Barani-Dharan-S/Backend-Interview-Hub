@@ -5659,5 +5659,490 @@
     "scenario": "The payment provider reports success, but the order service times out before recording the result. A client retry could charge the card again.",
     "investigation": "Use the provider transaction/reference ID to query the payment status. Trace whether the request actually reached the provider and whether the callback/webhook was delivered.",
     "prevention": "Use an idempotency key at the payment boundary, persist provider references, reconcile uncertain states asynchronously, and model payment as a state machine such as PENDING, SUCCESS, FAILED, UNKNOWN."
+  },
+  {
+    "id": "v10.6-microservices-01",
+    "topic": "microservices",
+    "level": "L3",
+    "title": "What is the difference between orchestration and choreography in Saga?",
+    "tags": [
+      "Saga",
+      "Transactions"
+    ],
+    "short": "Orchestration uses a coordinator to direct steps; choreography lets services react to events without a central coordinator.",
+    "answer": "Orchestration makes workflow visibility and compensation ordering explicit, while choreography reduces central coupling but can become difficult to trace as the number of participants grows.",
+    "code": null,
+    "followups": [
+      "How do compensations work?",
+      "What are the failure trade-offs?"
+    ],
+    "mistakes": [],
+    "interview": "I choose orchestration when the workflow is complex and needs centralized visibility; choreography can work well for simpler event-driven flows.",
+    "source": "V10.6",
+    "subtopic": "data",
+    "subtopicName": "Distributed Data & Transactions",
+    "scenario": "Orchestration uses a coordinator to direct steps; choreography lets services react to events without a central coordinator.",
+    "investigation": "Start with metrics and traces, identify the failing boundary, compare latency/error rates and inspect resource saturation before changing configuration.",
+    "prevention": "Use explicit timeouts, bounded resources, automated tests and alerts around the failure mode so the same issue is detected early."
+  },
+  {
+    "id": "v10.6-microservices-02",
+    "topic": "microservices",
+    "level": "L3",
+    "title": "How do you make a Saga compensation idempotent?",
+    "tags": [
+      "Saga",
+      "Idempotency"
+    ],
+    "short": "A compensation may be retried, so it must safely produce the same final state when applied more than once.",
+    "answer": "Use a unique operation ID, state checks and conditional updates. Compensation should be a business action rather than assuming the exact inverse of every original operation exists.",
+    "code": null,
+    "followups": [
+      "What if compensation partially succeeds?",
+      "Can compensation restore exact state?"
+    ],
+    "mistakes": [],
+    "interview": "I give each Saga step and compensation a stable operation ID and make the state transition conditional and repeatable.",
+    "source": "V10.6",
+    "subtopic": "data",
+    "subtopicName": "Distributed Data & Transactions",
+    "scenario": "A compensation may be retried, so it must safely produce the same final state when applied more than once.",
+    "investigation": "Start with metrics and traces, identify the failing boundary, compare latency/error rates and inspect resource saturation before changing configuration.",
+    "prevention": "Use explicit timeouts, bounded resources, automated tests and alerts around the failure mode so the same issue is detected early."
+  },
+  {
+    "id": "v10.6-microservices-03",
+    "topic": "microservices",
+    "level": "L3",
+    "title": "What is a distributed lock and what are its risks?",
+    "tags": [
+      "Distributed Systems",
+      "Lock"
+    ],
+    "short": "A distributed lock coordinates access to a resource across multiple service instances.",
+    "answer": "Risks include lease expiry, clock assumptions, client pauses and split-brain behavior. Use fencing tokens or database constraints where correctness is critical rather than relying solely on a lock.",
+    "code": null,
+    "followups": [
+      "Why can a lock expire while work continues?",
+      "What is a fencing token?"
+    ],
+    "mistakes": [],
+    "interview": "A distributed lock is not magic mutual exclusion. For critical correctness I combine leases with fencing or durable database constraints.",
+    "source": "V10.6",
+    "subtopic": "data",
+    "subtopicName": "Distributed Data & Transactions",
+    "scenario": "A distributed lock coordinates access to a resource across multiple service instances.",
+    "investigation": "Start with metrics and traces, identify the failing boundary, compare latency/error rates and inspect resource saturation before changing configuration.",
+    "prevention": "Use explicit timeouts, bounded resources, automated tests and alerts around the failure mode so the same issue is detected early."
+  },
+  {
+    "id": "v10.6-microservices-04",
+    "topic": "microservices",
+    "level": "L3",
+    "title": "What is a fencing token?",
+    "tags": [
+      "Distributed Systems",
+      "Lock"
+    ],
+    "short": "A fencing token is a monotonically increasing value that lets a resource reject stale lock holders.",
+    "answer": "When a new lock owner gets a higher token, the storage layer accepts only operations carrying the current or newer token. This protects against a paused old owner resuming later.",
+    "code": null,
+    "followups": [
+      "Where is the token checked?",
+      "Can Redis alone guarantee correctness?"
+    ],
+    "mistakes": [],
+    "interview": "Fencing converts a time-based lock into a verifiable ordering at the resource, preventing stale owners from corrupting state.",
+    "source": "V10.6",
+    "subtopic": "data",
+    "subtopicName": "Distributed Data & Transactions",
+    "scenario": "A fencing token is a monotonically increasing value that lets a resource reject stale lock holders.",
+    "investigation": "Start with metrics and traces, identify the failing boundary, compare latency/error rates and inspect resource saturation before changing configuration.",
+    "prevention": "Use explicit timeouts, bounded resources, automated tests and alerts around the failure mode so the same issue is detected early."
+  },
+  {
+    "id": "v10.6-microservices-05",
+    "topic": "microservices",
+    "level": "L3",
+    "title": "How do you handle clock skew in distributed systems?",
+    "tags": [
+      "Distributed Systems",
+      "Time"
+    ],
+    "short": "Different machines can have clocks that differ, so wall-clock timestamps are not safe for every ordering decision.",
+    "answer": "Use logical clocks, sequence numbers, database ordering or server-side timestamps when strict ordering matters. Keep NTP synchronized but don't assume perfect clocks.",
+    "code": null,
+    "followups": [
+      "Wall clock vs monotonic clock?",
+      "How does clock skew affect JWT expiry?"
+    ],
+    "mistakes": [],
+    "interview": "I use monotonic sequence numbers or authoritative storage for ordering. Wall-clock time is useful for observability but not always for correctness.",
+    "source": "V10.6",
+    "subtopic": "data",
+    "subtopicName": "Distributed Data & Transactions",
+    "scenario": "Different machines can have clocks that differ, so wall-clock timestamps are not safe for every ordering decision.",
+    "investigation": "Start with metrics and traces, identify the failing boundary, compare latency/error rates and inspect resource saturation before changing configuration.",
+    "prevention": "Use explicit timeouts, bounded resources, automated tests and alerts around the failure mode so the same issue is detected early."
+  },
+  {
+    "id": "v10.6-microservices-06",
+    "topic": "microservices",
+    "level": "L3",
+    "title": "What is backpressure and where should it be applied?",
+    "tags": [
+      "Resilience",
+      "Messaging"
+    ],
+    "short": "Backpressure limits producers when consumers cannot keep up.",
+    "answer": "It can be implemented with bounded queues, concurrency limits, broker flow control and admission control. Without it, queues grow until latency or memory becomes unacceptable.",
+    "code": null,
+    "followups": [
+      "Backpressure vs rate limiting?",
+      "What should happen when capacity is exhausted?"
+    ],
+    "mistakes": [],
+    "interview": "Backpressure is a capacity-protection mechanism. I prefer bounded queues and explicit overload behavior over unlimited buffering.",
+    "source": "V10.6",
+    "subtopic": "resilience",
+    "subtopicName": "Resilience & Reliability",
+    "scenario": "Backpressure limits producers when consumers cannot keep up.",
+    "investigation": "Start with metrics and traces, identify the failing boundary, compare latency/error rates and inspect resource saturation before changing configuration.",
+    "prevention": "Use explicit timeouts, bounded resources, automated tests and alerts around the failure mode so the same issue is detected early."
+  },
+  {
+    "id": "v10.6-microservices-08",
+    "topic": "microservices",
+    "level": "L3",
+    "title": "What is hedged request processing?",
+    "tags": [
+      "Latency",
+      "Resilience"
+    ],
+    "short": "Hedging sends a duplicate request after a delay to reduce tail latency.",
+    "answer": "It can improve p99 when latency variance is high, but it increases load and can duplicate side effects. It is best suited to idempotent reads with capacity headroom.",
+    "code": null,
+    "followups": [
+      "Hedging vs retry?",
+      "How do you choose the hedge delay?"
+    ],
+    "mistakes": [],
+    "interview": "Hedging is a latency optimization that spends extra capacity. I use it only for safe idempotent operations and after measuring tail latency.",
+    "source": "V10.6",
+    "subtopic": "resilience",
+    "subtopicName": "Resilience & Reliability",
+    "scenario": "Hedging sends a duplicate request after a delay to reduce tail latency.",
+    "investigation": "Start with metrics and traces, identify the failing boundary, compare latency/error rates and inspect resource saturation before changing configuration.",
+    "prevention": "Use explicit timeouts, bounded resources, automated tests and alerts around the failure mode so the same issue is detected early."
+  },
+  {
+    "id": "v10.6-microservices-09",
+    "topic": "microservices",
+    "level": "L3",
+    "title": "How do you prevent a thundering herd during cache recovery?",
+    "tags": [
+      "Caching",
+      "Resilience"
+    ],
+    "short": "Many clients may simultaneously miss a cache after restart or mass expiry.",
+    "answer": "Use request coalescing, staggered warming, TTL jitter and bounded database concurrency. A single lock around every key can become another bottleneck.",
+    "code": null,
+    "followups": [
+      "What is single-flight?",
+      "How do you warm a cache safely?"
+    ],
+    "mistakes": [],
+    "interview": "I protect the backing store with coalescing and bounded concurrency, then warm hot keys gradually rather than letting every request rebuild them.",
+    "source": "V10.6",
+    "subtopic": "messaging",
+    "subtopicName": "Messaging & Event-driven",
+    "scenario": "Many clients may simultaneously miss a cache after restart or mass expiry.",
+    "investigation": "Start with metrics and traces, identify the failing boundary, compare latency/error rates and inspect resource saturation before changing configuration.",
+    "prevention": "Use explicit timeouts, bounded resources, automated tests and alerts around the failure mode so the same issue is detected early."
+  },
+  {
+    "id": "v10.6-microservices-10",
+    "topic": "microservices",
+    "level": "L2",
+    "title": "What is a dead-letter queue versus a retry topic?",
+    "tags": [
+      "Kafka",
+      "Messaging"
+    ],
+    "short": "A retry topic delays another processing attempt, while a dead-letter destination holds messages that exceeded the retry policy or are otherwise non-processable.",
+    "answer": "Retry destinations are part of normal transient-failure handling. DLTs are an operational quarantine and should include metadata for diagnosis and replay.",
+    "code": null,
+    "followups": [
+      "Should DLT messages expire?",
+      "How do you preserve headers?"
+    ],
+    "mistakes": [],
+    "interview": "I use retry topics for transient failures and a DLT for exhausted or invalid messages. Both need observability and a safe replay path.",
+    "source": "V10.6",
+    "subtopic": "messaging",
+    "subtopicName": "Messaging & Event-driven"
+  },
+  {
+    "id": "v10.6-microservices-11",
+    "topic": "microservices",
+    "level": "L3",
+    "title": "How do Kafka transactions help exactly-once processing?",
+    "tags": [
+      "Kafka",
+      "Transactions"
+    ],
+    "short": "Kafka transactions can atomically publish records and commit consumer offsets for Kafka-to-Kafka processing.",
+    "answer": "Exactly-once semantics are bounded by the Kafka processing model; external side effects such as a database update still need idempotency or transactional integration.",
+    "code": null,
+    "followups": [
+      "EOS vs at-least-once?",
+      "What about a DB write?"
+    ],
+    "mistakes": [],
+    "interview": "Kafka transactions can provide strong semantics within Kafka, but they do not magically make a database and Kafka one atomic transaction. External effects still need a design.",
+    "source": "V10.6",
+    "subtopic": "messaging",
+    "subtopicName": "Messaging & Event-driven",
+    "scenario": "Kafka transactions can atomically publish records and commit consumer offsets for Kafka-to-Kafka processing.",
+    "investigation": "Start with metrics and traces, identify the failing boundary, compare latency/error rates and inspect resource saturation before changing configuration.",
+    "prevention": "Use explicit timeouts, bounded resources, automated tests and alerts around the failure mode so the same issue is detected early."
+  },
+  {
+    "id": "v10.6-microservices-12",
+    "topic": "microservices",
+    "level": "L3",
+    "title": "How do you design Kafka partition keys?",
+    "tags": [
+      "Kafka",
+      "Partitions"
+    ],
+    "short": "The partition key determines which partition receives a record and therefore where per-key ordering is preserved.",
+    "answer": "Choose a key that matches the business ordering requirement and distributes load. A hot key can overload one partition even when the topic has many partitions.",
+    "code": null,
+    "followups": [
+      "Can you change the key later?",
+      "What is a hot partition?"
+    ],
+    "mistakes": [],
+    "interview": "I choose the key based on ordering first, then validate distribution. If one entity is extremely hot, I may need a different model because ordering and parallelism conflict.",
+    "source": "V10.6",
+    "subtopic": "messaging",
+    "subtopicName": "Messaging & Event-driven",
+    "scenario": "The partition key determines which partition receives a record and therefore where per-key ordering is preserved.",
+    "investigation": "Start with metrics and traces, identify the failing boundary, compare latency/error rates and inspect resource saturation before changing configuration.",
+    "prevention": "Use explicit timeouts, bounded resources, automated tests and alerts around the failure mode so the same issue is detected early."
+  },
+  {
+    "id": "v10.6-microservices-13",
+    "topic": "microservices",
+    "level": "L2",
+    "title": "What is consumer group parallelism in Kafka?",
+    "tags": [
+      "Kafka",
+      "Consumer Group"
+    ],
+    "short": "Within a consumer group, a partition is processed by one consumer at a time.",
+    "answer": "Adding consumers increases parallelism only until all partitions are assigned. More partitions can increase throughput but also affect ordering, storage and operational cost.",
+    "code": null,
+    "followups": [
+      "Can two consumers read the same partition?",
+      "How does rebalancing affect this?"
+    ],
+    "mistakes": [],
+    "interview": "Consumer count cannot exceed useful partition parallelism. I size partitions for expected throughput and future concurrency, not just current traffic.",
+    "source": "V10.6",
+    "subtopic": "messaging",
+    "subtopicName": "Messaging & Event-driven"
+  },
+  {
+    "id": "v10.6-microservices-14",
+    "topic": "microservices",
+    "level": "L3",
+    "title": "How do you design a reliable webhook delivery system?",
+    "tags": [
+      "Events",
+      "Webhooks"
+    ],
+    "short": "Webhook delivery should assume receivers are slow, unavailable and duplicate-prone.",
+    "answer": "Persist delivery attempts, sign payloads, use bounded retries with backoff, timeouts, idempotency guidance and a dead-letter state. Track delivery status for operators.",
+    "code": null,
+    "followups": [
+      "How do you verify signatures?",
+      "How do you avoid retry storms?"
+    ],
+    "mistakes": [],
+    "interview": "I persist the event and delivery state, sign requests, retry transient failures with backoff, and make the receiver contract idempotent because duplicate delivery is expected.",
+    "source": "V10.6",
+    "subtopic": "messaging",
+    "subtopicName": "Messaging & Event-driven",
+    "scenario": "Webhook delivery should assume receivers are slow, unavailable and duplicate-prone.",
+    "investigation": "Start with metrics and traces, identify the failing boundary, compare latency/error rates and inspect resource saturation before changing configuration.",
+    "prevention": "Use explicit timeouts, bounded resources, automated tests and alerts around the failure mode so the same issue is detected early."
+  },
+  {
+    "id": "v10.6-microservices-15",
+    "topic": "microservices",
+    "level": "L2",
+    "title": "How do you version a microservice event without breaking consumers?",
+    "tags": [
+      "Events",
+      "Schema"
+    ],
+    "short": "Event compatibility requires planned evolution rather than ad-hoc field changes.",
+    "answer": "Prefer additive changes and tolerant readers. For breaking semantics, use an explicit version or new event type and migrate consumers gradually.",
+    "code": null,
+    "followups": [
+      "Backward vs forward compatibility?",
+      "Can consumers ignore unknown fields?"
+    ],
+    "mistakes": [],
+    "interview": "I treat events as contracts. Additive changes are preferred; semantic or structural breaks get explicit versioning and a migration window.",
+    "source": "V10.6",
+    "subtopic": "messaging",
+    "subtopicName": "Messaging & Event-driven"
+  },
+  {
+    "id": "v10.6-microservices-16",
+    "topic": "microservices",
+    "level": "L3",
+    "title": "What is service mesh and when would you use it?",
+    "tags": [
+      "Service Mesh",
+      "Networking"
+    ],
+    "short": "A service mesh moves common service-to-service networking concerns into infrastructure sidecars or nodes.",
+    "answer": "It can provide mTLS, traffic policy, retries, telemetry and routing without duplicating logic in every service, but adds operational complexity and another failure surface.",
+    "code": null,
+    "followups": [
+      "What does a sidecar do?",
+      "Mesh vs API gateway?"
+    ],
+    "mistakes": [],
+    "interview": "A service mesh can standardize cross-service networking, but I adopt it only when the organization can operate the added control plane and data-plane complexity.",
+    "source": "V10.6",
+    "subtopic": "communication",
+    "subtopicName": "Communication & Networking",
+    "scenario": "A service mesh moves common service-to-service networking concerns into infrastructure sidecars or nodes.",
+    "investigation": "Start with metrics and traces, identify the failing boundary, compare latency/error rates and inspect resource saturation before changing configuration.",
+    "prevention": "Use explicit timeouts, bounded resources, automated tests and alerts around the failure mode so the same issue is detected early."
+  },
+  {
+    "id": "v10.6-microservices-17",
+    "topic": "microservices",
+    "level": "L2",
+    "title": "How do you design a circuit breaker around a flaky dependency?",
+    "tags": [
+      "Resilience",
+      "Circuit Breaker"
+    ],
+    "short": "A circuit breaker prevents repeated calls to an unhealthy dependency.",
+    "answer": "It transitions among closed, open and half-open states based on failures or slow calls. Thresholds should reflect business impact and avoid treating every transient error as permanent.",
+    "code": null,
+    "followups": [
+      "What is half-open?",
+      "Should 4xx open the circuit?"
+    ],
+    "mistakes": [],
+    "interview": "I use a bounded timeout first, then circuit breaking to stop repeated load when failure rates or latency cross thresholds. Recovery probes happen gradually.",
+    "source": "V10.6",
+    "subtopic": "resilience",
+    "subtopicName": "Resilience & Reliability"
+  },
+  {
+    "id": "v10.6-microservices-18",
+    "topic": "microservices",
+    "level": "L3",
+    "title": "How do you distinguish an application retry from a broker redelivery?",
+    "tags": [
+      "Kafka",
+      "Reliability"
+    ],
+    "short": "Application retry is an explicit second attempt, while broker redelivery happens when offsets are not committed or delivery semantics cause a record to be seen again.",
+    "answer": "Observability should record attempt count and event ID. Treat both as expected duplicate paths and keep processing idempotent.",
+    "code": null,
+    "followups": [
+      "How do you count attempts?",
+      "When is offset committed?"
+    ],
+    "mistakes": [],
+    "interview": "I distinguish transport-level redelivery from business-level retries in telemetry. Both can create duplicates, so the consumer must remain idempotent.",
+    "source": "V10.6",
+    "subtopic": "messaging",
+    "subtopicName": "Messaging & Event-driven",
+    "scenario": "Application retry is an explicit second attempt, while broker redelivery happens when offsets are not committed or delivery semantics cause a record to be seen again.",
+    "investigation": "Start with metrics and traces, identify the failing boundary, compare latency/error rates and inspect resource saturation before changing configuration.",
+    "prevention": "Use explicit timeouts, bounded resources, automated tests and alerts around the failure mode so the same issue is detected early."
+  },
+  {
+    "id": "v10.6-microservices-19",
+    "topic": "microservices",
+    "level": "L3",
+    "title": "How do you handle a downstream dependency that returns slow 200 responses?",
+    "tags": [
+      "Resilience",
+      "Timeout"
+    ],
+    "short": "A successful but slow dependency can exhaust threads and connections just like errors.",
+    "answer": "Use deadlines, connection limits, concurrency bulkheads, circuit breakers based on slow-call rate, and fallbacks where safe. Monitor p95/p99 rather than only error rate.",
+    "code": null,
+    "followups": [
+      "What is a slow-call circuit breaker?",
+      "How do you protect the thread pool?"
+    ],
+    "mistakes": [],
+    "interview": "Latency is a failure mode. I configure slow-call thresholds and capacity controls, not just error retries, because slow success can still take down callers.",
+    "source": "V10.6",
+    "subtopic": "resilience",
+    "subtopicName": "Resilience & Reliability",
+    "scenario": "A successful but slow dependency can exhaust threads and connections just like errors.",
+    "investigation": "Start with metrics and traces, identify the failing boundary, compare latency/error rates and inspect resource saturation before changing configuration.",
+    "prevention": "Use explicit timeouts, bounded resources, automated tests and alerts around the failure mode so the same issue is detected early."
+  },
+  {
+    "id": "v10.6-microservices-20",
+    "topic": "microservices",
+    "level": "L3",
+    "title": "What is the difference between at-most-once, at-least-once and effectively-once processing?",
+    "tags": [
+      "Messaging",
+      "Delivery"
+    ],
+    "short": "These describe how many times processing may occur from the application's perspective.",
+    "answer": "At-most-once may lose messages but avoids duplicates; at-least-once may duplicate; effectively-once combines at-least-once transport with idempotent business processing so the observable effect occurs once.",
+    "code": null,
+    "followups": [
+      "When would at-most-once be acceptable?",
+      "How do you make a consumer idempotent?"
+    ],
+    "mistakes": [],
+    "interview": "I prefer at-least-once delivery plus idempotent consumers for many backend systems. Exactly-once transport alone does not solve external side effects.",
+    "source": "V10.6",
+    "subtopic": "messaging",
+    "subtopicName": "Messaging & Event-driven",
+    "scenario": "These describe how many times processing may occur from the application's perspective.",
+    "investigation": "Start with metrics and traces, identify the failing boundary, compare latency/error rates and inspect resource saturation before changing configuration.",
+    "prevention": "Use explicit timeouts, bounded resources, automated tests and alerts around the failure mode so the same issue is detected early."
+  },
+  {
+    "id": "v10.6-microservices-21",
+    "topic": "microservices",
+    "level": "L3",
+    "title": "How would you handle duplicate webhook delivery at the receiver?",
+    "tags": [
+      "Webhooks",
+      "Idempotency"
+    ],
+    "short": "Webhook receivers should assume the same event can arrive more than once.",
+    "answer": "Use the provider's stable event ID as an idempotency key, persist processing state with a unique constraint, and return success for an already completed event. Keep the transaction that changes business state and records the event ID atomic where possible.",
+    "code": null,
+    "followups": [
+      "What if processing crashes after the business update?",
+      "Should the receiver return 2xx for a duplicate?"
+    ],
+    "mistakes": [],
+    "interview": "I treat webhook delivery as at-least-once. The receiver stores a unique event ID and makes the business update idempotent, so a retry returns the same outcome instead of applying the business change twice.",
+    "source": "V10.6",
+    "subtopic": "messaging",
+    "subtopicName": "Messaging & Event-driven"
   }
 ]

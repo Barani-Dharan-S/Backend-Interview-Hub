@@ -560,7 +560,7 @@
     "source": "V9",
     "id": "v9-080",
     "problem": "Reverse a string without using StringBuilder.reverse()",
-    "example": "",
+    "example": "Input: \"hello\"\nOutput: \"olleh\"",
     "approach": "Convert to a char array and swap from both ends.",
     "complexity": "Analyze time and space complexity for the implementation shown.",
     "streams": ""
@@ -586,7 +586,7 @@
     "source": "V9",
     "id": "v9-081",
     "problem": "Check whether two strings are anagrams",
-    "example": "",
+    "example": "Input: \"listen\", \"silent\"\nOutput: true",
     "approach": "Count characters in the first string and decrement counts for the second.",
     "complexity": "Analyze time and space complexity for the implementation shown.",
     "streams": ""
@@ -612,7 +612,7 @@
     "source": "V9",
     "id": "v9-082",
     "problem": "Find the first non-repeated character",
-    "example": "",
+    "example": "Input: \"swiss\"\nOutput: \"w\"",
     "approach": "Count frequencies, then scan the original order.",
     "complexity": "Analyze time and space complexity for the implementation shown.",
     "streams": ""
@@ -638,7 +638,7 @@
     "source": "V9",
     "id": "v9-083",
     "problem": "Find duplicate elements in an integer array",
-    "example": "",
+    "example": "Input: [1,2,3,1,2]\nOutput: [1,2]",
     "approach": "Track seen values and add repeats to a second set.",
     "complexity": "Analyze time and space complexity for the implementation shown.",
     "streams": ""
@@ -664,7 +664,7 @@
     "source": "V9",
     "id": "v9-084",
     "problem": "Find the second largest distinct number",
-    "example": "",
+    "example": "Input: [10,5,8,10,3]\nOutput: 8",
     "approach": "Maintain largest and second-largest distinct values in one pass.",
     "complexity": "Analyze time and space complexity for the implementation shown.",
     "streams": ""
@@ -690,7 +690,7 @@
     "source": "V9",
     "id": "v9-085",
     "problem": "Move all zeros to the end",
-    "example": "",
+    "example": "Input: [0,1,0,3,12]\nOutput: [1,3,12,0,0]",
     "approach": "Compact non-zero values then fill the remaining positions with zeros.",
     "complexity": "Analyze time and space complexity for the implementation shown.",
     "streams": ""
@@ -716,7 +716,7 @@
     "source": "V9",
     "id": "v9-086",
     "problem": "Find the missing number from 1 to n",
-    "example": "",
+    "example": "Input: [3,0,1]\nOutput: 2",
     "approach": "XOR all expected values and all input values; equal values cancel.",
     "complexity": "Analyze time and space complexity for the implementation shown.",
     "streams": ""
@@ -742,7 +742,7 @@
     "source": "V9",
     "id": "v9-087",
     "problem": "Find the maximum subarray sum",
-    "example": "",
+    "example": "Input: [-2,1,-3,4,-1,2,1,-5,4]\nOutput: 6",
     "approach": "Kadane keeps the best subarray ending at the current position and the global best.",
     "complexity": "Analyze time and space complexity for the implementation shown.",
     "streams": ""
@@ -768,7 +768,7 @@
     "source": "V9",
     "id": "v9-088",
     "problem": "Validate balanced parentheses",
-    "example": "",
+    "example": "Input: \"({[]})\"\nOutput: true",
     "approach": "Push openings and match each closing bracket against the top of the stack.",
     "complexity": "Analyze time and space complexity for the implementation shown.",
     "streams": ""
@@ -794,7 +794,7 @@
     "source": "V9",
     "id": "v9-089",
     "problem": "Implement an LRU cache",
-    "example": "",
+    "example": "Capacity: 2; operations: put(1,1), put(2,2), get(1), put(3,3)\nOutput: 1",
     "approach": "LinkedHashMap can maintain access order and remove the eldest entry.",
     "complexity": "Analyze time and space complexity for the implementation shown.",
     "streams": ""
@@ -816,7 +816,7 @@
     "interview": "Interview answer: I handle values below two and even numbers first, then test only odd divisors up to the square root.",
     "source": "V9.1",
     "problem": "Check whether a number is prime",
-    "example": "",
+    "example": "Input: 29\nOutput: true",
     "approach": "Check divisibility only up to the square root because a composite number must have a factor at or below sqrt(n).",
     "complexity": "Analyze time and space complexity for the implementation shown.",
     "streams": ""
@@ -838,7 +838,7 @@
     "interview": "Interview answer: I initialize the result to one and multiply by each value through n. In real code I would consider BigInteger when n can exceed long range.",
     "source": "V9.1",
     "problem": "Calculate factorial of a number",
-    "example": "",
+    "example": "Input: 5\nOutput: 120",
     "approach": "Factorial is the product from 1 through n. An iterative implementation avoids recursive stack growth.",
     "complexity": "Analyze time and space complexity for the implementation shown.",
     "streams": ""
@@ -860,7 +860,7 @@
     "interview": "Interview answer: I keep only the last two Fibonacci values, so each term is produced once with constant auxiliary space.",
     "source": "V9.1",
     "problem": "Print Fibonacci series up to N terms",
-    "example": "",
+    "example": "Input: 7 terms\nOutput: 0 1 1 2 3 5 8",
     "approach": "Keep the previous two values and generate each next value iteratively.",
     "complexity": "Analyze time and space complexity for the implementation shown.",
     "streams": ""
@@ -882,7 +882,7 @@
     "interview": "Interview answer: I reverse the digits mathematically and compare them with the original number, using constant extra space.",
     "source": "V9.1",
     "problem": "Check whether a number is a palindrome",
-    "example": "",
+    "example": "Input: 121\nOutput: true",
     "approach": "Reverse the digits mathematically and compare the reversed value with the original. Avoid converting to a string when the problem expects arithmetic.",
     "complexity": "Analyze time and space complexity for the implementation shown.",
     "streams": ""
@@ -904,7 +904,7 @@
     "interview": "Interview answer: I count the digits, raise each digit to that count and sum them. If the sum equals the original number, it is an Armstrong number.",
     "source": "V9.1",
     "problem": "Check whether a number is an Armstrong number",
-    "example": "",
+    "example": "Input: 153\nOutput: true",
     "approach": "First count the digits, then compute the powered sum and compare it with the original.",
     "complexity": "Analyze time and space complexity for the implementation shown.",
     "streams": ""
@@ -926,7 +926,7 @@
     "interview": "Interview answer: A HashMap gives expected constant-time lookup for the complement, allowing a single pass instead of the O(n²) brute-force approach.",
     "source": "V9.1",
     "problem": "Solve the Two Sum problem",
-    "example": "",
+    "example": "Input: [2,7,11,15], target=9\nOutput: [0,1]",
     "approach": "Store previously seen values in a map from value to index. For each number, look for target minus the current value.",
     "complexity": "Analyze time and space complexity for the implementation shown.",
     "streams": ""
@@ -948,7 +948,7 @@
     "interview": "Interview answer: I store frequencies rather than just membership, so duplicate occurrences are preserved correctly.",
     "source": "V9.1",
     "problem": "Find the intersection of two arrays including duplicates",
-    "example": "",
+    "example": "Input: [1,2,2,1], [2,2]\nOutput: [2]",
     "approach": "Count values from one array, then consume those counts while scanning the second array.",
     "complexity": "Analyze time and space complexity for the implementation shown.",
     "streams": ""
@@ -970,7 +970,7 @@
     "interview": "Interview answer: LinkedHashSet gives uniqueness plus insertion order, and I build the final string from the retained characters.",
     "source": "V9.1",
     "problem": "Remove duplicate characters while preserving order",
-    "example": "",
+    "example": "Input: \"programming\"\nOutput: \"progamin\"",
     "approach": "Use a LinkedHashSet to preserve insertion order, then build the result.",
     "complexity": "Analyze time and space complexity for the implementation shown.",
     "streams": ""
@@ -992,7 +992,7 @@
     "interview": "Interview answer: Boyer-Moore keeps a candidate and balance. A true majority survives pairwise cancellation, and I verify the candidate when existence is not guaranteed.",
     "source": "V9.1",
     "problem": "Find the majority element using Boyer-Moore",
-    "example": "",
+    "example": "Input: [2,2,1,1,1,2,2]\nOutput: 2",
     "approach": "Boyer-Moore treats different values as canceling pairs, leaving the majority candidate. Verify it if majority is not guaranteed.",
     "complexity": "Analyze time and space complexity for the implementation shown.",
     "streams": ""
@@ -1014,7 +1014,7 @@
     "interview": "Interview answer: Quickselect partitions the array and continues only on the side containing the target rank, giving average linear time without a full sort.",
     "source": "V9.1",
     "problem": "Find the kth largest element using Quickselect",
-    "example": "",
+    "example": "Input: [3,2,1,5,6,4], k=2\nOutput: 5",
     "approach": "Use partitioning around a pivot so that the target index is isolated recursively or iteratively.",
     "complexity": "Analyze time and space complexity for the implementation shown.",
     "streams": ""
@@ -1036,7 +1036,7 @@
     "interview": "Interview answer: I use a set and only expand sequences from their smallest element, so each value participates in the counting work a constant number of times.",
     "source": "V9.1",
     "problem": "Find the longest consecutive sequence in an array",
-    "example": "",
+    "example": "Input: [100,4,200,1,3,2]\nOutput: 4",
     "approach": "Store all values in a set and only start counting when the previous value is absent.",
     "complexity": "Analyze time and space complexity for the implementation shown.",
     "streams": ""
@@ -1058,7 +1058,7 @@
     "interview": "Interview answer: Sorting by start makes it possible to decide overlap using only the last merged interval.",
     "source": "V9.1",
     "problem": "Merge overlapping intervals",
-    "example": "",
+    "example": "Input: sample data for \"Merge overlapping intervals\"\nOutput: expected result according to the problem statement.",
     "approach": "Sort by start time and merge each interval into the previous result when the ranges overlap.",
     "complexity": "Analyze time and space complexity for the implementation shown.",
     "streams": ""
@@ -1080,7 +1080,7 @@
     "interview": "Interview answer: The sliding window grows until it violates the distinct-character limit, then moves its left boundary until the window is valid again.",
     "source": "V9.1",
     "problem": "Find the longest substring with at most K distinct characters",
-    "example": "",
+    "example": "Input: \"abcabcbb\"\nOutput: 3",
     "approach": "Maintain a sliding window and frequency map. Expand right, and shrink left while the number of distinct characters exceeds K.",
     "complexity": "Analyze time and space complexity for the implementation shown.",
     "streams": ""
@@ -1102,7 +1102,7 @@
     "interview": "Interview answer: The sorted portions let me determine whether the minimum lies to the right or at/before mid, so the search interval halves each time.",
     "source": "V9.1",
     "problem": "Find the minimum value in a rotated sorted array",
-    "example": "",
+    "example": "Input: [4,5,6,7,0,1,2], target=0\nOutput: 4",
     "approach": "Compare the middle value with the right boundary to decide which half contains the minimum.",
     "complexity": "Analyze time and space complexity for the implementation shown.",
     "streams": ""
@@ -1124,7 +1124,7 @@
     "interview": "Interview answer: I modify binary search after finding the target so it continues toward the required boundary instead of stopping at the first match.",
     "source": "V9.1",
     "problem": "Find the first and last position of a target",
-    "example": "",
+    "example": "Input: [5,7,7,8,8,10], target=8\nOutput: [3,4]",
     "approach": "Run binary search twice: once biased left for the first occurrence and once biased right for the last occurrence.",
     "complexity": "Analyze time and space complexity for the implementation shown.",
     "streams": ""
@@ -1146,7 +1146,7 @@
     "interview": "Interview answer: The second stack stores the minimum associated with the current stack state, so min retrieval remains constant time.",
     "source": "V9.1",
     "problem": "Implement a stack with a minimum value in O(1)",
-    "example": "",
+    "example": "Operations: push(2), push(0), push(3), getMin()\nOutput: 0",
     "approach": "Keep a second stack containing the minimum value seen at each relevant level.",
     "complexity": "Analyze time and space complexity for the implementation shown.",
     "streams": ""
@@ -1168,7 +1168,7 @@
     "interview": "Interview answer: BST ordering lets me discard half the subtree at each decision when the tree is balanced.",
     "source": "V9.1",
     "problem": "Implement a binary search tree search",
-    "example": "",
+    "example": "BST: [4,2,7,1,3], target=2\nOutput: node 2",
     "approach": "At each node, compare the target with the node value and move left or right according to the BST ordering.",
     "complexity": "Analyze time and space complexity for the implementation shown.",
     "streams": ""
@@ -1190,7 +1190,7 @@
     "interview": "Interview answer: BFS uses a queue to process nodes in level order, and I capture the current queue size to print each level separately.",
     "source": "V9.1",
     "problem": "Breadth-first traversal of a binary tree",
-    "example": "",
+    "example": "Tree: [3,9,20,null,null,15,7]\nOutput: [3,9,20,15,7]",
     "approach": "Use a queue: enqueue the root, process one node, and enqueue its children.",
     "complexity": "Analyze time and space complexity for the implementation shown.",
     "streams": ""
@@ -1212,7 +1212,7 @@
     "interview": "Interview answer: Two pointers moving at different speeds must meet inside a cycle, while the fast pointer reaches null when the list is acyclic.",
     "source": "V9.1",
     "problem": "Detect a cycle in a linked list",
-    "example": "",
+    "example": "List: 3 -> 2 -> 0 -> -4 -> back to 2\nOutput: true",
     "approach": "Floyd’s tortoise-and-hare algorithm moves one pointer by one step and another by two; if they meet, a cycle exists.",
     "complexity": "Analyze time and space complexity for the implementation shown.",
     "streams": ""
@@ -1234,7 +1234,7 @@
     "interview": "Interview answer: The fast pointer moves twice as quickly, so when it reaches the end the slow pointer has traversed half the list.",
     "source": "V9.1",
     "problem": "Find the middle node of a linked list",
-    "example": "",
+    "example": "List: 1 -> 2 -> 3 -> 4 -> 5\nOutput: 3",
     "approach": "Move slow one step and fast two steps. When fast reaches the end, slow is at the middle.",
     "complexity": "Analyze time and space complexity for the implementation shown.",
     "streams": ""
@@ -1256,7 +1256,7 @@
     "interview": "Interview answer: I protect queue state with a lock and use conditions so producers wait while full and consumers wait while empty. The while checks are required because a condition wake-up does not guarantee the state is available.",
     "source": "V9.1",
     "problem": "Implement a thread-safe bounded producer-consumer queue",
-    "example": "",
+    "example": "Capacity: 2; producers add 1,2,3; consumer removes items in FIFO order.",
     "approach": "Use a ReentrantLock with two Conditions: notFull and notEmpty. Conditions coordinate state changes without busy waiting.",
     "complexity": "Analyze time and space complexity for the implementation shown.",
     "streams": ""
@@ -1953,5 +1953,579 @@
     "approach": "Maintain a Set of values already seen. In the stream filter, a value is a duplicate when add(value) returns false. Collect the duplicates into a distinct result.",
     "complexity": "Time: O(n) expected\nSpace: O(n)",
     "streams": ""
+  },
+  {
+    "id": "v10.6-coding-01",
+    "topic": "coding",
+    "level": "L2",
+    "title": "Find the longest common prefix",
+    "tags": [
+      "Strings",
+      "Complete Program",
+      "Interview Ready"
+    ],
+    "short": "Return the longest prefix shared by all strings.",
+    "answer": "Compare characters column by column, or shrink a prefix until every string starts with it.",
+    "code": "import java.util.*;\npublic class Main {\n    static String longestCommonPrefix(String[] a) {\n        if (a.length == 0) return \"\";\n        String p = a[0];\n        for (int i = 1; i < a.length; i++) {\n            while (!a[i].startsWith(p)) {\n                p = p.substring(0, p.length() - 1);\n                if (p.isEmpty()) return \"\";\n            }\n        }\n        return p;\n    }\n    public static void main(String[] args) {\n        String[] input = {\"flower\", \"flow\", \"flight\"};\n        System.out.println(\"Output: \" + longestCommonPrefix(input));\n    }\n}",
+    "followups": [
+      "Can you solve it with a different data structure?",
+      "What edge cases would you test?"
+    ],
+    "mistakes": [
+      "Do not skip boundary conditions.",
+      "State why the chosen data structure gives the required complexity."
+    ],
+    "interview": "I would start with the core invariant, explain why each operation is safe, then state the complexity and mention the main edge case.",
+    "source": "V10.6",
+    "problem": "Return the longest prefix shared by all strings.",
+    "example": "Input: [\"flower\",\"flow\",\"flight\"]\nOutput: \"fl\"",
+    "approach": "Compare characters column by column, or shrink a prefix until every string starts with it.",
+    "complexity": "Time: O(n*m)\nSpace: O(1) excluding the returned string.",
+    "streams": null,
+    "subtopic": "hashing",
+    "subtopicName": "Strings & Hashing"
+  },
+  {
+    "id": "v10.6-coding-02",
+    "topic": "coding",
+    "level": "L2",
+    "title": "Check whether an array contains a duplicate",
+    "tags": [
+      "Arrays",
+      "Hashing",
+      "Complete Program",
+      "Interview Ready"
+    ],
+    "short": "Determine whether any value appears more than once.",
+    "answer": "Track values in a HashSet and return as soon as an insertion fails because the value already exists.",
+    "code": "import java.util.*;\npublic class Main {\n    static boolean containsDuplicate(int[] a) {\n        Set<Integer> seen = new HashSet<>();\n        for (int n : a) if (!seen.add(n)) return true;\n        return false;\n    }\n    public static void main(String[] args) {\n        int[] input = {1, 2, 3, 1};\n        System.out.println(\"Output: \" + containsDuplicate(input));\n    }\n}",
+    "followups": [
+      "Can you solve it with a different data structure?",
+      "What edge cases would you test?"
+    ],
+    "mistakes": [
+      "Do not skip boundary conditions.",
+      "State why the chosen data structure gives the required complexity."
+    ],
+    "interview": "I would start with the core invariant, explain why each operation is safe, then state the complexity and mention the main edge case.",
+    "source": "V10.6",
+    "problem": "Determine whether any value appears more than once.",
+    "example": "Input: [1,2,3,1]\nOutput: true",
+    "approach": "Track values in a HashSet and return as soon as an insertion fails because the value already exists.",
+    "complexity": "Time: O(n) average\nSpace: O(n)",
+    "streams": null,
+    "subtopic": "hashing",
+    "subtopicName": "Strings & Hashing"
+  },
+  {
+    "id": "v10.6-coding-03",
+    "topic": "coding",
+    "level": "L2",
+    "title": "Find the intersection of two arrays without duplicates",
+    "tags": [
+      "Arrays",
+      "Hashing",
+      "Complete Program",
+      "Interview Ready"
+    ],
+    "short": "Return the unique values present in both arrays.",
+    "answer": "Put the first array into a set, scan the second, and add matches to a result set.",
+    "code": "import java.util.*;\npublic class Main {\n    static int[] intersection(int[] a, int[] b) {\n        Set<Integer> set = new HashSet<>();\n        for (int x : a) set.add(x);\n        Set<Integer> out = new LinkedHashSet<>();\n        for (int x : b) if (set.contains(x)) out.add(x);\n        return out.stream().mapToInt(Integer::intValue).toArray();\n    }\n    public static void main(String[] args) {\n        int[] a = {1,2,2,1}, b = {2,2};\n        System.out.println(Arrays.toString(intersection(a,b)));\n    }\n}",
+    "followups": [
+      "Can you solve it with a different data structure?",
+      "What edge cases would you test?"
+    ],
+    "mistakes": [
+      "Do not skip boundary conditions.",
+      "State why the chosen data structure gives the required complexity."
+    ],
+    "interview": "I would start with the core invariant, explain why each operation is safe, then state the complexity and mention the main edge case.",
+    "source": "V10.6",
+    "problem": "Return the unique values present in both arrays.",
+    "example": "Input: [1,2,2,1], [2,2]\nOutput: [2]",
+    "approach": "Put the first array into a set, scan the second, and add matches to a result set.",
+    "complexity": "Time: O(n + m) average\nSpace: O(n + m)",
+    "streams": null,
+    "subtopic": "hashing",
+    "subtopicName": "Strings & Hashing"
+  },
+  {
+    "id": "v10.6-coding-04",
+    "topic": "coding",
+    "level": "L2",
+    "title": "Best time to buy and sell stock once",
+    "tags": [
+      "Arrays",
+      "Greedy",
+      "Complete Program",
+      "Interview Ready"
+    ],
+    "short": "Find the maximum profit from one buy followed by one sell.",
+    "answer": "Track the minimum price seen so far and the best profit if selling at the current price.",
+    "code": "public class Main {\n    static int maxProfit(int[] prices) {\n        int min = Integer.MAX_VALUE, best = 0;\n        for (int p : prices) { min = Math.min(min, p); best = Math.max(best, p - min); }\n        return best;\n    }\n    public static void main(String[] args) {\n        int[] prices = {7,1,5,3,6,4};\n        System.out.println(\"Max profit: \" + maxProfit(prices));\n    }\n}",
+    "followups": [
+      "Can you solve it with a different data structure?",
+      "What edge cases would you test?"
+    ],
+    "mistakes": [
+      "Do not skip boundary conditions.",
+      "State why the chosen data structure gives the required complexity."
+    ],
+    "interview": "I would start with the core invariant, explain why each operation is safe, then state the complexity and mention the main edge case.",
+    "source": "V10.6",
+    "problem": "Find the maximum profit from one buy followed by one sell.",
+    "example": "Input: [7,1,5,3,6,4]\nOutput: 5",
+    "approach": "Track the minimum price seen so far and the best profit if selling at the current price.",
+    "complexity": "Time: O(n)\nSpace: O(1)",
+    "streams": null,
+    "subtopic": "hashing",
+    "subtopicName": "Strings & Hashing"
+  },
+  {
+    "id": "v10.6-coding-05",
+    "topic": "coding",
+    "level": "L2",
+    "title": "Find the majority element using a frequency map",
+    "tags": [
+      "Arrays",
+      "Hashing",
+      "Complete Program",
+      "Interview Ready"
+    ],
+    "short": "Find a value that appears more than half the length of the array.",
+    "answer": "Count frequencies with a HashMap and return the first value whose count exceeds n/2.",
+    "code": "import java.util.*;\npublic class Main {\n    static int majority(int[] a) {\n        Map<Integer,Integer> count = new HashMap<>();\n        for (int x : a) {\n            int c = count.merge(x, 1, Integer::sum);\n            if (c > a.length / 2) return x;\n        }\n        throw new IllegalArgumentException(\"No majority element\");\n    }\n    public static void main(String[] args) {\n        int[] a = {2,2,1,1,1,2,2};\n        System.out.println(majority(a));\n    }\n}",
+    "followups": [
+      "Can you solve it with a different data structure?",
+      "What edge cases would you test?"
+    ],
+    "mistakes": [
+      "Do not skip boundary conditions.",
+      "State why the chosen data structure gives the required complexity."
+    ],
+    "interview": "I would start with the core invariant, explain why each operation is safe, then state the complexity and mention the main edge case.",
+    "source": "V10.6",
+    "problem": "Find a value that appears more than half the length of the array.",
+    "example": "Input: [2,2,1,1,1,2,2]\nOutput: 2",
+    "approach": "Count frequencies with a HashMap and return the first value whose count exceeds n/2.",
+    "complexity": "Time: O(n) average\nSpace: O(n)",
+    "streams": null,
+    "subtopic": "hashing",
+    "subtopicName": "Strings & Hashing"
+  },
+  {
+    "id": "v10.6-coding-06",
+    "topic": "coding",
+    "level": "L2",
+    "title": "Find the missing number from 0 to n",
+    "tags": [
+      "Arrays",
+      "Bit Manipulation",
+      "Complete Program",
+      "Interview Ready"
+    ],
+    "short": "An array contains n distinct numbers from 0 through n with one number missing.",
+    "answer": "XOR all indices and values. Equal values cancel, leaving the missing number.",
+    "code": "public class Main {\n    static int missing(int[] a) {\n        int x = a.length;\n        for (int i = 0; i < a.length; i++) x ^= i ^ a[i];\n        return x;\n    }\n    public static void main(String[] args) {\n        int[] a = {3,0,1};\n        System.out.println(\"Missing: \" + missing(a));\n    }\n}",
+    "followups": [
+      "Can you solve it with a different data structure?",
+      "What edge cases would you test?"
+    ],
+    "mistakes": [
+      "Do not skip boundary conditions.",
+      "State why the chosen data structure gives the required complexity."
+    ],
+    "interview": "I would start with the core invariant, explain why each operation is safe, then state the complexity and mention the main edge case.",
+    "source": "V10.6",
+    "problem": "An array contains n distinct numbers from 0 through n with one number missing.",
+    "example": "Input: [3,0,1]\nOutput: 2",
+    "approach": "XOR all indices and values. Equal values cancel, leaving the missing number.",
+    "complexity": "Time: O(n)\nSpace: O(1)",
+    "streams": null,
+    "subtopic": "hashing",
+    "subtopicName": "Strings & Hashing"
+  },
+  {
+    "id": "v10.6-coding-07",
+    "topic": "coding",
+    "level": "L2",
+    "title": "Find the duplicate number using Floyd's cycle detection",
+    "tags": [
+      "Arrays",
+      "Two Pointers",
+      "Complete Program",
+      "Interview Ready"
+    ],
+    "short": "Find a duplicate in an array of n+1 integers where values are in 1..n.",
+    "answer": "Treat values as next pointers. Floyd's tortoise and hare finds the cycle entry, which is the duplicate.",
+    "code": "public class Main {\n    static int findDuplicate(int[] a) {\n        int slow = a[0], fast = a[0];\n        do { slow = a[slow]; fast = a[a[fast]]; } while (slow != fast);\n        slow = a[0];\n        while (slow != fast) { slow = a[slow]; fast = a[fast]; }\n        return slow;\n    }\n    public static void main(String[] args) {\n        int[] a = {1,3,4,2,2};\n        System.out.println(\"Duplicate: \" + findDuplicate(a));\n    }\n}",
+    "followups": [
+      "Can you solve it with a different data structure?",
+      "What edge cases would you test?"
+    ],
+    "mistakes": [
+      "Do not skip boundary conditions.",
+      "State why the chosen data structure gives the required complexity."
+    ],
+    "interview": "I would start with the core invariant, explain why each operation is safe, then state the complexity and mention the main edge case.",
+    "source": "V10.6",
+    "problem": "Find a duplicate in an array of n+1 integers where values are in 1..n.",
+    "example": "Input: [1,3,4,2,2]\nOutput: 2",
+    "approach": "Treat values as next pointers. Floyd's tortoise and hare finds the cycle entry, which is the duplicate.",
+    "complexity": "Time: O(n)\nSpace: O(1)",
+    "streams": null,
+    "subtopic": "hashing",
+    "subtopicName": "Strings & Hashing"
+  },
+  {
+    "id": "v10.6-coding-08",
+    "topic": "coding",
+    "level": "L2",
+    "title": "Merge two sorted linked lists",
+    "tags": [
+      "Linked List",
+      "Pointers",
+      "Complete Program",
+      "Interview Ready"
+    ],
+    "short": "Merge two sorted singly linked lists into one sorted list.",
+    "answer": "Use a dummy head and repeatedly attach the smaller current node.",
+    "code": "public class Main {\n    static class Node { int v; Node next; Node(int v){this.v=v;} }\n    static Node merge(Node a, Node b) {\n        Node dummy = new Node(0), cur = dummy;\n        while (a != null && b != null) {\n            if (a.v <= b.v) { cur.next = a; a = a.next; }\n            else { cur.next = b; b = b.next; }\n            cur = cur.next;\n        }\n        cur.next = a != null ? a : b;\n        return dummy.next;\n    }\n    static void print(Node n){ while(n!=null){System.out.print(n.v + (n.next==null?\"\\\\n\":\" -> \")); n=n.next;} }\n    public static void main(String[] args) {\n        Node a=new Node(1); a.next=new Node(2); a.next.next=new Node(4);\n        Node b=new Node(1); b.next=new Node(3); b.next.next=new Node(4);\n        print(merge(a,b));\n    }\n}",
+    "followups": [
+      "Can you solve it with a different data structure?",
+      "What edge cases would you test?"
+    ],
+    "mistakes": [
+      "Do not skip boundary conditions.",
+      "State why the chosen data structure gives the required complexity."
+    ],
+    "interview": "I would start with the core invariant, explain why each operation is safe, then state the complexity and mention the main edge case.",
+    "source": "V10.6",
+    "problem": "Merge two sorted singly linked lists into one sorted list.",
+    "example": "Input: 1->2->4 and 1->3->4\nOutput: 1->1->2->3->4->4",
+    "approach": "Use a dummy head and repeatedly attach the smaller current node.",
+    "complexity": "Time: O(n + m)\nSpace: O(1) extra",
+    "streams": null,
+    "subtopic": "pointers",
+    "subtopicName": "Two Pointers & Linked Lists"
+  },
+  {
+    "id": "v10.6-coding-09",
+    "topic": "coding",
+    "level": "L2",
+    "title": "Remove the nth node from the end of a linked list",
+    "tags": [
+      "Linked List",
+      "Two Pointers",
+      "Complete Program",
+      "Interview Ready"
+    ],
+    "short": "Remove the nth node counting from the end.",
+    "answer": "Advance a fast pointer n nodes, then move fast and slow together until fast reaches the end.",
+    "code": "public class Main {\n    static class Node { int v; Node next; Node(int v){this.v=v;} }\n    static Node remove(Node head, int n) {\n        Node dummy = new Node(0); dummy.next = head;\n        Node fast = dummy, slow = dummy;\n        for(int i=0;i<n;i++) fast=fast.next;\n        while(fast.next!=null){fast=fast.next; slow=slow.next;}\n        slow.next=slow.next.next;\n        return dummy.next;\n    }\n    static void print(Node n){while(n!=null){System.out.print(n.v+(n.next==null?\"\\\\n\":\" -> \"));n=n.next;}}\n    public static void main(String[] args){\n        Node h=new Node(1); h.next=new Node(2); h.next.next=new Node(3); h.next.next.next=new Node(4); h.next.next.next.next=new Node(5);\n        print(remove(h,2));\n    }\n}",
+    "followups": [
+      "Can you solve it with a different data structure?",
+      "What edge cases would you test?"
+    ],
+    "mistakes": [
+      "Do not skip boundary conditions.",
+      "State why the chosen data structure gives the required complexity."
+    ],
+    "interview": "I would start with the core invariant, explain why each operation is safe, then state the complexity and mention the main edge case.",
+    "source": "V10.6",
+    "problem": "Remove the nth node counting from the end.",
+    "example": "Input: 1->2->3->4->5, n=2\nOutput: 1->2->3->5",
+    "approach": "Advance a fast pointer n nodes, then move fast and slow together until fast reaches the end.",
+    "complexity": "Time: O(n)\nSpace: O(1)",
+    "streams": null,
+    "subtopic": "pointers",
+    "subtopicName": "Two Pointers & Linked Lists"
+  },
+  {
+    "id": "v10.6-coding-10",
+    "topic": "coding",
+    "level": "L2",
+    "title": "Implement a queue using two stacks",
+    "tags": [
+      "Stack",
+      "Queue",
+      "Complete Program",
+      "Interview Ready"
+    ],
+    "short": "Implement FIFO queue operations using two LIFO stacks.",
+    "answer": "Use an input stack for pushes and transfer to an output stack only when the output stack is empty.",
+    "code": "import java.util.*;\npublic class Main {\n    static class MyQueue {\n        Deque<Integer> in=new ArrayDeque<>(), out=new ArrayDeque<>();\n        void push(int x){in.push(x);}\n        int pop(){move(); return out.pop();}\n        int peek(){move(); return out.peek();}\n        boolean empty(){return in.isEmpty()&&out.isEmpty();}\n        void move(){if(out.isEmpty()) while(!in.isEmpty()) out.push(in.pop());}\n    }\n    public static void main(String[] args){\n        MyQueue q=new MyQueue(); q.push(1); q.push(2); q.push(3);\n        System.out.println(q.pop());\n    }\n}",
+    "followups": [
+      "Can you solve it with a different data structure?",
+      "What edge cases would you test?"
+    ],
+    "mistakes": [
+      "Do not skip boundary conditions.",
+      "State why the chosen data structure gives the required complexity."
+    ],
+    "interview": "I would start with the core invariant, explain why each operation is safe, then state the complexity and mention the main edge case.",
+    "source": "V10.6",
+    "problem": "Implement FIFO queue operations using two LIFO stacks.",
+    "example": "Input: push 1,2,3; pop\nOutput: 1",
+    "approach": "Use an input stack for pushes and transfer to an output stack only when the output stack is empty.",
+    "complexity": "Amortized Time: O(1) per operation\nSpace: O(n)",
+    "streams": null,
+    "subtopic": "stackheap",
+    "subtopicName": "Stacks, Heaps & Search"
+  },
+  {
+    "id": "v10.6-coding-11",
+    "topic": "coding",
+    "level": "L2",
+    "title": "Evaluate a postfix expression",
+    "tags": [
+      "Stack",
+      "Expressions",
+      "Complete Program",
+      "Interview Ready"
+    ],
+    "short": "Evaluate an arithmetic expression written in postfix notation.",
+    "answer": "Push operands. For an operator, pop the right and left operands, apply the operator, and push the result.",
+    "code": "import java.util.*;\npublic class Main {\n    static int eval(String[] tokens){\n        Deque<Integer> s=new ArrayDeque<>();\n        for(String t:tokens){\n            if(\"+-*/\".contains(t) && t.length()==1){int b=s.pop(),a=s.pop(); switch(t){case \"+\":s.push(a+b);break;case \"-\":s.push(a-b);break;case \"*\":s.push(a*b);break;default:s.push(a/b);}} else s.push(Integer.parseInt(t));\n        }\n        return s.pop();\n    }\n    public static void main(String[] args){System.out.println(eval(new String[]{\"2\",\"1\",\"+\",\"3\",\"*\"}));}\n}",
+    "followups": [
+      "Can you solve it with a different data structure?",
+      "What edge cases would you test?"
+    ],
+    "mistakes": [
+      "Do not skip boundary conditions.",
+      "State why the chosen data structure gives the required complexity."
+    ],
+    "interview": "I would start with the core invariant, explain why each operation is safe, then state the complexity and mention the main edge case.",
+    "source": "V10.6",
+    "problem": "Evaluate an arithmetic expression written in postfix notation.",
+    "example": "Input: [\"2\",\"1\",\"+\",\"3\",\"*\"]\nOutput: 9",
+    "approach": "Push operands. For an operator, pop the right and left operands, apply the operator, and push the result.",
+    "complexity": "Time: O(n)\nSpace: O(n)",
+    "streams": null,
+    "subtopic": "stackheap",
+    "subtopicName": "Stacks, Heaps & Search"
+  },
+  {
+    "id": "v10.6-coding-12",
+    "topic": "coding",
+    "level": "L2",
+    "title": "Find the kth smallest element in an array",
+    "tags": [
+      "Heap",
+      "Arrays",
+      "Complete Program",
+      "Interview Ready"
+    ],
+    "short": "Find the kth smallest value without fully sorting the array.",
+    "answer": "Maintain a max-heap of size k. The heap root is the kth smallest after scanning the array.",
+    "code": "import java.util.*;\npublic class Main {\n    static int kthSmallest(int[] a,int k){\n        PriorityQueue<Integer> pq=new PriorityQueue<>(Comparator.reverseOrder());\n        for(int x:a){pq.offer(x); if(pq.size()>k)pq.poll();}\n        return pq.peek();\n    }\n    public static void main(String[] args){System.out.println(kthSmallest(new int[]{7,10,4,3,20,15},3));}\n}",
+    "followups": [
+      "Can you solve it with a different data structure?",
+      "What edge cases would you test?"
+    ],
+    "mistakes": [
+      "Do not skip boundary conditions.",
+      "State why the chosen data structure gives the required complexity."
+    ],
+    "interview": "I would start with the core invariant, explain why each operation is safe, then state the complexity and mention the main edge case.",
+    "source": "V10.6",
+    "problem": "Find the kth smallest value without fully sorting the array.",
+    "example": "Input: [7,10,4,3,20,15], k=3\nOutput: 7",
+    "approach": "Maintain a max-heap of size k. The heap root is the kth smallest after scanning the array.",
+    "complexity": "Time: O(n log k)\nSpace: O(k)",
+    "streams": null,
+    "subtopic": "stackheap",
+    "subtopicName": "Stacks, Heaps & Search"
+  },
+  {
+    "id": "v10.6-coding-14",
+    "topic": "coding",
+    "level": "L2",
+    "title": "Search in a rotated sorted array",
+    "tags": [
+      "Binary Search",
+      "Arrays",
+      "Complete Program",
+      "Interview Ready"
+    ],
+    "short": "Find a target in a sorted array rotated at an unknown pivot.",
+    "answer": "At every step, one half is sorted. Decide whether the target belongs to that sorted half and discard the other half.",
+    "code": "public class Main {\n    static int search(int[] a,int target){int l=0,r=a.length-1;while(l<=r){int m=l+(r-l)/2;if(a[m]==target)return m;if(a[l]<=a[m]){if(a[l]<=target&&target<a[m])r=m-1;else l=m+1;}else{if(a[m]<target&&target<=a[r])l=m+1;else r=m-1;}}return -1;}\n    public static void main(String[] args){System.out.println(search(new int[]{4,5,6,7,0,1,2},0));}\n}",
+    "followups": [
+      "Can you solve it with a different data structure?",
+      "What edge cases would you test?"
+    ],
+    "mistakes": [
+      "Do not skip boundary conditions.",
+      "State why the chosen data structure gives the required complexity."
+    ],
+    "interview": "I would start with the core invariant, explain why each operation is safe, then state the complexity and mention the main edge case.",
+    "source": "V10.6",
+    "problem": "Find a target in a sorted array rotated at an unknown pivot.",
+    "example": "Input: [4,5,6,7,0,1,2], target=0\nOutput: 4",
+    "approach": "At every step, one half is sorted. Decide whether the target belongs to that sorted half and discard the other half.",
+    "complexity": "Time: O(log n)\nSpace: O(1)",
+    "streams": null,
+    "subtopic": "stackheap",
+    "subtopicName": "Stacks, Heaps & Search"
+  },
+  {
+    "id": "v10.6-coding-15",
+    "topic": "coding",
+    "level": "L2",
+    "title": "Find all permutations of a string",
+    "tags": [
+      "Backtracking",
+      "Strings",
+      "Complete Program",
+      "Interview Ready"
+    ],
+    "short": "Generate every permutation of the input characters.",
+    "answer": "Use backtracking: choose an unused character, recurse, then undo the choice.",
+    "code": "import java.util.*;\npublic class Main {\n    static void permute(char[] a,int idx){\n        if(idx==a.length){System.out.println(new String(a));return;}\n        for(int i=idx;i<a.length;i++){swap(a,idx,i);permute(a,idx+1);swap(a,idx,i);}\n    }\n    static void swap(char[] a,int i,int j){char t=a[i];a[i]=a[j];a[j]=t;}\n    public static void main(String[] args){permute(\"ABC\".toCharArray(),0);}\n}",
+    "followups": [
+      "Can you solve it with a different data structure?",
+      "What edge cases would you test?"
+    ],
+    "mistakes": [
+      "Do not skip boundary conditions.",
+      "State why the chosen data structure gives the required complexity."
+    ],
+    "interview": "I would start with the core invariant, explain why each operation is safe, then state the complexity and mention the main edge case.",
+    "source": "V10.6",
+    "problem": "Generate every permutation of the input characters.",
+    "example": "Input: \"ABC\"\nOutput: ABC, ACB, BAC, BCA, CAB, CBA",
+    "approach": "Use backtracking: choose an unused character, recurse, then undo the choice.",
+    "complexity": "Time: O(n*n!)\nSpace: O(n) recursion plus output.",
+    "streams": null,
+    "subtopic": "stackheap",
+    "subtopicName": "Stacks, Heaps & Search"
+  },
+  {
+    "id": "v10.6-coding-16",
+    "topic": "coding",
+    "level": "L3",
+    "title": "Find the shortest transformation sequence in Word Ladder",
+    "tags": [
+      "BFS",
+      "Graphs",
+      "Complete Program",
+      "Interview Ready"
+    ],
+    "short": "Transform one word to another by changing one character at a time, using only dictionary words.",
+    "answer": "Use BFS because every valid transformation has equal cost. Generate one-letter neighbors and visit each word once.",
+    "code": "import java.util.*;\npublic class Main {\n    static int ladder(String begin,String end,List<String> words){\n        Set<String> dict=new HashSet<>(words); if(!dict.contains(end))return 0;\n        Queue<String> q=new ArrayDeque<>(); q.add(begin); int steps=1;\n        while(!q.isEmpty()){for(int size=q.size();size>0;size--){String w=q.poll();if(w.equals(end))return steps;char[] a=w.toCharArray();for(int i=0;i<a.length;i++){char old=a[i];for(char c='a';c<='z';c++){if(c==old)continue;a[i]=c;String n=new String(a);if(dict.remove(n))q.add(n);}a[i]=old;}}steps++;}\n        return 0;\n    }\n    public static void main(String[] args){System.out.println(ladder(\"hit\",\"cog\",Arrays.asList(\"hot\",\"dot\",\"dog\",\"lot\",\"log\",\"cog\")));}\n}",
+    "followups": [
+      "Can you solve it with a different data structure?",
+      "What edge cases would you test?"
+    ],
+    "mistakes": [
+      "Do not skip boundary conditions.",
+      "State why the chosen data structure gives the required complexity."
+    ],
+    "interview": "I would start with the core invariant, explain why each operation is safe, then state the complexity and mention the main edge case.",
+    "source": "V10.6",
+    "problem": "Transform one word to another by changing one character at a time, using only dictionary words.",
+    "example": "Input: hit -> cog with [hot,dot,dog,lot,log,cog]\nOutput: 5",
+    "approach": "Use BFS because every valid transformation has equal cost. Generate one-letter neighbors and visit each word once.",
+    "complexity": "Time: O(N * L^2) typical with neighbor generation\nSpace: O(N)",
+    "streams": null,
+    "subtopic": "stackheap",
+    "subtopicName": "Stacks, Heaps & Search"
+  },
+  {
+    "id": "v10.6-coding-17",
+    "topic": "coding",
+    "level": "L3",
+    "title": "Find the number of ways to climb stairs with 1 or 2 steps",
+    "tags": [
+      "Dynamic Programming",
+      "Complete Program",
+      "Interview Ready"
+    ],
+    "short": "Count distinct ways to reach the nth stair when each move is 1 or 2 steps.",
+    "answer": "The number of ways to reach n is ways(n-1)+ways(n-2). Keep only the previous two values.",
+    "code": "public class Main {\n    static long ways(int n){if(n<=1)return 1;long a=1,b=1;for(int i=2;i<=n;i++){long c=a+b;a=b;b=c;}return b;}\n    public static void main(String[] args){System.out.println(ways(5));}\n}",
+    "followups": [
+      "Can you solve it with a different data structure?",
+      "What edge cases would you test?"
+    ],
+    "mistakes": [
+      "Do not skip boundary conditions.",
+      "State why the chosen data structure gives the required complexity."
+    ],
+    "interview": "I would start with the core invariant, explain why each operation is safe, then state the complexity and mention the main edge case.",
+    "source": "V10.6",
+    "problem": "Count distinct ways to reach the nth stair when each move is 1 or 2 steps.",
+    "example": "Input: n=5\nOutput: 8",
+    "approach": "The number of ways to reach n is ways(n-1)+ways(n-2). Keep only the previous two values.",
+    "complexity": "Time: O(n)\nSpace: O(1)",
+    "streams": null,
+    "subtopic": "arrays",
+    "subtopicName": "Arrays & Strings"
+  },
+  {
+    "id": "v10.6-coding-18",
+    "topic": "coding",
+    "level": "L3",
+    "title": "Find the longest increasing subsequence length",
+    "tags": [
+      "Dynamic Programming",
+      "Arrays",
+      "Complete Program",
+      "Interview Ready"
+    ],
+    "short": "Find the length of the longest strictly increasing subsequence.",
+    "answer": "Maintain the smallest possible tail value for each subsequence length using binary search. This gives O(n log n).",
+    "code": "import java.util.*;\npublic class Main {\n    static int lis(int[] a){\n        int[] tails=new int[a.length]; int size=0;\n        for(int x:a){int l=0,r=size;while(l<r){int m=(l+r)/2;if(tails[m]<x)l=m+1;else r=m;}tails[l]=x;if(l==size)size++;}\n        return size;\n    }\n    public static void main(String[] args){System.out.println(lis(new int[]{10,9,2,5,3,7,101,18}));}\n}",
+    "followups": [
+      "Can you solve it with a different data structure?",
+      "What edge cases would you test?"
+    ],
+    "mistakes": [
+      "Do not skip boundary conditions.",
+      "State why the chosen data structure gives the required complexity."
+    ],
+    "interview": "I would start with the core invariant, explain why each operation is safe, then state the complexity and mention the main edge case.",
+    "source": "V10.6",
+    "problem": "Find the length of the longest strictly increasing subsequence.",
+    "example": "Input: [10,9,2,5,3,7,101,18]\nOutput: 4",
+    "approach": "Maintain the smallest possible tail value for each subsequence length using binary search. This gives O(n log n).",
+    "complexity": "Time: O(n log n)\nSpace: O(n)",
+    "streams": null,
+    "subtopic": "arrays",
+    "subtopicName": "Arrays & Strings"
+  },
+  {
+    "id": "v10.6-coding-13",
+    "topic": "coding",
+    "level": "L2",
+    "title": "Group anagrams together",
+    "tags": [
+      "Strings",
+      "Hashing",
+      "Complete Program",
+      "Interview Ready"
+    ],
+    "short": "Group words that contain the same characters with the same frequencies.",
+    "answer": "Use a canonical key for each word, such as its sorted characters, and map that key to a list of words.",
+    "code": "import java.util.*;\npublic class Main {\n    static List<List<String>> groupAnagrams(String[] words) {\n        Map<String,List<String>> groups=new LinkedHashMap<>();\n        for(String word:words){\n            char[] chars=word.toCharArray(); Arrays.sort(chars);\n            String key=new String(chars);\n            groups.computeIfAbsent(key,k->new ArrayList<>()).add(word);\n        }\n        return new ArrayList<>(groups.values());\n    }\n    public static void main(String[] args){\n        String[] words={\"eat\",\"tea\",\"tan\",\"ate\",\"nat\",\"bat\"};\n        System.out.println(groupAnagrams(words));\n    }\n}",
+    "followups": [
+      "Can you do it without sorting each word?",
+      "How does the solution change for Unicode?"
+    ],
+    "mistakes": [
+      "Do not use the original word as the key.",
+      "Clarify whether case and punctuation are significant."
+    ],
+    "interview": "I create a canonical representation for each word. Words with the same sorted characters belong to the same HashMap bucket. This gives average O(n * k log k) time when sorting each word.",
+    "source": "V10.6",
+    "problem": "Given an array of strings, group all anagrams together.",
+    "example": "Input: [eat, tea, tan, ate, nat, bat]\nOutput: [[eat, tea, ate], [tan, nat], [bat]]",
+    "approach": "Sort the characters of each word to form a canonical key, then use a HashMap from that key to the words sharing it.",
+    "complexity": "Time: O(n * k log k), where n is the number of words and k is the maximum word length.\nSpace: O(n * k) for grouped output and keys.",
+    "streams": null,
+    "subtopic": "hashing",
+    "subtopicName": "Strings & Hashing"
   }
 ]

@@ -2254,5 +2254,473 @@
     "scenario": "An update succeeds in the database, but subsequent GET requests still return the old value from the cache.",
     "investigation": "Check cache eviction/update semantics, transaction timing, cache key consistency and whether multiple application instances maintain independent local caches.",
     "prevention": "Use a clear cache-aside policy, evict or update the cache after a successful write, and use a shared cache when cross-instance consistency is required. Define an acceptable staleness window."
+  },
+  {
+    "id": "v10.6-springboot-01",
+    "topic": "springboot",
+    "level": "L3",
+    "title": "How does Spring resolve bean dependencies?",
+    "tags": [
+      "Spring Core",
+      "IoC"
+    ],
+    "short": "Spring resolves required beans from the ApplicationContext using type, qualifiers, primary candidates and other metadata.",
+    "answer": "Dependency resolution considers type and qualifiers and can fail on ambiguity or missing beans. Constructor injection makes required dependencies explicit and supports immutable components.",
+    "code": null,
+    "followups": [
+      "What happens with two beans of the same type?",
+      "How does @Primary work?"
+    ],
+    "mistakes": [],
+    "interview": "I prefer constructor injection because dependencies are explicit and the object cannot be created without them. Qualifier or primary resolves intentional ambiguity.",
+    "source": "V10.6",
+    "subtopic": "core",
+    "subtopicName": "Spring Core & IoC"
+  },
+  {
+    "id": "v10.6-springboot-02",
+    "topic": "springboot",
+    "level": "L2",
+    "title": "Why is constructor injection preferred over field injection?",
+    "tags": [
+      "Spring Core",
+      "DI"
+    ],
+    "short": "Constructor injection makes required dependencies explicit and supports immutability and easier testing.",
+    "answer": "The object can be instantiated with all required collaborators, fields can be final, and missing dependencies fail early. Field injection hides dependencies and complicates plain unit tests.",
+    "code": null,
+    "followups": [
+      "Can Spring inject optional dependencies?",
+      "What about circular dependencies?"
+    ],
+    "mistakes": [],
+    "interview": "For required dependencies I use constructors. It improves design and makes the class valid immediately after construction.",
+    "source": "V10.6",
+    "subtopic": "core",
+    "subtopicName": "Spring Core & IoC"
+  },
+  {
+    "id": "v10.6-springboot-03",
+    "topic": "springboot",
+    "level": "L3",
+    "title": "How does Spring handle circular dependencies?",
+    "tags": [
+      "Spring Core",
+      "Beans"
+    ],
+    "short": "A circular dependency occurs when bean A requires B while B requires A.",
+    "answer": "Some setter/field injection cases can be resolved through early references, but constructor cycles cannot be satisfied normally. The best fix is usually redesigning responsibilities rather than relying on lazy workarounds.",
+    "code": null,
+    "followups": [
+      "Can @Lazy break a cycle?",
+      "Why are constructor cycles harder?"
+    ],
+    "mistakes": [],
+    "interview": "I treat circular dependencies as a design smell. I first split responsibilities or introduce a domain service rather than hiding the cycle with @Lazy.",
+    "source": "V10.6",
+    "subtopic": "core",
+    "subtopicName": "Spring Core & IoC"
+  },
+  {
+    "id": "v10.6-springboot-04",
+    "topic": "springboot",
+    "level": "L3",
+    "title": "What is BeanPostProcessor?",
+    "tags": [
+      "Spring Core",
+      "Internals"
+    ],
+    "short": "BeanPostProcessor hooks into bean creation before and after initialization.",
+    "answer": "Spring uses post-processors for concerns such as dependency injection, annotation processing and proxy creation. This is a major extension point in the container lifecycle.",
+    "code": null,
+    "followups": [
+      "Where does AOP proxying happen?",
+      "What is BeanFactoryPostProcessor?"
+    ],
+    "mistakes": [],
+    "interview": "BeanPostProcessor lets Spring inspect or wrap beans during creation. Many framework features are implemented through these lifecycle extension points.",
+    "source": "V10.6",
+    "subtopic": "config",
+    "subtopicName": "Configuration & Production",
+    "scenario": "BeanPostProcessor hooks into bean creation before and after initialization.",
+    "investigation": "Start with metrics and traces, identify the failing boundary, compare latency/error rates and inspect resource saturation before changing configuration.",
+    "prevention": "Use explicit timeouts, bounded resources, automated tests and alerts around the failure mode so the same issue is detected early."
+  },
+  {
+    "id": "v10.6-springboot-05",
+    "topic": "springboot",
+    "level": "L3",
+    "title": "What is BeanFactoryPostProcessor?",
+    "tags": [
+      "Spring Core",
+      "Internals"
+    ],
+    "short": "It can modify bean definitions before regular beans are instantiated.",
+    "answer": "It operates on metadata rather than bean instances. This distinction is important when understanding configuration processing and how Spring prepares the container.",
+    "code": null,
+    "followups": [
+      "Give an example.",
+      "Why must it run early?"
+    ],
+    "mistakes": [],
+    "interview": "BeanFactoryPostProcessor changes bean definitions before bean instantiation; BeanPostProcessor works with bean instances during lifecycle processing.",
+    "source": "V10.6",
+    "subtopic": "config",
+    "subtopicName": "Configuration & Production"
+  },
+  {
+    "id": "v10.6-springboot-06",
+    "topic": "springboot",
+    "level": "L2",
+    "title": "How does @Lazy affect Spring bean creation?",
+    "tags": [
+      "Spring Core",
+      "Performance"
+    ],
+    "short": "@Lazy defers bean creation until it is first needed.",
+    "answer": "It can reduce startup cost but moves initialization latency to first use and can hide configuration errors until runtime. It should not be used to paper over dependency design problems.",
+    "code": null,
+    "followups": [
+      "Can @Lazy solve circular dependencies?",
+      "When is it a bad idea?"
+    ],
+    "mistakes": [],
+    "interview": "Lazy initialization can improve startup, but it trades startup work for first-use latency and delayed failures.",
+    "source": "V10.6",
+    "subtopic": "config",
+    "subtopicName": "Configuration & Production"
+  },
+  {
+    "id": "v10.6-springboot-07",
+    "topic": "springboot",
+    "level": "L3",
+    "title": "How does Spring's transaction interceptor decide commit or rollback?",
+    "tags": [
+      "Transactions",
+      "AOP"
+    ],
+    "short": "The transaction interceptor starts or joins a transaction, invokes the target, then commits or rolls back based on outcome and rollback rules.",
+    "answer": "By default, runtime exceptions and errors trigger rollback in typical declarative transaction handling, while checked exceptions may require explicit rollback configuration. The actual behavior depends on the transaction manager and rules.",
+    "code": null,
+    "followups": [
+      "How do you roll back for checked exceptions?",
+      "What if an exception is caught inside the method?"
+    ],
+    "mistakes": [],
+    "interview": "I explain that the proxy surrounds the method, begins or joins a transaction, and commits on successful completion or rolls back according to configured rollback rules.",
+    "source": "V10.6",
+    "subtopic": "aop",
+    "subtopicName": "AOP & Cross-cutting Concerns"
+  },
+  {
+    "id": "v10.6-springboot-08",
+    "topic": "springboot",
+    "level": "L2",
+    "title": "What is read-only transaction optimization?",
+    "tags": [
+      "Transactions",
+      "JPA"
+    ],
+    "short": "readOnly is a transaction hint indicating that the transaction is intended for reads.",
+    "answer": "It can influence ORM flush behavior or database handling depending on the stack, but it is not a universal enforcement that prevents writes. It should not replace authorization or application-level rules.",
+    "code": null,
+    "followups": [
+      "Does readOnly prevent INSERT?",
+      "How does Hibernate use it?"
+    ],
+    "mistakes": [],
+    "interview": "readOnly communicates intent and may reduce unnecessary flush work, but I don't treat it as a hard write prohibition.",
+    "source": "V10.6",
+    "subtopic": "data",
+    "subtopicName": "Transactions & Data"
+  },
+  {
+    "id": "v10.6-springboot-09",
+    "topic": "springboot",
+    "level": "L2",
+    "title": "How does Spring Retry differ from manual retries?",
+    "tags": [
+      "Resilience",
+      "Retry"
+    ],
+    "short": "Spring Retry centralizes retry policy through annotations or interceptors.",
+    "answer": "It can manage attempts, backoff and exception classification, but retrying still requires idempotency and timeout boundaries. A framework does not make unsafe operations safe to repeat.",
+    "code": null,
+    "followups": [
+      "How do you add backoff?",
+      "What should never be retried?"
+    ],
+    "mistakes": [],
+    "interview": "Retry policy should be explicit and bounded. Whether implemented with Spring Retry or manually, I need idempotency, backoff and a clear list of retryable failures.",
+    "source": "V10.6",
+    "subtopic": "data",
+    "subtopicName": "Transactions & Data"
+  },
+  {
+    "id": "v10.6-springboot-10",
+    "topic": "springboot",
+    "level": "L2",
+    "title": "How do you test a transactional service correctly?",
+    "tags": [
+      "Testing",
+      "Transactions"
+    ],
+    "short": "Transactional tests should verify both database state and transaction boundaries.",
+    "answer": "Use integration tests when behavior depends on real transaction semantics, rollback, isolation or JPA flush behavior. Unit tests can cover business branching without requiring a database.",
+    "code": null,
+    "followups": [
+      "Why can @Transactional test hide commits?",
+      "When do you use Testcontainers?"
+    ],
+    "mistakes": [],
+    "interview": "I use unit tests for business logic and integration tests for actual transaction behavior, especially rollback and persistence-context semantics.",
+    "source": "V10.6",
+    "subtopic": "data",
+    "subtopicName": "Transactions & Data"
+  },
+  {
+    "id": "v10.6-springboot-11",
+    "topic": "springboot",
+    "level": "L2",
+    "title": "What is Testcontainers useful for?",
+    "tags": [
+      "Testing",
+      "Integration"
+    ],
+    "short": "Testcontainers runs real infrastructure such as databases or brokers in disposable containers for tests.",
+    "answer": "It improves fidelity compared with mocks or embedded substitutes and is valuable for SQL dialect, migrations and integration behavior.",
+    "code": null,
+    "followups": [
+      "Testcontainers vs mocks?",
+      "How do you keep tests fast?"
+    ],
+    "mistakes": [],
+    "interview": "For persistence or messaging integration tests, Testcontainers gives me the real dependency and catches environment-specific behavior earlier.",
+    "source": "V10.6",
+    "subtopic": "core",
+    "subtopicName": "Spring Core & IoC"
+  },
+  {
+    "id": "v10.6-springboot-12",
+    "topic": "springboot",
+    "level": "L2",
+    "title": "How do you avoid leaking sensitive actuator information?",
+    "tags": [
+      "Actuator",
+      "Security"
+    ],
+    "short": "Operational endpoints can expose environment, mappings or metrics that may reveal sensitive details.",
+    "answer": "Expose only required endpoints, secure them with authentication/authorization, and avoid returning secrets in configuration or error payloads. Network restrictions can provide another layer.",
+    "code": null,
+    "followups": [
+      "Which endpoints are sensitive?",
+      "Should /env be public?"
+    ],
+    "mistakes": [],
+    "interview": "Actuator should be treated as an operational API. I expose the minimum surface and secure sensitive endpoints separately from public application endpoints.",
+    "source": "V10.6",
+    "subtopic": "config",
+    "subtopicName": "Configuration & Production"
+  },
+  {
+    "id": "v10.6-springboot-13",
+    "topic": "springboot",
+    "level": "L2",
+    "title": "How should correlation IDs be propagated in Spring services?",
+    "tags": [
+      "Observability",
+      "Logging"
+    ],
+    "short": "A correlation ID links logs and traces belonging to the same request flow.",
+    "answer": "Generate one at the edge if absent, validate/limit incoming values, put it into request context and propagate it to downstream calls and logs. Distributed tracing can provide richer context.",
+    "code": null,
+    "followups": [
+      "MDC vs tracing?",
+      "How do you propagate across async execution?"
+    ],
+    "mistakes": [],
+    "interview": "I establish correlation at the ingress boundary and propagate it consistently. I also ensure it cannot be used to inject arbitrary log control characters or sensitive data.",
+    "source": "V10.6",
+    "subtopic": "core",
+    "subtopicName": "Spring Core & IoC"
+  },
+  {
+    "id": "v10.6-springboot-14",
+    "topic": "springboot",
+    "level": "L2",
+    "title": "What is Spring's application event mechanism good for?",
+    "tags": [
+      "Events",
+      "Spring Core"
+    ],
+    "short": "Application events decouple in-process publishers from listeners.",
+    "answer": "They are useful for local domain notifications, but they are not a durable distributed message broker. If a business event must survive process failure, use durable messaging or an outbox.",
+    "code": null,
+    "followups": [
+      "Are events synchronous by default?",
+      "How do you make listeners async?"
+    ],
+    "mistakes": [],
+    "interview": "Spring events are in-process. I use them for local decoupling, not as a replacement for Kafka when durability and cross-service delivery matter.",
+    "source": "V10.6",
+    "subtopic": "core",
+    "subtopicName": "Spring Core & IoC"
+  },
+  {
+    "id": "v10.6-springboot-15",
+    "topic": "springboot",
+    "level": "L3",
+    "title": "How does @TransactionalEventListener work?",
+    "tags": [
+      "Transactions",
+      "Events"
+    ],
+    "short": "It can execute a listener at a transaction phase such as after commit.",
+    "answer": "This is useful when an in-process action should occur only after successful commit. It is still local to the application and can be lost if the process dies before the listener executes.",
+    "code": null,
+    "followups": [
+      "AFTER_COMMIT vs AFTER_ROLLBACK?",
+      "Can it replace the outbox?"
+    ],
+    "mistakes": [],
+    "interview": "For post-commit local work I can use @TransactionalEventListener, but for durable external events I prefer an outbox because application events are not a durable queue.",
+    "source": "V10.6",
+    "subtopic": "data",
+    "subtopicName": "Transactions & Data"
+  },
+  {
+    "id": "v10.6-springboot-16",
+    "topic": "springboot",
+    "level": "L2",
+    "title": "How do you handle large file uploads in Spring Boot?",
+    "tags": [
+      "REST",
+      "Files"
+    ],
+    "short": "Large uploads should avoid buffering entire files in application memory.",
+    "answer": "Use streaming or multipart handling with size limits, content validation, temporary storage and preferably object storage for large payloads. Scan or validate files before making them available.",
+    "code": null,
+    "followups": [
+      "How do you prevent disk exhaustion?",
+      "How do you secure uploaded files?"
+    ],
+    "mistakes": [],
+    "interview": "I enforce request-size limits, stream large content, validate type and size, and use object storage rather than keeping large files in JVM memory.",
+    "source": "V10.6",
+    "subtopic": "web",
+    "subtopicName": "REST, MVC & APIs"
+  },
+  {
+    "id": "v10.6-springboot-17",
+    "topic": "springboot",
+    "level": "L2",
+    "title": "How should pagination be implemented in a REST API?",
+    "tags": [
+      "REST",
+      "Pagination"
+    ],
+    "short": "Pagination limits response size and controls database work.",
+    "answer": "For large mutable datasets, stable ordering plus keyset pagination is often safer than deep offsets. The API should define limits and deterministic ordering.",
+    "code": null,
+    "followups": [
+      "Offset vs keyset?",
+      "How do you handle deleted rows?"
+    ],
+    "mistakes": [],
+    "interview": "I cap page size and use deterministic ordering. For large sequential datasets I prefer keyset pagination to avoid deep OFFSET costs.",
+    "source": "V10.6",
+    "subtopic": "web",
+    "subtopicName": "REST, MVC & APIs"
+  },
+  {
+    "id": "v10.6-springboot-18",
+    "topic": "springboot",
+    "level": "L3",
+    "title": "How do you design API idempotency in Spring Boot?",
+    "tags": [
+      "REST",
+      "Idempotency"
+    ],
+    "short": "Idempotency keys let clients safely retry operations without creating duplicate business effects.",
+    "answer": "Store a key scoped to the client and operation with a unique constraint and outcome. Handle concurrent duplicate requests atomically.",
+    "code": null,
+    "followups": [
+      "What if two requests arrive simultaneously?",
+      "How long should keys live?"
+    ],
+    "mistakes": [],
+    "interview": "I implement idempotency at the service boundary with a durable key and unique constraint, then return the original result for safe retries.",
+    "source": "V10.6",
+    "subtopic": "web",
+    "subtopicName": "REST, MVC & APIs"
+  },
+  {
+    "id": "v10.6-springboot-19",
+    "topic": "springboot",
+    "level": "L3",
+    "title": "How do you handle timeouts in WebClient?",
+    "tags": [
+      "REST",
+      "Resilience"
+    ],
+    "short": "HTTP client calls need bounded connection, response and overall operation timeouts.",
+    "answer": "A timeout should align with the end-to-end deadline and be observable. Retrying after a timeout is only safe when the operation is idempotent or otherwise protected.",
+    "code": null,
+    "followups": [
+      "Connect vs response timeout?",
+      "How do you prevent hanging connections?"
+    ],
+    "mistakes": [],
+    "interview": "I set bounded timeouts at the client and propagate the request deadline. I don't treat timeout as automatically retryable because the downstream may have already processed the request.",
+    "source": "V10.6",
+    "subtopic": "web",
+    "subtopicName": "REST, MVC & APIs"
+  },
+  {
+    "id": "v10.6-springboot-20",
+    "topic": "springboot",
+    "level": "L3",
+    "title": "How do you make scheduled Spring jobs safe in multiple instances?",
+    "tags": [
+      "Scheduling",
+      "Distributed Systems"
+    ],
+    "short": "A scheduled method runs in every application instance unless coordinated.",
+    "answer": "For cluster-wide singleton work, use a distributed lock, leader election or move the job to a dedicated scheduler/queue. The job itself should also be idempotent.",
+    "code": null,
+    "followups": [
+      "ShedLock vs Quartz?",
+      "What if the lock holder crashes?"
+    ],
+    "mistakes": [],
+    "interview": "In a horizontally scaled service I never assume @Scheduled runs once globally. I use a distributed coordination mechanism or a dedicated job runner.",
+    "source": "V10.6",
+    "subtopic": "config",
+    "subtopicName": "Configuration & Production",
+    "scenario": "A scheduled method runs in every application instance unless coordinated.",
+    "investigation": "Start with metrics and traces, identify the failing boundary, compare latency/error rates and inspect resource saturation before changing configuration.",
+    "prevention": "Use explicit timeouts, bounded resources, automated tests and alerts around the failure mode so the same issue is detected early."
+  },
+  {
+    "id": "v10.6-springboot-21",
+    "topic": "springboot",
+    "level": "L3",
+    "title": "How do you avoid blocking calls in a reactive Spring application?",
+    "tags": [
+      "WebFlux",
+      "Performance"
+    ],
+    "short": "Blocking work can occupy reactive event-loop threads and destroy throughput.",
+    "answer": "Reactive applications rely on a small number of event-loop threads. Blocking JDBC, file I/O or long CPU work on those threads can stall unrelated requests. Blocking work should use an appropriate scheduler or, preferably, a non-blocking client.",
+    "code": null,
+    "followups": [
+      "How do you detect blocking calls?",
+      "WebFlux vs MVC for JDBC?"
+    ],
+    "mistakes": [],
+    "interview": "In WebFlux I keep the event loop non-blocking. If a legacy blocking dependency cannot be replaced, I isolate it on a bounded scheduler and monitor its queue and latency rather than blocking event-loop threads.",
+    "source": "V10.6",
+    "subtopic": "core",
+    "subtopicName": "Spring Core & IoC"
   }
 ]

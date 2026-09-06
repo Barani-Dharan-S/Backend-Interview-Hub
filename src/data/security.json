@@ -802,5 +802,231 @@
     "scenario": "A refresh token is used twice from different locations. The security team wants the second use to invalidate the session.",
     "investigation": "Track refresh-token family state or a server-side token identifier. Detect reuse after rotation and correlate the event with the user/session.",
     "prevention": "Rotate refresh tokens on use, store a revocable token family identifier, invalidate the family on reuse, and require re-authentication when compromise is suspected."
+  },
+  {
+    "id": "v10.6-security-01",
+    "topic": "security",
+    "level": "L2",
+    "title": "What is OAuth2 PKCE and why is it important?",
+    "tags": [
+      "OAuth2",
+      "PKCE"
+    ],
+    "short": "PKCE binds an authorization code exchange to a client-generated verifier.",
+    "answer": "The client creates a verifier and sends its challenge to the authorization server. Later it must present the verifier to redeem the code, reducing the impact of an intercepted authorization code.",
+    "code": null,
+    "followups": [
+      "What is code_verifier?",
+      "Does PKCE replace TLS?"
+    ],
+    "mistakes": [],
+    "interview": "PKCE protects the authorization-code flow by proving that the party redeeming the code started the flow. It is especially important for public clients.",
+    "source": "V10.6",
+    "subtopic": "jwt",
+    "subtopicName": "JWT & Token Security"
+  },
+  {
+    "id": "v10.6-security-02",
+    "topic": "security",
+    "level": "L2",
+    "title": "What is OpenID Connect?",
+    "tags": [
+      "OIDC",
+      "Authentication"
+    ],
+    "short": "OpenID Connect adds an identity layer on top of OAuth2.",
+    "answer": "It defines an ID token and user identity claims so a client can authenticate a user, while OAuth2 itself primarily defines delegated authorization.",
+    "code": null,
+    "followups": [
+      "What is an ID token?",
+      "Access token vs ID token?"
+    ],
+    "mistakes": [],
+    "interview": "OAuth2 answers what access a client gets; OpenID Connect adds standardized user authentication and identity claims.",
+    "source": "V10.6",
+    "subtopic": "auth",
+    "subtopicName": "Authentication & Authorization"
+  },
+  {
+    "id": "v10.6-security-03",
+    "topic": "security",
+    "level": "L2",
+    "title": "How do you validate JWT claims beyond the signature?",
+    "tags": [
+      "JWT",
+      "Security"
+    ],
+    "short": "Signature validation proves integrity, but a service must also validate claims relevant to its trust model.",
+    "answer": "Check issuer, audience, expiry, not-before and required scopes/roles as appropriate. Algorithm and key selection must be constrained rather than blindly trusting token headers.",
+    "code": null,
+    "followups": [
+      "Why validate audience?",
+      "Can a valid token still be unauthorized?"
+    ],
+    "mistakes": [],
+    "interview": "I validate signature plus issuer, audience and time-based claims, then enforce scopes or roles for the requested operation.",
+    "source": "V10.6",
+    "subtopic": "jwt",
+    "subtopicName": "JWT & Token Security"
+  },
+  {
+    "id": "v10.6-security-04",
+    "topic": "security",
+    "level": "L2",
+    "title": "What is token audience and why does it matter?",
+    "tags": [
+      "JWT",
+      "Authorization"
+    ],
+    "short": "The audience identifies the intended recipient of a token.",
+    "answer": "A service should reject a token minted for a different service even if its signature is valid. This limits token replay across APIs.",
+    "code": null,
+    "followups": [
+      "Who sets aud?",
+      "What if aud is missing?"
+    ],
+    "mistakes": [],
+    "interview": "A valid JWT is not automatically valid for every service. I check aud so a token intended for one API cannot be reused against another.",
+    "source": "V10.6",
+    "subtopic": "jwt",
+    "subtopicName": "JWT & Token Security"
+  },
+  {
+    "id": "v10.6-security-05",
+    "topic": "security",
+    "level": "L3",
+    "title": "How should secrets be rotated without downtime?",
+    "tags": [
+      "Secrets",
+      "Operations"
+    ],
+    "short": "Secret rotation should allow old and new credentials to overlap briefly while clients switch.",
+    "answer": "Read new secrets from a managed store, reload them safely, and retire old credentials only after consumers have migrated. For signing keys, key IDs and overlapping public keys help.",
+    "code": null,
+    "followups": [
+      "How do you rotate DB passwords?",
+      "How do you rotate JWT keys?"
+    ],
+    "mistakes": [],
+    "interview": "I use versioned secrets and an overlap window. Rotation must be automated and observable so a credential change does not become an outage.",
+    "source": "V10.6",
+    "subtopic": "fundamentals",
+    "subtopicName": "Security Fundamentals"
+  },
+  {
+    "id": "v10.6-security-06",
+    "topic": "security",
+    "level": "L1",
+    "title": "What is least privilege in backend authorization?",
+    "tags": [
+      "Authorization",
+      "Security"
+    ],
+    "short": "Least privilege grants only the permissions required for a task.",
+    "answer": "Apply it to users, service identities, database roles and cloud IAM. Review permissions periodically and separate read, write and administrative actions.",
+    "code": null,
+    "followups": [
+      "Role vs permission?",
+      "How do you review service permissions?"
+    ],
+    "mistakes": [],
+    "interview": "I start with the minimum permissions required and grant broader access only when there is a documented need.",
+    "source": "V10.6",
+    "subtopic": "auth",
+    "subtopicName": "Authentication & Authorization"
+  },
+  {
+    "id": "v10.6-security-07",
+    "topic": "security",
+    "level": "L2",
+    "title": "How do you prevent sensitive data from leaking into logs?",
+    "tags": [
+      "Security",
+      "Logging"
+    ],
+    "short": "Sensitive fields should be excluded, masked or tokenized before logging.",
+    "answer": "Define structured logging policies, redact authorization headers, passwords, tokens and personal data, and review exception logging paths because stack traces and request dumps can expose data.",
+    "code": null,
+    "followups": [
+      "How do you redact nested objects?",
+      "What about debug logging in production?"
+    ],
+    "mistakes": [],
+    "interview": "I use structured logs with explicit redaction and never log credentials or full sensitive payloads. Logging policy should be tested, not assumed.",
+    "source": "V10.6",
+    "subtopic": "fundamentals",
+    "subtopicName": "Security Fundamentals"
+  },
+  {
+    "id": "v10.6-security-08",
+    "topic": "security",
+    "level": "L3",
+    "title": "What is SSRF DNS rebinding?",
+    "tags": [
+      "SSRF",
+      "Networking"
+    ],
+    "short": "DNS rebinding can make a hostname resolve to a benign address during validation and a private address during the actual request.",
+    "answer": "Mitigation requires validating the resolved address at connection time or using a trusted egress proxy/allowlist rather than trusting one DNS lookup.",
+    "code": null,
+    "followups": [
+      "Why is resolving once insufficient?",
+      "How can egress policy help?"
+    ],
+    "mistakes": [],
+    "interview": "A URL allowlist based only on the initial DNS result can be bypassed. The network control must validate the actual destination or route requests through a controlled proxy.",
+    "source": "V10.6",
+    "subtopic": "fundamentals",
+    "subtopicName": "Security Fundamentals"
+  },
+  {
+    "id": "v10.6-security-09",
+    "topic": "security",
+    "level": "L3",
+    "title": "What is replay attack protection for APIs?",
+    "tags": [
+      "API Security",
+      "Authentication"
+    ],
+    "short": "Replay protection prevents an attacker from reusing a previously valid request or credential.",
+    "answer": "Use short-lived tokens, nonce or timestamp validation for signed requests, idempotency keys for commands, TLS and server-side replay tracking where required.",
+    "code": null,
+    "followups": [
+      "How do nonces work?",
+      "Is JWT expiry enough?"
+    ],
+    "mistakes": [],
+    "interview": "For sensitive commands I combine TLS with short-lived credentials and idempotency or nonce mechanisms so captured requests cannot simply be repeated.",
+    "source": "V10.6",
+    "subtopic": "auth",
+    "subtopicName": "Authentication & Authorization",
+    "scenario": "Replay protection prevents an attacker from reusing a previously valid request or credential.",
+    "investigation": "Start with metrics and traces, identify the failing boundary, compare latency/error rates and inspect resource saturation before changing configuration.",
+    "prevention": "Use explicit timeouts, bounded resources, automated tests and alerts around the failure mode so the same issue is detected early."
+  },
+  {
+    "id": "v10.6-security-10",
+    "topic": "security",
+    "level": "L3",
+    "title": "How do you secure internal admin APIs?",
+    "tags": [
+      "Authorization",
+      "API Security"
+    ],
+    "short": "Internal location alone should not be treated as sufficient authorization.",
+    "answer": "Require strong identity, explicit authorization, network restrictions, audit logging and possibly step-up authentication for sensitive actions. Keep admin endpoints separate where practical.",
+    "code": null,
+    "followups": [
+      "Should internal APIs skip JWT?",
+      "How do you audit admin actions?"
+    ],
+    "mistakes": [],
+    "interview": "I protect admin APIs with strong authentication and fine-grained authorization even inside the network, then add network controls and audit trails as defense in depth.",
+    "source": "V10.6",
+    "subtopic": "auth",
+    "subtopicName": "Authentication & Authorization",
+    "scenario": "Internal location alone should not be treated as sufficient authorization.",
+    "investigation": "Start with metrics and traces, identify the failing boundary, compare latency/error rates and inspect resource saturation before changing configuration.",
+    "prevention": "Use explicit timeouts, bounded resources, automated tests and alerts around the failure mode so the same issue is detected early."
   }
 ]
