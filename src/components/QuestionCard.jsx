@@ -47,7 +47,7 @@ export default function QuestionCard({ q, index, open, onToggle }) {
           </Section>
 
           {q.code && (
-            <Section label="03 · CODE / EXAMPLE" title="See it in practice">
+            <Section label={q.topic === "coding" ? "03 · FULL JAVA PROGRAM" : "03 · CODE / EXAMPLE"} title={q.topic === "coding" ? "Complete runnable solution" : "See it in practice"}>
               <pre><code>{q.code}</code></pre>
             </Section>
           )}
