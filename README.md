@@ -1,4 +1,4 @@
-# Backend Interview Preparation — V8
+# Backend Interview Preparation — V8.1
 
 A focused, client-side Java Backend interview preparation site for GitHub Pages.
 
@@ -24,7 +24,7 @@ npm run build
 ```
 
 
-## V8 Coding Improvements
+## V8.1 Coding Improvements
 - Coding questions now include complete runnable Java programs instead of one-line snippets.
 - Programs include imports, `public class Main`, `main` method, sample data/input, implementation, and output-oriented demonstration.
 - Coding questions are grouped into focused subtopics.

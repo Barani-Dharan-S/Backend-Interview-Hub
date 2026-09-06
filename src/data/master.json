@@ -1436,19 +1436,25 @@
     "tags": [
       "Strings",
       "Java",
-      "Full Program"
+      "Complete Program",
+      "Interview Ready"
     ],
     "short": "Use StringBuilder.reverse() or a character loop.",
     "answer": "The straightforward approach is O(n). The solution below is a complete, runnable Java program with imports, a main method, sample input, and the core implementation.",
-    "code": "import java.util.*;\n\npublic class Main {\n    public static void main(String[] args) {\n        String input = \"hello\";\n        System.out.println(\"Input: \" + input);\n        System.out.println(\"Reversed: \" + reverse(input));\n    }\n\n    static String reverse(String input) {\n        return new StringBuilder(input).reverse().toString();\n    }\n}",
+    "code": "import java.util.*;\n\npublic class Main {\n    static String reverse(String input) {\n        return new StringBuilder(input).reverse().toString();\n    }\n\n    public static void main(String[] args) {\n        String input = \"hello\";\n        System.out.println(\"Input: \" + input);\n        System.out.println(\"Output: \" + reverse(input));\n    }\n}",
     "followups": [
       "Without reverse()?"
     ],
     "mistakes": [],
-    "interview": "Use StringBuilder.reverse() or a character loop.",
+    "interview": "I can reverse a string using StringBuilder.reverse(), which is O(n). If the interviewer wants the algorithm without the library method, I convert the string to a char array and swap characters from both ends toward the middle.",
     "source": "V3",
     "topic": "coding",
-    "subtopic": "Strings & Hashing"
+    "subtopic": "Strings & Hashing",
+    "problem": "Reverse the given string and return the reversed value.",
+    "example": "Input: \"hello\"\nOutput: \"olleh\"",
+    "approach": "Use StringBuilder for the simplest solution. For an interviewer asking for manual logic, use two pointers on a character array.",
+    "complexity": "Time: O(n)\nSpace: O(n) for the returned character sequence.",
+    "streams": null
   },
   {
     "id": "coding-002",
@@ -1457,19 +1463,25 @@
     "tags": [
       "Strings",
       "Java",
-      "Full Program"
+      "Complete Program",
+      "Interview Ready"
     ],
     "short": "Compare characters from both ends toward the center.",
     "answer": "Two pointers give O(n) time and O(1) auxiliary space. The solution below is a complete, runnable Java program with imports, a main method, sample input, and the core implementation.",
-    "code": "public class Main {\n    public static void main(String[] args) {\n        String input = \"Madam\";\n        System.out.println(\"Input: \" + input);\n        System.out.println(\"Palindrome: \" + isPalindrome(input));\n    }\n\n    static boolean isPalindrome(String input) {\n        String s = input.toLowerCase();\n        int left = 0, right = s.length() - 1;\n        while (left < right) {\n            if (s.charAt(left++) != s.charAt(right--)) return false;\n        }\n        return true;\n    }\n}",
+    "code": "import java.util.*;\n\npublic class Main {\n    static boolean isPalindrome(String input) {\n        int left = 0, right = input.length() - 1;\n        while (left < right) {\n            if (input.charAt(left++) != input.charAt(right--)) return false;\n        }\n        return true;\n    }\n\n    public static void main(String[] args) {\n        String input = \"madam\";\n        System.out.println(\"Input: \" + input);\n        System.out.println(\"Palindrome: \" + isPalindrome(input));\n    }\n}",
     "followups": [
       "Ignore case/spaces?"
     ],
     "mistakes": [],
-    "interview": "Compare characters from both ends toward the center.",
+    "interview": "I use two pointers, one at the beginning and one at the end. I compare the characters and move both pointers toward the center. Any mismatch means it is not a palindrome. This takes O(n) time and O(1) extra space.",
     "source": "V3",
     "topic": "coding",
-    "subtopic": "Strings & Hashing"
+    "subtopic": "Strings & Hashing",
+    "problem": "Check whether a string reads the same from left to right and right to left.",
+    "example": "Input: \"madam\"\nOutput: true",
+    "approach": "Compare characters from both ends with two pointers. Stop immediately when a mismatch is found.",
+    "complexity": "Time: O(n)\nSpace: O(1) excluding the input string.",
+    "streams": "A Streams solution can be written by comparing the string with its reversed form, but the two-pointer solution is preferable when discussing algorithmic efficiency."
   },
   {
     "id": "coding-003",
@@ -1478,19 +1490,25 @@
     "tags": [
       "Streams",
       "Java 8",
-      "Full Program"
+      "Complete Program",
+      "Interview Ready"
     ],
     "short": "Count characters while preserving encounter order, then select count 1.",
     "answer": "LinkedHashMap is important for first-occurrence order. The solution below is a complete, runnable Java program with imports, a main method, sample input, and the core implementation.",
-    "code": "import java.util.*;\nimport java.util.function.Function;\nimport java.util.stream.Collectors;\n\npublic class Main {\n    public static void main(String[] args) {\n        String input = \"swiss\";\n        Character result = firstNonRepeated(input);\n        System.out.println(\"Input: \" + input);\n        System.out.println(\"First non-repeated character: \" + result);\n    }\n\n    static Character firstNonRepeated(String input) {\n        Map<Character, Long> frequency = input.chars()\n                .mapToObj(c -> (char) c)\n                .collect(Collectors.groupingBy(\n                        Function.identity(), LinkedHashMap::new, Collectors.counting()));\n\n        return frequency.entrySet().stream()\n                .filter(entry -> entry.getValue() == 1)\n                .map(Map.Entry::getKey)\n                .findFirst()\n                .orElse(null);\n    }\n}",
+    "code": "import java.util.*;\nimport java.util.function.Function;\nimport java.util.stream.Collectors;\n\npublic class Main {\n    static Optional<Character> firstNonRepeated(String input) {\n        Map<Character, Long> counts = input.chars()\n                .mapToObj(c -> (char) c)\n                .collect(Collectors.groupingBy(\n                        Function.identity(), LinkedHashMap::new, Collectors.counting()));\n\n        return counts.entrySet().stream()\n                .filter(e -> e.getValue() == 1)\n                .map(Map.Entry::getKey)\n                .findFirst();\n    }\n\n    public static void main(String[] args) {\n        String input = \"swiss\";\n        System.out.println(\"Input: \" + input);\n        System.out.println(\"First non-repeated: \" + firstNonRepeated(input).orElse(null));\n    }\n}",
     "followups": [
       "Why LinkedHashMap?"
     ],
     "mistakes": [],
-    "interview": "Count characters while preserving encounter order, then select count 1.",
+    "interview": "I preserve character order while counting frequencies. LinkedHashMap is important because HashMap does not guarantee encounter order. After counting, I find the first character whose frequency is one. The overall complexity is O(n).",
     "source": "V3",
     "topic": "coding",
-    "subtopic": "Strings & Hashing"
+    "subtopic": "Strings & Hashing",
+    "problem": "Find the first character that occurs exactly once in a string.",
+    "example": "Input: \"swiss\"\nOutput: \"w\"",
+    "approach": "Count each character while preserving encounter order, then select the first entry whose count is one. LinkedHashMap is useful because it preserves insertion order.",
+    "complexity": "Time: O(n)\nSpace: O(k), where k is the number of distinct characters.",
+    "streams": "Use chars().mapToObj(...).collect(groupingBy(..., LinkedHashMap::new, counting())) and then stream the map entries to find the first count of one."
   },
   {
     "id": "coding-004",
@@ -1499,19 +1517,25 @@
     "tags": [
       "Streams",
       "Collections",
-      "Full Program"
+      "Complete Program",
+      "Interview Ready"
     ],
     "short": "Use groupingBy/counting or a seen set.",
     "answer": "A seen set can detect repeats in encounter order; groupingBy is declarative. The solution below is a complete, runnable Java program with imports, a main method, sample input, and the core implementation.",
-    "code": "import java.util.*;\nimport java.util.stream.Collectors;\n\npublic class Main {\n    public static void main(String[] args) {\n        List<Integer> numbers = Arrays.asList(10, 20, 10, 30, 20, 40);\n        List<Integer> duplicates = findDuplicates(numbers);\n        System.out.println(\"Input: \" + numbers);\n        System.out.println(\"Duplicates: \" + duplicates);\n    }\n\n    static List<Integer> findDuplicates(List<Integer> numbers) {\n        Set<Integer> seen = new HashSet<>();\n        return numbers.stream()\n                .filter(number -> !seen.add(number))\n                .distinct()\n                .collect(Collectors.toList());\n    }\n}",
+    "code": "import java.util.*;\nimport java.util.stream.Collectors;\n\npublic class Main {\n    static List<Integer> findDuplicates(List<Integer> numbers) {\n        Set<Integer> seen = new HashSet<>();\n        return numbers.stream()\n                .filter(n -> !seen.add(n))\n                .distinct()\n                .collect(Collectors.toList());\n    }\n\n    public static void main(String[] args) {\n        List<Integer> numbers = Arrays.asList(1, 2, 3, 2, 4, 1);\n        System.out.println(\"Input: \" + numbers);\n        System.out.println(\"Duplicates: \" + findDuplicates(numbers));\n    }\n}",
     "followups": [
       "Parallel stream safe?"
     ],
     "mistakes": [],
-    "interview": "Use groupingBy/counting or a seen set.",
+    "interview": "I keep a set of already-seen elements. When add returns false, that element has appeared before, so I treat it as a duplicate. This gives average O(n) time and O(n) space.",
     "source": "V3",
     "topic": "coding",
-    "subtopic": "Arrays & Searching"
+    "subtopic": "Arrays & Searching",
+    "problem": "Find the duplicate values in a collection using Java Streams.",
+    "example": "Input: [1, 2, 3, 2, 4, 1]\nOutput: [2, 1]",
+    "approach": "Maintain a Set of values already seen. A value is a duplicate when add() returns false. Filter those values and collect them.",
+    "complexity": "Time: O(n) average\nSpace: O(n) for the seen set and result.",
+    "streams": "Use a HashSet in filter: filter(n -> !seen.add(n)). This is a common interview pattern, but explain that the stateful predicate should be used carefully."
   },
   {
     "id": "coding-005",
@@ -1520,19 +1544,25 @@
     "tags": [
       "Streams",
       "Java 8",
-      "Full Program"
+      "Complete Program",
+      "Interview Ready"
     ],
     "short": "Group by department and select max salary.",
     "answer": "groupingBy plus maxBy directly models the requirement. The solution below is a complete, runnable Java program with imports, a main method, sample input, and the core implementation.",
-    "code": "import java.util.*;\nimport java.util.stream.Collectors;\n\npublic class Main {\n    record Employee(String name, String department, double salary) {}\n\n    public static void main(String[] args) {\n        List<Employee> employees = List.of(\n                new Employee(\"Arun\", \"IT\", 70000),\n                new Employee(\"Ravi\", \"IT\", 90000),\n                new Employee(\"Priya\", \"Finance\", 80000),\n                new Employee(\"Divya\", \"HR\", 60000));\n\n        Map<String, Optional<Employee>> result = employees.stream()\n                .collect(Collectors.groupingBy(\n                        Employee::department,\n                        Collectors.maxBy(Comparator.comparingDouble(Employee::salary))));\n\n        result.forEach((department, employee) ->\n                System.out.println(department + \" -> \" + employee.orElse(null)));\n    }\n}",
+    "code": "import java.util.*;\nimport java.util.stream.Collectors;\n\npublic class Main {\n    static class Employee {\n        String name, department;\n        double salary;\n        Employee(String name, String department, double salary) {\n            this.name = name; this.department = department; this.salary = salary;\n        }\n        public String toString() { return name + \" (\" + salary + \")\"; }\n    }\n\n    public static void main(String[] args) {\n        List<Employee> employees = Arrays.asList(\n                new Employee(\"Arun\", \"IT\", 70000),\n                new Employee(\"Bala\", \"HR\", 50000),\n                new Employee(\"Ravi\", \"IT\", 90000),\n                new Employee(\"Divya\", \"HR\", 60000));\n\n        Map<String, Optional<Employee>> result = employees.stream()\n                .collect(Collectors.groupingBy(e -> e.department,\n                        Collectors.maxBy(Comparator.comparingDouble(e -> e.salary))));\n\n        result.forEach((dept, employee) -> System.out.println(dept + \" -> \" + employee.orElse(null)));\n    }\n}",
     "followups": [
       "Highest average salary?"
     ],
     "mistakes": [],
-    "interview": "Group by department and select max salary.",
+    "interview": "I group employees by department and then use maxBy with a salary comparator for each group. The important point is that this returns the maximum employee, not merely the maximum salary.",
     "source": "V3",
     "topic": "coding",
-    "subtopic": "Java Streams & Collections"
+    "subtopic": "Java Streams & Collections",
+    "problem": "Find the employee with the maximum salary in each department.",
+    "example": "Input: IT: Arun 70000, Ravi 90000; HR: Bala 50000, Divya 60000\nOutput: IT -> Ravi, HR -> Divya",
+    "approach": "Group employees by department and reduce each group to the employee with the highest salary.",
+    "complexity": "Time: O(n)\nSpace: O(d), where d is the number of departments.",
+    "streams": "Collectors.groupingBy(Employee::getDepartment, Collectors.maxBy(Comparator.comparingDouble(Employee::getSalary)))."
   },
   {
     "id": "coding-006",
@@ -1541,19 +1571,25 @@
     "tags": [
       "Streams",
       "Java 8",
-      "Full Program"
+      "Complete Program",
+      "Interview Ready"
     ],
     "short": "Use Collectors.groupingBy.",
     "answer": "The result maps department to employee lists. The solution below is a complete, runnable Java program with imports, a main method, sample input, and the core implementation.",
-    "code": "import java.util.*;\nimport java.util.stream.Collectors;\n\npublic class Main {\n    record Employee(String name, String department, double salary) {}\n\n    public static void main(String[] args) {\n        List<Employee> employees = List.of(\n                new Employee(\"Arun\", \"IT\", 70000),\n                new Employee(\"Bala\", \"HR\", 50000),\n                new Employee(\"Ravi\", \"IT\", 90000),\n                new Employee(\"Priya\", \"Finance\", 80000));\n\n        Map<String, List<Employee>> grouped = employees.stream()\n                .collect(Collectors.groupingBy(Employee::department));\n\n        grouped.forEach((department, list) ->\n                System.out.println(department + \" -> \" + list));\n    }\n}",
+    "code": "import java.util.*;\nimport java.util.stream.Collectors;\n\npublic class Main {\n    static class Employee {\n        String name, department;\n        Employee(String name, String department) { this.name = name; this.department = department; }\n        public String toString() { return name; }\n    }\n\n    public static void main(String[] args) {\n        List<Employee> employees = Arrays.asList(\n                new Employee(\"Arun\", \"IT\"),\n                new Employee(\"Bala\", \"HR\"),\n                new Employee(\"Ravi\", \"IT\"));\n\n        Map<String, List<Employee>> grouped = employees.stream()\n                .collect(Collectors.groupingBy(e -> e.department));\n\n        grouped.forEach((dept, list) -> System.out.println(dept + \" -> \" + list));\n    }\n}",
     "followups": [
       "Count by department?"
     ],
     "mistakes": [],
-    "interview": "Use Collectors.groupingBy.",
+    "interview": "I use groupingBy because the requirement is to classify every employee using the department as the key. The result is a Map<String, List<Employee>> and the operation is linear in the number of employees.",
     "source": "V3",
     "topic": "coding",
-    "subtopic": "Java Streams & Collections"
+    "subtopic": "Java Streams & Collections",
+    "problem": "Group employees into lists based on their department.",
+    "example": "Input: Arun-IT, Bala-HR, Ravi-IT\nOutput: IT -> [Arun, Ravi], HR -> [Bala]",
+    "approach": "Use Collectors.groupingBy with Employee::getDepartment as the classifier.",
+    "complexity": "Time: O(n) average\nSpace: O(n) for the grouped result.",
+    "streams": "employees.stream().collect(Collectors.groupingBy(Employee::getDepartment))."
   },
   {
     "id": "coding-007",
@@ -1562,19 +1598,25 @@
     "tags": [
       "Streams",
       "Interview",
-      "Full Program"
+      "Complete Program",
+      "Interview Ready"
     ],
     "short": "Map salaries, distinct, sort descending, skip one.",
     "answer": "Distinct is required if 'second' means second distinct value. The solution below is a complete, runnable Java program with imports, a main method, sample input, and the core implementation.",
-    "code": "import java.util.*;\n\npublic class Main {\n    record Employee(String name, double salary) {}\n\n    public static void main(String[] args) {\n        List<Employee> employees = List.of(\n                new Employee(\"Arun\", 70000),\n                new Employee(\"Ravi\", 90000),\n                new Employee(\"Karthik\", 90000),\n                new Employee(\"Priya\", 80000));\n\n        Optional<Double> result = employees.stream()\n                .map(Employee::salary)\n                .distinct()\n                .sorted(Comparator.reverseOrder())\n                .skip(1)\n                .findFirst();\n\n        System.out.println(\"Second highest distinct salary: \" + result.orElse(null));\n    }\n}",
+    "code": "import java.util.*;\n\npublic class Main {\n    static OptionalInt secondHighest(int[] salaries) {\n        return Arrays.stream(salaries)\n                .distinct()\n                .boxed()\n                .sorted(Comparator.reverseOrder())\n                .skip(1)\n                .mapToInt(Integer::intValue)\n                .findFirst();\n    }\n\n    public static void main(String[] args) {\n        int[] salaries = {70000, 90000, 90000, 80000};\n        System.out.println(\"Input: \" + Arrays.toString(salaries));\n        System.out.println(\"Second highest: \" + secondHighest(salaries).orElse(-1));\n    }\n}",
     "followups": [
       "Without sorting?"
     ],
     "mistakes": [],
-    "interview": "Map salaries, distinct, sort descending, skip one.",
+    "interview": "I first remove duplicate salaries because the requirement says distinct. Then I sort descending, skip the highest salary and take the next one. If there are fewer than two distinct salaries, I return an empty result or handle it explicitly.",
     "source": "V3",
     "topic": "coding",
-    "subtopic": "Java Streams & Collections"
+    "subtopic": "Java Streams & Collections",
+    "problem": "Find the second-highest distinct salary from a collection of employees.",
+    "example": "Input: [70000, 90000, 90000, 80000]\nOutput: 80000",
+    "approach": "Remove duplicates, sort salaries in descending order and skip the first value. In production code, if performance matters, a TreeSet or a single-pass approach can avoid sorting.",
+    "complexity": "Time: O(n log n) due to sorting\nSpace: O(n) for the distinct values.",
+    "streams": "map(Employee::getSalary).distinct().sorted(Comparator.reverseOrder()).skip(1).findFirst()."
   },
   {
     "id": "coding-008",
@@ -1583,19 +1625,25 @@
     "tags": [
       "Streams",
       "Grouping",
-      "Full Program"
+      "Complete Program",
+      "Interview Ready"
     ],
     "short": "Group by department and choose max by name length.",
     "answer": "Use groupingBy plus maxBy. The solution below is a complete, runnable Java program with imports, a main method, sample input, and the core implementation.",
-    "code": "import java.util.*;\nimport java.util.stream.Collectors;\n\npublic class Main {\n    record Employee(String name, String department) {}\n\n    public static void main(String[] args) {\n        List<Employee> employees = List.of(\n                new Employee(\"Arun\", \"IT\"),\n                new Employee(\"Karthikeyan\", \"IT\"),\n                new Employee(\"Bala\", \"HR\"),\n                new Employee(\"Divya\", \"HR\"));\n\n        Map<String, Optional<Employee>> result = employees.stream()\n                .collect(Collectors.groupingBy(\n                        Employee::department,\n                        Collectors.maxBy(Comparator.comparingInt(e -> e.name().length()))));\n\n        result.forEach((department, employee) ->\n                System.out.println(department + \" -> \" + employee.map(Employee::name).orElse(\"\")));\n    }\n}",
+    "code": "import java.util.*;\nimport java.util.stream.Collectors;\n\npublic class Main {\n    static class Employee {\n        String name, department;\n        Employee(String name, String department) { this.name = name; this.department = department; }\n        public String toString() { return name; }\n    }\n\n    public static void main(String[] args) {\n        List<Employee> employees = Arrays.asList(\n                new Employee(\"Arun\", \"IT\"), new Employee(\"Ravi\", \"IT\"),\n                new Employee(\"Divya\", \"HR\"), new Employee(\"Karthik\", \"HR\"));\n\n        Map<String, Optional<Employee>> result = employees.stream()\n                .collect(Collectors.groupingBy(e -> e.department,\n                        Collectors.maxBy(Comparator.comparingInt(e -> e.name.length()))));\n\n        result.forEach((dept, employee) -> System.out.println(dept + \" -> \" + employee.orElse(null)));\n    }\n}",
     "followups": [
       "What if ties?"
     ],
     "mistakes": [],
-    "interview": "Group by department and choose max by name length.",
+    "interview": "I group employees by department and compare the length of each employee name using maxBy. This keeps the solution concise while making the business rule explicit.",
     "source": "V3",
     "topic": "coding",
-    "subtopic": "Java Streams & Collections"
+    "subtopic": "Java Streams & Collections",
+    "problem": "Find the employee with the longest name in each department.",
+    "example": "Input: IT: Arun, Ravi; HR: Divya, Karthik\nOutput: IT -> Arun or Ravi depending on input lengths; HR -> Karthik",
+    "approach": "Group by department and choose the employee whose name has the greatest length.",
+    "complexity": "Time: O(n)\nSpace: O(d) for the grouped result.",
+    "streams": "Use groupingBy with maxBy(Comparator.comparingInt(e -> e.getName().length()))."
   },
   {
     "id": "coding-009",
@@ -1604,19 +1652,25 @@
     "tags": [
       "Strings",
       "Collections",
-      "Full Program"
+      "Complete Program",
+      "Interview Ready"
     ],
     "short": "Compare normalized character frequency maps or sorted characters.",
     "answer": "Frequency counting is expected O(n). Define normalization assumptions. The solution below is a complete, runnable Java program with imports, a main method, sample input, and the core implementation.",
-    "code": "import java.util.*;\n\npublic class Main {\n    public static void main(String[] args) {\n        String first = \"listen\";\n        String second = \"silent\";\n        System.out.println(\"Anagram: \" + isAnagram(first, second));\n    }\n\n    static boolean isAnagram(String first, String second) {\n        char[] a = first.replaceAll(\"\\\\s\", \"\").toLowerCase().toCharArray();\n        char[] b = second.replaceAll(\"\\\\s\", \"\").toLowerCase().toCharArray();\n        if (a.length != b.length) return false;\n        Arrays.sort(a);\n        Arrays.sort(b);\n        return Arrays.equals(a, b);\n    }\n}",
+    "code": "import java.util.*;\n\npublic class Main {\n    static boolean isAnagram(String first, String second) {\n        if (first.length() != second.length()) return false;\n        Map<Character, Integer> counts = new HashMap<>();\n        for (char c : first.toCharArray()) counts.merge(c, 1, Integer::sum);\n        for (char c : second.toCharArray()) {\n            Integer count = counts.get(c);\n            if (count == null || count == 0) return false;\n            if (count == 1) counts.remove(c); else counts.put(c, count - 1);\n        }\n        return counts.isEmpty();\n    }\n\n    public static void main(String[] args) {\n        String first = \"listen\", second = \"silent\";\n        System.out.println(\"Are anagrams: \" + isAnagram(first, second));\n    }\n}",
     "followups": [
       "Case insensitive?"
     ],
     "mistakes": [],
-    "interview": "Compare normalized character frequency maps or sorted characters.",
+    "interview": "For an efficient solution, I compare lengths and maintain character frequencies. Every character from the second string decrements the corresponding count. If a count becomes invalid, the strings are not anagrams. This is O(n) time.",
     "source": "V3",
     "topic": "coding",
-    "subtopic": "Strings & Hashing"
+    "subtopic": "Strings & Hashing",
+    "problem": "Determine whether two strings contain the same characters with the same frequencies.",
+    "example": "Input: \"listen\", \"silent\"\nOutput: true",
+    "approach": "Normalize the strings if required, compare their lengths, then count characters in one string and decrement counts while scanning the other.",
+    "complexity": "Time: O(n)\nSpace: O(k), where k is the number of distinct characters.",
+    "streams": "A simple Streams approach is to sort both strings with chars().sorted() and compare arrays, but that changes complexity to O(n log n)."
   },
   {
     "id": "coding-010",
@@ -1625,19 +1679,25 @@
     "tags": [
       "Arrays",
       "Math",
-      "Full Program"
+      "Complete Program",
+      "Interview Ready"
     ],
     "short": "Use a long sum or XOR.",
     "answer": "The sum formula is simple; use long to avoid integer overflow under larger constraints. The solution below is a complete, runnable Java program with imports, a main method, sample input, and the core implementation.",
-    "code": "public class Main {\n    public static void main(String[] args) {\n        int[] numbers = {1, 2, 3, 5, 6};\n        int n = 6;\n        System.out.println(\"Missing number: \" + findMissing(numbers, n));\n    }\n\n    static long findMissing(int[] numbers, int n) {\n        long expected = (long) n * (n + 1) / 2;\n        long actual = 0;\n        for (int number : numbers) actual += number;\n        return expected - actual;\n    }\n}",
+    "code": "import java.util.*;\n\npublic class Main {\n    static long findMissing(int[] numbers, int n) {\n        long expected = (long) n * (n + 1) / 2;\n        long actual = 0;\n        for (int number : numbers) actual += number;\n        return expected - actual;\n    }\n\n    public static void main(String[] args) {\n        int n = 5;\n        int[] numbers = {1, 2, 4, 5};\n        System.out.println(\"Missing number: \" + findMissing(numbers, n));\n    }\n}",
     "followups": [
       "Why XOR?"
     ],
     "mistakes": [],
-    "interview": "Use a long sum or XOR.",
+    "interview": "I calculate the expected sum from 1 to n and subtract the actual sum. The difference is the missing number. I use long if the range can be large. This is O(n) time and O(1) extra space.",
     "source": "V3",
     "topic": "coding",
-    "subtopic": "Arrays & Searching"
+    "subtopic": "Arrays & Searching",
+    "problem": "Find the missing number from a sequence containing numbers from 1 through n with exactly one number missing.",
+    "example": "Input: [1, 2, 4, 5]\nOutput: 3",
+    "approach": "Use the arithmetic sum n*(n+1)/2 and subtract the actual array sum. For very large n, use long to avoid integer overflow.",
+    "complexity": "Time: O(n)\nSpace: O(1).",
+    "streams": "IntStream.rangeClosed(1, n).sum() is readable, but it still requires iterating through the expected range; the arithmetic formula is simpler for this exact problem."
   },
   {
     "id": "coding-011",
@@ -1646,19 +1706,25 @@
     "tags": [
       "Streams",
       "Maps",
-      "Full Program"
+      "Complete Program",
+      "Interview Ready"
     ],
     "short": "Normalize and group words with counting.",
     "answer": "Define case/punctuation rules before coding. The solution below is a complete, runnable Java program with imports, a main method, sample input, and the core implementation.",
-    "code": "import java.util.*;\nimport java.util.function.Function;\nimport java.util.stream.Collectors;\n\npublic class Main {\n    public static void main(String[] args) {\n        String input = \"java spring java sql spring java\";\n        Map<String, Long> frequency = wordFrequency(input);\n        frequency.forEach((word, count) -> System.out.println(word + \" -> \" + count));\n    }\n\n    static Map<String, Long> wordFrequency(String input) {\n        return Arrays.stream(input.toLowerCase().split(\"\\\\s+\"))\n                .collect(Collectors.groupingBy(Function.identity(), LinkedHashMap::new, Collectors.counting()));\n    }\n}",
+    "code": "import java.util.*;\nimport java.util.function.Function;\nimport java.util.stream.Collectors;\n\npublic class Main {\n    static Map<String, Long> wordFrequency(String sentence) {\n        return Arrays.stream(sentence.toLowerCase().split(\"\\\\s+\"))\n                .collect(Collectors.groupingBy(Function.identity(), Collectors.counting()));\n    }\n\n    public static void main(String[] args) {\n        String sentence = \"java spring java\";\n        System.out.println(\"Input: \" + sentence);\n        System.out.println(\"Frequency: \" + wordFrequency(sentence));\n    }\n}",
     "followups": [
       "Ignore punctuation?"
     ],
     "mistakes": [],
-    "interview": "Normalize and group words with counting.",
+    "interview": "I tokenize the sentence into words and use groupingBy with counting. Function.identity() makes each word the map key and counting produces its frequency.",
     "source": "V3",
     "topic": "coding",
-    "subtopic": "Strings & Hashing"
+    "subtopic": "Strings & Hashing",
+    "problem": "Count how many times each word occurs in a sentence.",
+    "example": "Input: \"java spring java\"\nOutput: {java=2, spring=1}",
+    "approach": "Split the sentence into words and collect them with groupingBy and counting.",
+    "complexity": "Time: O(n) over the number of words\nSpace: O(k) for distinct words.",
+    "streams": "Arrays.stream(sentence.toLowerCase().split(\"\\\\s+\")).collect(Collectors.groupingBy(Function.identity(), Collectors.counting()))."
   },
   {
     "id": "coding-012",
@@ -1667,19 +1733,25 @@
     "tags": [
       "Arrays",
       "Two Pointers",
-      "Full Program"
+      "Complete Program",
+      "Interview Ready"
     ],
     "short": "Use two pointers and take the smaller current value.",
     "answer": "This is O(n+m) for new output. The solution below is a complete, runnable Java program with imports, a main method, sample input, and the core implementation.",
-    "code": "import java.util.*;\n\npublic class Main {\n    public static void main(String[] args) {\n        int[] first = {1, 3, 5, 7};\n        int[] second = {2, 4, 6, 8};\n        System.out.println(Arrays.toString(merge(first, second)));\n    }\n\n    static int[] merge(int[] a, int[] b) {\n        int[] result = new int[a.length + b.length];\n        int i = 0, j = 0, k = 0;\n        while (i < a.length && j < b.length) {\n            result[k++] = a[i] <= b[j] ? a[i++] : b[j++];\n        }\n        while (i < a.length) result[k++] = a[i++];\n        while (j < b.length) result[k++] = b[j++];\n        return result;\n    }\n}",
+    "code": "import java.util.*;\n\npublic class Main {\n    static int[] merge(int[] a, int[] b) {\n        int[] result = new int[a.length + b.length];\n        int i = 0, j = 0, k = 0;\n        while (i < a.length && j < b.length) {\n            if (a[i] <= b[j]) result[k++] = a[i++];\n            else result[k++] = b[j++];\n        }\n        while (i < a.length) result[k++] = a[i++];\n        while (j < b.length) result[k++] = b[j++];\n        return result;\n    }\n\n    public static void main(String[] args) {\n        int[] a = {1, 3, 5}, b = {2, 4, 6};\n        System.out.println(Arrays.toString(merge(a, b)));\n    }\n}",
     "followups": [
       "In-place?"
     ],
     "mistakes": [],
-    "interview": "Use two pointers and take the smaller current value.",
+    "interview": "Because both arrays are already sorted, I do not need to sort again. I compare the current elements from both arrays, copy the smaller one and advance that pointer. This gives linear time.",
     "source": "V3",
     "topic": "coding",
-    "subtopic": "Arrays & Searching"
+    "subtopic": "Arrays & Searching",
+    "problem": "Merge two already sorted arrays into one sorted array.",
+    "example": "Input: [1,3,5] and [2,4,6]\nOutput: [1,2,3,4,5,6]",
+    "approach": "Use two pointers, one for each input array, and repeatedly copy the smaller value. Then append the remaining values.",
+    "complexity": "Time: O(m+n)\nSpace: O(m+n) for the merged array.",
+    "streams": "Streams can concatenate and sort both arrays, but that costs O((m+n) log(m+n)); the two-pointer merge is the expected interview solution."
   },
   {
     "id": "coding-013",
@@ -1688,19 +1760,25 @@
     "tags": [
       "Arrays",
       "Two Pointers",
-      "Full Program"
+      "Complete Program",
+      "Interview Ready"
     ],
     "short": "Use a slow write pointer.",
     "answer": "Sorted input enables O(n) time and O(1) extra space. The solution below is a complete, runnable Java program with imports, a main method, sample input, and the core implementation.",
-    "code": "import java.util.*;\n\npublic class Main {\n    public static void main(String[] args) {\n        int[] numbers = {1, 1, 2, 2, 3, 4, 4};\n        int newLength = removeDuplicates(numbers);\n        System.out.println(\"Unique count: \" + newLength);\n        System.out.println(\"Unique values: \" + Arrays.toString(Arrays.copyOf(numbers, newLength)));\n    }\n\n    static int removeDuplicates(int[] numbers) {\n        if (numbers.length == 0) return 0;\n        int write = 1;\n        for (int read = 1; read < numbers.length; read++) {\n            if (numbers[read] != numbers[read - 1]) numbers[write++] = numbers[read];\n        }\n        return write;\n    }\n}",
+    "code": "import java.util.*;\n\npublic class Main {\n    static int removeDuplicates(int[] numbers) {\n        if (numbers.length == 0) return 0;\n        int write = 1;\n        for (int read = 1; read < numbers.length; read++) {\n            if (numbers[read] != numbers[write - 1]) numbers[write++] = numbers[read];\n        }\n        return write;\n    }\n\n    public static void main(String[] args) {\n        int[] numbers = {1, 1, 2, 2, 3};\n        int length = removeDuplicates(numbers);\n        System.out.println(\"New length: \" + length);\n        System.out.println(\"Unique values: \" + Arrays.toString(Arrays.copyOf(numbers, length)));\n    }\n}",
     "followups": [
       "Unsorted array?"
     ],
     "mistakes": [],
-    "interview": "Use a slow write pointer.",
+    "interview": "Because the array is sorted, duplicates are adjacent. I keep a write pointer for the next unique position and scan with a read pointer. Each unique value is written once, giving O(n) time and O(1) extra space.",
     "source": "V3",
     "topic": "coding",
-    "subtopic": "Arrays & Searching"
+    "subtopic": "Arrays & Searching",
+    "problem": "Remove duplicates in-place from a sorted array and return the new logical length.",
+    "example": "Input: [1,1,2,2,3]\nOutput: [1,2,3], length 3",
+    "approach": "Use a slow pointer for the position of the last unique value and a fast pointer to scan the array.",
+    "complexity": "Time: O(n)\nSpace: O(1) extra.",
+    "streams": "Streams can produce distinct values, but that creates a new result and does not satisfy an in-place requirement."
   },
   {
     "id": "coding-014",
@@ -1709,19 +1787,25 @@
     "tags": [
       "Arrays",
       "HashSet",
-      "Full Program"
+      "Complete Program",
+      "Interview Ready"
     ],
     "short": "Track seen values and return the first repeated value.",
     "answer": "Expected O(n) time and O(n) space; clarify what first means. The solution below is a complete, runnable Java program with imports, a main method, sample input, and the core implementation.",
-    "code": "import java.util.*;\n\npublic class Main {\n    public static void main(String[] args) {\n        int[] numbers = {10, 5, 3, 4, 3, 5, 6};\n        System.out.println(\"First duplicate: \" + firstDuplicate(numbers));\n    }\n\n    static Integer firstDuplicate(int[] numbers) {\n        Set<Integer> seen = new HashSet<>();\n        for (int number : numbers) {\n            if (!seen.add(number)) return number;\n        }\n        return null;\n    }\n}",
+    "code": "import java.util.*;\n\npublic class Main {\n    static Integer firstDuplicate(int[] numbers) {\n        Set<Integer> seen = new HashSet<>();\n        for (int number : numbers) {\n            if (!seen.add(number)) return number;\n        }\n        return null;\n    }\n\n    public static void main(String[] args) {\n        int[] numbers = {10, 5, 3, 4, 3, 5, 6};\n        System.out.println(\"First duplicate: \" + firstDuplicate(numbers));\n    }\n}",
     "followups": [
       "Can space be reduced?"
     ],
     "mistakes": [],
-    "interview": "Track seen values and return the first repeated value.",
+    "interview": "I scan in encounter order and store values in a HashSet. The first time add returns false, I have found the first duplicate. This preserves the required left-to-right meaning.",
     "source": "V3",
     "topic": "coding",
-    "subtopic": "Arrays & Searching"
+    "subtopic": "Arrays & Searching",
+    "problem": "Return the first element encountered whose value has already appeared.",
+    "example": "Input: [10, 5, 3, 4, 3, 5, 6]\nOutput: 3",
+    "approach": "Scan left to right and maintain a HashSet. The first value that cannot be added is the first duplicate encountered.",
+    "complexity": "Time: O(n) average\nSpace: O(n).",
+    "streams": "Use a stateful Set inside filter and findFirst, but a normal loop is often clearer for this requirement."
   },
   {
     "id": "coding-015",
@@ -1730,19 +1814,25 @@
     "tags": [
       "Arrays",
       "Sets",
-      "Full Program"
+      "Complete Program",
+      "Interview Ready"
     ],
     "short": "Use a set for membership or a frequency map when duplicates matter.",
     "answer": "For sorted arrays, two pointers are another O(n+m) option. The solution below is a complete, runnable Java program with imports, a main method, sample input, and the core implementation.",
-    "code": "import java.util.*;\n\npublic class Main {\n    public static void main(String[] args) {\n        int[] first = {1, 2, 2, 3, 4};\n        int[] second = {2, 2, 4, 6};\n        System.out.println(\"Intersection: \" + intersection(first, second));\n    }\n\n    static Set<Integer> intersection(int[] first, int[] second) {\n        Set<Integer> values = new HashSet<>();\n        for (int number : first) values.add(number);\n\n        Set<Integer> result = new LinkedHashSet<>();\n        for (int number : second) {\n            if (values.contains(number)) result.add(number);\n        }\n        return result;\n    }\n}",
+    "code": "import java.util.*;\n\npublic class Main {\n    static Set<Integer> intersection(int[] first, int[] second) {\n        Set<Integer> values = new HashSet<>();\n        for (int n : first) values.add(n);\n        Set<Integer> result = new LinkedHashSet<>();\n        for (int n : second) if (values.contains(n)) result.add(n);\n        return result;\n    }\n\n    public static void main(String[] args) {\n        int[] first = {1, 2, 2, 3};\n        int[] second = {2, 2, 4};\n        System.out.println(\"Intersection: \" + intersection(first, second));\n    }\n}",
     "followups": [
       "Do duplicates matter?"
     ],
     "mistakes": [],
-    "interview": "Use a set for membership or a frequency map when duplicates matter.",
+    "interview": "I use a HashSet for constant-time average membership checks. Then I scan the second array and collect values present in the set. If duplicates must be preserved, I would use a frequency map instead.",
     "source": "V3",
     "topic": "coding",
-    "subtopic": "Arrays & Searching"
+    "subtopic": "Arrays & Searching",
+    "problem": "Find the common elements between two integer arrays.",
+    "example": "Input: [1,2,2,3] and [2,2,4]\nOutput: [2]",
+    "approach": "Put values from the first array into a set and scan the second array. For a unique intersection, add common values to a result set.",
+    "complexity": "Time: O(m+n) average\nSpace: O(min(m,n)) for the sets.",
+    "streams": "Arrays.stream(second).filter(set::contains).distinct().boxed().collect(Collectors.toList())."
   },
   {
     "id": "coding-016",
@@ -1751,19 +1841,25 @@
     "tags": [
       "Design",
       "Collections",
-      "Full Program"
+      "Complete Program",
+      "Interview Ready"
     ],
     "short": "Combine O(1) hash lookup with recency ordering.",
     "answer": "HashMap plus doubly linked list is classic; LinkedHashMap can implement access-order behavior. The solution below is a complete, runnable Java program with imports, a main method, sample input, and the core implementation.",
-    "code": "import java.util.*;\n\npublic class Main {\n    static class LRUCache<K, V> extends LinkedHashMap<K, V> {\n        private final int capacity;\n\n        LRUCache(int capacity) {\n            super(capacity, 0.75f, true);\n            this.capacity = capacity;\n        }\n\n        @Override\n        protected boolean removeEldestEntry(Map.Entry<K, V> eldest) {\n            return size() > capacity;\n        }\n    }\n\n    public static void main(String[] args) {\n        LRUCache<Integer, String> cache = new LRUCache<>(2);\n        cache.put(1, \"A\");\n        cache.put(2, \"B\");\n        cache.get(1);       // 1 becomes recently used\n        cache.put(3, \"C\"); // 2 is removed\n\n        System.out.println(cache);\n    }\n}",
+    "code": "import java.util.*;\n\npublic class Main {\n    static class LRUCache<K, V> extends LinkedHashMap<K, V> {\n        private final int capacity;\n        LRUCache(int capacity) {\n            super(capacity, 0.75f, true);\n            this.capacity = capacity;\n        }\n        @Override\n        protected boolean removeEldestEntry(Map.Entry<K, V> eldest) {\n            return size() > capacity;\n        }\n    }\n\n    public static void main(String[] args) {\n        LRUCache<Integer, String> cache = new LRUCache<>(2);\n        cache.put(1, \"A\");\n        cache.put(2, \"B\");\n        System.out.println(\"Get 1: \" + cache.get(1));\n        cache.put(3, \"C\");\n        System.out.println(\"Cache after adding 3: \" + cache);\n        System.out.println(\"Key 2 exists: \" + cache.containsKey(2));\n    }\n}",
     "followups": [
       "Why LinkedHashMap?"
     ],
     "mistakes": [],
-    "interview": "Combine O(1) hash lookup with recency ordering.",
+    "interview": "An LRU cache removes the least recently accessed entry. In Java, LinkedHashMap with accessOrder=true already maintains this order, so get and put are O(1) average. For a custom implementation, I combine a HashMap for lookup with a doubly linked list for ordering.",
     "source": "V3",
     "topic": "coding",
-    "subtopic": "Data Structures"
+    "subtopic": "Data Structures",
+    "problem": "Implement an LRU cache that evicts the least recently used entry when capacity is exceeded.",
+    "example": "Capacity 2; put(1,A), put(2,B), get(1), put(3,C) => key 2 is evicted.",
+    "approach": "Use LinkedHashMap with accessOrder=true and override removeEldestEntry. This gives a concise Java implementation; a custom HashMap + doubly linked list is the common L3 follow-up.",
+    "complexity": "Time: O(1) average for get and put\nSpace: O(capacity).",
+    "streams": null
   },
   {
     "id": "coding-017",
@@ -1772,19 +1868,25 @@
     "tags": [
       "Heap",
       "Algorithms",
-      "Full Program"
+      "Complete Program",
+      "Interview Ready"
     ],
     "short": "Count frequencies and maintain a min-heap of size K.",
     "answer": "This gives O(n log k) after counting. The solution below is a complete, runnable Java program with imports, a main method, sample input, and the core implementation.",
-    "code": "import java.util.*;\nimport java.util.stream.Collectors;\n\npublic class Main {\n    public static void main(String[] args) {\n        int[] numbers = {1, 1, 1, 2, 2, 3, 3, 3, 4};\n        int k = 2;\n        System.out.println(\"Top \" + k + \": \" + topKFrequent(numbers, k));\n    }\n\n    static List<Integer> topKFrequent(int[] numbers, int k) {\n        Map<Integer, Long> frequency = Arrays.stream(numbers)\n                .boxed()\n                .collect(Collectors.groupingBy(n -> n, Collectors.counting()));\n\n        return frequency.entrySet().stream()\n                .sorted(Map.Entry.<Integer, Long>comparingByValue().reversed())\n                .limit(k)\n                .map(Map.Entry::getKey)\n                .collect(Collectors.toList());\n    }\n}",
+    "code": "import java.util.*;\n\npublic class Main {\n    static List<Integer> topKFrequent(int[] numbers, int k) {\n        Map<Integer, Integer> frequency = new HashMap<>();\n        for (int n : numbers) frequency.merge(n, 1, Integer::sum);\n\n        PriorityQueue<Map.Entry<Integer, Integer>> heap =\n                new PriorityQueue<>(Comparator.comparingInt(Map.Entry::getValue));\n        for (Map.Entry<Integer, Integer> entry : frequency.entrySet()) {\n            heap.offer(entry);\n            if (heap.size() > k) heap.poll();\n        }\n\n        List<Integer> result = new ArrayList<>();\n        while (!heap.isEmpty()) result.add(heap.poll().getKey());\n        Collections.reverse(result);\n        return result;\n    }\n\n    public static void main(String[] args) {\n        int[] numbers = {1, 1, 1, 2, 2, 3};\n        System.out.println(\"Top 2: \" + topKFrequent(numbers, 2));\n    }\n}",
     "followups": [
       "Bucket sort?"
     ],
     "mistakes": [],
-    "interview": "Count frequencies and maintain a min-heap of size K.",
+    "interview": "I first count frequencies. Then I maintain a min-heap containing only the best k elements. When the heap exceeds k, I remove the smallest frequency. This gives O(n log k) after frequency counting.",
     "source": "V3",
     "topic": "coding",
-    "subtopic": "Coding Problems"
+    "subtopic": "Coding Problems",
+    "problem": "Return the k elements with the highest frequencies.",
+    "example": "Input: [1,1,1,2,2,3], k=2\nOutput: [1,2]",
+    "approach": "Count frequencies with a HashMap, then use a min-heap of size k so the least frequent selected element is removed when the heap grows beyond k.",
+    "complexity": "Time: O(n log k) after counting\nSpace: O(n) for the frequency map and O(k) for the heap.",
+    "streams": "A Streams solution can group and count, then sort entries by frequency, but the heap approach is preferable when k is much smaller than n."
   },
   {
     "id": "coding-018",
@@ -1793,19 +1895,25 @@
     "tags": [
       "Linked List",
       "Two Pointers",
-      "Full Program"
+      "Complete Program",
+      "Interview Ready"
     ],
     "short": "Use Floyd slow/fast pointers.",
     "answer": "O(n) time and O(1) auxiliary space. The solution below is a complete, runnable Java program with imports, a main method, sample input, and the core implementation.",
-    "code": "public class Main {\n    static class Node {\n        int value;\n        Node next;\n        Node(int value) { this.value = value; }\n    }\n\n    public static void main(String[] args) {\n        Node first = new Node(1);\n        Node second = new Node(2);\n        Node third = new Node(3);\n        Node fourth = new Node(4);\n        first.next = second;\n        second.next = third;\n        third.next = fourth;\n        fourth.next = second; // cycle\n\n        System.out.println(\"Contains cycle: \" + hasCycle(first));\n    }\n\n    static boolean hasCycle(Node head) {\n        Node slow = head;\n        Node fast = head;\n        while (fast != null && fast.next != null) {\n            slow = slow.next;\n            fast = fast.next.next;\n            if (slow == fast) return true;\n        }\n        return false;\n    }\n}",
+    "code": "import java.util.*;\n\npublic class Main {\n    static class Node {\n        int value; Node next;\n        Node(int value) { this.value = value; }\n    }\n\n    static boolean hasCycle(Node head) {\n        Node slow = head, fast = head;\n        while (fast != null && fast.next != null) {\n            slow = slow.next;\n            fast = fast.next.next;\n            if (slow == fast) return true;\n        }\n        return false;\n    }\n\n    public static void main(String[] args) {\n        Node one = new Node(1), two = new Node(2), three = new Node(3);\n        one.next = two; two.next = three; three.next = two;\n        System.out.println(\"Cycle exists: \" + hasCycle(one));\n    }\n}",
     "followups": [
       "Find cycle entry?"
     ],
     "mistakes": [],
-    "interview": "Use Floyd slow/fast pointers.",
+    "interview": "I use two pointers. Slow moves one node at a time and fast moves two. In an acyclic list fast reaches null. In a cyclic list, fast eventually catches slow, so their meeting proves a cycle exists.",
     "source": "V3",
     "topic": "coding",
-    "subtopic": "Data Structures"
+    "subtopic": "Data Structures",
+    "problem": "Determine whether a singly linked list contains a cycle.",
+    "example": "Input: 1 -> 2 -> 3 -> 2 ...\nOutput: true",
+    "approach": "Use Floyd\u2019s tortoise-and-hare algorithm. Move slow one step and fast two steps; if they meet, a cycle exists.",
+    "complexity": "Time: O(n)\nSpace: O(1).",
+    "streams": null
   },
   {
     "id": "coding-019",
@@ -1814,19 +1922,25 @@
     "tags": [
       "Arrays",
       "Algorithms",
-      "Full Program"
+      "Complete Program",
+      "Interview Ready"
     ],
     "short": "Repeatedly halve a sorted search interval.",
     "answer": "Keep boundary conventions consistent and use overflow-safe midpoint calculation. The solution below is a complete, runnable Java program with imports, a main method, sample input, and the core implementation.",
-    "code": "public class Main {\n    public static void main(String[] args) {\n        int[] numbers = {10, 20, 30, 40, 50, 60};\n        int target = 40;\n        System.out.println(\"Index: \" + binarySearch(numbers, target));\n    }\n\n    static int binarySearch(int[] numbers, int target) {\n        int left = 0, right = numbers.length - 1;\n        while (left <= right) {\n            int mid = left + (right - left) / 2;\n            if (numbers[mid] == target) return mid;\n            if (numbers[mid] < target) left = mid + 1;\n            else right = mid - 1;\n        }\n        return -1;\n    }\n}",
+    "code": "import java.util.*;\n\npublic class Main {\n    static int binarySearch(int[] numbers, int target) {\n        int left = 0, right = numbers.length - 1;\n        while (left <= right) {\n            int mid = left + (right - left) / 2;\n            if (numbers[mid] == target) return mid;\n            if (numbers[mid] < target) left = mid + 1;\n            else right = mid - 1;\n        }\n        return -1;\n    }\n\n    public static void main(String[] args) {\n        int[] numbers = {1, 3, 5, 7, 9};\n        int target = 7;\n        System.out.println(\"Index: \" + binarySearch(numbers, target));\n    }\n}",
     "followups": [
       "First occurrence?"
     ],
     "mistakes": [],
-    "interview": "Repeatedly halve a sorted search interval.",
+    "interview": "Because the array is sorted, I compare the target with the middle element. If the target is smaller I search the left half; otherwise the right half. Each step halves the search space, so the time complexity is O(log n).",
     "source": "V3",
     "topic": "coding",
-    "subtopic": "Arrays & Searching"
+    "subtopic": "Arrays & Searching",
+    "problem": "Find a target value in a sorted array using binary search.",
+    "example": "Input: [1,3,5,7,9], target=7\nOutput: index 3",
+    "approach": "Maintain left and right boundaries, calculate the middle index safely, and discard half the search space after each comparison.",
+    "complexity": "Time: O(log n)\nSpace: O(1) iterative.",
+    "streams": null
   },
   {
     "id": "coding-020",
@@ -1835,19 +1949,25 @@
     "tags": [
       "Stack",
       "Strings",
-      "Full Program"
+      "Complete Program",
+      "Interview Ready"
     ],
     "short": "Use a stack to match each closing delimiter with the latest opening delimiter.",
     "answer": "The LIFO structure matches nesting naturally. The solution below is a complete, runnable Java program with imports, a main method, sample input, and the core implementation.",
-    "code": "import java.util.*;\n\npublic class Main {\n    public static void main(String[] args) {\n        String input = \"{[()]}\";\n        System.out.println(\"Balanced: \" + isBalanced(input));\n    }\n\n    static boolean isBalanced(String input) {\n        Map<Character, Character> pairs = Map.of(')', '(', ']', '[', '}', '{');\n        Deque<Character> stack = new ArrayDeque<>();\n\n        for (char ch : input.toCharArray()) {\n            if (pairs.containsValue(ch)) {\n                stack.push(ch);\n            } else if (pairs.containsKey(ch)) {\n                if (stack.isEmpty() || stack.pop() != pairs.get(ch)) return false;\n            }\n        }\n        return stack.isEmpty();\n    }\n}",
+    "code": "import java.util.*;\n\npublic class Main {\n    static boolean isBalanced(String input) {\n        Deque<Character> stack = new ArrayDeque<>();\n        for (char c : input.toCharArray()) {\n            if (c == '(' || c == '{' || c == '[') stack.push(c);\n            else if (c == ')' || c == '}' || c == ']') {\n                if (stack.isEmpty() || !matches(stack.pop(), c)) return false;\n            }\n        }\n        return stack.isEmpty();\n    }\n\n    static boolean matches(char open, char close) {\n        return (open == '(' && close == ')') ||\n               (open == '{' && close == '}') ||\n               (open == '[' && close == ']');\n    }\n\n    public static void main(String[] args) {\n        String input = \"{[()]}\";\n        System.out.println(\"Input: \" + input);\n        System.out.println(\"Balanced: \" + isBalanced(input));\n    }\n}",
     "followups": [
       "Multiple bracket types?"
     ],
     "mistakes": [],
-    "interview": "Use a stack to match each closing delimiter with the latest opening delimiter.",
+    "interview": "A stack is ideal because brackets must close in reverse order of opening. I push opening brackets and validate each closing bracket against the stack top. At the end, the stack must be empty.",
     "source": "V3",
     "topic": "coding",
-    "subtopic": "Data Structures"
+    "subtopic": "Data Structures",
+    "problem": "Check whether an expression contains properly balanced (), {}, and [] brackets.",
+    "example": "Input: \"{[()]}\"\nOutput: true",
+    "approach": "Push opening brackets onto a stack. For a closing bracket, check that the stack is non-empty and its top is the matching opening bracket.",
+    "complexity": "Time: O(n)\nSpace: O(n) in the worst case.",
+    "streams": null
   },
   {
     "id": "system-001",

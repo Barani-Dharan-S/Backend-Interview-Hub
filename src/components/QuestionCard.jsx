@@ -46,13 +46,38 @@ export default function QuestionCard({ q, index, open, onToggle }) {
             <p>{q.answer}</p>
           </Section>
 
+          {q.topic === "coding" && q.problem && (
+            <Section label="03 · PROBLEM" title="What are we solving?">
+              <p>{q.problem}</p>
+              {q.example && <pre className="example-block"><code>{q.example}</code></pre>}
+            </Section>
+          )}
+
+          {q.topic === "coding" && q.approach && (
+            <Section label="04 · APPROACH" title="How should you solve it?">
+              <p>{q.approach}</p>
+            </Section>
+          )}
+
           {q.code && (
-            <Section label={q.topic === "coding" ? "03 · FULL JAVA PROGRAM" : "03 · CODE / EXAMPLE"} title={q.topic === "coding" ? "Complete runnable solution" : "See it in practice"}>
+            <Section label={q.topic === "coding" ? "05 · COMPLETE JAVA PROGRAM" : "03 · CODE / EXAMPLE"} title={q.topic === "coding" ? "Full runnable solution" : "See it in practice"}>
               <pre><code>{q.code}</code></pre>
             </Section>
           )}
 
-          <Section label="04 · INTERVIEW DELIVERY" title="How to answer the interviewer">
+          {q.topic === "coding" && q.streams && (
+            <Section label="06 · JAVA STREAMS" title="Streams alternative">
+              <p>{q.streams}</p>
+            </Section>
+          )}
+
+          {q.topic === "coding" && q.complexity && (
+            <Section label="07 · COMPLEXITY" title="Time & space complexity">
+              <pre className="complexity-block"><code>{q.complexity}</code></pre>
+            </Section>
+          )}
+
+          <Section label={q.topic === "coding" ? "08 · INTERVIEW DELIVERY" : "04 · INTERVIEW DELIVERY"} title="How to answer the interviewer">
             <div className="interview-script">
               <span className="script-label">30–60 SECOND ANSWER</span>
               <p>{q.interview || q.short}</p>
@@ -64,7 +89,7 @@ export default function QuestionCard({ q, index, open, onToggle }) {
           </Section>
 
           {followups.length > 0 && (
-            <Section label="05 · EXPECTED FOLLOW-UPS" title="Be ready for the next question">
+            <Section label={q.topic === "coding" ? "09 · EXPECTED FOLLOW-UPS" : "05 · EXPECTED FOLLOW-UPS"} title="Be ready for the next question">
               <ol className="followup-list">
                 {followups.map(p => <li key={p}>{p}</li>)}
               </ol>
@@ -72,7 +97,7 @@ export default function QuestionCard({ q, index, open, onToggle }) {
           )}
 
           {mistakes.length > 0 && (
-            <Section label="06 · INTERVIEW TRAPS" title="Avoid these mistakes" className="mistake-section">
+            <Section label={q.topic === "coding" ? "10 · INTERVIEW TRAPS" : "06 · INTERVIEW TRAPS"} title="Avoid these mistakes" className="mistake-section">
               <ul className="mistake-list">{mistakes.map(p => <li key={p}>{p}</li>)}</ul>
             </Section>
           )}
