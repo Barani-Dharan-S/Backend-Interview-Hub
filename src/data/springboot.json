@@ -2092,5 +2092,167 @@
     "investigation": "Inspect the filter chain, endpoint matchers, method-security configuration and exact authority names. Verify whether the call is going through a proxy and whether annotations are enabled.",
     "resolution": "Define authorization at the correct layer and use explicit authorities/roles consistently. Add integration tests that assert both allowed and forbidden users receive the expected status.",
     "prevention": "Treat authorization tests as security regression tests. Avoid relying on controller visibility or UI restrictions."
+  },
+  {
+    "id": "v10.5-scenario-08",
+    "title": "Database connection pool is exhausted under moderate traffic",
+    "level": "L3",
+    "tags": [
+      "database",
+      "connection-pool",
+      "spring-boot"
+    ],
+    "short": "A connection pool can be exhausted because connections are held too long, not because the database itself is at CPU capacity.",
+    "answer": "I would check pool acquisition latency and active connection age. Then I would look for slow SQL or transactions that include remote calls. Increasing the pool blindly may move the bottleneck to the database and increase contention.",
+    "code": "",
+    "followups": [
+      "How do you choose HikariCP pool size?",
+      "What is a connection leak?"
+    ],
+    "mistakes": [
+      "Do not increase pool size without measuring database capacity."
+    ],
+    "interview": "The important distinction is database capacity versus application-side connection occupancy.",
+    "source": "V10.5",
+    "topic": "springboot",
+    "subtopic": "data",
+    "scenario": "Requests start timing out waiting for database connections, even though database CPU is only 40%.",
+    "investigation": "Inspect active/idle pool counts, connection acquisition time, slow queries, long transactions and leaked connections. Compare application thread count with pool size.",
+    "prevention": "Fix slow queries and transaction scope first. Configure sensible pool limits and leak detection, avoid holding connections across remote calls, and monitor acquisition latency."
+  },
+  {
+    "id": "v10.5-scenario-09",
+    "title": "Spring @Async work never runs asynchronously",
+    "level": "L2",
+    "tags": [
+      "spring",
+      "async",
+      "aop"
+    ],
+    "short": "@Async is proxy-based. A direct self-invocation bypasses the proxy and therefore bypasses asynchronous interception.",
+    "answer": "I would first confirm the executor and proxy path. If the method is called from another method in the same class, I would move the async operation behind another bean or otherwise ensure the invocation crosses the Spring proxy. I would also configure a bounded executor rather than relying on an unbounded default.",
+    "code": "",
+    "followups": [
+      "How does @Async interact with transactions?",
+      "How would you propagate MDC or security context?"
+    ],
+    "mistakes": [
+      "Do not assume an annotation changes execution without proxy interception."
+    ],
+    "interview": "Async is not a magic annotation; proxy interception and executor capacity are both part of the design.",
+    "source": "V10.5",
+    "topic": "springboot",
+    "subtopic": "aop",
+    "scenario": "A method annotated with @Async executes on the caller thread in production.",
+    "investigation": "Check whether @EnableAsync is configured, whether the method is public, whether the call goes through a Spring proxy, and whether the executor is configured. Look for self-invocation.",
+    "prevention": "Call the async method through a Spring-managed proxy, configure a bounded executor, propagate required context explicitly, and monitor queue saturation."
+  },
+  {
+    "id": "v10.5-scenario-10",
+    "title": "Spring transaction does not roll back after an exception",
+    "level": "L2",
+    "tags": [
+      "spring",
+      "transactions",
+      "rollback"
+    ],
+    "short": "Spring rollback is based on transaction interception and rollback rules. Catching an exception without marking rollback can allow the transaction to commit.",
+    "answer": "I would verify the transaction boundary first. If the exception is caught inside the transaction and swallowed, I would either rethrow it or mark the transaction rollback-only. For checked exceptions I would explicitly configure rollback behavior when that matches the business requirement.",
+    "code": "",
+    "followups": [
+      "What is propagation?",
+      "What happens with self-invocation?"
+    ],
+    "mistakes": [
+      "Do not assume checked exceptions always trigger rollback."
+    ],
+    "interview": "The key is that @Transactional controls a transaction boundary; it does not automatically roll back every exception that ever occurred inside the method.",
+    "source": "V10.5",
+    "topic": "springboot",
+    "subtopic": "data",
+    "scenario": "A service method annotated with @Transactional catches an exception and returns normally, but the caller expects the database changes to roll back.",
+    "investigation": "Inspect whether the exception was caught inside the transactional method, whether the exception type matches Spring rollback rules, and whether the call entered through a transaction proxy.",
+    "prevention": "Let the intended exception propagate or explicitly mark the transaction rollback-only. Configure rollbackFor for checked exceptions when appropriate and avoid self-invocation of transactional methods."
+  },
+  {
+    "id": "v10.5-scenario-11",
+    "title": "Spring application startup becomes much slower after adding a module",
+    "level": "L2",
+    "tags": [
+      "spring-boot",
+      "startup",
+      "beans"
+    ],
+    "short": "Slow startup often comes from expensive bean initialization or unnecessary scanning rather than Spring Boot itself.",
+    "answer": "I would measure startup phases and identify the slow bean or auto-configuration. I would then remove external calls from constructors or initialization paths and reduce unnecessary scanning. I would not optimize startup blindly without a measurement.",
+    "code": "",
+    "followups": [
+      "How does auto-configuration work?",
+      "How would you troubleshoot a circular dependency?"
+    ],
+    "mistakes": [
+      "Do not disable broad auto-configurations without understanding what they provide."
+    ],
+    "interview": "Production startup matters for autoscaling and rolling deployments, so startup time is an operational metric.",
+    "source": "V10.5",
+    "topic": "springboot",
+    "subtopic": "config",
+    "scenario": "Startup time increases from 10 seconds to 45 seconds after a dependency and several configuration classes are added.",
+    "investigation": "Enable startup metrics or a startup actuator endpoint where appropriate, inspect bean initialization, auto-configuration reports, external calls during bean creation and classpath scanning.",
+    "prevention": "Avoid network calls during bean construction, reduce unnecessary component scanning, exclude irrelevant auto-configurations when justified, and move expensive work to controlled initialization or asynchronous workflows."
+  },
+  {
+    "id": "v10.5-scenario-21",
+    "title": "Spring REST endpoint returns 500 because validation exceptions bypass the global handler",
+    "level": "L2",
+    "tags": [
+      "spring-boot",
+      "validation",
+      "exceptions"
+    ],
+    "short": "Validation failures should normally be translated into a consistent client-facing 4xx response rather than leaking as 500 errors.",
+    "answer": "I would inspect the actual exception type first. Then I would add a targeted global handler for validation and binding failures and return a stable error format with field-level messages. I would add integration tests so every controller follows the same contract.",
+    "code": "",
+    "followups": [
+      "How do you validate path variables?",
+      "How do you avoid exposing internal exception messages?"
+    ],
+    "mistakes": [
+      "Do not return stack traces to clients."
+    ],
+    "interview": "Do not assume every validation failure arrives as MethodArgumentNotValidException; the exact exception depends on how validation is triggered.",
+    "source": "V10.5",
+    "topic": "springboot",
+    "subtopic": "exceptions",
+    "scenario": "Invalid request payloads sometimes produce inconsistent 400/500 responses depending on the controller.",
+    "investigation": "Inspect exception types thrown by request binding/validation and compare them with the @ControllerAdvice handlers. Verify whether handler methods cover the actual framework exception types.",
+    "prevention": "Define a consistent error contract, handle validation/binding exceptions centrally, and test malformed payloads across controllers."
+  },
+  {
+    "id": "v10.5-scenario-22",
+    "title": "Spring cache serves stale data after an update",
+    "level": "L2",
+    "tags": [
+      "spring-boot",
+      "cache",
+      "consistency"
+    ],
+    "short": "Caching introduces a second copy of data, so the application must define how and when that copy becomes stale.",
+    "answer": "I would first verify whether the write invalidates the exact cache key after the database transaction succeeds. In a multi-instance system I would prefer a shared cache or an invalidation mechanism rather than assuming local caches are consistent.",
+    "code": "",
+    "followups": [
+      "How do you prevent cache stampede?",
+      "What happens if the cache is unavailable?"
+    ],
+    "mistakes": [
+      "Do not invalidate the cache before a failed database write unless the policy is deliberate."
+    ],
+    "interview": "Cache consistency is a business trade-off. The interview answer should state the acceptable staleness requirement.",
+    "source": "V10.5",
+    "topic": "springboot",
+    "subtopic": "config",
+    "scenario": "An update succeeds in the database, but subsequent GET requests still return the old value from the cache.",
+    "investigation": "Check cache eviction/update semantics, transaction timing, cache key consistency and whether multiple application instances maintain independent local caches.",
+    "prevention": "Use a clear cache-aside policy, evict or update the cache after a successful write, and use a shared cache when cross-instance consistency is required. Define an acceptable staleness window."
   }
 ]

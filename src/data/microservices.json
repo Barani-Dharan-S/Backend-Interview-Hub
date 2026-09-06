@@ -5470,5 +5470,194 @@
     "investigation": "Compare schema versions and consumer compatibility rules. Identify which consumers are still on older versions.",
     "resolution": "Use explicit schema evolution rules. Prefer additive, backward-compatible changes, version schemas where necessary and use a schema registry or contract checks to reject incompatible producer changes.",
     "prevention": "Run compatibility tests in CI and maintain a deprecation window for consumers before removing old fields or changing semantics."
+  },
+  {
+    "id": "v10.5-scenario-01",
+    "title": "Order API creates duplicate orders after client retries",
+    "level": "L3",
+    "tags": [
+      "idempotency",
+      "orders",
+      "distributed-systems"
+    ],
+    "short": "Idempotency makes a retried business operation produce the same logical result rather than creating another order.",
+    "answer": "The important distinction is between transport retries and business retries. A timeout does not mean the server did not commit. I would use an idempotency key persisted with a unique constraint, make the create operation atomic, and propagate the idempotency key to payment.",
+    "code": "",
+    "followups": [
+      "How would you expire idempotency keys?",
+      "What if the first request is still processing when the retry arrives?"
+    ],
+    "mistakes": [
+      "Do not implement check-then-insert without a database uniqueness guarantee."
+    ],
+    "interview": "I would first prove whether the duplicate originates in the API, message layer, or payment provider. Then I would enforce uniqueness at the database boundary instead of relying only on application checks.",
+    "source": "V10.5",
+    "topic": "microservices",
+    "subtopic": "data",
+    "scenario": "Mobile clients retry POST /orders when the network times out. Customers occasionally see two orders and two downstream payment attempts.",
+    "investigation": "Trace one duplicated request using a correlation ID and inspect whether the same idempotency key was supplied. Check database uniqueness constraints, payment calls, retry behavior and whether the response was lost after the first commit.",
+    "prevention": "Require a client-generated idempotency key. Persist the key with the order in a unique-constrained table, make the operation transactional, and return the original result for a repeated key. Make payment initiation idempotent as well."
+  },
+  {
+    "id": "v10.5-scenario-02",
+    "title": "Kafka consumers fall behind during peak traffic",
+    "level": "L3",
+    "tags": [
+      "kafka",
+      "consumer-lag",
+      "scaling"
+    ],
+    "short": "Consumer lag means the group is not processing records as quickly as they arrive. The fix depends on whether the bottleneck is Kafka, consumer compute, partitions or downstream I/O.",
+    "answer": "I would compare producer throughput with consumer throughput first. Then I would inspect partition distribution, rebalance frequency and consumer processing time. If the consumer is healthy but under-provisioned, I can scale it up to the partition count; if processing is slow, I fix the downstream bottleneck instead of blindly adding consumers.",
+    "code": "",
+    "followups": [
+      "Why can adding consumers fail to improve lag?",
+      "How do you handle a poison message?"
+    ],
+    "mistakes": [
+      "Do not assume CPU is the bottleneck."
+    ],
+    "interview": "I would also check whether one hot partition is limiting the group. More consumer instances cannot help if there are fewer partitions or uneven keys.",
+    "source": "V10.5",
+    "topic": "microservices",
+    "subtopic": "messaging",
+    "scenario": "Consumer lag grows continuously during a traffic spike and remains high even after producers return to normal.",
+    "investigation": "Check records-per-second produced versus consumed, consumer processing latency, partition count, consumer-group membership, rebalances, downstream database latency and broker health. Measure whether the consumer is CPU-bound, I/O-bound or blocked on a dependency.",
+    "prevention": "Scale consumers up to the partition limit, batch downstream writes, tune poll and fetch settings carefully, isolate slow dependencies, and use backpressure. Increase partitions only when ordering and key-distribution implications are understood."
+  },
+  {
+    "id": "v10.5-scenario-03",
+    "title": "Kafka consumer reprocesses records after a database commit",
+    "level": "L3",
+    "tags": [
+      "kafka",
+      "offsets",
+      "exactly-once"
+    ],
+    "short": "Kafka commonly gives at-least-once processing semantics. A crash between the business commit and offset commit can produce a duplicate delivery.",
+    "answer": "I would not try to eliminate every duplicate at the transport layer. I would make the business operation idempotent by storing the event ID with a unique constraint or using a transactional pattern where appropriate. Then replaying the event becomes harmless.",
+    "code": "",
+    "followups": [
+      "When would Kafka transactions help?",
+      "How would you design an inbox table?"
+    ],
+    "mistakes": [
+      "Do not equate Kafka exactly-once processing with exactly-once effects in an external database."
+    ],
+    "interview": "The interview point is that at-least-once delivery is compatible with exactly-once business outcomes only when the business operation is designed to be idempotent.",
+    "source": "V10.5",
+    "topic": "microservices",
+    "subtopic": "messaging",
+    "scenario": "A consumer commits a database transaction and then crashes before the Kafka offset is committed. The same record is delivered again.",
+    "investigation": "Compare the database transaction boundary with offset commits. Inspect whether processing is idempotent and whether the consumer uses auto-commit or manual acknowledgement.",
+    "prevention": "Design processing to be idempotent, use an inbox/processed-event table with a unique event ID, or use an appropriate transactional/event-processing pattern when the platform supports it. Never assume at-least-once delivery becomes exactly-once business behavior automatically."
+  },
+  {
+    "id": "v10.5-scenario-04",
+    "title": "Retry policy causes a retry storm across services",
+    "level": "L3",
+    "tags": [
+      "retry",
+      "timeouts",
+      "resilience"
+    ],
+    "short": "Retries can improve transient failure recovery, but synchronized or excessive retries can amplify an outage.",
+    "answer": "I would first quantify retry amplification. Then I would reduce retries at the edge, add exponential backoff with jitter, enforce an overall request deadline and use a circuit breaker. I would also decide which errors are actually retryable rather than retrying every exception.",
+    "code": "",
+    "followups": [
+      "Where should retries live?",
+      "How do you choose retry counts and deadlines?"
+    ],
+    "mistakes": [
+      "Never use immediate infinite retries."
+    ],
+    "interview": "The key is to treat retries as load multiplication, not free reliability.",
+    "source": "V10.5",
+    "topic": "microservices",
+    "subtopic": "resilience",
+    "scenario": "A downstream inventory service becomes slow. Multiple upstream services retry failed requests, causing traffic to increase dramatically and making the outage worse.",
+    "investigation": "Look at request rate, retry rate, timeout rate and downstream saturation. Correlate traces to distinguish original requests from retries and calculate the amplification factor.",
+    "prevention": "Use bounded retries, exponential backoff with jitter, strict deadlines, circuit breakers and retry budgets. Retry only transient and safe operations, and avoid stacking aggressive retries at every service layer."
+  },
+  {
+    "id": "v10.5-scenario-05",
+    "title": "Distributed request latency jumps even though application CPU is normal",
+    "level": "L3",
+    "tags": [
+      "distributed-tracing",
+      "latency",
+      "observability"
+    ],
+    "short": "Normal CPU does not mean the service is healthy. Latency can be caused by blocked threads, exhausted connection pools or a slow dependency.",
+    "answer": "I would start with a trace rather than guessing from CPU. If most of the three seconds is in a downstream call or waiting for a database connection, I can target the real bottleneck. I would then correlate it with pool saturation and dependency metrics.",
+    "code": "",
+    "followups": [
+      "What metrics would you put on an API dashboard?",
+      "How do you distinguish queueing from downstream latency?"
+    ],
+    "mistakes": [
+      "Do not use only average latency."
+    ],
+    "interview": "This is why RED metrics and distributed tracing are more useful than CPU alone for request-driven systems.",
+    "source": "V10.5",
+    "topic": "microservices",
+    "subtopic": "operations",
+    "scenario": "p95 latency of an API rises from 250 ms to 3 seconds, but application CPU and memory look normal.",
+    "investigation": "Use distributed traces to break the request into database, downstream HTTP, cache and queue spans. Compare latency distributions rather than averages and inspect connection pools, thread pools and timeout metrics.",
+    "prevention": "Instrument all critical boundaries with trace IDs, publish dependency latency/error metrics, and define timeouts and saturation alerts for pools and downstream calls."
+  },
+  {
+    "id": "v10.5-scenario-06",
+    "title": "Outbox publisher sends the same event twice",
+    "level": "L3",
+    "tags": [
+      "outbox",
+      "duplicates",
+      "events"
+    ],
+    "short": "The outbox pattern closes the database-to-message gap, but the publisher can still produce duplicates unless the consumer side is idempotent.",
+    "answer": "I would keep the outbox because it guarantees the event is durably recorded with the business transaction. Then I would design consumers to deduplicate by event ID. That gives reliable delivery without pretending the publisher can atomically commit an external broker and database.",
+    "code": "",
+    "followups": [
+      "How do you clean old outbox rows?",
+      "Would CDC be an alternative?"
+    ],
+    "mistakes": [
+      "Do not delete the outbox row before durable publication bookkeeping is complete."
+    ],
+    "interview": "The interview point is that outbox solves atomicity between the local DB change and event intent; it does not magically provide exactly-once external effects.",
+    "source": "V10.5",
+    "topic": "microservices",
+    "subtopic": "data",
+    "scenario": "A service writes an order and an outbox row in one database transaction. The publisher sends the event, crashes before marking the row as published, and sends it again after restart.",
+    "investigation": "Inspect outbox status transitions, publisher crash timing and consumer behavior. Verify whether the event has a stable event ID.",
+    "prevention": "Use a stable event ID and idempotent consumers. Marking the outbox row published is useful for bookkeeping, but it should not be treated as proof that a crash cannot produce a duplicate."
+  },
+  {
+    "id": "v10.5-scenario-07",
+    "title": "Payment succeeds but order service times out",
+    "level": "L3",
+    "tags": [
+      "payments",
+      "idempotency",
+      "saga"
+    ],
+    "short": "An ambiguous timeout must not be treated as failure when an external side effect may already have happened.",
+    "answer": "I would treat the payment as an uncertain state. I would query or reconcile using a stable idempotency key and provider reference, then update the order asynchronously if needed. The critical rule is never to blindly repeat a charge after an ambiguous timeout.",
+    "code": "",
+    "followups": [
+      "How would you reconcile payments periodically?",
+      "Where does the Saga pattern fit?"
+    ],
+    "mistakes": [
+      "Do not use only the HTTP response as the source of truth for payment state."
+    ],
+    "interview": "This is a classic distributed-systems problem: you cannot assume the absence of a response means the absence of a side effect.",
+    "source": "V10.5",
+    "topic": "microservices",
+    "subtopic": "data",
+    "scenario": "The payment provider reports success, but the order service times out before recording the result. A client retry could charge the card again.",
+    "investigation": "Use the provider transaction/reference ID to query the payment status. Trace whether the request actually reached the provider and whether the callback/webhook was delivered.",
+    "prevention": "Use an idempotency key at the payment boundary, persist provider references, reconcile uncertain states asynchronously, and model payment as a state machine such as PENDING, SUCCESS, FAILED, UNKNOWN."
   }
 ]

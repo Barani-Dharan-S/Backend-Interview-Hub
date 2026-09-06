@@ -2562,5 +2562,87 @@
     "investigation": "Inspect the future chain and exceptional completion paths. Check whether exceptionally/handle/whenComplete is used and whether the final future is awaited.",
     "resolution": "Make exceptional paths explicit and return a terminal future that callers can observe. Use handle or exceptionally for recovery and whenComplete for side-effect cleanup/logging.",
     "prevention": "Test both success and failure paths for every asynchronous workflow and propagate correlation IDs through async boundaries."
+  },
+  {
+    "id": "v10.5-scenario-24",
+    "title": "A service leaks ThreadLocal state between requests",
+    "level": "L3",
+    "tags": [
+      "java",
+      "threadlocal",
+      "memory-leak"
+    ],
+    "short": "ThreadLocal values belong to the worker thread, not the request. In pooled executors, the same thread can process many requests.",
+    "answer": "I would treat ThreadLocal as thread-scoped state and ensure every set has a corresponding remove in a finally block. For request context, I would prefer framework-managed mechanisms when possible. I would also test thread reuse explicitly.",
+    "code": "",
+    "followups": [
+      "Why is ThreadLocal useful?",
+      "Why can it cause memory leaks?"
+    ],
+    "mistakes": [
+      "Do not assume a pooled thread is dedicated to one request."
+    ],
+    "interview": "The bug can become both a data-isolation problem and a memory-retention problem.",
+    "source": "V10.5",
+    "topic": "java",
+    "subtopic": "concurrency",
+    "scenario": "A long-running servlet application shows request/user context from one request appearing in a later request handled by the same worker thread.",
+    "investigation": "Inspect ThreadLocal usage and thread-pool lifecycle. Check whether values are removed in finally blocks and whether pooled threads are reused across requests.",
+    "prevention": "Set request-scoped context at the boundary and always remove ThreadLocal values in finally. Prefer framework-managed request context where available."
+  },
+  {
+    "id": "v10.5-scenario-25",
+    "title": "CompletableFuture chain silently loses exceptions",
+    "level": "L2",
+    "tags": [
+      "java",
+      "completablefuture",
+      "async"
+    ],
+    "short": "CompletableFuture failures are stored in the future. They do not automatically become visible to the caller unless the chain is observed or joined.",
+    "answer": "I would ensure the controller or service returns the composed future or explicitly waits at the correct boundary. Then I would handle failures with exceptionally or handle and log the original cause with correlation context.",
+    "code": "",
+    "followups": [
+      "thenCompose vs thenApply?",
+      "How do you add a timeout to a future?"
+    ],
+    "mistakes": [
+      "Do not ignore a future returned by an important operation."
+    ],
+    "interview": "The interview trap is assuming asynchronous exceptions behave exactly like synchronous exceptions.",
+    "source": "V10.5",
+    "topic": "java",
+    "subtopic": "concurrency",
+    "scenario": "An asynchronous workflow returns a successful HTTP response even though one of the CompletableFuture stages failed.",
+    "investigation": "Trace the future chain and inspect whether exceptionally/handle/whenComplete or join/get is used. Check whether a failed stage is created but its result is ignored.",
+    "prevention": "Compose the futures into one returned future, handle exceptions explicitly at the boundary, and avoid launching independent futures whose failures are never observed."
+  },
+  {
+    "id": "v10.5-scenario-26",
+    "title": "JVM GC pauses increase after a traffic increase",
+    "level": "L3",
+    "tags": [
+      "java",
+      "jvm",
+      "gc",
+      "performance"
+    ],
+    "short": "GC latency is influenced by allocation rate, live-set size and collector behavior, not simply by total heap size.",
+    "answer": "I would first correlate GC pauses with latency and inspect allocation and promotion rates. Then I would determine whether the issue is excessive allocation, an unexpectedly large live set or collector configuration. I would change one variable at a time and validate with realistic load.",
+    "code": "",
+    "followups": [
+      "How does G1 work at a high level?",
+      "What is a memory leak in Java?"
+    ],
+    "mistakes": [
+      "Do not equate high heap usage with a GC bug automatically."
+    ],
+    "interview": "Never start by increasing the heap without understanding why the live set or allocation rate changed.",
+    "source": "V10.5",
+    "topic": "java",
+    "subtopic": "jvm",
+    "scenario": "p99 latency increases because occasional GC pauses grow from tens of milliseconds to over a second after traffic increases.",
+    "investigation": "Inspect allocation rate, heap occupancy, GC pause times, old-generation promotion and object-retention patterns. Correlate GC events with request latency.",
+    "prevention": "Reduce unnecessary allocations, investigate retained objects, choose/tune the collector based on measured behavior, size the heap appropriately and validate changes with production-like load."
   }
 ]

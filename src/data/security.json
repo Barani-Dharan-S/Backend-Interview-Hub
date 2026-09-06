@@ -747,5 +747,60 @@
     "investigation": "Trace outbound URL handling and inspect whether private IPs, loopback addresses, redirects and DNS rebinding are blocked. Identify whether the server follows redirects automatically.",
     "resolution": "Prefer allowlists for destinations. Validate resolved IP addresses, block private/link-local/loopback ranges, control redirects and use an egress proxy where appropriate. Do not rely only on string checks of the hostname.",
     "prevention": "Add SSRF tests, restrict outbound network access and monitor unusual outbound destinations."
+  },
+  {
+    "id": "v10.5-scenario-15",
+    "title": "JWT is valid but a user can access another customer’s resource",
+    "level": "L3",
+    "tags": [
+      "security",
+      "jwt",
+      "authorization",
+      "multi-tenant"
+    ],
+    "short": "A valid token proves identity or claims; it does not automatically prove permission to access every resource.",
+    "answer": "I would explain this as an authorization failure, not a JWT validation failure. The service must verify that the authenticated principal is allowed to access that specific resource, ideally enforcing tenant ownership in the data query as well.",
+    "code": "",
+    "followups": [
+      "Where should tenant checks happen?",
+      "How would you test for this vulnerability?"
+    ],
+    "mistakes": [
+      "Do not treat possession of a valid JWT as authorization for arbitrary resource IDs."
+    ],
+    "interview": "This is a common IDOR or broken object-level authorization pattern.",
+    "source": "V10.5",
+    "topic": "security",
+    "subtopic": "micro",
+    "scenario": "A user with a valid JWT changes an order ID in the URL and receives another customer’s order.",
+    "investigation": "Inspect authorization at the resource boundary. Verify whether the service checks tenant/user ownership after authentication or only checks that the JWT signature is valid.",
+    "prevention": "Separate authentication from authorization. Enforce tenant/resource ownership in service and data-access queries, and use defense-in-depth policies where appropriate."
+  },
+  {
+    "id": "v10.5-scenario-16",
+    "title": "Refresh token rotation detects token reuse",
+    "level": "L3",
+    "tags": [
+      "security",
+      "refresh-token",
+      "oauth"
+    ],
+    "short": "Refresh-token rotation reduces the window in which a stolen refresh token can be reused undetected.",
+    "answer": "I would rotate the refresh token on every successful refresh and keep enough server-side state to detect reuse. If an old token is presented after rotation, I would treat that as a possible theft signal and revoke the token family.",
+    "code": "",
+    "followups": [
+      "How do stateless JWTs get revoked?",
+      "Where should refresh tokens be stored?"
+    ],
+    "mistakes": [
+      "Do not log raw refresh tokens."
+    ],
+    "interview": "Short-lived access tokens limit immediate impact; refresh-token rotation adds detection and containment for longer-lived credentials.",
+    "source": "V10.5",
+    "topic": "security",
+    "subtopic": "jwt",
+    "scenario": "A refresh token is used twice from different locations. The security team wants the second use to invalidate the session.",
+    "investigation": "Track refresh-token family state or a server-side token identifier. Detect reuse after rotation and correlate the event with the user/session.",
+    "prevention": "Rotate refresh tokens on use, store a revocable token family identifier, invalidate the family on reuse, and require re-authentication when compromise is suspected."
   }
 ]

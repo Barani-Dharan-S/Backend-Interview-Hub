@@ -1109,5 +1109,59 @@
     "investigation": "Define whether the limit is strict or approximate, the key dimensions and failure behavior. Estimate request volume and state size. Decide whether the limiter must be globally consistent.",
     "resolution": "Use a centralized or distributed counter/token-bucket implementation with atomic operations. Return 429 with retry guidance. Decide whether fail-open or fail-closed is safer for the business operation.",
     "prevention": "Monitor allowed/blocked rates and limiter latency, protect the limiter itself and load-test bursts at the boundary."
+  },
+  {
+    "id": "v10.5-scenario-19",
+    "title": "Order database migration must happen without downtime",
+    "level": "L3",
+    "tags": [
+      "system-design",
+      "database",
+      "deployment"
+    ],
+    "short": "Zero-downtime schema changes require compatibility between database and application versions during rollout.",
+    "answer": "I would avoid a destructive migration in the same deployment as the application change. I would expand the schema first, deploy backward-compatible code, backfill gradually, switch traffic, and contract later after old versions are gone.",
+    "code": "",
+    "followups": [
+      "How do you backfill 500 million rows safely?",
+      "What metrics would you monitor during the migration?"
+    ],
+    "mistakes": [
+      "Do not assume DDL is always instant or lock-free."
+    ],
+    "interview": "The key is to design migrations around the overlap period during rolling deployment.",
+    "source": "V10.5",
+    "topic": "system-design",
+    "subtopic": "distributed",
+    "scenario": "A column must change in a high-traffic orders table while old and new application versions run simultaneously during a rolling deployment.",
+    "investigation": "Identify whether the change is backward-compatible. Check write/read behavior of old and new versions and estimate lock duration and table rewrite cost.",
+    "prevention": "Use expand-and-contract: add the new structure first, deploy code that can read/write both forms if needed, backfill in batches, switch reads, then remove the old structure in a later deployment."
+  },
+  {
+    "id": "v10.5-scenario-20",
+    "title": "Notification provider becomes unavailable during a traffic burst",
+    "level": "L3",
+    "tags": [
+      "system-design",
+      "messaging",
+      "notifications"
+    ],
+    "short": "A notification system should absorb provider outages instead of making every user request wait for the provider.",
+    "answer": "I would decouple user-facing operations from notification delivery with a durable queue. Workers can retry with backoff and provider-specific limits, while a circuit breaker prevents an unhealthy provider from consuming all worker capacity.",
+    "code": "",
+    "followups": [
+      "How do you guarantee no duplicate notifications?",
+      "How would you prioritize urgent notifications?"
+    ],
+    "mistakes": [
+      "Do not let retries grow without a queue or budget."
+    ],
+    "interview": "This is primarily an asynchronous workload and should be designed around durability, backpressure and eventual delivery.",
+    "source": "V10.5",
+    "topic": "system-design",
+    "subtopic": "distributed",
+    "scenario": "Email/SMS provider latency spikes and then returns errors while the platform is processing millions of notifications.",
+    "investigation": "Measure provider error rate and latency, queue depth, retry rate and message age. Check whether the application is making synchronous provider calls or buffering work.",
+    "prevention": "Queue notification requests, apply provider-specific rate limits, retry transient failures with backoff, route to a secondary provider where justified, and preserve message state for reconciliation."
   }
 ]

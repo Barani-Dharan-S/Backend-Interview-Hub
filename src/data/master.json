@@ -10742,11 +10742,11 @@
     "interview": "I use two pointers on a char array. Time is O(n). Space is O(n) for the array.",
     "source": "V9",
     "id": "v9-080",
-    "problem": "Reverse characters with a two-pointer swap.",
-    "example": null,
+    "problem": "Reverse a string without using StringBuilder.reverse()",
+    "example": "",
     "approach": "Convert to a char array and swap from both ends.",
-    "complexity": "See approach and implementation for complexity details.",
-    "streams": null
+    "complexity": "Analyze time and space complexity for the implementation shown.",
+    "streams": ""
   },
   {
     "topic": "coding",
@@ -10768,11 +10768,11 @@
     "interview": "For ASCII input this is O(n) time and O(1) auxiliary space.",
     "source": "V9",
     "id": "v9-081",
-    "problem": "Determine whether two strings contain identical character frequencies.",
-    "example": null,
+    "problem": "Check whether two strings are anagrams",
+    "example": "",
     "approach": "Count characters in the first string and decrement counts for the second.",
-    "complexity": "See approach and implementation for complexity details.",
-    "streams": null
+    "complexity": "Analyze time and space complexity for the implementation shown.",
+    "streams": ""
   },
   {
     "topic": "coding",
@@ -10794,11 +10794,11 @@
     "interview": "Two passes give O(n) time and O(k) space for k distinct characters.",
     "source": "V9",
     "id": "v9-082",
-    "problem": "Return the first character whose frequency is one.",
-    "example": null,
+    "problem": "Find the first non-repeated character",
+    "example": "",
     "approach": "Count frequencies, then scan the original order.",
-    "complexity": "See approach and implementation for complexity details.",
-    "streams": null
+    "complexity": "Analyze time and space complexity for the implementation shown.",
+    "streams": ""
   },
   {
     "topic": "coding",
@@ -10820,11 +10820,11 @@
     "interview": "Average O(n) time and O(n) extra space.",
     "source": "V9",
     "id": "v9-083",
-    "problem": "Return values that occur more than once.",
-    "example": null,
+    "problem": "Find duplicate elements in an integer array",
+    "example": "",
     "approach": "Track seen values and add repeats to a second set.",
-    "complexity": "See approach and implementation for complexity details.",
-    "streams": null
+    "complexity": "Analyze time and space complexity for the implementation shown.",
+    "streams": ""
   },
   {
     "topic": "coding",
@@ -10846,11 +10846,11 @@
     "interview": "One pass gives O(n) time and O(1) extra space.",
     "source": "V9",
     "id": "v9-084",
-    "problem": "Find the second largest distinct value without sorting.",
-    "example": null,
+    "problem": "Find the second largest distinct number",
+    "example": "",
     "approach": "Maintain largest and second-largest distinct values in one pass.",
-    "complexity": "See approach and implementation for complexity details.",
-    "streams": null
+    "complexity": "Analyze time and space complexity for the implementation shown.",
+    "streams": ""
   },
   {
     "topic": "coding",
@@ -10872,11 +10872,11 @@
     "interview": "O(n) time and O(1) extra space.",
     "source": "V9",
     "id": "v9-085",
-    "problem": "Move zeros to the end while preserving non-zero order.",
-    "example": null,
+    "problem": "Move all zeros to the end",
+    "example": "",
     "approach": "Compact non-zero values then fill the remaining positions with zeros.",
-    "complexity": "See approach and implementation for complexity details.",
-    "streams": null
+    "complexity": "Analyze time and space complexity for the implementation shown.",
+    "streams": ""
   },
   {
     "topic": "coding",
@@ -10898,11 +10898,11 @@
     "interview": "O(n) time and O(1) extra space.",
     "source": "V9",
     "id": "v9-086",
-    "problem": "Find the missing value from 1 through n.",
-    "example": null,
+    "problem": "Find the missing number from 1 to n",
+    "example": "",
     "approach": "XOR all expected values and all input values; equal values cancel.",
-    "complexity": "See approach and implementation for complexity details.",
-    "streams": null
+    "complexity": "Analyze time and space complexity for the implementation shown.",
+    "streams": ""
   },
   {
     "topic": "coding",
@@ -10924,11 +10924,11 @@
     "interview": "Kadane is O(n) time and O(1) space.",
     "source": "V9",
     "id": "v9-087",
-    "problem": "Find the largest sum of any contiguous subarray.",
-    "example": null,
+    "problem": "Find the maximum subarray sum",
+    "example": "",
     "approach": "Kadane keeps the best subarray ending at the current position and the global best.",
-    "complexity": "See approach and implementation for complexity details.",
-    "streams": null
+    "complexity": "Analyze time and space complexity for the implementation shown.",
+    "streams": ""
   },
   {
     "topic": "coding",
@@ -10950,11 +10950,11 @@
     "interview": "O(n) time and O(n) worst-case space.",
     "source": "V9",
     "id": "v9-088",
-    "problem": "Check whether brackets are correctly nested and closed.",
-    "example": null,
+    "problem": "Validate balanced parentheses",
+    "example": "",
     "approach": "Push openings and match each closing bracket against the top of the stack.",
-    "complexity": "See approach and implementation for complexity details.",
-    "streams": null
+    "complexity": "Analyze time and space complexity for the implementation shown.",
+    "streams": ""
   },
   {
     "topic": "coding",
@@ -10965,7 +10965,7 @@
       "Design"
     ],
     "short": "Build a fixed-capacity cache that evicts the least recently used entry.",
-    "answer": "An LRU cache removes the entry that has not been accessed for the longest time. The key requirement is O(1) lookup and O(1) insertion/removal. The classic design combines a HashMap with a doubly linked list: the map finds a node directly, while the list maintains usage order. On get, the node is moved to the most-recently-used end. On put, an existing node is updated and moved to the end, or a new node is added; if the capacity is exceeded, the least-recently-used node at the opposite end is evicted. In Java, LinkedHashMap can implement this using access-order and removeEldestEntry.",
+    "answer": "LinkedHashMap can maintain access order and remove the eldest entry.",
     "code": "import java.util.*;\npublic class Main {\n    static class LruCache<K,V> extends LinkedHashMap<K,V> {\n        private final int capacity;\n        LruCache(int capacity){ super(capacity,0.75f,true); this.capacity=capacity; }\n        protected boolean removeEldestEntry(Map.Entry<K,V> e){ return size()>capacity; }\n    }\n    public static void main(String[] args){\n        LruCache<Integer,String> cache=new LruCache<>(2);\n        cache.put(1,\"A\"); cache.put(2,\"B\"); cache.get(1); cache.put(3,\"C\");\n        System.out.println(cache);\n    }\n}",
     "followups": [
       "How would you implement LRU from scratch?"
@@ -10973,14 +10973,14 @@
     "mistakes": [
       "Forgetting access-order=true."
     ],
-    "interview": "I would implement an LRU cache using a HashMap plus a doubly linked list. The HashMap gives O(1) lookup, while the list maintains recency order. Every get or successful update moves the entry to the most-recently-used end, and when capacity is exceeded we remove the least-recently-used entry. In Java, LinkedHashMap with access-order is a concise implementation of the same idea.",
+    "interview": "This implementation gives average O(1) get/put behavior from LinkedHashMap. Production concurrency and distributed requirements need additional design.",
     "source": "V9",
     "id": "v9-089",
-    "problem": "Implement an LRU (Least Recently Used) cache with a fixed capacity. get(key) should return the value and mark the entry as recently used. put(key, value) should insert or update the entry and evict the least recently used entry when the capacity is exceeded.",
-    "example": "Capacity = 2\nput(1, \"A\")\nput(2, \"B\")\nget(1) -> \"A\"\nput(3, \"C\") -> evicts key 2\nget(2) -> null",
-    "approach": "Use a HashMap for O(1) key lookup and a doubly linked list to maintain recency order. The head represents the least recently used entry and the tail represents the most recently used entry. A get moves the entry to the tail; a put inserts or updates at the tail and removes the head when capacity is exceeded. Java LinkedHashMap can provide the same behavior with accessOrder=true.",
-    "complexity": "get: O(1)\nput: O(1)\nSpace: O(capacity)",
-    "streams": null
+    "problem": "Implement an LRU cache",
+    "example": "",
+    "approach": "LinkedHashMap can maintain access order and remove the eldest entry.",
+    "complexity": "Analyze time and space complexity for the implementation shown.",
+    "streams": ""
   },
   {
     "id": "v91-001",
@@ -13566,17 +13566,17 @@
       "Basics"
     ],
     "short": "Determine whether an integer is prime.",
-    "answer": "A prime number has no divisor other than 1 and itself. We only need to test possible factors up to the square root of n because if n = a × b and both factors were greater than sqrt(n), their product would be greater than n. We can skip even numbers after checking 2, reducing unnecessary checks.",
+    "answer": "Check divisibility only up to the square root because a composite number must have a factor at or below sqrt(n).",
     "code": "import java.util.*;\n\npublic class Main {\n    static boolean isPrime(int n) {\n        if (n < 2) return false;\n        if (n % 2 == 0) return n == 2;\n        for (int i = 3; i <= n / i; i += 2) {\n            if (n % i == 0) return false;\n        }\n        return true;\n    }\n\n    public static void main(String[] args) {\n        int n = 29;\n        System.out.println(n + \" is prime: \" + isPrime(n));\n    }\n}",
     "followups": "How would you print primes from 1 to N?",
     "mistakes": "Checking every number from 2 to n is unnecessary.",
-    "interview": "I first reject numbers below 2, then handle 2 separately. After that I test only odd divisors up to the square root of the number. If any divisor divides the number evenly, it is composite; otherwise it is prime. This gives O(sqrt(n)) time and O(1) space.",
+    "interview": "Interview answer: I handle values below two and even numbers first, then test only odd divisors up to the square root.",
     "source": "V9.1",
-    "problem": "Write a Java program to determine whether an integer is prime. A prime number is greater than 1 and has exactly two positive divisors: 1 and itself.",
-    "example": "Input: 29\nOutput: 29 is prime: true",
-    "approach": "Handle values below 2 first, then test divisibility by 2 and odd divisors only up to sqrt(n). If no divisor is found, the number is prime.",
-    "complexity": "Time: O(sqrt(n))\nSpace: O(1)",
-    "streams": null
+    "problem": "Check whether a number is prime",
+    "example": "",
+    "approach": "Check divisibility only up to the square root because a composite number must have a factor at or below sqrt(n).",
+    "complexity": "Analyze time and space complexity for the implementation shown.",
+    "streams": ""
   },
   {
     "id": "v91-coding-02",
@@ -13588,17 +13588,17 @@
       "Numbers"
     ],
     "short": "Calculate n! using an iterative approach.",
-    "answer": "Factorial is naturally calculated by repeated multiplication. I prefer an iterative solution here because it avoids recursive call-stack growth and makes the boundary case 0! = 1 straightforward. For a long result, the supported input range is limited by long overflow, so for very large factorials BigInteger would be appropriate.",
+    "answer": "Factorial is the product from 1 through n. An iterative implementation avoids recursive stack growth.",
     "code": "import java.util.*;\n\npublic class Main {\n    static long factorial(int n) {\n        if (n < 0) throw new IllegalArgumentException(\"n must be non-negative\");\n        long result = 1;\n        for (int i = 2; i <= n; i++) result *= i;\n        return result;\n    }\n\n    public static void main(String[] args) {\n        int n = 5;\n        System.out.println(n + \"! = \" + factorial(n));\n    }\n}",
     "followups": "How would recursion change the solution?",
     "mistakes": "What happens when long overflows?",
-    "interview": "I initialize the result to 1 and multiply it by each value from 2 to n. This handles 0 correctly because the loop does not execute. An iterative solution uses constant auxiliary space; if the input can exceed long range, I would use BigInteger instead.",
+    "interview": "Interview answer: I initialize the result to one and multiply by each value through n. In real code I would consider BigInteger when n can exceed long range.",
     "source": "V9.1",
-    "problem": "Write a Java program to calculate the factorial of a non-negative integer n. Factorial is n × (n-1) × ... × 1, with 0! = 1.",
-    "example": "Input: 5\nOutput: 5! = 120",
-    "approach": "Start the result at 1 and multiply it by every integer from 2 through n. Validate that n is not negative.",
-    "complexity": "Time: O(n)\nSpace: O(1) excluding the numeric result",
-    "streams": null
+    "problem": "Calculate factorial of a number",
+    "example": "",
+    "approach": "Factorial is the product from 1 through n. An iterative implementation avoids recursive stack growth.",
+    "complexity": "Analyze time and space complexity for the implementation shown.",
+    "streams": ""
   },
   {
     "id": "v91-coding-03",
@@ -13610,17 +13610,17 @@
       "Iteration"
     ],
     "short": "Print the first N Fibonacci numbers.",
-    "answer": "The iterative approach keeps only the previous two values instead of storing the whole sequence. For each term, I print the current value, calculate the next value as a + b, then shift a and b. This is more space-efficient than building a list. For large terms, long can overflow, so BigInteger may be required.",
+    "answer": "Keep the previous two values and generate each next value iteratively.",
     "code": "import java.util.*;\n\npublic class Main {\n    static void printFibonacci(int n) {\n        long a = 0, b = 1;\n        for (int i = 0; i < n; i++) {\n            System.out.print(a + (i + 1 == n ? \"\\n\" : \" \"));\n            long next = a + b;\n            a = b;\n            b = next;\n        }\n    }\n\n    public static void main(String[] args) {\n        printFibonacci(10);\n    }\n}",
     "followups": "How would you generate Fibonacci with Streams?",
     "mistakes": "How do you avoid overflow for large n?",
-    "interview": "I maintain two variables for the previous two Fibonacci numbers. In every iteration I output the current number, calculate the next number by adding the two previous values, and then shift the variables. This gives O(n) time and O(1) auxiliary space.",
+    "interview": "Interview answer: I keep only the last two Fibonacci values, so each term is produced once with constant auxiliary space.",
     "source": "V9.1",
-    "problem": "Write a Java program to print the first N numbers of the Fibonacci sequence, where the sequence starts with 0, 1 and each next value is the sum of the previous two.",
-    "example": "Input: 10\nOutput: 0 1 1 2 3 5 8 13 21 34",
-    "approach": "Keep two variables representing the previous two Fibonacci values. Print the first value, calculate the next value, then shift the variables forward for each iteration.",
-    "complexity": "Time: O(n)\nSpace: O(1) auxiliary",
-    "streams": null
+    "problem": "Print Fibonacci series up to N terms",
+    "example": "",
+    "approach": "Keep the previous two values and generate each next value iteratively.",
+    "complexity": "Analyze time and space complexity for the implementation shown.",
+    "streams": ""
   },
   {
     "id": "v91-coding-04",
@@ -13632,17 +13632,17 @@
       "Strings"
     ],
     "short": "Determine whether an integer reads the same forward and backward.",
-    "answer": "Instead of converting the number to a string, I reverse its digits mathematically. The last digit is n % 10, and n / 10 removes that digit. I build the reversed value and finally compare it with the original. A long variable for the reversed value prevents intermediate overflow for many int inputs.",
+    "answer": "Reverse the digits mathematically and compare the reversed value with the original. Avoid converting to a string when the problem expects arithmetic.",
     "code": "import java.util.*;\n\npublic class Main {\n    static boolean isPalindrome(int n) {\n        if (n < 0) return false;\n        int original = n;\n        long reversed = 0;\n        while (n > 0) {\n            reversed = reversed * 10 + n % 10;\n            n /= 10;\n        }\n        return reversed == original;\n    }\n\n    public static void main(String[] args) {\n        int n = 1221;\n        System.out.println(\"Palindrome: \" + isPalindrome(n));\n    }\n}",
     "followups": "How do you handle negative numbers?",
     "mistakes": "What if reversing causes integer overflow?",
-    "interview": "I reverse the number mathematically using modulo and division by 10, while keeping a copy of the original value. After all digits are processed, I compare the reversed value with the original. This avoids string conversion and uses constant space.",
+    "interview": "Interview answer: I reverse the digits mathematically and compare them with the original number, using constant extra space.",
     "source": "V9.1",
-    "problem": "Write a Java program to check whether an integer is a palindrome without converting it to a String. A palindrome reads the same forward and backward.",
-    "example": "Input: 1221\nOutput: Palindrome: true",
-    "approach": "Keep the original number, repeatedly extract the last digit using modulo 10, append it to a reversed number, and remove the last digit using integer division by 10. Compare the reversed number with the original.",
-    "complexity": "Time: O(log10(n))\nSpace: O(1)",
-    "streams": null
+    "problem": "Check whether a number is a palindrome",
+    "example": "",
+    "approach": "Reverse the digits mathematically and compare the reversed value with the original. Avoid converting to a string when the problem expects arithmetic.",
+    "complexity": "Analyze time and space complexity for the implementation shown.",
+    "streams": ""
   },
   {
     "id": "v91-coding-05",
@@ -13654,17 +13654,17 @@
       "Math"
     ],
     "short": "Check whether a number equals the sum of its digits raised to the number of digits.",
-    "answer": "An Armstrong number is defined using the number of digits. For 153, there are three digits and 1³ + 5³ + 3³ = 153. I first determine the digit count, then process each digit with modulo 10 and integer division. Math.pow returns a floating-point value, so the result is converted to a long for the integer comparison.",
+    "answer": "First count the digits, then compute the powered sum and compare it with the original.",
     "code": "import java.util.*;\n\npublic class Main {\n    static boolean isArmstrong(int n) {\n        if (n < 0) return false;\n        int original = n;\n        int digits = String.valueOf(n).length();\n        long sum = 0;\n        int value = n;\n        do {\n            int digit = value % 10;\n            sum += Math.pow(digit, digits);\n            value /= 10;\n        } while (value > 0);\n        return sum == original;\n    }\n\n    public static void main(String[] args) {\n        int n = 153;\n        System.out.println(n + \" is Armstrong: \" + isArmstrong(n));\n    }\n}",
     "followups": "How would you avoid Math.pow?",
     "mistakes": "Can the solution handle very large numbers?",
-    "interview": "I first count the digits because the exponent depends on the number of digits. Then I extract each digit, raise it to that power, accumulate the sum, and compare the sum with the original number. The algorithm is linear in the number of digits and uses constant space.",
+    "interview": "Interview answer: I count the digits, raise each digit to that count and sum them. If the sum equals the original number, it is an Armstrong number.",
     "source": "V9.1",
-    "problem": "Write a Java program to determine whether a number is an Armstrong number. For an n-digit number, the sum of each digit raised to the power n must equal the original number.",
-    "example": "Input: 153\nOutput: 153 is Armstrong: true",
-    "approach": "Count the digits, then repeatedly extract each digit and add digit^numberOfDigits to a running sum. Compare the sum with the original number.",
-    "complexity": "Time: O(d), where d is the number of digits\nSpace: O(1)",
-    "streams": null
+    "problem": "Check whether a number is an Armstrong number",
+    "example": "",
+    "approach": "First count the digits, then compute the powered sum and compare it with the original.",
+    "complexity": "Analyze time and space complexity for the implementation shown.",
+    "streams": ""
   },
   {
     "id": "v91-coding-06",
@@ -13676,17 +13676,17 @@
       "HashMap"
     ],
     "short": "Find two indices whose values add up to a target.",
-    "answer": "The brute-force solution checks every pair and takes O(n²). We can reduce this to O(n) by storing previously seen values in a HashMap. For each current number x, the only value we need is target - x. If that complement is already in the map, we have the answer; otherwise we store x with its index and continue.",
+    "answer": "Store previously seen values in a map from value to index. For each number, look for target minus the current value.",
     "code": "import java.util.*;\n\npublic class Main {\n    static int[] twoSum(int[] nums, int target) {\n        Map<Integer, Integer> seen = new HashMap<>();\n        for (int i = 0; i < nums.length; i++) {\n            int need = target - nums[i];\n            if (seen.containsKey(need)) return new int[]{seen.get(need), i};\n            seen.put(nums[i], i);\n        }\n        return new int[0];\n    }\n\n    public static void main(String[] args) {\n        int[] result = twoSum(new int[]{2, 7, 11, 15}, 9);\n        System.out.println(Arrays.toString(result));\n    }\n}",
     "followups": "How would sorting solve it?",
     "mistakes": "Be careful not to reuse the same element twice.",
-    "interview": "I use a HashMap from number to index. For every element, I calculate the complement as target minus the current value and check whether that complement has already been seen. If it has, I return the two indices; otherwise I store the current value. This reduces the usual O(n²) brute-force solution to O(n) average time.",
+    "interview": "Interview answer: A HashMap gives expected constant-time lookup for the complement, allowing a single pass instead of the O(n²) brute-force approach.",
     "source": "V9.1",
-    "problem": "Given an integer array and a target, find two different indices whose values add up to the target. Return the indices.",
-    "example": "Input: nums = [2, 7, 11, 15], target = 9\nOutput: [0, 1]",
-    "approach": "Scan the array once while storing each previously seen value and its index in a HashMap. For the current value x, look for target - x in the map before storing x.",
-    "complexity": "Time: O(n) average\nSpace: O(n)",
-    "streams": null
+    "problem": "Solve the Two Sum problem",
+    "example": "",
+    "approach": "Store previously seen values in a map from value to index. For each number, look for target minus the current value.",
+    "complexity": "Analyze time and space complexity for the implementation shown.",
+    "streams": ""
   },
   {
     "id": "v91-coding-07",
@@ -13698,17 +13698,17 @@
       "HashMap"
     ],
     "short": "Return the common values while respecting how many times each value occurs.",
-    "answer": "Because duplicates matter, I cannot use a simple Set. I build a frequency map from the first array. While scanning the second array, if the current value has a positive remaining count, I add it to the result and decrement the count. Each occurrence is therefore consumed exactly once.",
+    "answer": "Count values from one array, then consume those counts while scanning the second array.",
     "code": "import java.util.*;\n\npublic class Main {\n    static List<Integer> intersect(int[] a, int[] b) {\n        Map<Integer, Integer> counts = new HashMap<>();\n        for (int n : a) counts.merge(n, 1, Integer::sum);\n        List<Integer> result = new ArrayList<>();\n        for (int n : b) {\n            int count = counts.getOrDefault(n, 0);\n            if (count > 0) {\n                result.add(n);\n                if (count == 1) counts.remove(n); else counts.put(n, count - 1);\n            }\n        }\n        return result;\n    }\n\n    public static void main(String[] args) {\n        System.out.println(intersect(new int[]{1,2,2,3}, new int[]{2,2,2,4}));\n    }\n}",
     "followups": "How would sorting change the solution?",
     "mistakes": "Do not use a Set because it loses multiplicity.",
-    "interview": "Since duplicates must be preserved, I use a frequency map rather than a Set. I count values from the first array, then scan the second array and consume one count whenever a match is found. This gives O(n + m) average time and O(n) additional space.",
+    "interview": "Interview answer: I store frequencies rather than just membership, so duplicate occurrences are preserved correctly.",
     "source": "V9.1",
-    "problem": "Given two integer arrays, return their intersection including duplicate occurrences. Each value should appear in the result as many times as it appears in both arrays.",
-    "example": "Input: [1,2,2,1] and [2,2]\nOutput: [2,2]",
-    "approach": "Count the frequency of each value in the first array. Scan the second array and consume one count whenever a matching value is found.",
-    "complexity": "Time: O(n + m) average\nSpace: O(n)",
-    "streams": "A Streams solution can be built from a frequency map, but a loop is clearer because we need to mutate and consume counts for duplicate occurrences."
+    "problem": "Find the intersection of two arrays including duplicates",
+    "example": "",
+    "approach": "Count values from one array, then consume those counts while scanning the second array.",
+    "complexity": "Analyze time and space complexity for the implementation shown.",
+    "streams": ""
   },
   {
     "id": "v91-coding-08",
@@ -13720,17 +13720,17 @@
       "HashSet"
     ],
     "short": "Remove repeated characters from a string while keeping the first occurrence order.",
-    "answer": "A normal HashSet removes duplicates but does not provide the required encounter order. LinkedHashSet gives both uniqueness and insertion order. I scan the characters once, add them to the LinkedHashSet, and then build the output from the set.",
+    "answer": "Use a LinkedHashSet to preserve insertion order, then build the result.",
     "code": "import java.util.*;\n\npublic class Main {\n    static String removeDuplicates(String s) {\n        Set<Character> seen = new LinkedHashSet<>();\n        for (char c : s.toCharArray()) seen.add(c);\n        StringBuilder result = new StringBuilder();\n        for (char c : seen) result.append(c);\n        return result.toString();\n    }\n\n    public static void main(String[] args) {\n        String input = \"programming\";\n        System.out.println(\"Output: \" + removeDuplicates(input));\n    }\n}",
     "followups": "How would you do this with a boolean array?",
     "mistakes": "Why not HashSet if order matters?",
-    "interview": "I use LinkedHashSet because I need two properties at the same time: duplicate removal and preservation of first-occurrence order. I scan the string once, add each character to the set, and then build the result. Average time is O(n).",
+    "interview": "Interview answer: LinkedHashSet gives uniqueness plus insertion order, and I build the final string from the retained characters.",
     "source": "V9.1",
-    "problem": "Remove duplicate characters from a string while preserving the order in which each distinct character first appeared.",
-    "example": "Input: programming\nOutput: progamin",
-    "approach": "Use a LinkedHashSet to record characters. It removes duplicates while preserving insertion order, then build the result from the set.",
-    "complexity": "Time: O(n) average\nSpace: O(k), where k is the number of distinct characters",
-    "streams": "chars().distinct() can preserve encounter order in a sequential stream, followed by collecting to a StringBuilder or String."
+    "problem": "Remove duplicate characters while preserving order",
+    "example": "",
+    "approach": "Use a LinkedHashSet to preserve insertion order, then build the result.",
+    "complexity": "Analyze time and space complexity for the implementation shown.",
+    "streams": ""
   },
   {
     "id": "v91-coding-09",
@@ -13742,17 +13742,17 @@
       "Boyer Moore"
     ],
     "short": "Find the element occurring more than n/2 times when such an element exists.",
-    "answer": "Boyer-Moore treats different values as cancelling pairs. When the current count reaches zero, the next value becomes the candidate. If a true majority exists, it cannot be completely cancelled by all other values, so the final candidate must be the majority. If the problem does not guarantee that a majority exists, I verify the candidate with a second pass.",
+    "answer": "Boyer-Moore treats different values as canceling pairs, leaving the majority candidate. Verify it if majority is not guaranteed.",
     "code": "import java.util.*;\n\npublic class Main {\n    static Integer majority(int[] nums) {\n        int candidate = 0, count = 0;\n        for (int n : nums) {\n            if (count == 0) candidate = n;\n            count += n == candidate ? 1 : -1;\n        }\n        int frequency = 0;\n        for (int n : nums) if (n == candidate) frequency++;\n        return frequency > nums.length / 2 ? candidate : null;\n    }\n\n    public static void main(String[] args) {\n        System.out.println(\"Majority: \" + majority(new int[]{2,2,1,2,3,2,2}));\n    }\n}",
     "followups": "How do you find elements occurring more than n/3?",
     "mistakes": "Why does cancellation preserve a majority candidate?",
-    "interview": "I use Boyer-Moore voting to find a majority candidate with constant extra space. Matching values increase the count and different values decrease it; when the count reaches zero, I choose a new candidate. Because a majority is not always guaranteed, I verify the candidate in a second pass. Overall complexity is O(n) time and O(1) space.",
+    "interview": "Interview answer: Boyer-Moore keeps a candidate and balance. A true majority survives pairwise cancellation, and I verify the candidate when existence is not guaranteed.",
     "source": "V9.1",
-    "problem": "Find the majority element in an integer array: a value that appears strictly more than n/2 times. Return null if no majority exists.",
-    "example": "Input: [2,2,1,1,1,2,2]\nOutput: 2",
-    "approach": "Use Boyer-Moore voting to find a candidate in O(n) time and O(1) space, then perform a second pass to verify the candidate if a majority is not guaranteed by the problem.",
-    "complexity": "Time: O(n)\nSpace: O(1)",
-    "streams": null
+    "problem": "Find the majority element using Boyer-Moore",
+    "example": "",
+    "approach": "Boyer-Moore treats different values as canceling pairs, leaving the majority candidate. Verify it if majority is not guaranteed.",
+    "complexity": "Analyze time and space complexity for the implementation shown.",
+    "streams": ""
   },
   {
     "id": "v91-coding-10",
@@ -13764,17 +13764,17 @@
       "Quickselect"
     ],
     "short": "Find the kth largest value without fully sorting the array.",
-    "answer": "Sorting gives O(n log n), but Quickselect can find the kth largest element in average O(n). I convert the request to the equivalent index n-k for ascending order. Partition places the pivot in its final sorted position. If that position is the target, we are done; otherwise I continue only on the relevant side. Randomized pivot selection helps avoid consistently poor partitions.",
+    "answer": "Use partitioning around a pivot so that the target index is isolated recursively or iteratively.",
     "code": "import java.util.*;\n\npublic class Main {\n    static int kthLargest(int[] nums, int k) {\n        int target = nums.length - k;\n        int left = 0, right = nums.length - 1;\n        Random random = new Random(42);\n        while (left <= right) {\n            int pivotIndex = left + random.nextInt(right - left + 1);\n            pivotIndex = partition(nums, left, right, pivotIndex);\n            if (pivotIndex == target) return nums[pivotIndex];\n            if (pivotIndex < target) left = pivotIndex + 1;\n            else right = pivotIndex - 1;\n        }\n        throw new IllegalArgumentException(\"Invalid k\");\n    }\n\n    static int partition(int[] a, int left, int right, int pivotIndex) {\n        int pivot = a[pivotIndex];\n        int t=a[pivotIndex]; a[pivotIndex]=a[right]; a[right]=t;\n        int store=left;\n        for(int i=left;i<right;i++) if(a[i]<pivot){ t=a[i];a[i]=a[store];a[store]=t;store++; }\n        t=a[store];a[store]=a[right];a[right]=t;\n        return store;\n    }\n\n    public static void main(String[] args) {\n        System.out.println(kthLargest(new int[]{3,2,1,5,6,4}, 2));\n    }\n}",
     "followups": "Heap vs Quickselect?",
     "mistakes": "What causes the worst case?",
-    "interview": "I use Quickselect rather than fully sorting the array. The kth largest element corresponds to index n-k if the array were sorted ascending. After partitioning around a pivot, I continue only on the side containing that target index. Average complexity is O(n), although the worst case is O(n²).",
+    "interview": "Interview answer: Quickselect partitions the array and continues only on the side containing the target rank, giving average linear time without a full sort.",
     "source": "V9.1",
-    "problem": "Find the kth largest element in an unsorted integer array without fully sorting the array.",
-    "example": "Input: [3,2,1,5,6,4], k = 2\nOutput: 5",
-    "approach": "Use Quickselect. Convert kth largest into the zero-based target index n-k, partition around a pivot, and continue only on the side containing the target index.",
-    "complexity": "Average time: O(n)\nWorst-case time: O(n²)\nSpace: O(1) auxiliary for the iterative partitioning approach",
-    "streams": null
+    "problem": "Find the kth largest element using Quickselect",
+    "example": "",
+    "approach": "Use partitioning around a pivot so that the target index is isolated recursively or iteratively.",
+    "complexity": "Analyze time and space complexity for the implementation shown.",
+    "streams": ""
   },
   {
     "id": "v91-coding-11",
@@ -13786,17 +13786,17 @@
       "HashSet"
     ],
     "short": "Find the length of the longest consecutive integer sequence in an unsorted array.",
-    "answer": "Sorting would take O(n log n). A HashSet lets us test whether a value exists in O(1) average time. I only start expanding from a value when its predecessor is absent, which means it is the beginning of a consecutive run. Each value is therefore part of a sequence expansion only a bounded number of times.",
+    "answer": "Store all values in a set and only start counting when the previous value is absent.",
     "code": "import java.util.*;\n\npublic class Main {\n    static int longest(int[] nums) {\n        Set<Integer> set = new HashSet<>();\n        for (int n : nums) set.add(n);\n        int best = 0;\n        for (int n : set) {\n            if (!set.contains(n - 1)) {\n                int current = n;\n                while (set.contains(current)) current++;\n                best = Math.max(best, current - n);\n            }\n        }\n        return best;\n    }\n\n    public static void main(String[] args) {\n        System.out.println(longest(new int[]{100,4,200,1,3,2}));\n    }\n}",
     "followups": "How would sorting solve it?",
     "mistakes": "Why is the expected complexity linear?",
-    "interview": "I put all values in a HashSet for constant-time average membership checks. I start a sequence only when the previous value is not present, then extend it while consecutive values exist. This avoids sorting and gives O(n) average time with O(n) space.",
+    "interview": "Interview answer: I use a set and only expand sequences from their smallest element, so each value participates in the counting work a constant number of times.",
     "source": "V9.1",
-    "problem": "Find the length of the longest consecutive sequence in an unsorted integer array. The sequence must contain consecutive values and does not need to preserve original array order.",
-    "example": "Input: [100,4,200,1,3,2]\nOutput: 4  (sequence 1,2,3,4)",
-    "approach": "Put all values into a HashSet. A number is the start of a sequence only when n-1 is absent. From each start, keep checking n+1, n+2, and so on.",
-    "complexity": "Time: O(n) average\nSpace: O(n)",
-    "streams": null
+    "problem": "Find the longest consecutive sequence in an array",
+    "example": "",
+    "approach": "Store all values in a set and only start counting when the previous value is absent.",
+    "complexity": "Analyze time and space complexity for the implementation shown.",
+    "streams": ""
   },
   {
     "id": "v91-coding-12",
@@ -13808,17 +13808,17 @@
       "Sorting"
     ],
     "short": "Merge intervals that overlap and return a non-overlapping list.",
-    "answer": "The key is to process intervals in start-time order. After sorting, if the next interval starts at or before the end of the last merged interval, they overlap and can be combined by taking the larger end value. Otherwise the next interval is independent. Sorting dominates the complexity.",
+    "answer": "Sort by start time and merge each interval into the previous result when the ranges overlap.",
     "code": "import java.util.*;\n\npublic class Main {\n    static int[][] merge(int[][] intervals) {\n        if (intervals.length == 0) return new int[0][];\n        Arrays.sort(intervals, Comparator.comparingInt(a -> a[0]));\n        List<int[]> result = new ArrayList<>();\n        for (int[] current : intervals) {\n            if (result.isEmpty() || result.get(result.size() - 1)[1] < current[0]) {\n                result.add(current.clone());\n            } else {\n                int[] last = result.get(result.size() - 1);\n                last[1] = Math.max(last[1], current[1]);\n            }\n        }\n        return result.toArray(new int[0][]);\n    }\n\n    public static void main(String[] args) {\n        int[][] result = merge(new int[][]{{1,3},{2,6},{8,10},{9,12}});\n        for (int[] interval : result) System.out.println(Arrays.toString(interval));\n    }\n}",
     "followups": "What if intervals touch at endpoints?",
     "mistakes": "Can it be done in linear time if already sorted?",
-    "interview": "I first sort intervals by their start time. Then I compare each interval with the last merged interval. If they overlap, I extend the existing end; if they do not, I add a new interval. The sorting step makes the overall complexity O(n log n).",
+    "interview": "Interview answer: Sorting by start makes it possible to decide overlap using only the last merged interval.",
     "source": "V9.1",
-    "problem": "Merge all overlapping intervals in a collection of intervals, where each interval is represented as [start, end].",
-    "example": "Input: [[1,3],[2,6],[8,10],[15,18]]\nOutput: [[1,6],[8,10],[15,18]]",
-    "approach": "Sort intervals by start time. Maintain the last merged interval. If the next interval starts before or at the current end, extend the end; otherwise start a new merged interval.",
-    "complexity": "Time: O(n log n)\nSpace: O(n) for the output",
-    "streams": null
+    "problem": "Merge overlapping intervals",
+    "example": "",
+    "approach": "Sort by start time and merge each interval into the previous result when the ranges overlap.",
+    "complexity": "Analyze time and space complexity for the implementation shown.",
+    "streams": ""
   },
   {
     "id": "v91-coding-13",
@@ -13830,17 +13830,17 @@
       "HashMap"
     ],
     "short": "Find the maximum-length substring containing at most K distinct characters.",
-    "answer": "This is a classic sliding-window problem. I maintain a window [left, right] and a frequency map for characters inside it. Every character enters the window once as right advances and leaves at most once as left advances. Whenever the number of distinct characters exceeds K, I shrink from the left until the window becomes valid again.",
+    "answer": "Maintain a sliding window and frequency map. Expand right, and shrink left while the number of distinct characters exceeds K.",
     "code": "import java.util.*;\n\npublic class Main {\n    static int longest(String s, int k) {\n        if (k <= 0) return 0;\n        Map<Character, Integer> freq = new HashMap<>();\n        int left = 0, best = 0;\n        for (int right = 0; right < s.length(); right++) {\n            freq.merge(s.charAt(right), 1, Integer::sum);\n            while (freq.size() > k) {\n                char c = s.charAt(left++);\n                int count = freq.get(c);\n                if (count == 1) freq.remove(c); else freq.put(c, count - 1);\n            }\n            best = Math.max(best, right - left + 1);\n        }\n        return best;\n    }\n\n    public static void main(String[] args) {\n        System.out.println(longest(\"eceba\", 2));\n    }\n}",
     "followups": "How does this differ from no-repeating-characters?",
     "mistakes": "What if K is larger than the alphabet?",
-    "interview": "I use a sliding window and a frequency map. I expand the right side and count characters. If the window contains more than K distinct characters, I move the left side forward and decrement counts until the window is valid. Each character is added and removed at most once, giving O(n) time.",
+    "interview": "Interview answer: The sliding window grows until it violates the distinct-character limit, then moves its left boundary until the window is valid again.",
     "source": "V9.1",
-    "problem": "Find the length of the longest substring containing at most K distinct characters.",
-    "example": "Input: s = \"eceba\", k = 2\nOutput: 3  (\"ece\")",
-    "approach": "Use a sliding window with two pointers and a frequency map. Expand the right pointer, and whenever the window contains more than K distinct characters, move the left pointer until the constraint is satisfied again.",
-    "complexity": "Time: O(n)\nSpace: O(k) or O(alphabet size)",
-    "streams": null
+    "problem": "Find the longest substring with at most K distinct characters",
+    "example": "",
+    "approach": "Maintain a sliding window and frequency map. Expand right, and shrink left while the number of distinct characters exceeds K.",
+    "complexity": "Analyze time and space complexity for the implementation shown.",
+    "streams": ""
   },
   {
     "id": "v91-coding-14",
@@ -13852,17 +13852,17 @@
       "Binary Search"
     ],
     "short": "Find the minimum element in a sorted array rotated at an unknown pivot.",
-    "answer": "A rotated sorted array still has enough ordering to use binary search. If nums[mid] is greater than nums[right], the rotation point and therefore the minimum must be to the right of mid. Otherwise the right half is sorted and the minimum can be at mid or to its left, so I move right to mid.",
+    "answer": "Compare the middle value with the right boundary to decide which half contains the minimum.",
     "code": "import java.util.*;\n\npublic class Main {\n    static int findMin(int[] nums) {\n        int left = 0, right = nums.length - 1;\n        while (left < right) {\n            int mid = left + (right - left) / 2;\n            if (nums[mid] > nums[right]) left = mid + 1;\n            else right = mid;\n        }\n        return nums[left];\n    }\n\n    public static void main(String[] args) {\n        System.out.println(findMin(new int[]{4,5,6,7,0,1,2}));\n    }\n}",
     "followups": "How do duplicates change the algorithm?",
     "mistakes": "How would you find a target instead?",
-    "interview": "I use binary search instead of scanning the array. I compare the middle element with the right boundary. If the middle is larger, the minimum must be in the right half; otherwise the minimum is at mid or in the left half. This gives O(log n) time and O(1) space.",
+    "interview": "Interview answer: The sorted portions let me determine whether the minimum lies to the right or at/before mid, so the search interval halves each time.",
     "source": "V9.1",
-    "problem": "Find the minimum element in a rotated sorted array containing distinct integers.",
-    "example": "Input: [4,5,6,7,0,1,2]\nOutput: 0",
-    "approach": "Use binary search. Compare the middle element with the rightmost element. If middle is greater, the minimum lies to the right; otherwise the minimum is at middle or to the left.",
-    "complexity": "Time: O(log n)\nSpace: O(1)",
-    "streams": null
+    "problem": "Find the minimum value in a rotated sorted array",
+    "example": "",
+    "approach": "Compare the middle value with the right boundary to decide which half contains the minimum.",
+    "complexity": "Analyze time and space complexity for the implementation shown.",
+    "streams": ""
   },
   {
     "id": "v91-coding-15",
@@ -13874,17 +13874,17 @@
       "Binary Search"
     ],
     "short": "Return the first and last indices of a target in a sorted array with duplicates.",
-    "answer": "A normal binary search finds one occurrence but not necessarily the boundaries. I modify binary search so that after finding the target I record the index and continue searching toward the required boundary. Two searches give the first and last positions while keeping logarithmic complexity.",
+    "answer": "Run binary search twice: once biased left for the first occurrence and once biased right for the last occurrence.",
     "code": "import java.util.*;\n\npublic class Main {\n    static int[] range(int[] nums, int target) {\n        return new int[]{bound(nums, target, true), bound(nums, target, false)};\n    }\n    static int bound(int[] a, int target, boolean first) {\n        int left=0,right=a.length-1,answer=-1;\n        while(left<=right){\n            int mid=left+(right-left)/2;\n            if(a[mid]==target){answer=mid;if(first)right=mid-1;else left=mid+1;}\n            else if(a[mid]<target)left=mid+1;else right=mid-1;\n        }\n        return answer;\n    }\n    public static void main(String[] args){\n        System.out.println(Arrays.toString(range(new int[]{1,2,2,2,3,4},2)));\n    }\n}",
     "followups": "How would you count occurrences?",
     "mistakes": "Why does ordinary binary search not give the first occurrence?",
-    "interview": "Because the array is sorted, I use two modified binary searches. The first keeps moving left after finding the target to get the first occurrence, and the second keeps moving right to get the last occurrence. The total time is O(log n) and space is O(1).",
+    "interview": "Interview answer: I modify binary search after finding the target so it continues toward the required boundary instead of stopping at the first match.",
     "source": "V9.1",
-    "problem": "Given a sorted integer array and a target, return the first and last index where the target occurs. Return [-1, -1] if it is absent.",
-    "example": "Input: [5,7,7,8,8,10], target = 8\nOutput: [3,4]",
-    "approach": "Run binary search twice. The first search continues left after finding the target to locate the first occurrence; the second continues right to locate the last occurrence.",
-    "complexity": "Time: O(log n)\nSpace: O(1)",
-    "streams": null
+    "problem": "Find the first and last position of a target",
+    "example": "",
+    "approach": "Run binary search twice: once biased left for the first occurrence and once biased right for the last occurrence.",
+    "complexity": "Analyze time and space complexity for the implementation shown.",
+    "streams": ""
   },
   {
     "id": "v91-coding-16",
@@ -13896,17 +13896,17 @@
       "Data Structures"
     ],
     "short": "Design a stack supporting push, pop, peek and retrieving the minimum in constant time.",
-    "answer": "A normal stack cannot return the minimum in O(1) unless we maintain extra information. I use a second stack that stores the minimum seen so far. Whenever I push a value that is less than or equal to the current minimum, I also push it onto the minimum stack. When that value is popped from the main stack, I remove it from the minimum stack. The top of the minimum stack is always the current minimum.",
+    "answer": "Keep a second stack containing the minimum value seen at each relevant level.",
     "code": "import java.util.*;\n\npublic class Main {\n    static class MinStack {\n        private final Deque<Integer> values = new ArrayDeque<>();\n        private final Deque<Integer> mins = new ArrayDeque<>();\n        void push(int x) { values.push(x); if (mins.isEmpty() || x <= mins.peek()) mins.push(x); }\n        int pop() { int x=values.pop(); if(x==mins.peek()) mins.pop(); return x; }\n        int peek() { return values.peek(); }\n        int min() { return mins.peek(); }\n    }\n    public static void main(String[] args){\n        MinStack s=new MinStack(); s.push(5);s.push(3);s.push(7);s.push(2);\n        System.out.println(\"Min: \"+s.min()); s.pop(); System.out.println(\"Min: \"+s.min());\n    }\n}",
     "followups": "How can you reduce auxiliary space?",
     "mistakes": "Why use <= when pushing duplicate minimums?",
-    "interview": "I use two stacks. The first stores all values, and the second stores the minimum values seen at each relevant point. This lets getMin simply read the top of the minimum stack, so push, pop and getMin are all O(1).",
+    "interview": "Interview answer: The second stack stores the minimum associated with the current stack state, so min retrieval remains constant time.",
     "source": "V9.1",
-    "problem": "Design a stack that supports push, pop, peek and retrieving the minimum element, with getMin running in O(1) time.",
-    "example": "Operations: push(5), push(2), push(7), getMin() -> 2, pop(), getMin() -> 2",
-    "approach": "Maintain a normal stack for values and a second stack containing the minimum value relevant to each level. Push to the minimum stack when the new value is <= the current minimum, and remove it when that value is popped.",
-    "complexity": "push: O(1)\npop: O(1)\ngetMin: O(1)\nSpace: O(n)",
-    "streams": null
+    "problem": "Implement a stack with a minimum value in O(1)",
+    "example": "",
+    "approach": "Keep a second stack containing the minimum value seen at each relevant level.",
+    "complexity": "Analyze time and space complexity for the implementation shown.",
+    "streams": ""
   },
   {
     "id": "v91-coding-17",
@@ -13918,17 +13918,17 @@
       "Binary Search Tree"
     ],
     "short": "Search for a value in a binary search tree.",
-    "answer": "A binary search tree maintains the ordering property: values smaller than a node are in its left subtree and larger values are in its right subtree. Therefore each comparison lets us discard half of the remaining search path in a balanced tree. The iterative implementation avoids recursive stack usage.",
+    "answer": "At each node, compare the target with the node value and move left or right according to the BST ordering.",
     "code": "import java.util.*;\n\npublic class Main {\n    static class Node { int value; Node left,right; Node(int value){this.value=value;} }\n    static boolean contains(Node root, int target) {\n        Node current=root;\n        while(current!=null){\n            if(current.value==target)return true;\n            current = target < current.value ? current.left : current.right;\n        }\n        return false;\n    }\n    public static void main(String[] args){\n        Node root=new Node(8);root.left=new Node(3);root.right=new Node(10);root.left.left=new Node(1);root.left.right=new Node(6);\n        System.out.println(contains(root,6));\n    }\n}",
     "followups": "What happens in a skewed tree?",
     "mistakes": "How would you insert a value?",
-    "interview": "I use the BST ordering property. At each node, if the target equals the node value I return true; if it is smaller I move left, otherwise I move right. The average complexity is O(log n) for a balanced tree, with O(n) worst case for a skewed tree.",
+    "interview": "Interview answer: BST ordering lets me discard half the subtree at each decision when the tree is balanced.",
     "source": "V9.1",
-    "problem": "Search for a target value in a binary search tree. Return true if the target exists, otherwise false.",
-    "example": "BST root = 8 with left subtree 3 and right subtree 10\nTarget = 10\nOutput: true",
-    "approach": "At each node, compare the target with the node value. If target is smaller move left; if larger move right; if equal return true. Stop when the current node becomes null.",
-    "complexity": "Average time: O(log n) for a balanced BST\nWorst-case time: O(n)\nSpace: O(1) iterative auxiliary space",
-    "streams": null
+    "problem": "Implement a binary search tree search",
+    "example": "",
+    "approach": "At each node, compare the target with the node value and move left or right according to the BST ordering.",
+    "complexity": "Analyze time and space complexity for the implementation shown.",
+    "streams": ""
   },
   {
     "id": "v91-coding-18",
@@ -13940,17 +13940,17 @@
       "Queue"
     ],
     "short": "Print a binary tree level by level.",
-    "answer": "Breadth-first traversal explores a tree level by level. A queue is ideal because nodes are processed in the same order in which their children are discovered. By capturing the queue size before processing a level, I know exactly how many nodes belong to that level.",
+    "answer": "Use a queue: enqueue the root, process one node, and enqueue its children.",
     "code": "import java.util.*;\n\npublic class Main {\n    static class Node { int value; Node left,right; Node(int v){value=v;} }\n    static void bfs(Node root) {\n        if(root==null)return;\n        Queue<Node> queue=new ArrayDeque<>(); queue.offer(root);\n        while(!queue.isEmpty()){\n            int size=queue.size();\n            for(int i=0;i<size;i++){\n                Node n=queue.poll(); System.out.print(n.value+(i+1==size?\"\\n\":\" \"));\n                if(n.left!=null)queue.offer(n.left); if(n.right!=null)queue.offer(n.right);\n            }\n        }\n    }\n    public static void main(String[] args){\n        Node root=new Node(1);root.left=new Node(2);root.right=new Node(3);root.left.left=new Node(4);root.left.right=new Node(5);\n        bfs(root);\n    }\n}",
     "followups": "DFS vs BFS?",
     "mistakes": "How would you return List<List<Integer>> instead of printing?",
-    "interview": "I use a queue for level-order traversal. I enqueue the root, then repeatedly remove a node, print it, and enqueue its children. If I need explicit levels, I capture the queue size before each level. Every node is visited once, so time is O(n).",
+    "interview": "Interview answer: BFS uses a queue to process nodes in level order, and I capture the current queue size to print each level separately.",
     "source": "V9.1",
-    "problem": "Perform a breadth-first, level-order traversal of a binary tree and print the node values level by level.",
-    "example": "Tree: [1,2,3,4,5]\nOutput:\n1\n2 3\n4 5",
-    "approach": "Use a Queue. Add the root, process nodes from the front, and add their children to the back. Capture the queue size at the start of each level to separate output by level.",
-    "complexity": "Time: O(n)\nSpace: O(w), where w is the maximum tree width",
-    "streams": null
+    "problem": "Breadth-first traversal of a binary tree",
+    "example": "",
+    "approach": "Use a queue: enqueue the root, process one node, and enqueue its children.",
+    "complexity": "Analyze time and space complexity for the implementation shown.",
+    "streams": ""
   },
   {
     "id": "v91-coding-19",
@@ -13962,17 +13962,17 @@
       "Two Pointers"
     ],
     "short": "Determine whether a singly linked list contains a cycle.",
-    "answer": "The two-pointer technique avoids storing every visited node. The slow pointer moves one step while the fast pointer moves two. In an acyclic list, fast reaches the end. In a cyclic list, fast eventually laps slow and both point to the same node.",
+    "answer": "Floyd’s tortoise-and-hare algorithm moves one pointer by one step and another by two; if they meet, a cycle exists.",
     "code": "import java.util.*;\n\npublic class Main {\n    static class Node { int value; Node next; Node(int v){value=v;} }\n    static boolean hasCycle(Node head) {\n        Node slow=head, fast=head;\n        while(fast!=null && fast.next!=null){\n            slow=slow.next; fast=fast.next.next;\n            if(slow==fast)return true;\n        }\n        return false;\n    }\n    public static void main(String[] args){\n        Node a=new Node(1),b=new Node(2),c=new Node(3); a.next=b;b.next=c;c.next=b;\n        System.out.println(\"Cycle: \"+hasCycle(a));\n    }\n}",
     "followups": "How do you find the cycle entry?",
     "mistakes": "Why is the space constant?",
-    "interview": "I use Floyd’s cycle detection algorithm with slow and fast pointers. Slow moves one step and fast moves two. If they meet, the list contains a cycle. If fast reaches null, it does not. This achieves O(n) time and O(1) space.",
+    "interview": "Interview answer: Two pointers moving at different speeds must meet inside a cycle, while the fast pointer reaches null when the list is acyclic.",
     "source": "V9.1",
-    "problem": "Determine whether a singly linked list contains a cycle.",
-    "example": "List: 1 -> 2 -> 3 -> 2 ...\nOutput: true",
-    "approach": "Use Floyd’s tortoise-and-hare algorithm. Move slow by one node and fast by two nodes. If a cycle exists, they eventually meet; if fast reaches null, there is no cycle.",
-    "complexity": "Time: O(n)\nSpace: O(1)",
-    "streams": null
+    "problem": "Detect a cycle in a linked list",
+    "example": "",
+    "approach": "Floyd’s tortoise-and-hare algorithm moves one pointer by one step and another by two; if they meet, a cycle exists.",
+    "complexity": "Analyze time and space complexity for the implementation shown.",
+    "streams": ""
   },
   {
     "id": "v91-coding-20",
@@ -13984,17 +13984,17 @@
       "Two Pointers"
     ],
     "short": "Return the middle node of a singly linked list.",
-    "answer": "The slow/fast pointer technique finds the middle in one pass. Slow advances one node for every two nodes advanced by fast. Therefore, when fast reaches the end, slow has travelled approximately half the list. No length calculation or second traversal is needed.",
+    "answer": "Move slow one step and fast two steps. When fast reaches the end, slow is at the middle.",
     "code": "import java.util.*;\n\npublic class Main {\n    static class Node { int value; Node next; Node(int v){value=v;} }\n    static Node middle(Node head) {\n        Node slow=head, fast=head;\n        while(fast!=null && fast.next!=null){ slow=slow.next; fast=fast.next.next; }\n        return slow;\n    }\n    public static void main(String[] args){\n        Node a=new Node(1),b=new Node(2),c=new Node(3),d=new Node(4),e=new Node(5);\n        a.next=b;b.next=c;c.next=d;d.next=e;\n        System.out.println(\"Middle: \"+middle(a).value);\n    }\n}",
     "followups": "For an even-length list, which middle should be returned?",
     "mistakes": "Can the list be traversed only once?",
-    "interview": "I use two pointers: slow moves one step and fast moves two steps. When fast reaches the end, slow is at the middle. This requires only one traversal and constant extra space. The loop condition can be adjusted depending on whether the first or second middle is required for even-length lists.",
+    "interview": "Interview answer: The fast pointer moves twice as quickly, so when it reaches the end the slow pointer has traversed half the list.",
     "source": "V9.1",
-    "problem": "Find the middle node of a singly linked list. For an even-length list, return the second middle node.",
-    "example": "List: 1 -> 2 -> 3 -> 4 -> 5\nOutput: 3",
-    "approach": "Use slow and fast pointers. Slow moves one node at a time while fast moves two. When fast reaches the end, slow points to the middle. With the chosen loop condition, an even-length list returns the second middle.",
-    "complexity": "Time: O(n)\nSpace: O(1)",
-    "streams": null
+    "problem": "Find the middle node of a linked list",
+    "example": "",
+    "approach": "Move slow one step and fast two steps. When fast reaches the end, slow is at the middle.",
+    "complexity": "Analyze time and space complexity for the implementation shown.",
+    "streams": ""
   },
   {
     "id": "v91-coding-21",
@@ -14006,17 +14006,17 @@
       "Blocking Queue"
     ],
     "short": "Implement a bounded queue where producers wait when full and consumers wait when empty.",
-    "answer": "A bounded producer-consumer queue needs both mutual exclusion and coordination. ReentrantLock protects head, tail and count so only one thread changes the state at a time. Two Conditions represent the two states that cause waiting: notFull for producers and notEmpty for consumers. The conditions must be checked in while loops because a thread can wake up without the condition being true, and because another thread may consume the available capacity before the awakened thread reacquires the lock.",
+    "answer": "Use a ReentrantLock with two Conditions: notFull and notEmpty. Conditions coordinate state changes without busy waiting.",
     "code": "import java.util.*;\nimport java.util.concurrent.locks.*;\n\npublic class Main {\n    static class BoundedQueue<T> {\n        private final Object[] items;\n        private int head, tail, count;\n        private final Lock lock = new ReentrantLock();\n        private final Condition notFull = lock.newCondition();\n        private final Condition notEmpty = lock.newCondition();\n        BoundedQueue(int capacity){ items=new Object[capacity]; }\n        void put(T value) throws InterruptedException {\n            lock.lock();\n            try { while(count==items.length) notFull.await(); items[tail]=value; tail=(tail+1)%items.length; count++; notEmpty.signal(); }\n            finally { lock.unlock(); }\n        }\n        @SuppressWarnings(\"unchecked\") T take() throws InterruptedException {\n            lock.lock();\n            try { while(count==0) notEmpty.await(); T value=(T)items[head]; items[head]=null; head=(head+1)%items.length; count--; notFull.signal(); return value; }\n            finally { lock.unlock(); }\n        }\n    }\n    public static void main(String[] args) throws Exception {\n        BoundedQueue<Integer> q=new BoundedQueue<>(2); q.put(10);q.put(20);System.out.println(q.take());System.out.println(q.take());\n    }\n}",
     "followups": "Why use while instead of if?",
     "mistakes": "How would you use ArrayBlockingQueue instead?",
-    "interview": "I would protect the bounded buffer with a ReentrantLock and use two Conditions. Producers wait on notFull while the buffer is full, and consumers wait on notEmpty while it is empty. After a successful put I signal consumers, and after a successful take I signal producers. The state checks use while loops to handle spurious wakeups and races safely.",
+    "interview": "Interview answer: I protect queue state with a lock and use conditions so producers wait while full and consumers wait while empty. The while checks are required because a condition wake-up does not guarantee the state is available.",
     "source": "V9.1",
-    "problem": "Implement a fixed-capacity thread-safe bounded queue with put and take operations. Producers should wait when the queue is full, and consumers should wait when it is empty.",
-    "example": "Capacity = 2\nProducer: put(A), put(B), put(C)\nConsumer: take()\nThe third put waits until a consumer removes an item.",
-    "approach": "Protect the queue state with a ReentrantLock and use two Conditions: notFull for producers and notEmpty for consumers. In put, await while the queue is full; after insertion signal consumers. In take, await while empty; after removal signal producers.",
-    "complexity": "put: O(1) excluding waiting\ntake: O(1) excluding waiting\nSpace: O(capacity)",
-    "streams": null
+    "problem": "Implement a thread-safe bounded producer-consumer queue",
+    "example": "",
+    "approach": "Use a ReentrantLock with two Conditions: notFull and notEmpty. Conditions coordinate state changes without busy waiting.",
+    "complexity": "Analyze time and space complexity for the implementation shown.",
+    "streams": ""
   },
   {
     "topic": "java",
@@ -17449,5 +17449,1402 @@
     "investigation": "Define whether the limit is strict or approximate, the key dimensions and failure behavior. Estimate request volume and state size. Decide whether the limiter must be globally consistent.",
     "resolution": "Use a centralized or distributed counter/token-bucket implementation with atomic operations. Return 429 with retry guidance. Decide whether fail-open or fail-closed is safer for the business operation.",
     "prevention": "Monitor allowed/blocked rates and limiter latency, protect the limiter itself and load-test bursts at the boundary."
+  },
+  {
+    "id": "v10.5-coding-01",
+    "title": "Find the length of the longest substring without repeating characters",
+    "level": "L2",
+    "tags": [
+      "strings",
+      "sliding-window",
+      "hashmap"
+    ],
+    "short": "Given a string, find the length of the longest substring that contains no repeated characters.",
+    "answer": "Use a sliding window. Keep the last index of every character in a HashMap. When a repeated character is found inside the current window, move the left boundary to one position after its previous index.",
+    "code": "import java.util.*;\n\npublic class Main {\n    public static int longestUniqueSubstring(String s) {\n        Map<Character, Integer> lastSeen = new HashMap<>();\n        int left = 0, max = 0;\n\n        for (int right = 0; right < s.length(); right++) {\n            char ch = s.charAt(right);\n            if (lastSeen.containsKey(ch)) {\n                left = Math.max(left, lastSeen.get(ch) + 1);\n            }\n            lastSeen.put(ch, right);\n            max = Math.max(max, right - left + 1);\n        }\n        return max;\n    }\n\n    public static void main(String[] args) {\n        String input = \"abcabcbb\";\n        System.out.println(\"Input: \" + input);\n        System.out.println(\"Longest length: \" + longestUniqueSubstring(input));\n    }\n}",
+    "followups": [
+      "What changes if the input is Unicode?",
+      "Can you return the substring instead of its length?"
+    ],
+    "mistakes": [
+      "Do not move the left pointer backwards.",
+      "A Set-only solution can work, but the map gives a clean O(n) implementation."
+    ],
+    "interview": "I use a sliding window with a map of each character's latest index. When a duplicate appears, I move the left pointer past the previous occurrence. Each character is processed once, giving O(n) time.",
+    "source": "V10.5",
+    "topic": "coding",
+    "subtopic": null,
+    "problem": "Given a string, find the length of the longest substring that contains no repeated characters.",
+    "example": "Input: \"abcabcbb\"\nOutput: 3\nExplanation: \"abc\" is the longest substring without repeating characters.",
+    "approach": "Use a sliding window. Keep the last index of every character in a HashMap. When a repeated character is found inside the current window, move the left boundary to one position after its previous index.",
+    "complexity": "Time: O(n)\nSpace: O(min(n, character-set-size))",
+    "streams": ""
+  },
+  {
+    "id": "v10.5-coding-02",
+    "title": "Maximum subarray sum using Kadane’s algorithm",
+    "level": "L2",
+    "tags": [
+      "arrays",
+      "dynamic-programming",
+      "kadane"
+    ],
+    "short": "Find the contiguous subarray with the maximum sum and return that sum.",
+    "answer": "Maintain the best sum ending at the current position. At each element, either start a new subarray with that element or extend the previous subarray. Track the maximum seen globally.",
+    "code": "public class Main {\n    public static int maxSubarraySum(int[] nums) {\n        int current = nums[0];\n        int best = nums[0];\n        for (int i = 1; i < nums.length; i++) {\n            current = Math.max(nums[i], current + nums[i]);\n            best = Math.max(best, current);\n        }\n        return best;\n    }\n\n    public static void main(String[] args) {\n        int[] nums = {-2, 1, -3, 4, -1, 2, 1, -5, 4};\n        System.out.println(\"Maximum subarray sum: \" + maxSubarraySum(nums));\n    }\n}",
+    "followups": [
+      "How would you return the actual subarray?",
+      "How do you handle an empty array?"
+    ],
+    "mistakes": [
+      "Do not initialize the running sum to zero if all-negative arrays must be handled correctly."
+    ],
+    "interview": "I keep two values: the best sum ending at the current index and the best sum seen overall. For each number I decide whether extending the previous subarray is better than starting fresh. This is Kadane’s algorithm with O(n) time and O(1) space.",
+    "source": "V10.5",
+    "topic": "coding",
+    "subtopic": null,
+    "problem": "Find the contiguous subarray with the maximum sum and return that sum.",
+    "example": "Input: [-2,1,-3,4,-1,2,1,-5,4]\nOutput: 6\nSubarray: [4,-1,2,1]",
+    "approach": "Maintain the best sum ending at the current position. At each element, either start a new subarray with that element or extend the previous subarray. Track the maximum seen globally.",
+    "complexity": "Time: O(n)\nSpace: O(1)",
+    "streams": ""
+  },
+  {
+    "id": "v10.5-coding-03",
+    "title": "Rotate an array to the right by k positions",
+    "level": "L2",
+    "tags": [
+      "arrays",
+      "rotation",
+      "in-place"
+    ],
+    "short": "Rotate an integer array to the right by k positions in-place.",
+    "answer": "Normalize k using k % n. Reverse the whole array, then reverse the first k elements and the remaining elements. This achieves rotation in-place without an auxiliary array.",
+    "code": "import java.util.*;\n\npublic class Main {\n    static void reverse(int[] a, int left, int right) {\n        while (left < right) {\n            int t = a[left]; a[left] = a[right]; a[right] = t;\n            left++; right--;\n        }\n    }\n\n    static void rotate(int[] a, int k) {\n        if (a.length == 0) return;\n        k %= a.length;\n        reverse(a, 0, a.length - 1);\n        reverse(a, 0, k - 1);\n        reverse(a, k, a.length - 1);\n    }\n\n    public static void main(String[] args) {\n        int[] a = {1,2,3,4,5,6,7};\n        rotate(a, 3);\n        System.out.println(Arrays.toString(a));\n    }\n}",
+    "followups": [
+      "What if k is larger than the array length?",
+      "Can you do it with an extra array?"
+    ],
+    "mistakes": [
+      "Forgetting k %= n causes unnecessary work and edge-case errors."
+    ],
+    "interview": "I normalize k and use the three-reversal technique: reverse the entire array, reverse the first k elements, then reverse the rest. It gives O(n) time and O(1) extra space.",
+    "source": "V10.5",
+    "topic": "coding",
+    "subtopic": null,
+    "problem": "Rotate an integer array to the right by k positions in-place.",
+    "example": "Input: [1,2,3,4,5,6,7], k=3\nOutput: [5,6,7,1,2,3,4]",
+    "approach": "Normalize k using k % n. Reverse the whole array, then reverse the first k elements and the remaining elements. This achieves rotation in-place without an auxiliary array.",
+    "complexity": "Time: O(n)\nSpace: O(1)",
+    "streams": ""
+  },
+  {
+    "id": "v10.5-coding-04",
+    "title": "Merge overlapping intervals",
+    "level": "L2",
+    "tags": [
+      "arrays",
+      "sorting",
+      "intervals"
+    ],
+    "short": "Given intervals, merge all overlapping intervals and return the non-overlapping result.",
+    "answer": "Sort intervals by start time. Maintain the current interval. If the next start is within the current end, extend the current end; otherwise add the current interval and start a new one.",
+    "code": "import java.util.*;\n\npublic class Main {\n    public static int[][] merge(int[][] intervals) {\n        if (intervals.length <= 1) return intervals;\n        Arrays.sort(intervals, Comparator.comparingInt(a -> a[0]));\n        List<int[]> result = new ArrayList<>();\n        int start = intervals[0][0], end = intervals[0][1];\n        for (int i = 1; i < intervals.length; i++) {\n            if (intervals[i][0] <= end) {\n                end = Math.max(end, intervals[i][1]);\n            } else {\n                result.add(new int[]{start, end});\n                start = intervals[i][0];\n                end = intervals[i][1];\n            }\n        }\n        result.add(new int[]{start, end});\n        return result.toArray(new int[0][]);\n    }\n\n    public static void main(String[] args) {\n        int[][] input = {{1,3},{2,6},{8,10},{9,12}};\n        System.out.println(Arrays.deepToString(merge(input)));\n    }\n}",
+    "followups": [
+      "Can intervals be unsorted?",
+      "How would you insert one new interval into an already merged list?"
+    ],
+    "mistakes": [
+      "Do not compare only the next end; the merged end must use Math.max."
+    ],
+    "interview": "I sort by interval start and then scan once. Overlapping intervals are merged by extending the current end. Sorting dominates the complexity at O(n log n).",
+    "source": "V10.5",
+    "topic": "coding",
+    "subtopic": null,
+    "problem": "Given intervals, merge all overlapping intervals and return the non-overlapping result.",
+    "example": "Input: [[1,3],[2,6],[8,10],[9,12]]\nOutput: [[1,6],[8,12]]",
+    "approach": "Sort intervals by start time. Maintain the current interval. If the next start is within the current end, extend the current end; otherwise add the current interval and start a new one.",
+    "complexity": "Time: O(n log n)\nSpace: O(n) for the result",
+    "streams": ""
+  },
+  {
+    "id": "v10.5-coding-05",
+    "title": "Product of array except self",
+    "level": "L2",
+    "tags": [
+      "arrays",
+      "prefix-suffix"
+    ],
+    "short": "For each position, return the product of every other element without using division.",
+    "answer": "Store prefix products in the output array. Then scan from right to left while maintaining a suffix product and multiply it into each output position. This also handles zeros without special cases.",
+    "code": "import java.util.*;\n\npublic class Main {\n    static int[] productExceptSelf(int[] nums) {\n        int n = nums.length;\n        int[] result = new int[n];\n        int prefix = 1;\n        for (int i = 0; i < n; i++) {\n            result[i] = prefix;\n            prefix *= nums[i];\n        }\n        int suffix = 1;\n        for (int i = n - 1; i >= 0; i--) {\n            result[i] *= suffix;\n            suffix *= nums[i];\n        }\n        return result;\n    }\n\n    public static void main(String[] args) {\n        System.out.println(Arrays.toString(productExceptSelf(new int[]{1,2,3,4})));\n    }\n}",
+    "followups": [
+      "What happens with one or more zeros?",
+      "Can you prove why two passes are sufficient?"
+    ],
+    "mistakes": [
+      "Do not use an additional prefix and suffix array if O(1) extra space is expected."
+    ],
+    "interview": "I build prefix products into the result and then multiply each position by the suffix product in a reverse pass. No division is required, and zero values are naturally handled.",
+    "source": "V10.5",
+    "topic": "coding",
+    "subtopic": null,
+    "problem": "For each position, return the product of every other element without using division.",
+    "example": "Input: [1,2,3,4]\nOutput: [24,12,8,6]",
+    "approach": "Store prefix products in the output array. Then scan from right to left while maintaining a suffix product and multiply it into each output position. This also handles zeros without special cases.",
+    "complexity": "Time: O(n)\nSpace: O(1) extra, excluding the output array",
+    "streams": ""
+  },
+  {
+    "id": "v10.5-coding-06",
+    "title": "Find all unique triplets that sum to zero",
+    "level": "L3",
+    "tags": [
+      "arrays",
+      "sorting",
+      "two-pointers"
+    ],
+    "short": "Given an integer array, return all unique triplets whose values sum to zero.",
+    "answer": "Sort the array. Fix one element and use two pointers for the remaining range. Skip duplicate values at the fixed pointer and after a match so that the result contains unique triplets.",
+    "code": "import java.util.*;\n\npublic class Main {\n    static List<List<Integer>> threeSum(int[] nums) {\n        Arrays.sort(nums);\n        List<List<Integer>> result = new ArrayList<>();\n        for (int i = 0; i < nums.length - 2; i++) {\n            if (i > 0 && nums[i] == nums[i - 1]) continue;\n            int left = i + 1, right = nums.length - 1;\n            while (left < right) {\n                long sum = (long) nums[i] + nums[left] + nums[right];\n                if (sum == 0) {\n                    result.add(Arrays.asList(nums[i], nums[left], nums[right]));\n                    int lv = nums[left], rv = nums[right];\n                    while (left < right && nums[left] == lv) left++;\n                    while (left < right && nums[right] == rv) right--;\n                } else if (sum < 0) left++;\n                else right--;\n            }\n        }\n        return result;\n    }\n\n    public static void main(String[] args) {\n        System.out.println(threeSum(new int[]{-1,0,1,2,-1,-4}));\n    }\n}",
+    "followups": [
+      "How would you solve 4Sum?",
+      "Why is sorting important here?"
+    ],
+    "mistakes": [
+      "Skipping duplicates is essential.",
+      "Use long for the sum when integer overflow is possible."
+    ],
+    "interview": "I sort first, then for each fixed value use two pointers. Sorting lets me move the pointers based on the sum and also makes duplicate skipping straightforward. The overall time is O(n²).",
+    "source": "V10.5",
+    "topic": "coding",
+    "subtopic": null,
+    "problem": "Given an integer array, return all unique triplets whose values sum to zero.",
+    "example": "Input: [-1,0,1,2,-1,-4]\nOutput: [[-1,-1,2],[-1,0,1]]",
+    "approach": "Sort the array. Fix one element and use two pointers for the remaining range. Skip duplicate values at the fixed pointer and after a match so that the result contains unique triplets.",
+    "complexity": "Time: O(n^2)\nSpace: O(n) for the output; O(1) auxiliary apart from sorting implementation",
+    "streams": ""
+  },
+  {
+    "id": "v10.5-coding-07",
+    "title": "Find the first and last position of a target in a sorted array",
+    "level": "L2",
+    "tags": [
+      "arrays",
+      "binary-search"
+    ],
+    "short": "Return the first and last index of a target value in a sorted array. If absent, return [-1,-1].",
+    "answer": "Run binary search twice: once biased toward the left to find the first occurrence and once biased toward the right to find the last occurrence.",
+    "code": "import java.util.*;\n\npublic class Main {\n    static int findBoundary(int[] a, int target, boolean first) {\n        int lo = 0, hi = a.length - 1, answer = -1;\n        while (lo <= hi) {\n            int mid = lo + (hi - lo) / 2;\n            if (a[mid] == target) {\n                answer = mid;\n                if (first) hi = mid - 1; else lo = mid + 1;\n            } else if (a[mid] < target) lo = mid + 1;\n            else hi = mid - 1;\n        }\n        return answer;\n    }\n\n    public static void main(String[] args) {\n        int[] a = {5,7,7,8,8,10};\n        int target = 8;\n        System.out.println(Arrays.toString(new int[]{findBoundary(a,target,true), findBoundary(a,target,false)}));\n    }\n}",
+    "followups": [
+      "Can you find the insertion range?",
+      "What changes if the array is descending?"
+    ],
+    "mistakes": [
+      "Do not return immediately after finding the target."
+    ],
+    "interview": "I use two modified binary searches. When I find the target, I record the index and continue left for the first occurrence or right for the last. This keeps the complexity at O(log n).",
+    "source": "V10.5",
+    "topic": "coding",
+    "subtopic": null,
+    "problem": "Return the first and last index of a target value in a sorted array. If absent, return [-1,-1].",
+    "example": "Input: [5,7,7,8,8,10], target=8\nOutput: [3,4]",
+    "approach": "Run binary search twice: once biased toward the left to find the first occurrence and once biased toward the right to find the last occurrence.",
+    "complexity": "Time: O(log n)\nSpace: O(1)",
+    "streams": ""
+  },
+  {
+    "id": "v10.5-coding-08",
+    "title": "Find the kth largest element using a min-heap",
+    "level": "L2",
+    "tags": [
+      "heap",
+      "priority-queue",
+      "arrays"
+    ],
+    "short": "Find the kth largest element without fully sorting the array.",
+    "answer": "Maintain a min-heap of size k. Add every value; when the heap exceeds k, remove its smallest value. At the end, the root is the kth largest.",
+    "code": "import java.util.*;\n\npublic class Main {\n    static int kthLargest(int[] nums, int k) {\n        PriorityQueue<Integer> minHeap = new PriorityQueue<>();\n        for (int n : nums) {\n            minHeap.offer(n);\n            if (minHeap.size() > k) minHeap.poll();\n        }\n        return minHeap.peek();\n    }\n\n    public static void main(String[] args) {\n        int[] nums = {3,2,1,5,6,4};\n        System.out.println(kthLargest(nums, 2));\n    }\n}",
+    "followups": [
+      "How can Quickselect improve average complexity?",
+      "How would you find the kth smallest?"
+    ],
+    "mistakes": [
+      "A max-heap is less convenient for kth largest in this approach."
+    ],
+    "interview": "A min-heap of size k keeps only the k largest elements seen so far. The smallest of those k values is the kth largest overall.",
+    "source": "V10.5",
+    "topic": "coding",
+    "subtopic": null,
+    "problem": "Find the kth largest element without fully sorting the array.",
+    "example": "Input: [3,2,1,5,6,4], k=2\nOutput: 5",
+    "approach": "Maintain a min-heap of size k. Add every value; when the heap exceeds k, remove its smallest value. At the end, the root is the kth largest.",
+    "complexity": "Time: O(n log k)\nSpace: O(k)",
+    "streams": ""
+  },
+  {
+    "id": "v10.5-coding-09",
+    "title": "Merge k sorted linked lists",
+    "level": "L3",
+    "tags": [
+      "linked-list",
+      "heap",
+      "merge"
+    ],
+    "short": "Merge k sorted linked lists into one sorted linked list.",
+    "answer": "Put the head of every non-empty list into a min-heap. Repeatedly remove the smallest node, append it to the result, and add its next node.",
+    "code": "import java.util.*;\n\npublic class Main {\n    static class Node { int value; Node next; Node(int v) { value = v; } }\n\n    static Node mergeKLists(List<Node> heads) {\n        PriorityQueue<Node> pq = new PriorityQueue<>(Comparator.comparingInt(n -> n.value));\n        for (Node h : heads) if (h != null) pq.offer(h);\n        Node dummy = new Node(0), tail = dummy;\n        while (!pq.isEmpty()) {\n            Node node = pq.poll();\n            tail.next = node; tail = node;\n            if (node.next != null) pq.offer(node.next);\n        }\n        return dummy.next;\n    }\n\n    static Node list(int... values) {\n        Node dummy = new Node(0), t = dummy;\n        for (int v : values) { t.next = new Node(v); t = t.next; }\n        return dummy.next;\n    }\n\n    static void print(Node h) {\n        while (h != null) { System.out.print(h.value + \" \"); h = h.next; }\n        System.out.println();\n    }\n\n    public static void main(String[] args) {\n        List<Node> lists = Arrays.asList(list(1,4,5), list(1,3,4), list(2,6));\n        print(mergeKLists(lists));\n    }\n}",
+    "followups": [
+      "Can divide-and-conquer merging be used?",
+      "What if k is extremely large?"
+    ],
+    "mistakes": [
+      "Heap size is k, not N."
+    ],
+    "interview": "I keep one candidate node from each list in a min-heap. Every extraction gives the next smallest value, and I insert that node’s successor. This is O(N log k).",
+    "source": "V10.5",
+    "topic": "coding",
+    "subtopic": null,
+    "problem": "Merge k sorted linked lists into one sorted linked list.",
+    "example": "Input: 3 sorted lists such as [1,4,5], [1,3,4], [2,6]\nOutput: [1,1,2,3,4,4,5,6]",
+    "approach": "Put the head of every non-empty list into a min-heap. Repeatedly remove the smallest node, append it to the result, and add its next node.",
+    "complexity": "Time: O(N log k)\nSpace: O(k)",
+    "streams": ""
+  },
+  {
+    "id": "v10.5-coding-10",
+    "title": "Reverse a singly linked list",
+    "level": "L1",
+    "tags": [
+      "linked-list",
+      "pointers"
+    ],
+    "short": "Reverse a singly linked list iteratively.",
+    "answer": "Maintain previous and current pointers. Save current.next, reverse the pointer to previous, then advance both pointers.",
+    "code": "public class Main {\n    static class Node { int value; Node next; Node(int v) { value = v; } }\n\n    static Node reverse(Node head) {\n        Node prev = null, current = head;\n        while (current != null) {\n            Node next = current.next;\n            current.next = prev;\n            prev = current;\n            current = next;\n        }\n        return prev;\n    }\n\n    static void print(Node h) {\n        while (h != null) { System.out.print(h.value + (h.next == null ? \"\" : \" -> \")); h = h.next; }\n        System.out.println();\n    }\n\n    public static void main(String[] args) {\n        Node a = new Node(1); a.next = new Node(2); a.next.next = new Node(3); a.next.next.next = new Node(4);\n        print(reverse(a));\n    }\n}",
+    "followups": [
+      "Can you reverse recursively?",
+      "How do you reverse nodes in groups of k?"
+    ],
+    "mistakes": [
+      "Save next before changing current.next."
+    ],
+    "interview": "I reverse one pointer at a time using prev and current references. I save the next node before changing the current link so I never lose the remainder of the list.",
+    "source": "V10.5",
+    "topic": "coding",
+    "subtopic": null,
+    "problem": "Reverse a singly linked list iteratively.",
+    "example": "Input: 1 -> 2 -> 3 -> 4\nOutput: 4 -> 3 -> 2 -> 1",
+    "approach": "Maintain previous and current pointers. Save current.next, reverse the pointer to previous, then advance both pointers.",
+    "complexity": "Time: O(n)\nSpace: O(1)",
+    "streams": ""
+  },
+  {
+    "id": "v10.5-coding-11",
+    "title": "Check whether a linked list is a palindrome",
+    "level": "L2",
+    "tags": [
+      "linked-list",
+      "two-pointers"
+    ],
+    "short": "Determine whether the values in a singly linked list form a palindrome.",
+    "answer": "Use slow and fast pointers to find the midpoint, reverse the second half, then compare the first and second halves. Optionally restore the list afterward.",
+    "code": "public class Main {\n    static class Node { int value; Node next; Node(int v) { value = v; } }\n\n    static boolean isPalindrome(Node head) {\n        if (head == null || head.next == null) return true;\n        Node slow = head, fast = head;\n        while (fast != null && fast.next != null) { slow = slow.next; fast = fast.next.next; }\n        Node second = reverse(slow);\n        Node p1 = head, p2 = second;\n        while (p2 != null) {\n            if (p1.value != p2.value) return false;\n            p1 = p1.next; p2 = p2.next;\n        }\n        return true;\n    }\n\n    static Node reverse(Node head) {\n        Node prev = null, cur = head;\n        while (cur != null) { Node next = cur.next; cur.next = prev; prev = cur; cur = next; }\n        return prev;\n    }\n\n    public static void main(String[] args) {\n        Node a = new Node(1); a.next = new Node(2); a.next.next = new Node(2); a.next.next.next = new Node(1);\n        System.out.println(isPalindrome(a));\n    }\n}",
+    "followups": [
+      "Would you restore the list after checking?",
+      "Can you solve it with a stack?"
+    ],
+    "mistakes": [
+      "Be careful with odd-length lists; the fast pointer naturally handles the middle element."
+    ],
+    "interview": "I find the midpoint with slow/fast pointers, reverse the second half, and compare both halves. This avoids allocating an array and uses O(1) auxiliary space.",
+    "source": "V10.5",
+    "topic": "coding",
+    "subtopic": null,
+    "problem": "Determine whether the values in a singly linked list form a palindrome.",
+    "example": "Input: 1 -> 2 -> 2 -> 1\nOutput: true",
+    "approach": "Use slow and fast pointers to find the midpoint, reverse the second half, then compare the first and second halves. Optionally restore the list afterward.",
+    "complexity": "Time: O(n)\nSpace: O(1) auxiliary",
+    "streams": ""
+  },
+  {
+    "id": "v10.5-coding-12",
+    "title": "Find the maximum depth of a binary tree",
+    "level": "L1",
+    "tags": [
+      "trees",
+      "recursion",
+      "binary-tree"
+    ],
+    "short": "Return the maximum number of nodes along a root-to-leaf path.",
+    "answer": "The depth of a node is one plus the maximum depth of its children. Use recursion for a concise solution; an iterative BFS solution is also possible.",
+    "code": "public class Main {\n    static class Node { int value; Node left, right; Node(int v) { value = v; } }\n\n    static int maxDepth(Node root) {\n        if (root == null) return 0;\n        return 1 + Math.max(maxDepth(root.left), maxDepth(root.right));\n    }\n\n    public static void main(String[] args) {\n        Node root = new Node(3); root.left = new Node(9); root.right = new Node(20);\n        root.right.left = new Node(15); root.right.right = new Node(7);\n        System.out.println(maxDepth(root));\n    }\n}",
+    "followups": [
+      "How would you implement it iteratively?",
+      "What happens for a skewed tree?"
+    ],
+    "mistakes": [
+      "Tree height determines recursion depth."
+    ],
+    "interview": "For every node, I calculate one plus the maximum depth of the left and right subtrees. Every node is visited once.",
+    "source": "V10.5",
+    "topic": "coding",
+    "subtopic": null,
+    "problem": "Return the maximum number of nodes along a root-to-leaf path.",
+    "example": "Input: root [3,9,20,null,null,15,7]\nOutput: 3",
+    "approach": "The depth of a node is one plus the maximum depth of its children. Use recursion for a concise solution; an iterative BFS solution is also possible.",
+    "complexity": "Time: O(n)\nSpace: O(h) recursion stack",
+    "streams": ""
+  },
+  {
+    "id": "v10.5-coding-13",
+    "title": "Level-order traversal of a binary tree",
+    "level": "L2",
+    "tags": [
+      "trees",
+      "bfs",
+      "queue"
+    ],
+    "short": "Return the values of a binary tree level by level.",
+    "answer": "Use a queue for breadth-first traversal. At each iteration capture the current queue size; those nodes belong to one level.",
+    "code": "import java.util.*;\n\npublic class Main {\n    static class Node { int value; Node left, right; Node(int v) { value = v; } }\n\n    static List<List<Integer>> levelOrder(Node root) {\n        List<List<Integer>> result = new ArrayList<>();\n        if (root == null) return result;\n        Queue<Node> queue = new ArrayDeque<>(); queue.offer(root);\n        while (!queue.isEmpty()) {\n            int size = queue.size();\n            List<Integer> level = new ArrayList<>();\n            for (int i = 0; i < size; i++) {\n                Node n = queue.poll(); level.add(n.value);\n                if (n.left != null) queue.offer(n.left);\n                if (n.right != null) queue.offer(n.right);\n            }\n            result.add(level);\n        }\n        return result;\n    }\n\n    public static void main(String[] args) {\n        Node r = new Node(3); r.left = new Node(9); r.right = new Node(20); r.right.left = new Node(15); r.right.right = new Node(7);\n        System.out.println(levelOrder(r));\n    }\n}",
+    "followups": [
+      "How would you do zigzag traversal?",
+      "DFS can also produce levels—how?"
+    ],
+    "mistakes": [
+      "Do not iterate over a changing queue size without capturing the level size first."
+    ],
+    "interview": "I use a queue to process nodes breadth-first. The queue size at the start of each iteration tells me exactly how many nodes belong to that level.",
+    "source": "V10.5",
+    "topic": "coding",
+    "subtopic": null,
+    "problem": "Return the values of a binary tree level by level.",
+    "example": "Input: [3,9,20,null,null,15,7]\nOutput: [[3],[9,20],[15,7]]",
+    "approach": "Use a queue for breadth-first traversal. At each iteration capture the current queue size; those nodes belong to one level.",
+    "complexity": "Time: O(n)\nSpace: O(w), where w is maximum tree width",
+    "streams": ""
+  },
+  {
+    "id": "v10.5-coding-14",
+    "title": "Validate whether a binary tree is a binary search tree",
+    "level": "L3",
+    "tags": [
+      "trees",
+      "bst",
+      "recursion"
+    ],
+    "short": "Determine whether a binary tree satisfies the BST ordering rule for every node.",
+    "answer": "Pass a valid numeric range down the tree. Every left child must be below the current upper bound and every right child above the current lower bound.",
+    "code": "public class Main {\n    static class Node { int value; Node left, right; Node(int v) { value = v; } }\n\n    static boolean isValid(Node node, long min, long max) {\n        if (node == null) return true;\n        if (node.value <= min || node.value >= max) return false;\n        return isValid(node.left, min, node.value) && isValid(node.right, node.value, max);\n    }\n\n    public static void main(String[] args) {\n        Node r = new Node(5); r.left = new Node(3); r.right = new Node(7); r.left.left = new Node(1); r.left.right = new Node(4); r.right.left = new Node(6); r.right.right = new Node(8);\n        System.out.println(isValid(r, Long.MIN_VALUE, Long.MAX_VALUE));\n    }\n}",
+    "followups": [
+      "How do duplicates change the rule?",
+      "Can you solve it with inorder traversal?"
+    ],
+    "mistakes": [
+      "Checking only parent-child relationships is insufficient."
+    ],
+    "interview": "I validate the entire allowed range for every node instead of checking only its immediate children. That catches violations deeper in the tree.",
+    "source": "V10.5",
+    "topic": "coding",
+    "subtopic": null,
+    "problem": "Determine whether a binary tree satisfies the BST ordering rule for every node.",
+    "example": "Input: [5,3,7,1,4,6,8]\nOutput: true",
+    "approach": "Pass a valid numeric range down the tree. Every left child must be below the current upper bound and every right child above the current lower bound.",
+    "complexity": "Time: O(n)\nSpace: O(h)",
+    "streams": ""
+  },
+  {
+    "id": "v10.5-coding-15",
+    "title": "Lowest common ancestor in a binary search tree",
+    "level": "L2",
+    "tags": [
+      "trees",
+      "bst",
+      "recursion"
+    ],
+    "short": "Find the lowest node in a BST that has two given values in its subtree.",
+    "answer": "If both targets are smaller, move left. If both are larger, move right. Otherwise the current node is where their paths split and is the LCA.",
+    "code": "public class Main {\n    static class Node { int value; Node left, right; Node(int v) { value = v; } }\n\n    static Node lca(Node root, int p, int q) {\n        while (root != null) {\n            if (p < root.value && q < root.value) root = root.left;\n            else if (p > root.value && q > root.value) root = root.right;\n            else return root;\n        }\n        return null;\n    }\n\n    public static void main(String[] args) {\n        Node r = new Node(6); r.left = new Node(2); r.right = new Node(8); r.left.left = new Node(0); r.left.right = new Node(4);\n        Node answer = lca(r, 2, 8);\n        System.out.println(answer == null ? \"null\" : answer.value);\n    }\n}",
+    "followups": [
+      "How does LCA change for a normal binary tree?",
+      "What if one target is not present?"
+    ],
+    "mistakes": [
+      "The BST optimization depends on the ordering invariant."
+    ],
+    "interview": "Because it is a BST, I can use ordering to walk only one path. When the two target values fall on different sides of the current node, that node is their lowest common ancestor.",
+    "source": "V10.5",
+    "topic": "coding",
+    "subtopic": null,
+    "problem": "Find the lowest node in a BST that has two given values in its subtree.",
+    "example": "BST: [6,2,8,0,4,7,9,3,5], p=2, q=8\nOutput: 6",
+    "approach": "If both targets are smaller, move left. If both are larger, move right. Otherwise the current node is where their paths split and is the LCA.",
+    "complexity": "Time: O(h)\nSpace: O(1)",
+    "streams": ""
+  },
+  {
+    "id": "v10.5-coding-16",
+    "title": "Implement a Trie for word insertion and lookup",
+    "level": "L3",
+    "tags": [
+      "trie",
+      "strings",
+      "data-structures"
+    ],
+    "short": "Implement a Trie supporting insert and exact word search.",
+    "answer": "Each Trie node has a map of outgoing characters and an end-of-word flag. Insertion walks or creates one node per character; search follows the same path and checks the final flag.",
+    "code": "import java.util.*;\n\npublic class Main {\n    static class TrieNode {\n        Map<Character, TrieNode> children = new HashMap<>();\n        boolean end;\n    }\n\n    static class Trie {\n        private final TrieNode root = new TrieNode();\n        void insert(String word) {\n            TrieNode node = root;\n            for (char c : word.toCharArray()) node = node.children.computeIfAbsent(c, k -> new TrieNode());\n            node.end = true;\n        }\n        boolean search(String word) {\n            TrieNode node = root;\n            for (char c : word.toCharArray()) {\n                node = node.children.get(c);\n                if (node == null) return false;\n            }\n            return node.end;\n        }\n    }\n\n    public static void main(String[] args) {\n        Trie trie = new Trie(); trie.insert(\"cat\"); trie.insert(\"car\");\n        System.out.println(trie.search(\"cat\"));\n        System.out.println(trie.search(\"can\"));\n    }\n}",
+    "followups": [
+      "How would you implement prefix search?",
+      "How would you reduce memory for a fixed alphabet?"
+    ],
+    "mistakes": [
+      "The end flag distinguishes \"car\" from the prefix \"ca\"."
+    ],
+    "interview": "A Trie stores characters as a tree. The key interview point is that lookup time depends on word length rather than the number of stored words, assuming hash-map child lookup.",
+    "source": "V10.5",
+    "topic": "coding",
+    "subtopic": null,
+    "problem": "Implement a Trie supporting insert and exact word search.",
+    "example": "Operations: insert(\"cat\"), insert(\"car\"), search(\"cat\") -> true, search(\"can\") -> false",
+    "approach": "Each Trie node has a map of outgoing characters and an end-of-word flag. Insertion walks or creates one node per character; search follows the same path and checks the final flag.",
+    "complexity": "Time: O(L) per operation\nSpace: O(total characters stored)",
+    "streams": ""
+  },
+  {
+    "id": "v10.5-coding-17",
+    "title": "Count islands in a binary grid",
+    "level": "L2",
+    "tags": [
+      "graphs",
+      "bfs",
+      "dfs",
+      "grid"
+    ],
+    "short": "Count connected groups of 1s in a grid where horizontal and vertical neighbors belong to the same island.",
+    "answer": "Scan every cell. When an unvisited land cell is found, increment the count and flood-fill its island using BFS or DFS, marking visited cells so the island is not counted again.",
+    "code": "import java.util.*;\n\npublic class Main {\n    static int countIslands(char[][] grid) {\n        int count = 0;\n        int[][] dirs = {{1,0},{-1,0},{0,1},{0,-1}};\n        for (int r = 0; r < grid.length; r++) {\n            for (int c = 0; c < grid[0].length; c++) {\n                if (grid[r][c] != '1') continue;\n                count++;\n                Queue<int[]> q = new ArrayDeque<>(); q.offer(new int[]{r,c}); grid[r][c] = '0';\n                while (!q.isEmpty()) {\n                    int[] cell = q.poll();\n                    for (int[] d : dirs) {\n                        int nr = cell[0] + d[0], nc = cell[1] + d[1];\n                        if (nr >= 0 && nr < grid.length && nc >= 0 && nc < grid[0].length && grid[nr][nc] == '1') {\n                            grid[nr][nc] = '0'; q.offer(new int[]{nr,nc});\n                        }\n                    }\n                }\n            }\n        }\n        return count;\n    }\n\n    public static void main(String[] args) {\n        char[][] grid = {{'1','1','0','0','0'},{'1','1','0','0','0'},{'0','0','1','0','0'},{'0','0','0','1','1'}};\n        System.out.println(countIslands(grid));\n    }\n}",
+    "followups": [
+      "What changes for diagonal connectivity?",
+      "Can you solve it with Union-Find?"
+    ],
+    "mistakes": [
+      "Mark cells when enqueuing, not when dequeuing, to avoid duplicate queue entries."
+    ],
+    "interview": "I treat each unvisited land cell as the start of a BFS flood-fill. The BFS marks the complete island, so every grid cell is processed at most once.",
+    "source": "V10.5",
+    "topic": "coding",
+    "subtopic": null,
+    "problem": "Count connected groups of 1s in a grid where horizontal and vertical neighbors belong to the same island.",
+    "example": "Input:\n11000\n11000\n00100\n00011\nOutput: 3",
+    "approach": "Scan every cell. When an unvisited land cell is found, increment the count and flood-fill its island using BFS or DFS, marking visited cells so the island is not counted again.",
+    "complexity": "Time: O(rows * cols)\nSpace: O(rows * cols) worst case for the queue",
+    "streams": ""
+  },
+  {
+    "id": "v10.5-coding-18",
+    "title": "Shortest path in a grid using BFS",
+    "level": "L2",
+    "tags": [
+      "graphs",
+      "bfs",
+      "shortest-path"
+    ],
+    "short": "Find the minimum number of moves from the top-left cell to the bottom-right cell in a grid where 0 is open and 1 is blocked.",
+    "answer": "Because every move has equal cost, BFS explores cells in increasing distance order. Store the distance with each queue entry and stop when the destination is reached.",
+    "code": "import java.util.*;\n\npublic class Main {\n    static int shortestPath(int[][] grid) {\n        int m = grid.length, n = grid[0].length;\n        if (grid[0][0] == 1 || grid[m-1][n-1] == 1) return -1;\n        int[][] dist = new int[m][n];\n        for (int[] row : dist) Arrays.fill(row, -1);\n        Queue<int[]> q = new ArrayDeque<>(); q.offer(new int[]{0,0}); dist[0][0] = 0;\n        int[][] dirs = {{1,0},{-1,0},{0,1},{0,-1}};\n        while (!q.isEmpty()) {\n            int[] cur = q.poll();\n            if (cur[0] == m-1 && cur[1] == n-1) return dist[cur[0]][cur[1]];\n            for (int[] d : dirs) {\n                int r = cur[0] + d[0], c = cur[1] + d[1];\n                if (r >= 0 && r < m && c >= 0 && c < n && grid[r][c] == 0 && dist[r][c] == -1) {\n                    dist[r][c] = dist[cur[0]][cur[1]] + 1; q.offer(new int[]{r,c});\n                }\n            }\n        }\n        return -1;\n    }\n\n    public static void main(String[] args) {\n        int[][] grid = {{0,0,0},{0,1,0},{0,0,0}};\n        System.out.println(shortestPath(grid));\n    }\n}",
+    "followups": [
+      "When would Dijkstra be needed instead?",
+      "How would you return the actual path?"
+    ],
+    "mistakes": [
+      "DFS does not guarantee the shortest path in an unweighted grid."
+    ],
+    "interview": "BFS is appropriate because every move costs the same. The first time I reach the destination, I have found the shortest path length.",
+    "source": "V10.5",
+    "topic": "coding",
+    "subtopic": null,
+    "problem": "Find the minimum number of moves from the top-left cell to the bottom-right cell in a grid where 0 is open and 1 is blocked.",
+    "example": "Input:\n000\n010\n000\nOutput: 4",
+    "approach": "Because every move has equal cost, BFS explores cells in increasing distance order. Store the distance with each queue entry and stop when the destination is reached.",
+    "complexity": "Time: O(rows * cols)\nSpace: O(rows * cols)",
+    "streams": ""
+  },
+  {
+    "id": "v10.5-coding-19",
+    "title": "Coin change: minimum number of coins",
+    "level": "L2",
+    "tags": [
+      "dynamic-programming",
+      "arrays"
+    ],
+    "short": "Given coin denominations and a target amount, find the minimum number of coins required to make that amount.",
+    "answer": "Use bottom-up dynamic programming. dp[a] is the minimum coins needed for amount a. For each amount, try every coin and use dp[a-coin] + 1.",
+    "code": "import java.util.*;\n\npublic class Main {\n    static int coinChange(int[] coins, int amount) {\n        int[] dp = new int[amount + 1];\n        Arrays.fill(dp, amount + 1);\n        dp[0] = 0;\n        for (int a = 1; a <= amount; a++) {\n            for (int coin : coins) {\n                if (coin <= a) dp[a] = Math.min(dp[a], dp[a - coin] + 1);\n            }\n        }\n        return dp[amount] > amount ? -1 : dp[amount];\n    }\n\n    public static void main(String[] args) {\n        System.out.println(coinChange(new int[]{1,2,5}, 11));\n    }\n}",
+    "followups": [
+      "Why does greedy not always work?",
+      "Can you solve it top-down with memoization?"
+    ],
+    "mistakes": [
+      "Initialize unreachable states to a value larger than any possible answer."
+    ],
+    "interview": "I define dp[a] as the minimum number of coins for amount a. Every coin gives a transition from a smaller amount, so bottom-up DP computes the answer without recomputing subproblems.",
+    "source": "V10.5",
+    "topic": "coding",
+    "subtopic": null,
+    "problem": "Given coin denominations and a target amount, find the minimum number of coins required to make that amount.",
+    "example": "Coins: [1,2,5], amount=11\nOutput: 3 (5+5+1)",
+    "approach": "Use bottom-up dynamic programming. dp[a] is the minimum coins needed for amount a. For each amount, try every coin and use dp[a-coin] + 1.",
+    "complexity": "Time: O(amount * numberOfCoins)\nSpace: O(amount)",
+    "streams": ""
+  },
+  {
+    "id": "v10.5-coding-20",
+    "title": "Climbing stairs with dynamic programming",
+    "level": "L1",
+    "tags": [
+      "dynamic-programming",
+      "recursion"
+    ],
+    "short": "Count the number of distinct ways to reach the nth stair when you can climb either 1 or 2 steps at a time.",
+    "answer": "The number of ways to reach n equals ways(n-1) + ways(n-2). Keep only the previous two values because older values are no longer needed.",
+    "code": "public class Main {\n    static int ways(int n) {\n        if (n <= 1) return 1;\n        int prev2 = 1, prev1 = 1;\n        for (int i = 2; i <= n; i++) {\n            int current = prev1 + prev2;\n            prev2 = prev1; prev1 = current;\n        }\n        return prev1;\n    }\n\n    public static void main(String[] args) {\n        System.out.println(ways(5));\n    }\n}",
+    "followups": [
+      "What if you can climb 1, 2 or 3 steps?",
+      "What happens for large n and integer overflow?"
+    ],
+    "mistakes": [
+      "Clarify whether n=0 should return 1 or 0 based on the problem definition."
+    ],
+    "interview": "This is Fibonacci-like DP. The current number of ways is the sum of the ways to reach the previous two stairs, and only those two values need to be retained.",
+    "source": "V10.5",
+    "topic": "coding",
+    "subtopic": null,
+    "problem": "Count the number of distinct ways to reach the nth stair when you can climb either 1 or 2 steps at a time.",
+    "example": "Input: n=5\nOutput: 8",
+    "approach": "The number of ways to reach n equals ways(n-1) + ways(n-2). Keep only the previous two values because older values are no longer needed.",
+    "complexity": "Time: O(n)\nSpace: O(1)",
+    "streams": ""
+  },
+  {
+    "id": "v10.5-coding-21",
+    "title": "Group employees by department using Java Streams",
+    "level": "L2",
+    "tags": [
+      "java-streams",
+      "grouping",
+      "collections"
+    ],
+    "short": "Given employees, group them by department and print each department with its employees.",
+    "answer": "Use Collectors.groupingBy with the department as the classifier. The result is a Map from department to a list of employees.",
+    "code": "import java.util.*;\nimport java.util.stream.*;\n\npublic class Main {\n    record Employee(String name, String department) {}\n\n    public static void main(String[] args) {\n        List<Employee> employees = List.of(\n            new Employee(\"Arun\", \"IT\"), new Employee(\"Bala\", \"HR\"),\n            new Employee(\"Ravi\", \"IT\"), new Employee(\"Priya\", \"Finance\")\n        );\n\n        Map<String, List<Employee>> grouped = employees.stream()\n            .collect(Collectors.groupingBy(Employee::department));\n\n        grouped.forEach((dept, list) ->\n            System.out.println(dept + \" -> \" + list.stream().map(Employee::name).toList()));\n    }\n}",
+    "followups": [
+      "How would you count employees instead of storing them?",
+      "How would you find the highest-paid employee per department?"
+    ],
+    "mistakes": [
+      "Do not confuse groupingBy with partitioningBy; partitioning is for a boolean predicate."
+    ],
+    "interview": "I use groupingBy with the department as the classifier. This is preferable to manually maintaining maps because the collector expresses the grouping intent directly.",
+    "source": "V10.5",
+    "topic": "coding",
+    "subtopic": null,
+    "problem": "Given employees, group them by department and print each department with its employees.",
+    "example": "Input: Arun-IT, Bala-HR, Ravi-IT\nOutput: IT -> [Arun,Ravi], HR -> [Bala]",
+    "approach": "Use Collectors.groupingBy with the department as the classifier. The result is a Map from department to a list of employees.",
+    "complexity": "Time: O(n) expected for grouping\nSpace: O(n) for the grouped result",
+    "streams": ""
+  },
+  {
+    "id": "v10.5-coding-22",
+    "title": "Partition numbers into even and odd using Streams",
+    "level": "L1",
+    "tags": [
+      "java-streams",
+      "partitioning",
+      "collections"
+    ],
+    "short": "Partition a list of integers into even and odd numbers using Java Streams.",
+    "answer": "Use Collectors.partitioningBy with a predicate that checks whether a number is even. The result always has boolean keys for the two partitions.",
+    "code": "import java.util.*;\nimport java.util.stream.*;\n\npublic class Main {\n    public static void main(String[] args) {\n        List<Integer> numbers = List.of(1,2,3,4,5,6);\n        Map<Boolean, List<Integer>> result = numbers.stream()\n            .collect(Collectors.partitioningBy(n -> n % 2 == 0));\n        System.out.println(\"Odd  : \" + result.get(false));\n        System.out.println(\"Even : \" + result.get(true));\n    }\n}",
+    "followups": [
+      "How is partitioningBy different from groupingBy?",
+      "Can you count each partition?"
+    ],
+    "mistakes": [
+      "partitioningBy uses a boolean classifier; groupingBy can classify into arbitrary keys."
+    ],
+    "interview": "partitioningBy is the natural collector when the classification is a boolean predicate. It produces the two groups without manually creating two lists.",
+    "source": "V10.5",
+    "topic": "coding",
+    "subtopic": null,
+    "problem": "Partition a list of integers into even and odd numbers using Java Streams.",
+    "example": "Input: [1,2,3,4,5,6]\nOutput: false -> [1,3,5], true -> [2,4,6]",
+    "approach": "Use Collectors.partitioningBy with a predicate that checks whether a number is even. The result always has boolean keys for the two partitions.",
+    "complexity": "Time: O(n)\nSpace: O(n) for the output",
+    "streams": ""
+  },
+  {
+    "id": "v10.5-coding-23",
+    "title": "Find the top 3 highest-paid employees using Streams",
+    "level": "L2",
+    "tags": [
+      "java-streams",
+      "sorting",
+      "limit"
+    ],
+    "short": "Return the top three employees by salary in descending order.",
+    "answer": "Stream the employees, sort by salary descending, limit to three, and collect the result. For large data sets, discuss database-side sorting when the data originates in a database.",
+    "code": "import java.util.*;\n\npublic class Main {\n    record Employee(String name, int salary) {}\n\n    public static void main(String[] args) {\n        List<Employee> employees = List.of(\n            new Employee(\"Arun\",70000), new Employee(\"Ravi\",90000),\n            new Employee(\"Priya\",80000), new Employee(\"Anand\",95000),\n            new Employee(\"Karthik\",75000)\n        );\n\n        List<Employee> top3 = employees.stream()\n            .sorted(Comparator.comparingInt(Employee::salary).reversed())\n            .limit(3)\n            .toList();\n\n        top3.forEach(e -> System.out.println(e.name() + \" -> \" + e.salary()));\n    }\n}",
+    "followups": [
+      "How would you find the top 3 per department?",
+      "Can you use a priority queue for better memory behavior?"
+    ],
+    "mistakes": [
+      "Mention the database-side alternative for production-sized data."
+    ],
+    "interview": "I sort by salary descending and take the first three. In a backend application backed by a database, I would normally push this ordering and limit into SQL rather than loading all employees into memory.",
+    "source": "V10.5",
+    "topic": "coding",
+    "subtopic": null,
+    "problem": "Return the top three employees by salary in descending order.",
+    "example": "Employees: Arun 70000, Ravi 90000, Priya 80000, Anand 95000\nOutput: Anand, Ravi, Priya",
+    "approach": "Stream the employees, sort by salary descending, limit to three, and collect the result. For large data sets, discuss database-side sorting when the data originates in a database.",
+    "complexity": "Time: O(n log n) due to sorting\nSpace: O(n) depending on stream sorting",
+    "streams": ""
+  },
+  {
+    "id": "v10.5-coding-24",
+    "title": "Find duplicate numbers in an array using Streams",
+    "level": "L2",
+    "tags": [
+      "java-streams",
+      "hashset",
+      "duplicates"
+    ],
+    "short": "Find all values that occur more than once in an integer array using Java Streams.",
+    "answer": "Maintain a Set of values already seen. In the stream filter, a value is a duplicate when add(value) returns false. Collect the duplicates into a distinct result.",
+    "code": "import java.util.*;\nimport java.util.stream.*;\n\npublic class Main {\n    public static void main(String[] args) {\n        int[] numbers = {1,2,3,2,4,1,5,2};\n        Set<Integer> seen = new HashSet<>();\n        Set<Integer> duplicates = Arrays.stream(numbers)\n            .filter(n -> !seen.add(n))\n            .boxed()\n            .collect(Collectors.toCollection(LinkedHashSet::new));\n        System.out.println(duplicates);\n    }\n}",
+    "followups": [
+      "Is this approach safe with parallel streams?",
+      "How would you return frequency counts instead?"
+    ],
+    "mistakes": [
+      "Avoid shared mutable state in parallel streams; this particular technique is intended for sequential processing."
+    ],
+    "interview": "The important idea is that HashSet.add returns false when the value already exists. That lets the stream identify duplicates in one pass while a second set preserves unique duplicate values.",
+    "source": "V10.5",
+    "topic": "coding",
+    "subtopic": null,
+    "problem": "Find all values that occur more than once in an integer array using Java Streams.",
+    "example": "Input: [1,2,3,2,4,1,5,2]\nOutput: [1,2]",
+    "approach": "Maintain a Set of values already seen. In the stream filter, a value is a duplicate when add(value) returns false. Collect the duplicates into a distinct result.",
+    "complexity": "Time: O(n) expected\nSpace: O(n)",
+    "streams": ""
+  },
+  {
+    "id": "v10.5-scenario-01",
+    "title": "Order API creates duplicate orders after client retries",
+    "level": "L3",
+    "tags": [
+      "idempotency",
+      "orders",
+      "distributed-systems"
+    ],
+    "short": "Idempotency makes a retried business operation produce the same logical result rather than creating another order.",
+    "answer": "The important distinction is between transport retries and business retries. A timeout does not mean the server did not commit. I would use an idempotency key persisted with a unique constraint, make the create operation atomic, and propagate the idempotency key to payment.",
+    "code": "",
+    "followups": [
+      "How would you expire idempotency keys?",
+      "What if the first request is still processing when the retry arrives?"
+    ],
+    "mistakes": [
+      "Do not implement check-then-insert without a database uniqueness guarantee."
+    ],
+    "interview": "I would first prove whether the duplicate originates in the API, message layer, or payment provider. Then I would enforce uniqueness at the database boundary instead of relying only on application checks.",
+    "source": "V10.5",
+    "topic": "microservices",
+    "subtopic": "data",
+    "scenario": "Mobile clients retry POST /orders when the network times out. Customers occasionally see two orders and two downstream payment attempts.",
+    "investigation": "Trace one duplicated request using a correlation ID and inspect whether the same idempotency key was supplied. Check database uniqueness constraints, payment calls, retry behavior and whether the response was lost after the first commit.",
+    "prevention": "Require a client-generated idempotency key. Persist the key with the order in a unique-constrained table, make the operation transactional, and return the original result for a repeated key. Make payment initiation idempotent as well."
+  },
+  {
+    "id": "v10.5-scenario-02",
+    "title": "Kafka consumers fall behind during peak traffic",
+    "level": "L3",
+    "tags": [
+      "kafka",
+      "consumer-lag",
+      "scaling"
+    ],
+    "short": "Consumer lag means the group is not processing records as quickly as they arrive. The fix depends on whether the bottleneck is Kafka, consumer compute, partitions or downstream I/O.",
+    "answer": "I would compare producer throughput with consumer throughput first. Then I would inspect partition distribution, rebalance frequency and consumer processing time. If the consumer is healthy but under-provisioned, I can scale it up to the partition count; if processing is slow, I fix the downstream bottleneck instead of blindly adding consumers.",
+    "code": "",
+    "followups": [
+      "Why can adding consumers fail to improve lag?",
+      "How do you handle a poison message?"
+    ],
+    "mistakes": [
+      "Do not assume CPU is the bottleneck."
+    ],
+    "interview": "I would also check whether one hot partition is limiting the group. More consumer instances cannot help if there are fewer partitions or uneven keys.",
+    "source": "V10.5",
+    "topic": "microservices",
+    "subtopic": "messaging",
+    "scenario": "Consumer lag grows continuously during a traffic spike and remains high even after producers return to normal.",
+    "investigation": "Check records-per-second produced versus consumed, consumer processing latency, partition count, consumer-group membership, rebalances, downstream database latency and broker health. Measure whether the consumer is CPU-bound, I/O-bound or blocked on a dependency.",
+    "prevention": "Scale consumers up to the partition limit, batch downstream writes, tune poll and fetch settings carefully, isolate slow dependencies, and use backpressure. Increase partitions only when ordering and key-distribution implications are understood."
+  },
+  {
+    "id": "v10.5-scenario-03",
+    "title": "Kafka consumer reprocesses records after a database commit",
+    "level": "L3",
+    "tags": [
+      "kafka",
+      "offsets",
+      "exactly-once"
+    ],
+    "short": "Kafka commonly gives at-least-once processing semantics. A crash between the business commit and offset commit can produce a duplicate delivery.",
+    "answer": "I would not try to eliminate every duplicate at the transport layer. I would make the business operation idempotent by storing the event ID with a unique constraint or using a transactional pattern where appropriate. Then replaying the event becomes harmless.",
+    "code": "",
+    "followups": [
+      "When would Kafka transactions help?",
+      "How would you design an inbox table?"
+    ],
+    "mistakes": [
+      "Do not equate Kafka exactly-once processing with exactly-once effects in an external database."
+    ],
+    "interview": "The interview point is that at-least-once delivery is compatible with exactly-once business outcomes only when the business operation is designed to be idempotent.",
+    "source": "V10.5",
+    "topic": "microservices",
+    "subtopic": "messaging",
+    "scenario": "A consumer commits a database transaction and then crashes before the Kafka offset is committed. The same record is delivered again.",
+    "investigation": "Compare the database transaction boundary with offset commits. Inspect whether processing is idempotent and whether the consumer uses auto-commit or manual acknowledgement.",
+    "prevention": "Design processing to be idempotent, use an inbox/processed-event table with a unique event ID, or use an appropriate transactional/event-processing pattern when the platform supports it. Never assume at-least-once delivery becomes exactly-once business behavior automatically."
+  },
+  {
+    "id": "v10.5-scenario-04",
+    "title": "Retry policy causes a retry storm across services",
+    "level": "L3",
+    "tags": [
+      "retry",
+      "timeouts",
+      "resilience"
+    ],
+    "short": "Retries can improve transient failure recovery, but synchronized or excessive retries can amplify an outage.",
+    "answer": "I would first quantify retry amplification. Then I would reduce retries at the edge, add exponential backoff with jitter, enforce an overall request deadline and use a circuit breaker. I would also decide which errors are actually retryable rather than retrying every exception.",
+    "code": "",
+    "followups": [
+      "Where should retries live?",
+      "How do you choose retry counts and deadlines?"
+    ],
+    "mistakes": [
+      "Never use immediate infinite retries."
+    ],
+    "interview": "The key is to treat retries as load multiplication, not free reliability.",
+    "source": "V10.5",
+    "topic": "microservices",
+    "subtopic": "resilience",
+    "scenario": "A downstream inventory service becomes slow. Multiple upstream services retry failed requests, causing traffic to increase dramatically and making the outage worse.",
+    "investigation": "Look at request rate, retry rate, timeout rate and downstream saturation. Correlate traces to distinguish original requests from retries and calculate the amplification factor.",
+    "prevention": "Use bounded retries, exponential backoff with jitter, strict deadlines, circuit breakers and retry budgets. Retry only transient and safe operations, and avoid stacking aggressive retries at every service layer."
+  },
+  {
+    "id": "v10.5-scenario-05",
+    "title": "Distributed request latency jumps even though application CPU is normal",
+    "level": "L3",
+    "tags": [
+      "distributed-tracing",
+      "latency",
+      "observability"
+    ],
+    "short": "Normal CPU does not mean the service is healthy. Latency can be caused by blocked threads, exhausted connection pools or a slow dependency.",
+    "answer": "I would start with a trace rather than guessing from CPU. If most of the three seconds is in a downstream call or waiting for a database connection, I can target the real bottleneck. I would then correlate it with pool saturation and dependency metrics.",
+    "code": "",
+    "followups": [
+      "What metrics would you put on an API dashboard?",
+      "How do you distinguish queueing from downstream latency?"
+    ],
+    "mistakes": [
+      "Do not use only average latency."
+    ],
+    "interview": "This is why RED metrics and distributed tracing are more useful than CPU alone for request-driven systems.",
+    "source": "V10.5",
+    "topic": "microservices",
+    "subtopic": "operations",
+    "scenario": "p95 latency of an API rises from 250 ms to 3 seconds, but application CPU and memory look normal.",
+    "investigation": "Use distributed traces to break the request into database, downstream HTTP, cache and queue spans. Compare latency distributions rather than averages and inspect connection pools, thread pools and timeout metrics.",
+    "prevention": "Instrument all critical boundaries with trace IDs, publish dependency latency/error metrics, and define timeouts and saturation alerts for pools and downstream calls."
+  },
+  {
+    "id": "v10.5-scenario-06",
+    "title": "Outbox publisher sends the same event twice",
+    "level": "L3",
+    "tags": [
+      "outbox",
+      "duplicates",
+      "events"
+    ],
+    "short": "The outbox pattern closes the database-to-message gap, but the publisher can still produce duplicates unless the consumer side is idempotent.",
+    "answer": "I would keep the outbox because it guarantees the event is durably recorded with the business transaction. Then I would design consumers to deduplicate by event ID. That gives reliable delivery without pretending the publisher can atomically commit an external broker and database.",
+    "code": "",
+    "followups": [
+      "How do you clean old outbox rows?",
+      "Would CDC be an alternative?"
+    ],
+    "mistakes": [
+      "Do not delete the outbox row before durable publication bookkeeping is complete."
+    ],
+    "interview": "The interview point is that outbox solves atomicity between the local DB change and event intent; it does not magically provide exactly-once external effects.",
+    "source": "V10.5",
+    "topic": "microservices",
+    "subtopic": "data",
+    "scenario": "A service writes an order and an outbox row in one database transaction. The publisher sends the event, crashes before marking the row as published, and sends it again after restart.",
+    "investigation": "Inspect outbox status transitions, publisher crash timing and consumer behavior. Verify whether the event has a stable event ID.",
+    "prevention": "Use a stable event ID and idempotent consumers. Marking the outbox row published is useful for bookkeeping, but it should not be treated as proof that a crash cannot produce a duplicate."
+  },
+  {
+    "id": "v10.5-scenario-07",
+    "title": "Payment succeeds but order service times out",
+    "level": "L3",
+    "tags": [
+      "payments",
+      "idempotency",
+      "saga"
+    ],
+    "short": "An ambiguous timeout must not be treated as failure when an external side effect may already have happened.",
+    "answer": "I would treat the payment as an uncertain state. I would query or reconcile using a stable idempotency key and provider reference, then update the order asynchronously if needed. The critical rule is never to blindly repeat a charge after an ambiguous timeout.",
+    "code": "",
+    "followups": [
+      "How would you reconcile payments periodically?",
+      "Where does the Saga pattern fit?"
+    ],
+    "mistakes": [
+      "Do not use only the HTTP response as the source of truth for payment state."
+    ],
+    "interview": "This is a classic distributed-systems problem: you cannot assume the absence of a response means the absence of a side effect.",
+    "source": "V10.5",
+    "topic": "microservices",
+    "subtopic": "data",
+    "scenario": "The payment provider reports success, but the order service times out before recording the result. A client retry could charge the card again.",
+    "investigation": "Use the provider transaction/reference ID to query the payment status. Trace whether the request actually reached the provider and whether the callback/webhook was delivered.",
+    "prevention": "Use an idempotency key at the payment boundary, persist provider references, reconcile uncertain states asynchronously, and model payment as a state machine such as PENDING, SUCCESS, FAILED, UNKNOWN."
+  },
+  {
+    "id": "v10.5-scenario-08",
+    "title": "Database connection pool is exhausted under moderate traffic",
+    "level": "L3",
+    "tags": [
+      "database",
+      "connection-pool",
+      "spring-boot"
+    ],
+    "short": "A connection pool can be exhausted because connections are held too long, not because the database itself is at CPU capacity.",
+    "answer": "I would check pool acquisition latency and active connection age. Then I would look for slow SQL or transactions that include remote calls. Increasing the pool blindly may move the bottleneck to the database and increase contention.",
+    "code": "",
+    "followups": [
+      "How do you choose HikariCP pool size?",
+      "What is a connection leak?"
+    ],
+    "mistakes": [
+      "Do not increase pool size without measuring database capacity."
+    ],
+    "interview": "The important distinction is database capacity versus application-side connection occupancy.",
+    "source": "V10.5",
+    "topic": "springboot",
+    "subtopic": "data",
+    "scenario": "Requests start timing out waiting for database connections, even though database CPU is only 40%.",
+    "investigation": "Inspect active/idle pool counts, connection acquisition time, slow queries, long transactions and leaked connections. Compare application thread count with pool size.",
+    "prevention": "Fix slow queries and transaction scope first. Configure sensible pool limits and leak detection, avoid holding connections across remote calls, and monitor acquisition latency."
+  },
+  {
+    "id": "v10.5-scenario-09",
+    "title": "Spring @Async work never runs asynchronously",
+    "level": "L2",
+    "tags": [
+      "spring",
+      "async",
+      "aop"
+    ],
+    "short": "@Async is proxy-based. A direct self-invocation bypasses the proxy and therefore bypasses asynchronous interception.",
+    "answer": "I would first confirm the executor and proxy path. If the method is called from another method in the same class, I would move the async operation behind another bean or otherwise ensure the invocation crosses the Spring proxy. I would also configure a bounded executor rather than relying on an unbounded default.",
+    "code": "",
+    "followups": [
+      "How does @Async interact with transactions?",
+      "How would you propagate MDC or security context?"
+    ],
+    "mistakes": [
+      "Do not assume an annotation changes execution without proxy interception."
+    ],
+    "interview": "Async is not a magic annotation; proxy interception and executor capacity are both part of the design.",
+    "source": "V10.5",
+    "topic": "springboot",
+    "subtopic": "aop",
+    "scenario": "A method annotated with @Async executes on the caller thread in production.",
+    "investigation": "Check whether @EnableAsync is configured, whether the method is public, whether the call goes through a Spring proxy, and whether the executor is configured. Look for self-invocation.",
+    "prevention": "Call the async method through a Spring-managed proxy, configure a bounded executor, propagate required context explicitly, and monitor queue saturation."
+  },
+  {
+    "id": "v10.5-scenario-10",
+    "title": "Spring transaction does not roll back after an exception",
+    "level": "L2",
+    "tags": [
+      "spring",
+      "transactions",
+      "rollback"
+    ],
+    "short": "Spring rollback is based on transaction interception and rollback rules. Catching an exception without marking rollback can allow the transaction to commit.",
+    "answer": "I would verify the transaction boundary first. If the exception is caught inside the transaction and swallowed, I would either rethrow it or mark the transaction rollback-only. For checked exceptions I would explicitly configure rollback behavior when that matches the business requirement.",
+    "code": "",
+    "followups": [
+      "What is propagation?",
+      "What happens with self-invocation?"
+    ],
+    "mistakes": [
+      "Do not assume checked exceptions always trigger rollback."
+    ],
+    "interview": "The key is that @Transactional controls a transaction boundary; it does not automatically roll back every exception that ever occurred inside the method.",
+    "source": "V10.5",
+    "topic": "springboot",
+    "subtopic": "data",
+    "scenario": "A service method annotated with @Transactional catches an exception and returns normally, but the caller expects the database changes to roll back.",
+    "investigation": "Inspect whether the exception was caught inside the transactional method, whether the exception type matches Spring rollback rules, and whether the call entered through a transaction proxy.",
+    "prevention": "Let the intended exception propagate or explicitly mark the transaction rollback-only. Configure rollbackFor for checked exceptions when appropriate and avoid self-invocation of transactional methods."
+  },
+  {
+    "id": "v10.5-scenario-11",
+    "title": "Spring application startup becomes much slower after adding a module",
+    "level": "L2",
+    "tags": [
+      "spring-boot",
+      "startup",
+      "beans"
+    ],
+    "short": "Slow startup often comes from expensive bean initialization or unnecessary scanning rather than Spring Boot itself.",
+    "answer": "I would measure startup phases and identify the slow bean or auto-configuration. I would then remove external calls from constructors or initialization paths and reduce unnecessary scanning. I would not optimize startup blindly without a measurement.",
+    "code": "",
+    "followups": [
+      "How does auto-configuration work?",
+      "How would you troubleshoot a circular dependency?"
+    ],
+    "mistakes": [
+      "Do not disable broad auto-configurations without understanding what they provide."
+    ],
+    "interview": "Production startup matters for autoscaling and rolling deployments, so startup time is an operational metric.",
+    "source": "V10.5",
+    "topic": "springboot",
+    "subtopic": "config",
+    "scenario": "Startup time increases from 10 seconds to 45 seconds after a dependency and several configuration classes are added.",
+    "investigation": "Enable startup metrics or a startup actuator endpoint where appropriate, inspect bean initialization, auto-configuration reports, external calls during bean creation and classpath scanning.",
+    "prevention": "Avoid network calls during bean construction, reduce unnecessary component scanning, exclude irrelevant auto-configurations when justified, and move expensive work to controlled initialization or asynchronous workflows."
+  },
+  {
+    "id": "v10.5-scenario-12",
+    "title": "SQL query becomes slow after table growth",
+    "level": "L3",
+    "tags": [
+      "sql",
+      "indexes",
+      "execution-plan"
+    ],
+    "short": "A query can degrade as data volume grows because an old plan or index strategy no longer matches the data distribution.",
+    "answer": "I would not immediately add an index. I would inspect the execution plan and identify whether the database is scanning too many rows, sorting, or using a poor join strategy. Then I would change the query or index based on evidence and measure again.",
+    "code": "",
+    "followups": [
+      "What is a covering index?",
+      "When can an index make writes slower?"
+    ],
+    "mistakes": [
+      "Do not index every column."
+    ],
+    "interview": "The interview answer should emphasize execution plans and selectivity rather than saying indexes always make queries faster.",
+    "source": "V10.5",
+    "topic": "sql",
+    "subtopic": "indexes",
+    "scenario": "A query that used to run in 50 ms now takes 8 seconds after a table grows from one million to fifty million rows.",
+    "investigation": "Capture the execution plan, inspect row estimates, index usage, selectivity, sort/hash operations and whether predicates are sargable. Compare the plan before and after growth if possible.",
+    "prevention": "Design indexes based on actual predicates and ordering, rewrite non-sargable expressions, update statistics where applicable, reduce unnecessary columns and consider partitioning only when it solves a demonstrated access pattern."
+  },
+  {
+    "id": "v10.5-scenario-13",
+    "title": "Two services deadlock while updating shared business data",
+    "level": "L3",
+    "tags": [
+      "deadlock",
+      "transactions",
+      "distributed"
+    ],
+    "short": "Deadlocks happen when transactions hold locks while waiting for each other in a cycle.",
+    "answer": "I would confirm the cycle in the database deadlock report. The primary fix is to acquire shared resources in a consistent order across code paths. Retries can be a secondary resilience mechanism, but they should not hide a systemic locking problem.",
+    "code": "",
+    "followups": [
+      "How is a deadlock different from lock timeout?",
+      "What isolation level changes might help?"
+    ],
+    "mistakes": [
+      "Do not rely only on retries."
+    ],
+    "interview": "Consistent lock ordering is often the simplest preventive design.",
+    "source": "V10.5",
+    "topic": "sql",
+    "subtopic": "transactions",
+    "scenario": "Service A updates order then inventory. Service B updates inventory then order. Under concurrency, requests start deadlocking.",
+    "investigation": "Inspect database deadlock reports and transaction traces to identify lock acquisition order. Confirm whether both operations touch the same rows in opposite order.",
+    "prevention": "Standardize lock acquisition order, keep transactions short, avoid unnecessary locks, and implement bounded retry for transient deadlock failures."
+  },
+  {
+    "id": "v10.5-scenario-14",
+    "title": "Offset pagination becomes extremely slow on a large table",
+    "level": "L2",
+    "tags": [
+      "sql",
+      "pagination",
+      "performance"
+    ],
+    "short": "Offset pagination can become expensive at deep pages because the database still processes skipped rows.",
+    "answer": "For large datasets I would prefer keyset pagination. The client sends the last seen key, and the database can use an index to seek directly into the next range. This gives more stable performance as the page depth increases.",
+    "code": "",
+    "followups": [
+      "How do you paginate by timestamp safely?",
+      "What indexes are needed?"
+    ],
+    "mistakes": [
+      "Do not claim keyset always works for arbitrary sorting without a stable unique tie-breaker."
+    ],
+    "interview": "The trade-off is that keyset pagination is less convenient for random page-number navigation.",
+    "source": "V10.5",
+    "topic": "sql",
+    "subtopic": "indexes",
+    "scenario": "Page 1 of an API is fast, but requesting page 50,000 takes several seconds.",
+    "investigation": "Inspect the SQL and execution plan. OFFSET often requires the database to walk past a large number of rows before returning the requested page.",
+    "prevention": "Use keyset/seek pagination with a stable indexed ordering, such as WHERE id > lastSeenId ORDER BY id LIMIT n. Document that arbitrary page-number jumps may no longer be supported."
+  },
+  {
+    "id": "v10.5-scenario-15",
+    "title": "JWT is valid but a user can access another customer’s resource",
+    "level": "L3",
+    "tags": [
+      "security",
+      "jwt",
+      "authorization",
+      "multi-tenant"
+    ],
+    "short": "A valid token proves identity or claims; it does not automatically prove permission to access every resource.",
+    "answer": "I would explain this as an authorization failure, not a JWT validation failure. The service must verify that the authenticated principal is allowed to access that specific resource, ideally enforcing tenant ownership in the data query as well.",
+    "code": "",
+    "followups": [
+      "Where should tenant checks happen?",
+      "How would you test for this vulnerability?"
+    ],
+    "mistakes": [
+      "Do not treat possession of a valid JWT as authorization for arbitrary resource IDs."
+    ],
+    "interview": "This is a common IDOR or broken object-level authorization pattern.",
+    "source": "V10.5",
+    "topic": "security",
+    "subtopic": "micro",
+    "scenario": "A user with a valid JWT changes an order ID in the URL and receives another customer’s order.",
+    "investigation": "Inspect authorization at the resource boundary. Verify whether the service checks tenant/user ownership after authentication or only checks that the JWT signature is valid.",
+    "prevention": "Separate authentication from authorization. Enforce tenant/resource ownership in service and data-access queries, and use defense-in-depth policies where appropriate."
+  },
+  {
+    "id": "v10.5-scenario-16",
+    "title": "Refresh token rotation detects token reuse",
+    "level": "L3",
+    "tags": [
+      "security",
+      "refresh-token",
+      "oauth"
+    ],
+    "short": "Refresh-token rotation reduces the window in which a stolen refresh token can be reused undetected.",
+    "answer": "I would rotate the refresh token on every successful refresh and keep enough server-side state to detect reuse. If an old token is presented after rotation, I would treat that as a possible theft signal and revoke the token family.",
+    "code": "",
+    "followups": [
+      "How do stateless JWTs get revoked?",
+      "Where should refresh tokens be stored?"
+    ],
+    "mistakes": [
+      "Do not log raw refresh tokens."
+    ],
+    "interview": "Short-lived access tokens limit immediate impact; refresh-token rotation adds detection and containment for longer-lived credentials.",
+    "source": "V10.5",
+    "topic": "security",
+    "subtopic": "jwt",
+    "scenario": "A refresh token is used twice from different locations. The security team wants the second use to invalidate the session.",
+    "investigation": "Track refresh-token family state or a server-side token identifier. Detect reuse after rotation and correlate the event with the user/session.",
+    "prevention": "Rotate refresh tokens on use, store a revocable token family identifier, invalidate the family on reuse, and require re-authentication when compromise is suspected."
+  },
+  {
+    "id": "v10.5-scenario-17",
+    "title": "Kubernetes pods are OOMKilled despite normal application heap usage",
+    "level": "L3",
+    "tags": [
+      "kubernetes",
+      "jvm",
+      "memory"
+    ],
+    "short": "Container OOMKill can occur when total process memory exceeds the cgroup limit even if Java heap is healthy.",
+    "answer": "I would compare the container limit with total process memory, not just Xmx. Thread stacks, metaspace and direct buffers can consume significant native memory. Then I would tune the JVM and container together and validate under realistic concurrency.",
+    "code": "",
+    "followups": [
+      "How do you size Xmx in a container?",
+      "What are direct byte buffers?"
+    ],
+    "mistakes": [
+      "Do not set Xmx equal to the entire container memory limit."
+    ],
+    "interview": "The distinction between JVM heap and process/container memory is the key interview point.",
+    "source": "V10.5",
+    "topic": "cloud",
+    "subtopic": "kubernetes",
+    "scenario": "A Java pod is repeatedly OOMKilled. JVM heap metrics remain below the configured maximum.",
+    "investigation": "Compare container memory limits with JVM heap plus native memory, metaspace, thread stacks, direct buffers and other process memory. Check cgroup memory events and JVM native-memory diagnostics where available.",
+    "prevention": "Set container-aware JVM memory settings, leave headroom for native memory, control thread counts and direct buffers, and size the pod limit based on measured total process memory rather than heap alone."
+  },
+  {
+    "id": "v10.5-scenario-18",
+    "title": "Kubernetes readiness probe causes a deployment outage",
+    "level": "L2",
+    "tags": [
+      "kubernetes",
+      "readiness",
+      "deployment"
+    ],
+    "short": "Readiness controls whether a pod receives traffic. A probe that depends on fragile external services can prevent healthy pods from ever entering service.",
+    "answer": "I would make the readiness endpoint reflect whether the application itself can accept traffic, not whether every dependency is perfect. Downstream failures should normally be handled at request time through resilience patterns.",
+    "code": "",
+    "followups": [
+      "What should liveness check?",
+      "When should startup probes be used?"
+    ],
+    "mistakes": [
+      "Do not make liveness depend on downstream services."
+    ],
+    "interview": "Overly strict health checks can turn a dependency outage into a deployment-wide outage.",
+    "source": "V10.5",
+    "topic": "cloud",
+    "subtopic": "kubernetes",
+    "scenario": "New pods start, but the readiness probe immediately fails because the application depends on a downstream service that is temporarily unavailable.",
+    "investigation": "Check probe endpoint behavior and whether readiness is being used to represent application availability versus dependency readiness. Inspect startup and dependency initialization logs.",
+    "prevention": "Keep readiness lightweight and local. Let the service become ready when it can serve valid requests, while handling downstream dependency failures with timeouts and resilience rather than making the readiness probe depend on every dependency."
+  },
+  {
+    "id": "v10.5-scenario-19",
+    "title": "Order database migration must happen without downtime",
+    "level": "L3",
+    "tags": [
+      "system-design",
+      "database",
+      "deployment"
+    ],
+    "short": "Zero-downtime schema changes require compatibility between database and application versions during rollout.",
+    "answer": "I would avoid a destructive migration in the same deployment as the application change. I would expand the schema first, deploy backward-compatible code, backfill gradually, switch traffic, and contract later after old versions are gone.",
+    "code": "",
+    "followups": [
+      "How do you backfill 500 million rows safely?",
+      "What metrics would you monitor during the migration?"
+    ],
+    "mistakes": [
+      "Do not assume DDL is always instant or lock-free."
+    ],
+    "interview": "The key is to design migrations around the overlap period during rolling deployment.",
+    "source": "V10.5",
+    "topic": "system-design",
+    "subtopic": "distributed",
+    "scenario": "A column must change in a high-traffic orders table while old and new application versions run simultaneously during a rolling deployment.",
+    "investigation": "Identify whether the change is backward-compatible. Check write/read behavior of old and new versions and estimate lock duration and table rewrite cost.",
+    "prevention": "Use expand-and-contract: add the new structure first, deploy code that can read/write both forms if needed, backfill in batches, switch reads, then remove the old structure in a later deployment."
+  },
+  {
+    "id": "v10.5-scenario-20",
+    "title": "Notification provider becomes unavailable during a traffic burst",
+    "level": "L3",
+    "tags": [
+      "system-design",
+      "messaging",
+      "notifications"
+    ],
+    "short": "A notification system should absorb provider outages instead of making every user request wait for the provider.",
+    "answer": "I would decouple user-facing operations from notification delivery with a durable queue. Workers can retry with backoff and provider-specific limits, while a circuit breaker prevents an unhealthy provider from consuming all worker capacity.",
+    "code": "",
+    "followups": [
+      "How do you guarantee no duplicate notifications?",
+      "How would you prioritize urgent notifications?"
+    ],
+    "mistakes": [
+      "Do not let retries grow without a queue or budget."
+    ],
+    "interview": "This is primarily an asynchronous workload and should be designed around durability, backpressure and eventual delivery.",
+    "source": "V10.5",
+    "topic": "system-design",
+    "subtopic": "distributed",
+    "scenario": "Email/SMS provider latency spikes and then returns errors while the platform is processing millions of notifications.",
+    "investigation": "Measure provider error rate and latency, queue depth, retry rate and message age. Check whether the application is making synchronous provider calls or buffering work.",
+    "prevention": "Queue notification requests, apply provider-specific rate limits, retry transient failures with backoff, route to a secondary provider where justified, and preserve message state for reconciliation."
+  },
+  {
+    "id": "v10.5-scenario-21",
+    "title": "Spring REST endpoint returns 500 because validation exceptions bypass the global handler",
+    "level": "L2",
+    "tags": [
+      "spring-boot",
+      "validation",
+      "exceptions"
+    ],
+    "short": "Validation failures should normally be translated into a consistent client-facing 4xx response rather than leaking as 500 errors.",
+    "answer": "I would inspect the actual exception type first. Then I would add a targeted global handler for validation and binding failures and return a stable error format with field-level messages. I would add integration tests so every controller follows the same contract.",
+    "code": "",
+    "followups": [
+      "How do you validate path variables?",
+      "How do you avoid exposing internal exception messages?"
+    ],
+    "mistakes": [
+      "Do not return stack traces to clients."
+    ],
+    "interview": "Do not assume every validation failure arrives as MethodArgumentNotValidException; the exact exception depends on how validation is triggered.",
+    "source": "V10.5",
+    "topic": "springboot",
+    "subtopic": "exceptions",
+    "scenario": "Invalid request payloads sometimes produce inconsistent 400/500 responses depending on the controller.",
+    "investigation": "Inspect exception types thrown by request binding/validation and compare them with the @ControllerAdvice handlers. Verify whether handler methods cover the actual framework exception types.",
+    "prevention": "Define a consistent error contract, handle validation/binding exceptions centrally, and test malformed payloads across controllers."
+  },
+  {
+    "id": "v10.5-scenario-22",
+    "title": "Spring cache serves stale data after an update",
+    "level": "L2",
+    "tags": [
+      "spring-boot",
+      "cache",
+      "consistency"
+    ],
+    "short": "Caching introduces a second copy of data, so the application must define how and when that copy becomes stale.",
+    "answer": "I would first verify whether the write invalidates the exact cache key after the database transaction succeeds. In a multi-instance system I would prefer a shared cache or an invalidation mechanism rather than assuming local caches are consistent.",
+    "code": "",
+    "followups": [
+      "How do you prevent cache stampede?",
+      "What happens if the cache is unavailable?"
+    ],
+    "mistakes": [
+      "Do not invalidate the cache before a failed database write unless the policy is deliberate."
+    ],
+    "interview": "Cache consistency is a business trade-off. The interview answer should state the acceptable staleness requirement.",
+    "source": "V10.5",
+    "topic": "springboot",
+    "subtopic": "config",
+    "scenario": "An update succeeds in the database, but subsequent GET requests still return the old value from the cache.",
+    "investigation": "Check cache eviction/update semantics, transaction timing, cache key consistency and whether multiple application instances maintain independent local caches.",
+    "prevention": "Use a clear cache-aside policy, evict or update the cache after a successful write, and use a shared cache when cross-instance consistency is required. Define an acceptable staleness window."
+  },
+  {
+    "id": "v10.5-scenario-23",
+    "title": "A SQL query causes lock contention during a batch job",
+    "level": "L3",
+    "tags": [
+      "sql",
+      "locking",
+      "batch"
+    ],
+    "short": "Long-running batch transactions can create lock contention even when the individual SQL statements are fast.",
+    "answer": "I would reduce transaction scope and batch size first, then inspect lock waits and the access plan. The batch should acquire locks predictably and release them frequently enough that interactive traffic can make progress.",
+    "code": "",
+    "followups": [
+      "Would READ COMMITTED solve it?",
+      "How would you throttle a backfill?"
+    ],
+    "mistakes": [
+      "Do not solve lock contention only by increasing database resources."
+    ],
+    "interview": "The best batch size is workload-specific; measure lock duration and throughput rather than picking a huge fixed number.",
+    "source": "V10.5",
+    "topic": "sql",
+    "subtopic": "transactions",
+    "scenario": "A nightly batch update causes daytime API requests to wait on locked rows.",
+    "investigation": "Inspect transaction duration, lock wait events, batch size and whether the batch scans or updates rows in a conflicting order.",
+    "prevention": "Break work into smaller committed batches, process in deterministic key order, use appropriate indexes, schedule heavy work carefully and avoid holding locks while doing unrelated work."
+  },
+  {
+    "id": "v10.5-scenario-24",
+    "title": "A service leaks ThreadLocal state between requests",
+    "level": "L3",
+    "tags": [
+      "java",
+      "threadlocal",
+      "memory-leak"
+    ],
+    "short": "ThreadLocal values belong to the worker thread, not the request. In pooled executors, the same thread can process many requests.",
+    "answer": "I would treat ThreadLocal as thread-scoped state and ensure every set has a corresponding remove in a finally block. For request context, I would prefer framework-managed mechanisms when possible. I would also test thread reuse explicitly.",
+    "code": "",
+    "followups": [
+      "Why is ThreadLocal useful?",
+      "Why can it cause memory leaks?"
+    ],
+    "mistakes": [
+      "Do not assume a pooled thread is dedicated to one request."
+    ],
+    "interview": "The bug can become both a data-isolation problem and a memory-retention problem.",
+    "source": "V10.5",
+    "topic": "java",
+    "subtopic": "concurrency",
+    "scenario": "A long-running servlet application shows request/user context from one request appearing in a later request handled by the same worker thread.",
+    "investigation": "Inspect ThreadLocal usage and thread-pool lifecycle. Check whether values are removed in finally blocks and whether pooled threads are reused across requests.",
+    "prevention": "Set request-scoped context at the boundary and always remove ThreadLocal values in finally. Prefer framework-managed request context where available."
+  },
+  {
+    "id": "v10.5-scenario-25",
+    "title": "CompletableFuture chain silently loses exceptions",
+    "level": "L2",
+    "tags": [
+      "java",
+      "completablefuture",
+      "async"
+    ],
+    "short": "CompletableFuture failures are stored in the future. They do not automatically become visible to the caller unless the chain is observed or joined.",
+    "answer": "I would ensure the controller or service returns the composed future or explicitly waits at the correct boundary. Then I would handle failures with exceptionally or handle and log the original cause with correlation context.",
+    "code": "",
+    "followups": [
+      "thenCompose vs thenApply?",
+      "How do you add a timeout to a future?"
+    ],
+    "mistakes": [
+      "Do not ignore a future returned by an important operation."
+    ],
+    "interview": "The interview trap is assuming asynchronous exceptions behave exactly like synchronous exceptions.",
+    "source": "V10.5",
+    "topic": "java",
+    "subtopic": "concurrency",
+    "scenario": "An asynchronous workflow returns a successful HTTP response even though one of the CompletableFuture stages failed.",
+    "investigation": "Trace the future chain and inspect whether exceptionally/handle/whenComplete or join/get is used. Check whether a failed stage is created but its result is ignored.",
+    "prevention": "Compose the futures into one returned future, handle exceptions explicitly at the boundary, and avoid launching independent futures whose failures are never observed."
+  },
+  {
+    "id": "v10.5-scenario-26",
+    "title": "JVM GC pauses increase after a traffic increase",
+    "level": "L3",
+    "tags": [
+      "java",
+      "jvm",
+      "gc",
+      "performance"
+    ],
+    "short": "GC latency is influenced by allocation rate, live-set size and collector behavior, not simply by total heap size.",
+    "answer": "I would first correlate GC pauses with latency and inspect allocation and promotion rates. Then I would determine whether the issue is excessive allocation, an unexpectedly large live set or collector configuration. I would change one variable at a time and validate with realistic load.",
+    "code": "",
+    "followups": [
+      "How does G1 work at a high level?",
+      "What is a memory leak in Java?"
+    ],
+    "mistakes": [
+      "Do not equate high heap usage with a GC bug automatically."
+    ],
+    "interview": "Never start by increasing the heap without understanding why the live set or allocation rate changed.",
+    "source": "V10.5",
+    "topic": "java",
+    "subtopic": "jvm",
+    "scenario": "p99 latency increases because occasional GC pauses grow from tens of milliseconds to over a second after traffic increases.",
+    "investigation": "Inspect allocation rate, heap occupancy, GC pause times, old-generation promotion and object-retention patterns. Correlate GC events with request latency.",
+    "prevention": "Reduce unnecessary allocations, investigate retained objects, choose/tune the collector based on measured behavior, size the heap appropriately and validate changes with production-like load."
   }
 ]

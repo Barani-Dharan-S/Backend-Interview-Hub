@@ -2353,5 +2353,113 @@
     "investigation": "Inspect the execution plan and amount of rows scanned/discarded before the requested page. Measure latency as offset grows.",
     "resolution": "Use keyset/seek pagination based on a stable indexed ordering for large datasets. Keep cursor semantics explicit and avoid exposing mutable offset-based navigation when consistent traversal matters.",
     "prevention": "Index the cursor columns, define deterministic ordering and test pagination at realistic data volume."
+  },
+  {
+    "id": "v10.5-scenario-12",
+    "title": "SQL query becomes slow after table growth",
+    "level": "L3",
+    "tags": [
+      "sql",
+      "indexes",
+      "execution-plan"
+    ],
+    "short": "A query can degrade as data volume grows because an old plan or index strategy no longer matches the data distribution.",
+    "answer": "I would not immediately add an index. I would inspect the execution plan and identify whether the database is scanning too many rows, sorting, or using a poor join strategy. Then I would change the query or index based on evidence and measure again.",
+    "code": "",
+    "followups": [
+      "What is a covering index?",
+      "When can an index make writes slower?"
+    ],
+    "mistakes": [
+      "Do not index every column."
+    ],
+    "interview": "The interview answer should emphasize execution plans and selectivity rather than saying indexes always make queries faster.",
+    "source": "V10.5",
+    "topic": "sql",
+    "subtopic": "indexes",
+    "scenario": "A query that used to run in 50 ms now takes 8 seconds after a table grows from one million to fifty million rows.",
+    "investigation": "Capture the execution plan, inspect row estimates, index usage, selectivity, sort/hash operations and whether predicates are sargable. Compare the plan before and after growth if possible.",
+    "prevention": "Design indexes based on actual predicates and ordering, rewrite non-sargable expressions, update statistics where applicable, reduce unnecessary columns and consider partitioning only when it solves a demonstrated access pattern."
+  },
+  {
+    "id": "v10.5-scenario-13",
+    "title": "Two services deadlock while updating shared business data",
+    "level": "L3",
+    "tags": [
+      "deadlock",
+      "transactions",
+      "distributed"
+    ],
+    "short": "Deadlocks happen when transactions hold locks while waiting for each other in a cycle.",
+    "answer": "I would confirm the cycle in the database deadlock report. The primary fix is to acquire shared resources in a consistent order across code paths. Retries can be a secondary resilience mechanism, but they should not hide a systemic locking problem.",
+    "code": "",
+    "followups": [
+      "How is a deadlock different from lock timeout?",
+      "What isolation level changes might help?"
+    ],
+    "mistakes": [
+      "Do not rely only on retries."
+    ],
+    "interview": "Consistent lock ordering is often the simplest preventive design.",
+    "source": "V10.5",
+    "topic": "sql",
+    "subtopic": "transactions",
+    "scenario": "Service A updates order then inventory. Service B updates inventory then order. Under concurrency, requests start deadlocking.",
+    "investigation": "Inspect database deadlock reports and transaction traces to identify lock acquisition order. Confirm whether both operations touch the same rows in opposite order.",
+    "prevention": "Standardize lock acquisition order, keep transactions short, avoid unnecessary locks, and implement bounded retry for transient deadlock failures."
+  },
+  {
+    "id": "v10.5-scenario-14",
+    "title": "Offset pagination becomes extremely slow on a large table",
+    "level": "L2",
+    "tags": [
+      "sql",
+      "pagination",
+      "performance"
+    ],
+    "short": "Offset pagination can become expensive at deep pages because the database still processes skipped rows.",
+    "answer": "For large datasets I would prefer keyset pagination. The client sends the last seen key, and the database can use an index to seek directly into the next range. This gives more stable performance as the page depth increases.",
+    "code": "",
+    "followups": [
+      "How do you paginate by timestamp safely?",
+      "What indexes are needed?"
+    ],
+    "mistakes": [
+      "Do not claim keyset always works for arbitrary sorting without a stable unique tie-breaker."
+    ],
+    "interview": "The trade-off is that keyset pagination is less convenient for random page-number navigation.",
+    "source": "V10.5",
+    "topic": "sql",
+    "subtopic": "indexes",
+    "scenario": "Page 1 of an API is fast, but requesting page 50,000 takes several seconds.",
+    "investigation": "Inspect the SQL and execution plan. OFFSET often requires the database to walk past a large number of rows before returning the requested page.",
+    "prevention": "Use keyset/seek pagination with a stable indexed ordering, such as WHERE id > lastSeenId ORDER BY id LIMIT n. Document that arbitrary page-number jumps may no longer be supported."
+  },
+  {
+    "id": "v10.5-scenario-23",
+    "title": "A SQL query causes lock contention during a batch job",
+    "level": "L3",
+    "tags": [
+      "sql",
+      "locking",
+      "batch"
+    ],
+    "short": "Long-running batch transactions can create lock contention even when the individual SQL statements are fast.",
+    "answer": "I would reduce transaction scope and batch size first, then inspect lock waits and the access plan. The batch should acquire locks predictably and release them frequently enough that interactive traffic can make progress.",
+    "code": "",
+    "followups": [
+      "Would READ COMMITTED solve it?",
+      "How would you throttle a backfill?"
+    ],
+    "mistakes": [
+      "Do not solve lock contention only by increasing database resources."
+    ],
+    "interview": "The best batch size is workload-specific; measure lock duration and throughput rather than picking a huge fixed number.",
+    "source": "V10.5",
+    "topic": "sql",
+    "subtopic": "transactions",
+    "scenario": "A nightly batch update causes daytime API requests to wait on locked rows.",
+    "investigation": "Inspect transaction duration, lock wait events, batch size and whether the batch scans or updates rows in a conflicting order.",
+    "prevention": "Break work into smaller committed batches, process in deterministic key order, use appropriate indexes, schedule heavy work carefully and avoid holding locks while doing unrelated work."
   }
 ]

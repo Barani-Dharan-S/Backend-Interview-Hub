@@ -772,5 +772,59 @@
     "investigation": "Measure scale-up detection delay, pod startup time and whether CPU is a leading indicator for this workload. Check stabilization and metrics scrape intervals.",
     "resolution": "Use a metric that correlates earlier with saturation, such as request rate, concurrency or queue depth, and tune target utilization and startup capacity. Keep a minimum replica buffer for predictable peaks.",
     "prevention": "Load-test burst traffic, measure time-to-ready and set alerts on saturation before the SLO is breached."
+  },
+  {
+    "id": "v10.5-scenario-17",
+    "title": "Kubernetes pods are OOMKilled despite normal application heap usage",
+    "level": "L3",
+    "tags": [
+      "kubernetes",
+      "jvm",
+      "memory"
+    ],
+    "short": "Container OOMKill can occur when total process memory exceeds the cgroup limit even if Java heap is healthy.",
+    "answer": "I would compare the container limit with total process memory, not just Xmx. Thread stacks, metaspace and direct buffers can consume significant native memory. Then I would tune the JVM and container together and validate under realistic concurrency.",
+    "code": "",
+    "followups": [
+      "How do you size Xmx in a container?",
+      "What are direct byte buffers?"
+    ],
+    "mistakes": [
+      "Do not set Xmx equal to the entire container memory limit."
+    ],
+    "interview": "The distinction between JVM heap and process/container memory is the key interview point.",
+    "source": "V10.5",
+    "topic": "cloud",
+    "subtopic": "kubernetes",
+    "scenario": "A Java pod is repeatedly OOMKilled. JVM heap metrics remain below the configured maximum.",
+    "investigation": "Compare container memory limits with JVM heap plus native memory, metaspace, thread stacks, direct buffers and other process memory. Check cgroup memory events and JVM native-memory diagnostics where available.",
+    "prevention": "Set container-aware JVM memory settings, leave headroom for native memory, control thread counts and direct buffers, and size the pod limit based on measured total process memory rather than heap alone."
+  },
+  {
+    "id": "v10.5-scenario-18",
+    "title": "Kubernetes readiness probe causes a deployment outage",
+    "level": "L2",
+    "tags": [
+      "kubernetes",
+      "readiness",
+      "deployment"
+    ],
+    "short": "Readiness controls whether a pod receives traffic. A probe that depends on fragile external services can prevent healthy pods from ever entering service.",
+    "answer": "I would make the readiness endpoint reflect whether the application itself can accept traffic, not whether every dependency is perfect. Downstream failures should normally be handled at request time through resilience patterns.",
+    "code": "",
+    "followups": [
+      "What should liveness check?",
+      "When should startup probes be used?"
+    ],
+    "mistakes": [
+      "Do not make liveness depend on downstream services."
+    ],
+    "interview": "Overly strict health checks can turn a dependency outage into a deployment-wide outage.",
+    "source": "V10.5",
+    "topic": "cloud",
+    "subtopic": "kubernetes",
+    "scenario": "New pods start, but the readiness probe immediately fails because the application depends on a downstream service that is temporarily unavailable.",
+    "investigation": "Check probe endpoint behavior and whether readiness is being used to represent application availability versus dependency readiness. Inspect startup and dependency initialization logs.",
+    "prevention": "Keep readiness lightweight and local. Let the service become ready when it can serve valid requests, while handling downstream dependency failures with timeouts and resilience rather than making the readiness probe depend on every dependency."
   }
 ]
