@@ -1,0 +1,214 @@
+[
+  {
+    "id": "micro-019",
+    "title": "Service mesh",
+    "level": "L3",
+    "tags": [
+      "Cloud",
+      "Networking"
+    ],
+    "short": "A service mesh moves service-to-service networking policies into infrastructure proxies/nodes.",
+    "answer": "It can provide mTLS, routing and telemetry but adds platform complexity.",
+    "code": "A -> proxy -> proxy -> B",
+    "followups": [
+      "When avoid a mesh?"
+    ],
+    "mistakes": [],
+    "interview": "A service mesh moves service-to-service networking policies into infrastructure proxies/nodes.",
+    "source": "V3"
+  },
+  {
+    "id": "cloud-001",
+    "title": "AWS vs Azure vs GCP",
+    "level": "L2",
+    "tags": [
+      "Cloud",
+      "Architecture"
+    ],
+    "short": "All provide core compute, networking, storage and managed services; requirements drive selection.",
+    "answer": "Compare ecosystem fit, skills, regions, security, cost and managed services.",
+    "code": "Compute -> containers/VM/serverless",
+    "followups": [
+      "How choose cloud?"
+    ],
+    "mistakes": [],
+    "interview": "All provide core compute, networking, storage and managed services; requirements drive selection.",
+    "source": "V3"
+  },
+  {
+    "id": "cloud-002",
+    "title": "Horizontal vs vertical scaling",
+    "level": "L2",
+    "tags": [
+      "Cloud",
+      "Scalability"
+    ],
+    "short": "Vertical adds resources to an instance; horizontal adds instances.",
+    "answer": "Horizontal scaling requires appropriate state management and traffic distribution.",
+    "code": "2 instances -> 6 instances",
+    "followups": [
+      "What state should be externalized?"
+    ],
+    "mistakes": [],
+    "interview": "Vertical adds resources to an instance; horizontal adds instances.",
+    "source": "V3"
+  },
+  {
+    "id": "cloud-003",
+    "title": "Load balancer",
+    "level": "L2",
+    "tags": [
+      "Networking",
+      "Cloud"
+    ],
+    "short": "It distributes traffic across healthy instances.",
+    "answer": "It may perform health checks, L4/L7 routing and TLS termination depending on product.",
+    "code": "Client -> LB -> A/B/C",
+    "followups": [
+      "L4 vs L7?"
+    ],
+    "mistakes": [],
+    "interview": "It distributes traffic across healthy instances.",
+    "source": "V3"
+  },
+  {
+    "id": "cloud-004",
+    "title": "Container",
+    "level": "L2",
+    "tags": [
+      "Docker",
+      "Cloud"
+    ],
+    "short": "A container packages an application and dependencies while sharing the host kernel.",
+    "answer": "Containers improve deployment consistency but are not identical to VMs in isolation characteristics.",
+    "code": "FROM eclipse-temurin:21-jre",
+    "followups": [
+      "Container vs VM?"
+    ],
+    "mistakes": [],
+    "interview": "A container packages an application and dependencies while sharing the host kernel.",
+    "source": "V3"
+  },
+  {
+    "id": "cloud-005",
+    "title": "Kubernetes high level",
+    "level": "L2",
+    "tags": [
+      "Kubernetes",
+      "Cloud"
+    ],
+    "short": "Kubernetes orchestrates containerized workloads using desired state.",
+    "answer": "Pods run workloads, Services provide stable networking and Deployments manage replicas/rollouts.",
+    "code": "Deployment -> Pods\nService -> endpoint",
+    "followups": [
+      "Pod vs container?"
+    ],
+    "mistakes": [],
+    "interview": "Kubernetes orchestrates containerized workloads using desired state.",
+    "source": "V3"
+  },
+  {
+    "id": "cloud-007",
+    "title": "Autoscaling",
+    "level": "L2",
+    "tags": [
+      "Cloud",
+      "Scalability"
+    ],
+    "short": "Autoscaling changes capacity based on workload signals.",
+    "answer": "It can use CPU, memory, request rate or custom metrics; downstream bottlenecks remain possible.",
+    "code": "min=2 max=10",
+    "followups": [
+      "Scale out vs up?"
+    ],
+    "mistakes": [],
+    "interview": "Autoscaling changes capacity based on workload signals.",
+    "source": "V3"
+  },
+  {
+    "id": "cloud-008",
+    "title": "Object storage",
+    "level": "L2",
+    "tags": [
+      "Cloud",
+      "Storage"
+    ],
+    "short": "It stores blobs as objects addressed by keys.",
+    "answer": "Use for documents/images/backups; store transactional searchable metadata in a database.",
+    "code": "bucket/orders/2026/invoice.pdf",
+    "followups": [
+      "Object vs block storage?"
+    ],
+    "mistakes": [],
+    "interview": "It stores blobs as objects addressed by keys.",
+    "source": "V3"
+  },
+  {
+    "id": "cloud-009",
+    "title": "Infrastructure as code",
+    "level": "L2",
+    "tags": [
+      "DevOps",
+      "Cloud"
+    ],
+    "short": "Infrastructure is declared in version-controlled files.",
+    "answer": "IaC improves reproducibility and reviewability while reducing drift.",
+    "code": "resource \"...\" { }",
+    "followups": [
+      "Plan vs apply?"
+    ],
+    "mistakes": [],
+    "interview": "Infrastructure is declared in version-controlled files.",
+    "source": "V3"
+  },
+  {
+    "id": "cloud-010",
+    "title": "Secure cloud backend",
+    "level": "L3",
+    "tags": [
+      "Security",
+      "Cloud"
+    ],
+    "short": "Use least-privilege identity, encryption, secret management, private networking and audit logs.",
+    "answer": "Prefer workload identities/roles over static keys and use layered network/application controls.",
+    "code": "WAF -> LB -> private services -> DB",
+    "followups": [
+      "How rotate secrets?"
+    ],
+    "mistakes": [],
+    "interview": "Use least-privilege identity, encryption, secret management, private networking and audit logs.",
+    "source": "V3"
+  },
+  {
+    "id": "iq-164",
+    "title": "What is Spring Cloud Gateway?",
+    "level": "L1",
+    "tags": [
+      "IQ300",
+      "cloud"
+    ],
+    "short": "Spring's reactive, non-blocking API gateway built on Spring WebFlux/Netty, used to route requests to downstream services based on predicates (path, header, etc.), apply filters (auth, rate limiting, request rewriting), and integrate with se",
+    "answer": "Spring's reactive, non-blocking API gateway built on Spring WebFlux/Netty, used to route requests to downstream services based on predicates (path, header, etc.), apply filters (auth, rate limiting, request rewriting), and integrate with service discovery for dynamic routing — the modern replacement for the older Netflix Zuul gateway in the Spring ecosystem.",
+    "code": "",
+    "followups": [],
+    "mistakes": [],
+    "interview": "Spring's reactive, non-blocking API gateway built on Spring WebFlux/Netty, used to route requests to downstream services based on predicates (path, header, etc.), apply filters (auth, rate limiting, request rewriting), and integrate with service discovery for dynamic routing — the modern replacement for the older Netfl",
+    "source": "IQ300"
+  },
+  {
+    "id": "iq-177",
+    "title": "What is Spring Cloud Config?",
+    "level": "L1",
+    "tags": [
+      "IQ300",
+      "cloud"
+    ],
+    "short": "A centralized configuration server for Spring Cloud microservices — it serves environment/application-specific configuration (often backed by a Git repository) over HTTP to client applications on startup, and can push updated configuration ",
+    "answer": "A centralized configuration server for Spring Cloud microservices — it serves environment/application-specific configuration (often backed by a Git repository) over HTTP to client applications on startup, and can push updated configuration to running services via a refresh mechanism, decoupling config management from individual service deployments.",
+    "code": "",
+    "followups": [],
+    "mistakes": [],
+    "interview": "A centralized configuration server for Spring Cloud microservices — it serves environment/application-specific configuration (often backed by a Git repository) over HTTP to client applications on startup, and can push updated configuration to running services via a refresh mechanism, decoupling config management from i",
+    "source": "IQ300"
+  }
+]

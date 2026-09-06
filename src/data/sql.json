@@ -1,0 +1,670 @@
+[
+  {
+    "id": "jpa-005",
+    "title": "N+1 query problem",
+    "level": "L2",
+    "tags": [
+      "JPA",
+      "Performance"
+    ],
+    "short": "One parent query plus one query per accessed association.",
+    "answer": "Fix with fetch joins, EntityGraphs, batch fetching or projections.",
+    "code": "SELECT o FROM Order o JOIN FETCH o.customer",
+    "followups": [
+      "How detect N+1?"
+    ],
+    "mistakes": [],
+    "interview": "One parent query plus one query per accessed association.",
+    "source": "V3"
+  },
+  {
+    "id": "system-010",
+    "title": "Database sharding",
+    "level": "L3",
+    "tags": [
+      "Databases",
+      "Scalability"
+    ],
+    "short": "Partition data across nodes using a shard key.",
+    "answer": "A good key distributes load and supports common access patterns; cross-shard queries add complexity.",
+    "code": "user_id hash -> shard",
+    "followups": [
+      "How choose shard key?"
+    ],
+    "mistakes": [],
+    "interview": "Partition data across nodes using a shard key.",
+    "source": "V3"
+  },
+  {
+    "id": "system-011",
+    "title": "Read replicas vs sharding",
+    "level": "L3",
+    "tags": [
+      "Databases",
+      "Scalability"
+    ],
+    "short": "Replicas scale reads; sharding partitions data to scale capacity/write load.",
+    "answer": "Replicas may lag; sharding complicates queries and rebalancing.",
+    "code": "Primary -> replicas\nShard A/B/C",
+    "followups": [
+      "When replicas stop helping?"
+    ],
+    "mistakes": [],
+    "interview": "Replicas scale reads; sharding partitions data to scale capacity/write load.",
+    "source": "V3"
+  },
+  {
+    "id": "sql-001",
+    "title": "Primary key",
+    "level": "L2",
+    "tags": [
+      "SQL",
+      "Constraints"
+    ],
+    "short": "A primary key uniquely identifies rows and cannot be null.",
+    "answer": "A table has one primary-key constraint, possibly composite.",
+    "code": "CREATE TABLE student(id BIGINT PRIMARY KEY,name VARCHAR(100));",
+    "followups": [
+      "Composite key?"
+    ],
+    "mistakes": [],
+    "interview": "A primary key uniquely identifies rows and cannot be null.",
+    "source": "V3"
+  },
+  {
+    "id": "sql-002",
+    "title": "Primary vs unique key",
+    "level": "L2",
+    "tags": [
+      "SQL",
+      "Constraints"
+    ],
+    "short": "Both enforce uniqueness; a table has one primary key and can have multiple unique constraints.",
+    "answer": "Primary key columns are non-null. NULL semantics for unique constraints vary by DB.",
+    "code": "ALTER TABLE student ADD CONSTRAINT uq_email UNIQUE(email);",
+    "followups": [
+      "Multiple unique constraints?"
+    ],
+    "mistakes": [],
+    "interview": "Both enforce uniqueness; a table has one primary key and can have multiple unique constraints.",
+    "source": "V3"
+  },
+  {
+    "id": "sql-003",
+    "title": "Foreign key",
+    "level": "L2",
+    "tags": [
+      "SQL",
+      "Relationships"
+    ],
+    "short": "A foreign key enforces referential integrity.",
+    "answer": "It ensures references point to valid parent keys subject to null and action semantics.",
+    "code": "FOREIGN KEY(customer_id) REFERENCES customer(id)",
+    "followups": [
+      "Cascade vs restrict?"
+    ],
+    "mistakes": [],
+    "interview": "A foreign key enforces referential integrity.",
+    "source": "V3"
+  },
+  {
+    "id": "sql-004",
+    "title": "Normalization",
+    "level": "L2",
+    "tags": [
+      "SQL",
+      "Data Modeling"
+    ],
+    "short": "Normalization reduces redundant facts and update anomalies.",
+    "answer": "Normal forms improve integrity; intentional denormalization can help performance.",
+    "code": "Customer(id,name)\nOrder(id,customer_id,...)",
+    "followups": [
+      "Why denormalize?"
+    ],
+    "mistakes": [],
+    "interview": "Normalization reduces redundant facts and update anomalies.",
+    "source": "V3"
+  },
+  {
+    "id": "sql-005",
+    "title": "Indexes and write cost",
+    "level": "L2",
+    "tags": [
+      "SQL",
+      "Performance"
+    ],
+    "short": "Indexes accelerate reads but consume storage and add write maintenance.",
+    "answer": "INSERT/UPDATE/DELETE may update several indexes. Use actual query plans to justify them.",
+    "code": "CREATE INDEX idx_orders_customer ON orders(customer_id);",
+    "followups": [
+      "Composite index?"
+    ],
+    "mistakes": [],
+    "interview": "Indexes accelerate reads but consume storage and add write maintenance.",
+    "source": "V3"
+  },
+  {
+    "id": "sql-006",
+    "title": "Composite index",
+    "level": "L2",
+    "tags": [
+      "SQL",
+      "Indexes"
+    ],
+    "short": "A composite index contains multiple ordered columns; order matters.",
+    "answer": "Design it around common predicates and sorting. It is not equivalent to separate single-column indexes.",
+    "code": "CREATE INDEX idx ON orders(customer_id,status);",
+    "followups": [
+      "Leftmost-prefix idea?"
+    ],
+    "mistakes": [],
+    "interview": "A composite index contains multiple ordered columns; order matters.",
+    "source": "V3"
+  },
+  {
+    "id": "sql-007",
+    "title": "WHERE vs HAVING",
+    "level": "L2",
+    "tags": [
+      "SQL",
+      "Aggregation"
+    ],
+    "short": "WHERE filters rows before grouping; HAVING filters grouped results.",
+    "answer": "Use WHERE to reduce input and HAVING for aggregate conditions.",
+    "code": "SELECT dept,AVG(salary) FROM employee WHERE active=true GROUP BY dept HAVING AVG(salary)>70000;",
+    "followups": [
+      "HAVING without GROUP BY?"
+    ],
+    "mistakes": [],
+    "interview": "WHERE filters rows before grouping; HAVING filters grouped results.",
+    "source": "V3"
+  },
+  {
+    "id": "sql-008",
+    "title": "INNER vs LEFT JOIN",
+    "level": "L2",
+    "tags": [
+      "SQL",
+      "Joins"
+    ],
+    "short": "INNER keeps matches; LEFT keeps every left row.",
+    "answer": "A WHERE predicate on the right table can turn a LEFT JOIN into an effective inner join.",
+    "code": "SELECT c.id,o.id FROM customer c LEFT JOIN orders o ON o.customer_id=c.id;",
+    "followups": [
+      "Why does WHERE change results?"
+    ],
+    "mistakes": [],
+    "interview": "INNER keeps matches; LEFT keeps every left row.",
+    "source": "V3"
+  },
+  {
+    "id": "sql-009",
+    "title": "Window functions",
+    "level": "L2",
+    "tags": [
+      "SQL",
+      "Analytics"
+    ],
+    "short": "They calculate across related rows without collapsing them.",
+    "answer": "ROW_NUMBER, RANK, DENSE_RANK, SUM OVER and LAG support analytics with row-level detail.",
+    "code": "SELECT name,salary,DENSE_RANK() OVER(ORDER BY salary DESC) rnk FROM employee;",
+    "followups": [
+      "RANK vs DENSE_RANK?"
+    ],
+    "mistakes": [],
+    "interview": "They calculate across related rows without collapsing them.",
+    "source": "V3"
+  },
+  {
+    "id": "sql-010",
+    "title": "Find duplicate email/contact",
+    "level": "L2",
+    "tags": [
+      "SQL",
+      "Interview"
+    ],
+    "short": "Group by both columns and filter count > 1.",
+    "answer": "SELECT email,contact_number,COUNT(*) cnt FROM student GROUP BY email,contact_number HAVING COUNT(*)>1;",
+    "code": [
+      "How return full duplicate rows?"
+    ],
+    "followups": [],
+    "mistakes": [],
+    "interview": "Group by both columns and filter count > 1.",
+    "source": "V3"
+  },
+  {
+    "id": "sql-012",
+    "title": "Database transaction",
+    "level": "L2",
+    "tags": [
+      "SQL",
+      "ACID"
+    ],
+    "short": "A transaction groups database work with commit/rollback semantics.",
+    "answer": "Transactions protect atomicity and consistency while isolation controls concurrency.",
+    "code": "BEGIN; UPDATE account SET balance=balance-100 WHERE id=1; COMMIT;",
+    "followups": [
+      "ACID?"
+    ],
+    "mistakes": [],
+    "interview": "A transaction groups database work with commit/rollback semantics.",
+    "source": "V3"
+  },
+  {
+    "id": "sql-013",
+    "title": "ACID",
+    "level": "L2",
+    "tags": [
+      "SQL",
+      "Transactions"
+    ],
+    "short": "Atomicity, Consistency, Isolation and Durability describe transaction guarantees.",
+    "answer": "Atomicity is all-or-nothing; consistency preserves constraints; isolation controls concurrency; durability concerns committed data survival.",
+    "code": "// debit + credit commit together",
+    "followups": [
+      "Which relates to concurrency?"
+    ],
+    "mistakes": [],
+    "interview": "Atomicity, Consistency, Isolation and Durability describe transaction guarantees.",
+    "source": "V3"
+  },
+  {
+    "id": "sql-014",
+    "title": "SQL deadlock",
+    "level": "L3",
+    "tags": [
+      "SQL",
+      "Concurrency"
+    ],
+    "short": "Transactions can wait cyclically for each other's locks.",
+    "answer": "Databases may abort one transaction. Keep transactions short and use safe bounded retries.",
+    "code": "T1 locks A -> waits B\nT2 locks B -> waits A",
+    "followups": [
+      "How retry?"
+    ],
+    "mistakes": [],
+    "interview": "Transactions can wait cyclically for each other's locks.",
+    "source": "V3"
+  },
+  {
+    "id": "sql-015",
+    "title": "EXPLAIN / execution plan",
+    "level": "L2",
+    "tags": [
+      "SQL",
+      "Performance"
+    ],
+    "short": "It shows how the database plans to execute a query.",
+    "answer": "Inspect scans, joins, indexes, row estimates and actual statistics where supported.",
+    "code": "EXPLAIN SELECT * FROM orders WHERE customer_id=42;",
+    "followups": [
+      "Full table scan?"
+    ],
+    "mistakes": [],
+    "interview": "It shows how the database plans to execute a query.",
+    "source": "V3"
+  },
+  {
+    "id": "sql-016",
+    "title": "DELETE vs TRUNCATE vs DROP",
+    "level": "L2",
+    "tags": [
+      "SQL",
+      "DDL"
+    ],
+    "short": "DELETE removes rows, TRUNCATE clears table contents as a bulk operation, DROP removes the table object.",
+    "answer": "DELETE supports WHERE. Exact TRUNCATE behavior varies by database.",
+    "code": "DELETE FROM employee WHERE id=10;\nTRUNCATE TABLE employee;\nDROP TABLE employee;",
+    "followups": [
+      "Can TRUNCATE roll back?"
+    ],
+    "mistakes": [],
+    "interview": "DELETE removes rows, TRUNCATE clears table contents as a bulk operation, DROP removes the table object.",
+    "source": "V3"
+  },
+  {
+    "id": "sql-017",
+    "title": "View vs materialized view",
+    "level": "L2",
+    "tags": [
+      "SQL",
+      "Database"
+    ],
+    "short": "A normal view stores a query definition; a materialized view stores results.",
+    "answer": "Materialized views trade freshness and refresh cost for faster reads.",
+    "code": "CREATE VIEW active_customers AS SELECT id,name FROM customer WHERE active=true;",
+    "followups": [
+      "When materialize?"
+    ],
+    "mistakes": [],
+    "interview": "A normal view stores a query definition; a materialized view stores results.",
+    "source": "V3"
+  },
+  {
+    "id": "sql-018",
+    "title": "CTE",
+    "level": "L2",
+    "tags": [
+      "SQL",
+      "Query Design"
+    ],
+    "short": "A CTE names a subquery for readable multi-step queries.",
+    "answer": "WITH can support recursive queries where the DB allows them. Materialization is optimizer-dependent.",
+    "code": "WITH high_salary AS (SELECT * FROM employee WHERE salary>80000) SELECT * FROM high_salary;",
+    "followups": [
+      "Recursive CTE?"
+    ],
+    "mistakes": [],
+    "interview": "A CTE names a subquery for readable multi-step queries.",
+    "source": "V3"
+  },
+  {
+    "id": "sql-020",
+    "title": "Troubleshoot slow SQL",
+    "level": "L3",
+    "tags": [
+      "Production",
+      "Performance"
+    ],
+    "short": "Inspect actual query, plan, indexes, locks, row counts and recent changes.",
+    "answer": "Use EXPLAIN/EXPLAIN ANALYZE safely, inspect blocking and test targeted changes on realistic data.",
+    "code": "slow query -> plan -> locks -> index -> re-test",
+    "followups": [
+      "Can an index hurt?"
+    ],
+    "mistakes": [],
+    "interview": "Inspect actual query, plan, indexes, locks, row counts and recent changes.",
+    "source": "V3"
+  },
+  {
+    "id": "spring-009",
+    "title": "Transaction isolation",
+    "level": "L2",
+    "tags": [
+      "Transactions",
+      "Database"
+    ],
+    "short": "Isolation controls what concurrent transactions can observe.",
+    "answer": "Isolation levels trade consistency and concurrency. Exact behavior is database-specific.",
+    "code": "@Transactional(isolation=Isolation.READ_COMMITTED)",
+    "followups": [
+      "Dirty read?"
+    ],
+    "mistakes": [],
+    "interview": "Isolation controls what concurrent transactions can observe.",
+    "source": "V3"
+  },
+  {
+    "id": "iq-134",
+    "title": "What is the N+1 query problem?",
+    "level": "L2",
+    "tags": [
+      "IQ300",
+      "jpa"
+    ],
+    "short": "When fetching a list of N parent entities, and then lazily accessing an association on each one individually, Hibernate issues one query for the parents plus N additional queries (one per parent) to fetch each one's association — N+1 total ",
+    "answer": "When fetching a list of N parent entities, and then lazily accessing an association on each one individually, Hibernate issues one query for the parents plus N additional queries (one per parent) to fetch each one's association — N+1 total queries instead of one efficient join, badly hurting performance as N grows.",
+    "code": "",
+    "followups": [],
+    "mistakes": [],
+    "interview": "When fetching a list of N parent entities, and then lazily accessing an association on each one individually, Hibernate issues one query for the parents plus N additional queries (one per parent) to fetch each one's association — N+1 total queries instead of one efficient join, badly hurting performance as N grows.",
+    "source": "IQ300"
+  },
+  {
+    "id": "iq-145",
+    "title": "Difference between JPQL and native SQL.",
+    "level": "L1",
+    "tags": [
+      "IQ300",
+      "sql"
+    ],
+    "short": "JPQL queries entities and their properties/associations in an object-oriented, database-agnostic way, and JPA translates it to the appropriate SQL dialect. Native SQL is written directly against actual database tables/columns, giving full a",
+    "answer": "JPQL queries entities and their properties/associations in an object-oriented, database-agnostic way, and JPA translates it to the appropriate SQL dialect. Native SQL is written directly against actual database tables/columns, giving full access to database-specific features (functions, hints) at the cost of portability, and typically returning raw results rather than automatically mapped entities unless explicitly configured.",
+    "code": "",
+    "followups": [],
+    "mistakes": [],
+    "interview": "JPQL queries entities and their properties/associations in an object-oriented, database-agnostic way, and JPA translates it to the appropriate SQL dialect. Native SQL is written directly against actual database tables/columns, giving full access to database-specific features (functions, hints) at the cost of portabilit",
+    "source": "IQ300"
+  },
+  {
+    "id": "iq-146",
+    "title": "What is `@Query`?",
+    "level": "L1",
+    "tags": [
+      "IQ300",
+      "sql"
+    ],
+    "short": "An annotation used on Spring Data JPA repository methods to supply a custom JPQL (or, with \\nativeQuery = true\\, native SQL) query explicitly, instead of relying on Spring Data's method-name-derived query generation — useful for complex que",
+    "answer": "An annotation used on Spring Data JPA repository methods to supply a custom JPQL (or, with \\<code>nativeQuery = true\\</code>, native SQL) query explicitly, instead of relying on Spring Data's method-name-derived query generation — useful for complex queries that don't map cleanly to a method name.",
+    "code": "",
+    "followups": [],
+    "mistakes": [],
+    "interview": "An annotation used on Spring Data JPA repository methods to supply a custom JPQL (or, with \\nativeQuery = true\\, native SQL) query explicitly, instead of relying on Spring Data's method-name-derived query generation — useful for complex queries that don't map cleanly to a method name.",
+    "source": "IQ300"
+  },
+  {
+    "id": "iq-226",
+    "title": "Clustered vs non-clustered index.",
+    "level": "L1",
+    "tags": [
+      "IQ300",
+      "sql"
+    ],
+    "short": "A clustered index determines the actual physical order rows are stored on disk — a table can have only one (often the primary key). A non-clustered index is a separate structure holding pointers back to the actual rows, ordered independentl",
+    "answer": "A clustered index determines the actual physical order rows are stored on disk — a table can have only one (often the primary key). A non-clustered index is a separate structure holding pointers back to the actual rows, ordered independently of physical storage — a table can have many, useful for speeding up lookups on non-primary-key columns.",
+    "code": "",
+    "followups": [],
+    "mistakes": [],
+    "interview": "A clustered index determines the actual physical order rows are stored on disk — a table can have only one (often the primary key). A non-clustered index is a separate structure holding pointers back to the actual rows, ordered independently of physical storage — a table can have many, useful for speeding up lookups on",
+    "source": "IQ300"
+  },
+  {
+    "id": "iq-227",
+    "title": "What is an index?",
+    "level": "L1",
+    "tags": [
+      "IQ300",
+      "sql"
+    ],
+    "short": "A separate data structure (typically a B-tree) built on one or more columns that speeds up lookups/filtering/sorting on those columns, at the cost of extra storage and slower writes (since indexes must be updated on every insert/update/dele",
+    "answer": "A separate data structure (typically a B-tree) built on one or more columns that speeds up lookups/filtering/sorting on those columns, at the cost of extra storage and slower writes (since indexes must be updated on every insert/update/delete).",
+    "code": "",
+    "followups": [],
+    "mistakes": [],
+    "interview": "A separate data structure (typically a B-tree) built on one or more columns that speeds up lookups/filtering/sorting on those columns, at the cost of extra storage and slower writes (since indexes must be updated on every insert/update/delete).",
+    "source": "IQ300"
+  },
+  {
+    "id": "iq-228",
+    "title": "When should you avoid indexes?",
+    "level": "L1",
+    "tags": [
+      "IQ300",
+      "sql"
+    ],
+    "short": "On columns rarely used in WHERE/JOIN/ORDER BY clauses, on small tables where a full scan is already fast, on columns with very low cardinality (few distinct values, e.g. a boolean flag) where the index doesn't help selectivity much, and on ",
+    "answer": "On columns rarely used in WHERE/JOIN/ORDER BY clauses, on small tables where a full scan is already fast, on columns with very low cardinality (few distinct values, e.g. a boolean flag) where the index doesn't help selectivity much, and on tables with very heavy write volume where index maintenance overhead outweighs read benefits.",
+    "code": "",
+    "followups": [],
+    "mistakes": [],
+    "interview": "On columns rarely used in WHERE/JOIN/ORDER BY clauses, on small tables where a full scan is already fast, on columns with very low cardinality (few distinct values, e.g. a boolean flag) where the index doesn't help selectivity much, and on tables with very heavy write volume where index maintenance overhead outweighs r",
+    "source": "IQ300"
+  },
+  {
+    "id": "iq-231",
+    "title": "Explain `INNER JOIN`.",
+    "level": "L1",
+    "tags": [
+      "IQ300",
+      "sql"
+    ],
+    "short": "Returns only rows where there's a match in both joined tables based on the join condition — rows from either side without a corresponding match in the other are excluded from the result.",
+    "answer": "Returns only rows where there's a match in both joined tables based on the join condition — rows from either side without a corresponding match in the other are excluded from the result.",
+    "code": "",
+    "followups": [],
+    "mistakes": [],
+    "interview": "Returns only rows where there's a match in both joined tables based on the join condition — rows from either side without a corresponding match in the other are excluded from the result.",
+    "source": "IQ300"
+  },
+  {
+    "id": "iq-232",
+    "title": "Explain `LEFT JOIN`.",
+    "level": "L1",
+    "tags": [
+      "IQ300",
+      "sql"
+    ],
+    "short": "Returns all rows from the left table, plus matching rows from the right table where they exist; if there's no match, the right table's columns are filled with NULL for that row.",
+    "answer": "Returns all rows from the left table, plus matching rows from the right table where they exist; if there's no match, the right table's columns are filled with NULL for that row.",
+    "code": "",
+    "followups": [],
+    "mistakes": [],
+    "interview": "Returns all rows from the left table, plus matching rows from the right table where they exist; if there's no match, the right table's columns are filled with NULL for that row.",
+    "source": "IQ300"
+  },
+  {
+    "id": "iq-233",
+    "title": "Explain `RIGHT JOIN`.",
+    "level": "L1",
+    "tags": [
+      "IQ300",
+      "sql"
+    ],
+    "short": "Returns all rows from the right table, plus matching rows from the left table where they exist; unmatched left-table columns are filled with NULL. It's functionally equivalent to swapping the table order and using a LEFT JOIN.",
+    "answer": "Returns all rows from the right table, plus matching rows from the left table where they exist; unmatched left-table columns are filled with NULL. It's functionally equivalent to swapping the table order and using a LEFT JOIN.",
+    "code": "",
+    "followups": [],
+    "mistakes": [],
+    "interview": "Returns all rows from the right table, plus matching rows from the left table where they exist; unmatched left-table columns are filled with NULL. It's functionally equivalent to swapping the table order and using a LEFT JOIN.",
+    "source": "IQ300"
+  },
+  {
+    "id": "iq-234",
+    "title": "Explain `FULL OUTER JOIN`.",
+    "level": "L1",
+    "tags": [
+      "IQ300",
+      "sql"
+    ],
+    "short": "Returns all rows from both tables — matched rows combined, and for rows with no match on either side, the missing side's columns are filled with NULL. Effectively the union of a LEFT JOIN and a RIGHT JOIN result.",
+    "answer": "Returns all rows from both tables — matched rows combined, and for rows with no match on either side, the missing side's columns are filled with NULL. Effectively the union of a LEFT JOIN and a RIGHT JOIN result.",
+    "code": "",
+    "followups": [],
+    "mistakes": [],
+    "interview": "Returns all rows from both tables — matched rows combined, and for rows with no match on either side, the missing side's columns are filled with NULL. Effectively the union of a LEFT JOIN and a RIGHT JOIN result.",
+    "source": "IQ300"
+  },
+  {
+    "id": "iq-235",
+    "title": "What is a self join?",
+    "level": "L1",
+    "tags": [
+      "IQ300",
+      "sql"
+    ],
+    "short": "A join of a table with itself, typically using table aliases to distinguish the two \"copies\" — used for comparing rows within the same table, e.g. finding employees and their managers where both are stored in the same employees table.",
+    "answer": "A join of a table with itself, typically using table aliases to distinguish the two \"copies\" — used for comparing rows within the same table, e.g. finding employees and their managers where both are stored in the same employees table.",
+    "code": "",
+    "followups": [],
+    "mistakes": [],
+    "interview": "A join of a table with itself, typically using table aliases to distinguish the two \"copies\" — used for comparing rows within the same table, e.g. finding employees and their managers where both are stored in the same employees table.",
+    "source": "IQ300"
+  },
+  {
+    "id": "iq-236",
+    "title": "What is a cross join?",
+    "level": "L1",
+    "tags": [
+      "IQ300",
+      "sql"
+    ],
+    "short": "Produces the Cartesian product of two tables — every row from the first table paired with every row from the second, with no join condition. Result size is the product of both tables' row counts, so it's used deliberately (e.g. generating c",
+    "answer": "Produces the Cartesian product of two tables — every row from the first table paired with every row from the second, with no join condition. Result size is the product of both tables' row counts, so it's used deliberately (e.g. generating combinations) rather than accidentally.",
+    "code": "",
+    "followups": [],
+    "mistakes": [],
+    "interview": "Produces the Cartesian product of two tables — every row from the first table paired with every row from the second, with no join condition. Result size is the product of both tables' row counts, so it's used deliberately (e.g. generating combinations) rather than accidentally.",
+    "source": "IQ300"
+  },
+  {
+    "id": "iq-237",
+    "title": "What is a subquery?",
+    "level": "L1",
+    "tags": [
+      "IQ300",
+      "sql"
+    ],
+    "short": "A query nested inside another query (in the SELECT list, FROM clause, or WHERE/HAVING condition), used to compute an intermediate result that the outer query then uses — e.g. filtering rows where a column is in the result set of a subquery.",
+    "answer": "A query nested inside another query (in the SELECT list, FROM clause, or WHERE/HAVING condition), used to compute an intermediate result that the outer query then uses — e.g. filtering rows where a column is in the result set of a subquery.",
+    "code": "",
+    "followups": [],
+    "mistakes": [],
+    "interview": "A query nested inside another query (in the SELECT list, FROM clause, or WHERE/HAVING condition), used to compute an intermediate result that the outer query then uses — e.g. filtering rows where a column is in the result set of a subquery.",
+    "source": "IQ300"
+  },
+  {
+    "id": "iq-238",
+    "title": "What is a correlated subquery?",
+    "level": "L1",
+    "tags": [
+      "IQ300",
+      "sql"
+    ],
+    "short": "A subquery that references a column from the outer query, so it must be logically re-evaluated for each row processed by the outer query, rather than being computed once independently — e.g. finding employees whose salary is above the avera",
+    "answer": "A subquery that references a column from the outer query, so it must be logically re-evaluated for each row processed by the outer query, rather than being computed once independently — e.g. finding employees whose salary is above the average salary of their specific department.",
+    "code": "",
+    "followups": [],
+    "mistakes": [],
+    "interview": "A subquery that references a column from the outer query, so it must be logically re-evaluated for each row processed by the outer query, rather than being computed once independently — e.g. finding employees whose salary is above the average salary of their specific department.",
+    "source": "IQ300"
+  },
+  {
+    "id": "iq-258",
+    "title": "What is deadlock in a database?",
+    "level": "L1",
+    "tags": [
+      "IQ300",
+      "sql"
+    ],
+    "short": "A situation where two or more transactions each hold a lock the other needs, forming a cycle where none can proceed — e.g. Transaction A locks row 1 and waits for row 2, while Transaction B locks row 2 and waits for row 1. Most databases au",
+    "answer": "A situation where two or more transactions each hold a lock the other needs, forming a cycle where none can proceed — e.g. Transaction A locks row 1 and waits for row 2, while Transaction B locks row 2 and waits for row 1. Most databases automatically detect this and abort one transaction (a deadlock victim) to break the cycle.",
+    "code": "",
+    "followups": [],
+    "mistakes": [],
+    "interview": "A situation where two or more transactions each hold a lock the other needs, forming a cycle where none can proceed — e.g. Transaction A locks row 1 and waits for row 2, while Transaction B locks row 2 and waits for row 1. Most databases automatically detect this and abort one transaction (a deadlock victim) to break t",
+    "source": "IQ300"
+  },
+  {
+    "id": "iq-286",
+    "title": "Explain your database schema.",
+    "level": "L1",
+    "tags": [
+      "IQ300",
+      "sql"
+    ],
+    "short": "Walk through the core entities and their relationships (one-to-many, many-to-many), key constraints (primary/foreign keys, uniqueness), any denormalization decisions made for performance and why, indexing choices on frequently queried colum",
+    "answer": "Walk through the core entities and their relationships (one-to-many, many-to-many), key constraints (primary/foreign keys, uniqueness), any denormalization decisions made for performance and why, indexing choices on frequently queried columns, and how the schema evolved as requirements changed — grounded in your actual project's tables.",
+    "code": "",
+    "followups": [],
+    "mistakes": [],
+    "interview": "Walk through the core entities and their relationships (one-to-many, many-to-many), key constraints (primary/foreign keys, uniqueness), any denormalization decisions made for performance and why, indexing choices on frequently queried columns, and how the schema evolved as requirements changed — grounded in your actual",
+    "source": "IQ300"
+  },
+  {
+    "id": "iq-328",
+    "title": "Explain how you would optimize a slow SQL query.",
+    "level": "L1",
+    "tags": [
+      "IQ300",
+      "sql"
+    ],
+    "short": "Run \\EXPLAIN\\/\\EXPLAIN ANALYZE\\ to see the actual execution plan, check whether appropriate indexes exist on filtered/joined columns and whether they're actually being used, look for full table scans, N+1 query patterns, or unnecessary colu",
+    "answer": "Run \\<code>EXPLAIN\\</code>/\\<code>EXPLAIN ANALYZE\\</code> to see the actual execution plan, check whether appropriate indexes exist on filtered/joined columns and whether they're actually being used, look for full table scans, N+1 query patterns, or unnecessary columns being selected, consider rewriting subqueries as joins (or vice versa), and verify statistics are up to date so the query planner is making good choices.",
+    "code": "",
+    "followups": [],
+    "mistakes": [],
+    "interview": "Run \\EXPLAIN\\/\\EXPLAIN ANALYZE\\ to see the actual execution plan, check whether appropriate indexes exist on filtered/joined columns and whether they're actually being used, look for full table scans, N+1 query patterns, or unnecessary columns being selected, consider rewriting subqueries as joins (or vice versa), and ",
+    "source": "IQ300"
+  }
+]

@@ -1,0 +1,386 @@
+[
+  {
+    "id": "jpa-001",
+    "title": "Persistence context",
+    "level": "L2",
+    "tags": [
+      "JPA",
+      "Hibernate"
+    ],
+    "short": "It is the EntityManager-managed set of tracked entities.",
+    "answer": "It provides identity semantics and dirty checking for managed entities.",
+    "code": "Order o=em.find(Order.class,1L); o.setStatus(\"PAID\");",
+    "followups": [
+      "Entity states?"
+    ],
+    "mistakes": [],
+    "interview": "It is the EntityManager-managed set of tracked entities.",
+    "source": "V3"
+  },
+  {
+    "id": "jpa-002",
+    "title": "Entity states",
+    "level": "L2",
+    "tags": [
+      "JPA",
+      "Hibernate"
+    ],
+    "short": "Entities can be transient, managed, detached or removed.",
+    "answer": "Lifecycle state explains persist, merge, detach and remove behavior.",
+    "code": "transient -> persist -> managed -> detach",
+    "followups": [
+      "merge vs persist?"
+    ],
+    "mistakes": [],
+    "interview": "Entities can be transient, managed, detached or removed.",
+    "source": "V3"
+  },
+  {
+    "id": "jpa-003",
+    "title": "persist vs merge",
+    "level": "L2",
+    "tags": [
+      "JPA",
+      "EntityManager"
+    ],
+    "short": "persist makes a new entity managed; merge copies state into a managed instance and returns it.",
+    "answer": "merge does not simply reattach the same object.",
+    "code": "Order managed=em.merge(detachedOrder);",
+    "followups": [
+      "Why use returned object?"
+    ],
+    "mistakes": [],
+    "interview": "persist makes a new entity managed; merge copies state into a managed instance and returns it.",
+    "source": "V3"
+  },
+  {
+    "id": "jpa-004",
+    "title": "Lazy vs eager fetching",
+    "level": "L2",
+    "tags": [
+      "JPA",
+      "Performance"
+    ],
+    "short": "Lazy defers association loading; eager asks for earlier loading.",
+    "answer": "Lazy can cause N+1/LazyInitializationException; eager can over-fetch.",
+    "code": "@ManyToOne(fetch=FetchType.LAZY)",
+    "followups": [
+      "How avoid N+1?"
+    ],
+    "mistakes": [],
+    "interview": "Lazy defers association loading; eager asks for earlier loading.",
+    "source": "V3"
+  },
+  {
+    "id": "jpa-005",
+    "title": "N+1 query problem",
+    "level": "L2",
+    "tags": [
+      "JPA",
+      "Performance"
+    ],
+    "short": "One parent query plus one query per accessed association.",
+    "answer": "Fix with fetch joins, EntityGraphs, batch fetching or projections.",
+    "code": "SELECT o FROM Order o JOIN FETCH o.customer",
+    "followups": [
+      "How detect N+1?"
+    ],
+    "mistakes": [],
+    "interview": "One parent query plus one query per accessed association.",
+    "source": "V3"
+  },
+  {
+    "id": "jpa-006",
+    "title": "@Version optimistic locking",
+    "level": "L2",
+    "tags": [
+      "JPA",
+      "Concurrency"
+    ],
+    "short": "A version field detects concurrent updates.",
+    "answer": "Hibernate includes the version in update conditions and increments it.",
+    "code": "@Version private long version;",
+    "followups": [
+      "How should API handle conflict?"
+    ],
+    "mistakes": [],
+    "interview": "A version field detects concurrent updates.",
+    "source": "V3"
+  },
+  {
+    "id": "jpa-007",
+    "title": "JPQL",
+    "level": "L2",
+    "tags": [
+      "JPA",
+      "Queries"
+    ],
+    "short": "JPQL queries entities and mapped fields rather than database tables/columns.",
+    "answer": "Use native SQL when database-specific features or specialized queries are justified.",
+    "code": "SELECT o FROM Order o WHERE o.status=:status",
+    "followups": [
+      "JPQL vs native?"
+    ],
+    "mistakes": [],
+    "interview": "JPQL queries entities and mapped fields rather than database tables/columns.",
+    "source": "V3"
+  },
+  {
+    "id": "jpa-008",
+    "title": "EntityGraph",
+    "level": "L2",
+    "tags": [
+      "JPA",
+      "Performance"
+    ],
+    "short": "It defines a use-case-specific fetch plan.",
+    "answer": "It avoids making relationships globally eager.",
+    "code": "@EntityGraph(attributePaths={\"customer\",\"items\"})",
+    "followups": [
+      "EntityGraph vs fetch join?"
+    ],
+    "mistakes": [],
+    "interview": "It defines a use-case-specific fetch plan.",
+    "source": "V3"
+  },
+  {
+    "id": "jpa-009",
+    "title": "Dirty checking",
+    "level": "L2",
+    "tags": [
+      "Hibernate",
+      "Persistence"
+    ],
+    "short": "Hibernate detects changes to managed entities and synchronizes them during flush.",
+    "answer": "Within a transaction, changing a managed entity can be enough.",
+    "code": "@Transactional void pay(Order o){o.setStatus(\"PAID\");}",
+    "followups": [
+      "When does flush happen?"
+    ],
+    "mistakes": [],
+    "interview": "Hibernate detects changes to managed entities and synchronizes them during flush.",
+    "source": "V3"
+  },
+  {
+    "id": "jpa-010",
+    "title": "Spring Data JPA save()",
+    "level": "L2",
+    "tags": [
+      "Spring Data",
+      "JPA"
+    ],
+    "short": "save generally delegates to persist for new entities and merge for existing ones.",
+    "answer": "New-state detection depends on entity metadata/state. SQL may be deferred.",
+    "code": "repo.save(order);",
+    "followups": [
+      "How detect new?"
+    ],
+    "mistakes": [],
+    "interview": "save generally delegates to persist for new entities and merge for existing ones.",
+    "source": "V3"
+  },
+  {
+    "id": "jpa-011",
+    "title": "flush vs commit",
+    "level": "L2",
+    "tags": [
+      "JPA",
+      "Transactions"
+    ],
+    "short": "Flush synchronizes pending changes with the DB; commit finalizes the transaction.",
+    "answer": "A flush can send SQL while the transaction can still roll back.",
+    "code": "entityManager.flush();",
+    "followups": [
+      "Why can a constraint fail at flush?"
+    ],
+    "mistakes": [],
+    "interview": "Flush synchronizes pending changes with the DB; commit finalizes the transaction.",
+    "source": "V3"
+  },
+  {
+    "id": "jpa-012",
+    "title": "Cascade types",
+    "level": "L2",
+    "tags": [
+      "JPA",
+      "Relationships"
+    ],
+    "short": "Cascade propagates selected entity lifecycle operations.",
+    "answer": "PERSIST, MERGE, REMOVE, REFRESH, DETACH and ALL are available. This differs from DB FK cascades.",
+    "code": "@OneToMany(cascade=CascadeType.ALL)",
+    "followups": [
+      "Cascade vs orphanRemoval?"
+    ],
+    "mistakes": [],
+    "interview": "Cascade propagates selected entity lifecycle operations.",
+    "source": "V3"
+  },
+  {
+    "id": "jpa-013",
+    "title": "orphanRemoval",
+    "level": "L2",
+    "tags": [
+      "JPA",
+      "Relationships"
+    ],
+    "short": "It can delete an owned child removed from a parent relationship.",
+    "answer": "Use for composition-style ownership, not independent child lifecycles.",
+    "code": "@OneToMany(orphanRemoval=true)",
+    "followups": [
+      "orphanRemoval vs REMOVE?"
+    ],
+    "mistakes": [],
+    "interview": "It can delete an owned child removed from a parent relationship.",
+    "source": "V3"
+  },
+  {
+    "id": "jpa-014",
+    "title": "Optimize JPA-heavy endpoint",
+    "level": "L3",
+    "tags": [
+      "Performance",
+      "Production"
+    ],
+    "short": "Measure SQL, remove N+1, paginate, use projections/fetch plans and indexes.",
+    "answer": "Treat generated SQL as a first-class performance artifact.",
+    "code": "SELECT new com.example.OrderSummary(o.id,o.status) FROM Order o",
+    "followups": [
+      "Projection vs entity?"
+    ],
+    "mistakes": [],
+    "interview": "Measure SQL, remove N+1, paginate, use projections/fetch plans and indexes.",
+    "source": "V3"
+  },
+  {
+    "id": "jpa-015",
+    "title": "LazyInitializationException",
+    "level": "L2",
+    "tags": [
+      "JPA",
+      "Transactions"
+    ],
+    "short": "A lazy association was accessed after the persistence context was unavailable.",
+    "answer": "Use explicit fetch plans and DTO mapping inside a clear transaction boundary.",
+    "code": "// map entity -> DTO inside transaction",
+    "followups": [
+      "Why not make everything eager?"
+    ],
+    "mistakes": [],
+    "interview": "A lazy association was accessed after the persistence context was unavailable.",
+    "source": "V3"
+  },
+  {
+    "id": "sql-019",
+    "title": "Optimistic vs pessimistic locking",
+    "level": "L3",
+    "tags": [
+      "Concurrency",
+      "JPA"
+    ],
+    "short": "Optimistic locking detects conflicts; pessimistic locking acquires database locks.",
+    "answer": "Version columns work well when conflicts are rare; pessimistic locking can increase contention.",
+    "code": "UPDATE account SET balance=?,version=version+1 WHERE id=? AND version=?;",
+    "followups": [
+      "When use pessimistic?"
+    ],
+    "mistakes": [],
+    "interview": "Optimistic locking detects conflicts; pessimistic locking acquires database locks.",
+    "source": "V3"
+  },
+  {
+    "id": "iq-124",
+    "title": "What is Hibernate?",
+    "level": "L1",
+    "tags": [
+      "IQ300",
+      "jpa"
+    ],
+    "short": "Hibernate is a popular ORM (Object-Relational Mapping) framework for Java that maps Java objects to relational database tables, handling SQL generation, caching, and transaction management so developers work with objects instead of writing ",
+    "answer": "Hibernate is a popular ORM (Object-Relational Mapping) framework for Java that maps Java objects to relational database tables, handling SQL generation, caching, and transaction management so developers work with objects instead of writing raw JDBC/SQL for most operations. It's the most common JPA implementation.",
+    "code": "",
+    "followups": [],
+    "mistakes": [],
+    "interview": "Hibernate is a popular ORM (Object-Relational Mapping) framework for Java that maps Java objects to relational database tables, handling SQL generation, caching, and transaction management so developers work with objects instead of writing raw JDBC/SQL for most operations. It's the most common JPA implementation.",
+    "source": "IQ300"
+  },
+  {
+    "id": "iq-125",
+    "title": "What is JPA?",
+    "level": "L1",
+    "tags": [
+      "IQ300",
+      "jpa"
+    ],
+    "short": "JPA (Jakarta/Java Persistence API) is a specification — a set of interfaces and annotations (\\@Entity\\, \\@Id\\, \\EntityManager\\) — defining a standard way to do ORM in Java, without dictating the implementation. Hibernate, EclipseLink, and O",
+    "answer": "JPA (Jakarta/Java Persistence API) is a specification — a set of interfaces and annotations (\\<code>@Entity\\</code>, \\<code>@Id\\</code>, \\<code>EntityManager\\</code>) — defining a standard way to do ORM in Java, without dictating the implementation. Hibernate, EclipseLink, and OpenJPA are concrete implementations of this spec.",
+    "code": "",
+    "followups": [],
+    "mistakes": [],
+    "interview": "JPA (Jakarta/Java Persistence API) is a specification — a set of interfaces and annotations (\\@Entity\\, \\@Id\\, \\EntityManager\\) — defining a standard way to do ORM in Java, without dictating the implementation. Hibernate, EclipseLink, and OpenJPA are concrete implementations of this spec.",
+    "source": "IQ300"
+  },
+  {
+    "id": "iq-126",
+    "title": "Difference between JPA and Hibernate.",
+    "level": "L1",
+    "tags": [
+      "IQ300",
+      "jpa"
+    ],
+    "short": "JPA is the specification/interface; Hibernate is one concrete implementation of it (predating JPA and later aligning with it). Coding against JPA interfaces keeps your persistence code portable across implementations, while using Hibernate-",
+    "answer": "JPA is the specification/interface; Hibernate is one concrete implementation of it (predating JPA and later aligning with it). Coding against JPA interfaces keeps your persistence code portable across implementations, while using Hibernate-specific APIs/annotations ties you to that implementation but exposes extra features JPA doesn't standardize.",
+    "code": "",
+    "followups": [],
+    "mistakes": [],
+    "interview": "JPA is the specification/interface; Hibernate is one concrete implementation of it (predating JPA and later aligning with it). Coding against JPA interfaces keeps your persistence code portable across implementations, while using Hibernate-specific APIs/annotations ties you to that implementation but exposes extra feat",
+    "source": "IQ300"
+  },
+  {
+    "id": "iq-131",
+    "title": "What is lazy loading?",
+    "level": "L1",
+    "tags": [
+      "IQ300",
+      "jpa"
+    ],
+    "short": "An association (e.g. a \\@OneToMany\\ collection) is not fetched from the database when the parent entity is loaded — it's only queried when the association is actually accessed in code. This avoids loading data that may not be needed, but ri",
+    "answer": "An association (e.g. a \\<code>@OneToMany\\</code> collection) is not fetched from the database when the parent entity is loaded — it's only queried when the association is actually accessed in code. This avoids loading data that may not be needed, but risks a \\<code>LazyInitializationException\\</code> if accessed after the persistence context/session has closed.",
+    "code": "",
+    "followups": [],
+    "mistakes": [],
+    "interview": "An association (e.g. a \\@OneToMany\\ collection) is not fetched from the database when the parent entity is loaded — it's only queried when the association is actually accessed in code. This avoids loading data that may not be needed, but risks a \\LazyInitializationException\\ if accessed after the persistence context/se",
+    "source": "IQ300"
+  },
+  {
+    "id": "iq-134",
+    "title": "What is the N+1 query problem?",
+    "level": "L2",
+    "tags": [
+      "IQ300",
+      "jpa"
+    ],
+    "short": "When fetching a list of N parent entities, and then lazily accessing an association on each one individually, Hibernate issues one query for the parents plus N additional queries (one per parent) to fetch each one's association — N+1 total ",
+    "answer": "When fetching a list of N parent entities, and then lazily accessing an association on each one individually, Hibernate issues one query for the parents plus N additional queries (one per parent) to fetch each one's association — N+1 total queries instead of one efficient join, badly hurting performance as N grows.",
+    "code": "",
+    "followups": [],
+    "mistakes": [],
+    "interview": "When fetching a list of N parent entities, and then lazily accessing an association on each one individually, Hibernate issues one query for the parents plus N additional queries (one per parent) to fetch each one's association — N+1 total queries instead of one efficient join, badly hurting performance as N grows.",
+    "source": "IQ300"
+  },
+  {
+    "id": "iq-135",
+    "title": "How do you solve the N+1 problem?",
+    "level": "L2",
+    "tags": [
+      "IQ300",
+      "jpa"
+    ],
+    "short": "Use a JOIN FETCH in JPQL/HQL to eagerly pull the association in the same query, use an \\@EntityGraph\\ to declare which associations to fetch eagerly for a specific query, batch-fetch with \\@BatchSize\\ (fetches associations in batches instea",
+    "answer": "Use a JOIN FETCH in JPQL/HQL to eagerly pull the association in the same query, use an \\<code>@EntityGraph\\</code> to declare which associations to fetch eagerly for a specific query, batch-fetch with \\<code>@BatchSize\\</code> (fetches associations in batches instead of one at a time), or use DTO projections that select exactly the needed columns via a join instead of loading full entity graphs.",
+    "code": "",
+    "followups": [],
+    "mistakes": [],
+    "interview": "Use a JOIN FETCH in JPQL/HQL to eagerly pull the association in the same query, use an \\@EntityGraph\\ to declare which associations to fetch eagerly for a specific query, batch-fetch with \\@BatchSize\\ (fetches associations in batches instead of one at a time), or use DTO projections that select exactly the needed colum",
+    "source": "IQ300"
+  }
+]

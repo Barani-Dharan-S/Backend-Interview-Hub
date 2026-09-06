@@ -1,0 +1,481 @@
+[
+  {
+    "id": "micro-001",
+    "title": "Microservice characteristics",
+    "level": "L2",
+    "tags": [
+      "Architecture"
+    ],
+    "short": "Microservices are independently deployable components aligned to business capabilities.",
+    "answer": "Good boundaries consider business ownership and deployment independence. They add distributed-system complexity.",
+    "code": "Order -> Payment -> Inventory",
+    "followups": [
+      "Microservices vs modular monolith?"
+    ],
+    "mistakes": [],
+    "interview": "Microservices are independently deployable components aligned to business capabilities.",
+    "source": "V3"
+  },
+  {
+    "id": "micro-002",
+    "title": "API Gateway vs Load Balancer",
+    "level": "L2",
+    "tags": [
+      "Networking",
+      "Architecture"
+    ],
+    "short": "A load balancer distributes traffic; a gateway also applies API-level policies.",
+    "answer": "Gateways commonly handle auth, rate limits, routing and transformation.",
+    "code": "Client -> LB -> Gateway -> Services",
+    "followups": [
+      "Can both coexist?"
+    ],
+    "mistakes": [],
+    "interview": "A load balancer distributes traffic; a gateway also applies API-level policies.",
+    "source": "V3"
+  },
+  {
+    "id": "micro-003",
+    "title": "Service discovery",
+    "level": "L2",
+    "tags": [
+      "Networking",
+      "Microservices"
+    ],
+    "short": "It lets clients find healthy service instances without hardcoded addresses.",
+    "answer": "Discovery can be client/server-side. Kubernetes commonly provides service discovery via DNS/services.",
+    "code": "http://order-service/api/orders",
+    "followups": [
+      "Client vs server discovery?"
+    ],
+    "mistakes": [],
+    "interview": "It lets clients find healthy service instances without hardcoded addresses.",
+    "source": "V3"
+  },
+  {
+    "id": "micro-013",
+    "title": "Microservice monitoring",
+    "level": "L3",
+    "tags": [
+      "Observability",
+      "Production"
+    ],
+    "short": "Use metrics, structured logs, traces and health signals tied to user impact.",
+    "answer": "Monitor rate, errors, latency, saturation, JVM, DB pools and broker lag.",
+    "code": "RED: Rate Errors Duration",
+    "followups": [
+      "What is an SLO?"
+    ],
+    "mistakes": [],
+    "interview": "Use metrics, structured logs, traces and health signals tied to user impact.",
+    "source": "V3"
+  },
+  {
+    "id": "micro-016",
+    "title": "Message broker",
+    "level": "L2",
+    "tags": [
+      "Messaging",
+      "Kafka"
+    ],
+    "short": "A broker decouples producers and consumers and can buffer work.",
+    "answer": "Kafka, RabbitMQ and cloud messaging have different ordering/delivery models.",
+    "code": "Producer -> Broker -> Consumer",
+    "followups": [
+      "Queue vs topic?"
+    ],
+    "mistakes": [],
+    "interview": "A broker decouples producers and consumers and can buffer work.",
+    "source": "V3"
+  },
+  {
+    "id": "micro-017",
+    "title": "Kafka topic/partition/group",
+    "level": "L3",
+    "tags": [
+      "Kafka",
+      "Messaging"
+    ],
+    "short": "Topics hold records, partitions provide parallelism and per-partition ordering, groups divide consumption.",
+    "answer": "More consumers than partitions do not increase that group's partition parallelism.",
+    "code": "topic orders partitions=3\nconsumers=3",
+    "followups": [
+      "What determines ordering?"
+    ],
+    "mistakes": [],
+    "interview": "Topics hold records, partitions provide parallelism and per-partition ordering, groups divide consumption.",
+    "source": "V3"
+  },
+  {
+    "id": "security-009",
+    "title": "Service-to-service security",
+    "level": "L3",
+    "tags": [
+      "Microservices",
+      "Security"
+    ],
+    "short": "Use encrypted transport, authenticated workload identity and least privilege.",
+    "answer": "mTLS, OAuth2 client credentials or workload identity are common approaches.",
+    "code": "Service A --mTLS/OAuth--> Service B",
+    "followups": [
+      "mTLS vs JWT?"
+    ],
+    "mistakes": [],
+    "interview": "Use encrypted transport, authenticated workload identity and least privilege.",
+    "source": "V3"
+  },
+  {
+    "id": "system-005",
+    "title": "Design order management",
+    "level": "L3",
+    "tags": [
+      "System Design",
+      "Microservices"
+    ],
+    "short": "Make order state durable and coordinate payment/inventory/fulfillment with local transactions.",
+    "answer": "Order service owns state; outbox publishes events; Saga/state machine coordinates outcomes.",
+    "code": "Order -> Outbox -> Broker -> Payment/Inventory",
+    "followups": [
+      "Payment succeeds, inventory fails?"
+    ],
+    "mistakes": [],
+    "interview": "Make order state durable and coordinate payment/inventory/fulfillment with local transactions.",
+    "source": "V3"
+  },
+  {
+    "id": "iq-154",
+    "title": "What are microservices?",
+    "level": "L2",
+    "tags": [
+      "IQ300",
+      "microservices"
+    ],
+    "short": "An architectural style structuring an application as a collection of small, independently deployable services, each owning a specific business capability and its own data store, communicating over the network (typically REST or messaging) r",
+    "answer": "An architectural style structuring an application as a collection of small, independently deployable services, each owning a specific business capability and its own data store, communicating over the network (typically REST or messaging) rather than in-process method calls.",
+    "code": "",
+    "followups": [],
+    "mistakes": [],
+    "interview": "An architectural style structuring an application as a collection of small, independently deployable services, each owning a specific business capability and its own data store, communicating over the network (typically REST or messaging) rather than in-process method calls.",
+    "source": "IQ300"
+  },
+  {
+    "id": "iq-155",
+    "title": "Difference between monolith and microservices.",
+    "level": "L2",
+    "tags": [
+      "IQ300",
+      "microservices"
+    ],
+    "short": "A monolith is a single, unified codebase and deployable unit containing all functionality, sharing one database. Microservices split functionality into independently deployable services, each with its own codebase, deployment lifecycle, and",
+    "answer": "A monolith is a single, unified codebase and deployable unit containing all functionality, sharing one database. Microservices split functionality into independently deployable services, each with its own codebase, deployment lifecycle, and typically its own database — trading simplicity for independent scalability, deployability, and fault isolation, at the cost of distributed-systems complexity.",
+    "code": "",
+    "followups": [],
+    "mistakes": [],
+    "interview": "A monolith is a single, unified codebase and deployable unit containing all functionality, sharing one database. Microservices split functionality into independently deployable services, each with its own codebase, deployment lifecycle, and typically its own database — trading simplicity for independent scalability, de",
+    "source": "IQ300"
+  },
+  {
+    "id": "iq-156",
+    "title": "Advantages and disadvantages of microservices.",
+    "level": "L2",
+    "tags": [
+      "IQ300",
+      "microservices"
+    ],
+    "short": "Advantages: independent deployment and scaling per service, technology flexibility per team, fault isolation (one service failing doesn't necessarily take down others), and easier ownership by autonomous teams. Disadvantages: operational co",
+    "answer": "Advantages: independent deployment and scaling per service, technology flexibility per team, fault isolation (one service failing doesn't necessarily take down others), and easier ownership by autonomous teams. Disadvantages: operational complexity (many moving parts to deploy/monitor), distributed-systems challenges (network failures, eventual consistency, distributed transactions), harder end-to-end testing/debugging, and overhead of inter-service communication.",
+    "code": "",
+    "followups": [],
+    "mistakes": [],
+    "interview": "Advantages: independent deployment and scaling per service, technology flexibility per team, fault isolation (one service failing doesn't necessarily take down others), and easier ownership by autonomous teams. Disadvantages: operational complexity (many moving parts to deploy/monitor), distributed-systems challenges (",
+    "source": "IQ300"
+  },
+  {
+    "id": "iq-157",
+    "title": "How do microservices communicate?",
+    "level": "L2",
+    "tags": [
+      "IQ300",
+      "microservices"
+    ],
+    "short": "Synchronously via HTTP/REST or gRPC (request-response, caller waits), or asynchronously via a message broker/event stream (Kafka, RabbitMQ, IBM MQ) where the caller publishes and moves on, decoupling producers from consumers in time and red",
+    "answer": "Synchronously via HTTP/REST or gRPC (request-response, caller waits), or asynchronously via a message broker/event stream (Kafka, RabbitMQ, IBM MQ) where the caller publishes and moves on, decoupling producers from consumers in time and reducing tight coupling.",
+    "code": "",
+    "followups": [],
+    "mistakes": [],
+    "interview": "Synchronously via HTTP/REST or gRPC (request-response, caller waits), or asynchronously via a message broker/event stream (Kafka, RabbitMQ, IBM MQ) where the caller publishes and moves on, decoupling producers from consumers in time and reducing tight coupling.",
+    "source": "IQ300"
+  },
+  {
+    "id": "iq-160",
+    "title": "What is service discovery?",
+    "level": "L1",
+    "tags": [
+      "IQ300",
+      "microservices"
+    ],
+    "short": "A mechanism letting services find the network location (host/port) of other services dynamically, since instances in a microservices/cloud environment scale up/down and their addresses change. Services register themselves with a discovery s",
+    "answer": "A mechanism letting services find the network location (host/port) of other services dynamically, since instances in a microservices/cloud environment scale up/down and their addresses change. Services register themselves with a discovery server on startup, and callers query it (or use client-side caching) to resolve the current set of healthy instances.",
+    "code": "",
+    "followups": [],
+    "mistakes": [],
+    "interview": "A mechanism letting services find the network location (host/port) of other services dynamically, since instances in a microservices/cloud environment scale up/down and their addresses change. Services register themselves with a discovery server on startup, and callers query it (or use client-side caching) to resolve t",
+    "source": "IQ300"
+  },
+  {
+    "id": "iq-162",
+    "title": "What is API Gateway?",
+    "level": "L1",
+    "tags": [
+      "IQ300",
+      "microservices"
+    ],
+    "short": "A single entry point that sits in front of a set of microservices, routing incoming client requests to the appropriate backend service, and often handling cross-cutting concerns centrally — authentication, rate limiting, request/response tr",
+    "answer": "A single entry point that sits in front of a set of microservices, routing incoming client requests to the appropriate backend service, and often handling cross-cutting concerns centrally — authentication, rate limiting, request/response transformation, aggregation, and logging — so individual services don't each reimplement them.",
+    "code": "",
+    "followups": [],
+    "mistakes": [],
+    "interview": "A single entry point that sits in front of a set of microservices, routing incoming client requests to the appropriate backend service, and often handling cross-cutting concerns centrally — authentication, rate limiting, request/response transformation, aggregation, and logging — so individual services don't each reimp",
+    "source": "IQ300"
+  },
+  {
+    "id": "iq-163",
+    "title": "Why do we use an API Gateway?",
+    "level": "L1",
+    "tags": [
+      "IQ300",
+      "microservices"
+    ],
+    "short": "It shields clients from the internal service topology (a single URL/contract instead of knowing every service's address), centralizes cross-cutting concerns like auth and rate limiting, can aggregate multiple backend calls into one client-f",
+    "answer": "It shields clients from the internal service topology (a single URL/contract instead of knowing every service's address), centralizes cross-cutting concerns like auth and rate limiting, can aggregate multiple backend calls into one client-facing response, and provides a natural point for monitoring and throttling traffic entering the system.",
+    "code": "",
+    "followups": [],
+    "mistakes": [],
+    "interview": "It shields clients from the internal service topology (a single URL/contract instead of knowing every service's address), centralizes cross-cutting concerns like auth and rate limiting, can aggregate multiple backend calls into one client-facing response, and provides a natural point for monitoring and throttling traff",
+    "source": "IQ300"
+  },
+  {
+    "id": "iq-167",
+    "title": "What is circuit breaker?",
+    "level": "L1",
+    "tags": [
+      "IQ300",
+      "microservices"
+    ],
+    "short": "A resilience pattern that monitors calls to a downstream dependency; after a configured failure threshold is exceeded, it \"opens\" and fails fast (without even attempting the call) for a cooldown period, preventing a struggling downstream se",
+    "answer": "A resilience pattern that monitors calls to a downstream dependency; after a configured failure threshold is exceeded, it \"opens\" and fails fast (without even attempting the call) for a cooldown period, preventing a struggling downstream service from being overwhelmed further and protecting the caller's own threads/resources from piling up on slow failures. It periodically allows a trial call (half-open state) to check if the dependency has recovered.",
+    "code": "",
+    "followups": [],
+    "mistakes": [],
+    "interview": "A resilience pattern that monitors calls to a downstream dependency; after a configured failure threshold is exceeded, it \"opens\" and fails fast (without even attempting the call) for a cooldown period, preventing a struggling downstream service from being overwhelmed further and protecting the caller's own threads/res",
+    "source": "IQ300"
+  },
+  {
+    "id": "iq-169",
+    "title": "What is retry in microservices?",
+    "level": "L2",
+    "tags": [
+      "IQ300",
+      "microservices"
+    ],
+    "short": "Automatically re-attempting a failed call (typically to a transient, recoverable failure like a network blip) a limited number of times, often with a delay or exponential backoff between attempts, instead of immediately failing the overall ",
+    "answer": "Automatically re-attempting a failed call (typically to a transient, recoverable failure like a network blip) a limited number of times, often with a delay or exponential backoff between attempts, instead of immediately failing the overall operation. Must be paired with idempotency on the downstream side to avoid duplicate side effects.",
+    "code": "",
+    "followups": [],
+    "mistakes": [],
+    "interview": "Automatically re-attempting a failed call (typically to a transient, recoverable failure like a network blip) a limited number of times, often with a delay or exponential backoff between attempts, instead of immediately failing the overall operation. Must be paired with idempotency on the downstream side to avoid dupli",
+    "source": "IQ300"
+  },
+  {
+    "id": "iq-188",
+    "title": "How do you monitor microservices?",
+    "level": "L2",
+    "tags": [
+      "IQ300",
+      "microservices"
+    ],
+    "short": "Combine metrics (latency, throughput, error rate, resource usage — often via Prometheus/Grafana), centralized logs (ELK/EFK), and distributed tracing (Zipkin/Jaeger/OpenTelemetry) — the \"three pillars of observability\" — along with health c",
+    "answer": "Combine metrics (latency, throughput, error rate, resource usage — often via Prometheus/Grafana), centralized logs (ELK/EFK), and distributed tracing (Zipkin/Jaeger/OpenTelemetry) — the \"three pillars of observability\" — along with health checks and alerting on SLO breaches, since no single signal alone is enough to diagnose distributed-system issues.",
+    "code": "",
+    "followups": [],
+    "mistakes": [],
+    "interview": "Combine metrics (latency, throughput, error rate, resource usage — often via Prometheus/Grafana), centralized logs (ELK/EFK), and distributed tracing (Zipkin/Jaeger/OpenTelemetry) — the \"three pillars of observability\" — along with health checks and alerting on SLO breaches, since no single signal alone is enough to di",
+    "source": "IQ300"
+  },
+  {
+    "id": "iq-191",
+    "title": "How do you deploy microservices?",
+    "level": "L2",
+    "tags": [
+      "IQ300",
+      "microservices"
+    ],
+    "short": "Package each service as an independent, versioned artifact — typically a Docker container — and deploy via an orchestrator like Kubernetes, using CI/CD pipelines to automate build, test, and rollout, with strategies like rolling updates, bl",
+    "answer": "Package each service as an independent, versioned artifact — typically a Docker container — and deploy via an orchestrator like Kubernetes, using CI/CD pipelines to automate build, test, and rollout, with strategies like rolling updates, blue-green, or canary deployments to minimize downtime and risk.",
+    "code": "",
+    "followups": [],
+    "mistakes": [],
+    "interview": "Package each service as an independent, versioned artifact — typically a Docker container — and deploy via an orchestrator like Kubernetes, using CI/CD pipelines to automate build, test, and rollout, with strategies like rolling updates, blue-green, or canary deployments to minimize downtime and risk.",
+    "source": "IQ300"
+  },
+  {
+    "id": "iq-199",
+    "title": "What is Kafka?",
+    "level": "L1",
+    "tags": [
+      "IQ300",
+      "microservices"
+    ],
+    "short": "Apache Kafka is a distributed, high-throughput event streaming platform used for publish-subscribe messaging, log aggregation, and stream processing. Producers publish records to topics, which are persisted (not just transiently delivered),",
+    "answer": "Apache Kafka is a distributed, high-throughput event streaming platform used for publish-subscribe messaging, log aggregation, and stream processing. Producers publish records to topics, which are persisted (not just transiently delivered), and consumers read them independently at their own pace — making Kafka suitable both as a message broker and as a durable, replayable event log.",
+    "code": "",
+    "followups": [],
+    "mistakes": [],
+    "interview": "Apache Kafka is a distributed, high-throughput event streaming platform used for publish-subscribe messaging, log aggregation, and stream processing. Producers publish records to topics, which are persisted (not just transiently delivered), and consumers read them independently at their own pace — making Kafka suitable",
+    "source": "IQ300"
+  },
+  {
+    "id": "iq-200",
+    "title": "Kafka architecture.",
+    "level": "L1",
+    "tags": [
+      "IQ300",
+      "microservices"
+    ],
+    "short": "Producers publish records to topics; topics are split into partitions distributed across a cluster of brokers for scalability, with each partition replicated across brokers for fault tolerance. Consumers, organized into consumer groups, rea",
+    "answer": "Producers publish records to topics; topics are split into partitions distributed across a cluster of brokers for scalability, with each partition replicated across brokers for fault tolerance. Consumers, organized into consumer groups, read partitions in parallel. ZooKeeper (or, in newer versions, Kafka's own KRaft mode) handles cluster metadata and broker coordination/leader election.",
+    "code": "",
+    "followups": [],
+    "mistakes": [],
+    "interview": "Producers publish records to topics; topics are split into partitions distributed across a cluster of brokers for scalability, with each partition replicated across brokers for fault tolerance. Consumers, organized into consumer groups, read partitions in parallel. ZooKeeper (or, in newer versions, Kafka's own KRaft mo",
+    "source": "IQ300"
+  },
+  {
+    "id": "iq-205",
+    "title": "How does Kafka ensure message ordering?",
+    "level": "L1",
+    "tags": [
+      "IQ300",
+      "microservices"
+    ],
+    "short": "Kafka guarantees ordering only within a single partition — records are appended and read in the order they arrive. Records with the same key are always routed to the same partition (via the key's hash), so ordering can be preserved per-key ",
+    "answer": "Kafka guarantees ordering only within a single partition — records are appended and read in the order they arrive. Records with the same key are always routed to the same partition (via the key's hash), so ordering can be preserved per-key by choosing keys carefully, but there's no ordering guarantee across the whole topic if it has multiple partitions.",
+    "code": "",
+    "followups": [],
+    "mistakes": [],
+    "interview": "Kafka guarantees ordering only within a single partition — records are appended and read in the order they arrive. Records with the same key are always routed to the same partition (via the key's hash), so ordering can be preserved per-key by choosing keys carefully, but there's no ordering guarantee across the whole t",
+    "source": "IQ300"
+  },
+  {
+    "id": "iq-210",
+    "title": "Difference between Kafka and RabbitMQ.",
+    "level": "L1",
+    "tags": [
+      "IQ300",
+      "microservices"
+    ],
+    "short": "Kafka is a distributed log built for high-throughput streaming and long-term, replayable retention of records (consumers track their own offset and can re-read history); it excels at high-volume event streaming and analytics pipelines. Rabb",
+    "answer": "Kafka is a distributed log built for high-throughput streaming and long-term, replayable retention of records (consumers track their own offset and can re-read history); it excels at high-volume event streaming and analytics pipelines. RabbitMQ is a traditional message broker built around flexible routing (exchanges, queues, routing keys) with messages typically removed once acknowledged/consumed; it excels at complex routing and lower-latency, transactional task queues.",
+    "code": "",
+    "followups": [],
+    "mistakes": [],
+    "interview": "Kafka is a distributed log built for high-throughput streaming and long-term, replayable retention of records (consumers track their own offset and can re-read history); it excels at high-volume event streaming and analytics pipelines. RabbitMQ is a traditional message broker built around flexible routing (exchanges, q",
+    "source": "IQ300"
+  },
+  {
+    "id": "iq-277",
+    "title": "Explain your microservices architecture.",
+    "level": "L2",
+    "tags": [
+      "IQ300",
+      "microservices"
+    ],
+    "short": "Describe the services you owned, how they were decomposed by business capability, how they communicated (REST for synchronous needs, Kafka/MQ for async), what handled service discovery/routing (API Gateway, Eureka), how configuration and se",
+    "answer": "Describe the services you owned, how they were decomposed by business capability, how they communicated (REST for synchronous needs, Kafka/MQ for async), what handled service discovery/routing (API Gateway, Eureka), how configuration and secrets were managed centrally, and how resilience (circuit breakers, retries) and observability (logging, tracing, metrics) were implemented across the services.",
+    "code": "",
+    "followups": [],
+    "mistakes": [],
+    "interview": "Describe the services you owned, how they were decomposed by business capability, how they communicated (REST for synchronous needs, Kafka/MQ for async), what handled service discovery/routing (API Gateway, Eureka), how configuration and secrets were managed centrally, and how resilience (circuit breakers, retries) and",
+    "source": "IQ300"
+  },
+  {
+    "id": "iq-285",
+    "title": "Explain your use of Kafka.",
+    "level": "L1",
+    "tags": [
+      "IQ300",
+      "microservices"
+    ],
+    "short": "Describe the specific event(s) you produced/consumed, why messaging was chosen over synchronous REST for that use case (decoupling, buffering load, fan-out), how you structured topics/partitions/keys for ordering guarantees where needed, an",
+    "answer": "Describe the specific event(s) you produced/consumed, why messaging was chosen over synchronous REST for that use case (decoupling, buffering load, fan-out), how you structured topics/partitions/keys for ordering guarantees where needed, and how you handled failures (retries, dead-letter topics) and duplicate messages (idempotent consumers).",
+    "code": "",
+    "followups": [],
+    "mistakes": [],
+    "interview": "Describe the specific event(s) you produced/consumed, why messaging was chosen over synchronous REST for that use case (decoupling, buffering load, fan-out), how you structured topics/partitions/keys for ordering guarantees where needed, and how you handled failures (retries, dead-letter topics) and duplicate messages ",
+    "source": "IQ300"
+  },
+  {
+    "id": "iq-306",
+    "title": "Explain Kafka partition strategy for financial transactions.",
+    "level": "L2",
+    "tags": [
+      "IQ300",
+      "microservices"
+    ],
+    "short": "Transactions are typically keyed by account id (or another entity requiring strict ordering), so all transactions for the same account always land on the same partition and are processed in order relative to each other — while transactions ",
+    "answer": "Transactions are typically keyed by account id (or another entity requiring strict ordering), so all transactions for the same account always land on the same partition and are processed in order relative to each other — while transactions for different accounts can be spread across partitions and processed in parallel, balancing ordering guarantees against throughput.",
+    "code": "",
+    "followups": [],
+    "mistakes": [],
+    "interview": "Transactions are typically keyed by account id (or another entity requiring strict ordering), so all transactions for the same account always land on the same partition and are processed in order relative to each other — while transactions for different accounts can be spread across partitions and processed in parallel",
+    "source": "IQ300"
+  },
+  {
+    "id": "iq-321",
+    "title": "Explain circuit breaker with a downstream payment service.",
+    "level": "L1",
+    "tags": [
+      "IQ300",
+      "microservices"
+    ],
+    "short": "If calls to an external payment gateway start failing or timing out beyond a configured threshold, the circuit breaker \"opens,\" and further calls fail immediately (or return a fallback, like queuing the payment for later) without even attem",
+    "answer": "If calls to an external payment gateway start failing or timing out beyond a configured threshold, the circuit breaker \"opens,\" and further calls fail immediately (or return a fallback, like queuing the payment for later) without even attempting the network call — protecting the calling service's threads from piling up on a struggling dependency. After a cooldown, it allows a limited number of trial calls (half-open) to test if the gateway has recovered before fully closing again.",
+    "code": "",
+    "followups": [],
+    "mistakes": [],
+    "interview": "If calls to an external payment gateway start failing or timing out beyond a configured threshold, the circuit breaker \"opens,\" and further calls fail immediately (or return a fallback, like queuing the payment for later) without even attempting the network call — protecting the calling service's threads from piling up",
+    "source": "IQ300"
+  },
+  {
+    "id": "iq-323",
+    "title": "Explain API Gateway authentication flow.",
+    "level": "L1",
+    "tags": [
+      "IQ300",
+      "security"
+    ],
+    "short": "The gateway sits in front of backend services and intercepts every incoming request, validating the presented credential (e.g. a JWT's signature and expiry, or introspecting an opaque token against an auth server) before forwarding the requ",
+    "answer": "The gateway sits in front of backend services and intercepts every incoming request, validating the presented credential (e.g. a JWT's signature and expiry, or introspecting an opaque token against an auth server) before forwarding the request — so individual downstream services can trust the request has already been authenticated, often just reading pre-validated identity/claims passed via headers rather than re-validating themselves.",
+    "code": "",
+    "followups": [],
+    "mistakes": [],
+    "interview": "The gateway sits in front of backend services and intercepts every incoming request, validating the presented credential (e.g. a JWT's signature and expiry, or introspecting an opaque token against an auth server) before forwarding the request — so individual downstream services can trust the request has already been a",
+    "source": "IQ300"
+  },
+  {
+    "id": "iq-327",
+    "title": "Explain how you would trace a failed transaction across microservices.",
+    "level": "L2",
+    "tags": [
+      "IQ300",
+      "microservices"
+    ],
+    "short": "Use the transaction's correlation/trace id to search centralized logs and the distributed tracing system across all involved services, reconstructing the sequence of calls and identifying exactly which service/step returned an error or time",
+    "answer": "Use the transaction's correlation/trace id to search centralized logs and the distributed tracing system across all involved services, reconstructing the sequence of calls and identifying exactly which service/step returned an error or timed out, then cross-reference that service's own logs and metrics around that timestamp for the root cause.",
+    "code": "",
+    "followups": [],
+    "mistakes": [],
+    "interview": "Use the transaction's correlation/trace id to search centralized logs and the distributed tracing system across all involved services, reconstructing the sequence of calls and identifying exactly which service/step returned an error or timed out, then cross-reference that service's own logs and metrics around that time",
+    "source": "IQ300"
+  }
+]

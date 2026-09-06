@@ -1,0 +1,330 @@
+[
+  {
+    "id": "security-001",
+    "title": "JWT structure",
+    "level": "L2",
+    "tags": [
+      "JWT",
+      "Security"
+    ],
+    "short": "JWT commonly has header, payload and signature.",
+    "answer": "Header has metadata, payload has claims, signature protects integrity/authenticity. Base64URL is not encryption.",
+    "code": "Authorization: Bearer <token>",
+    "followups": [
+      "Claim?",
+      "HS256 vs RS256?"
+    ],
+    "mistakes": [],
+    "interview": "JWT commonly has header, payload and signature.",
+    "source": "V3"
+  },
+  {
+    "id": "security-002",
+    "title": "Authentication vs authorization",
+    "level": "L2",
+    "tags": [
+      "Security",
+      "Concepts"
+    ],
+    "short": "Authentication establishes identity; authorization determines permitted actions.",
+    "answer": "Roles, scopes and policies are authorization mechanisms.",
+    "code": "hasRole(\"ADMIN\")",
+    "followups": [
+      "RBAC vs ABAC?"
+    ],
+    "mistakes": [],
+    "interview": "Authentication establishes identity; authorization determines permitted actions.",
+    "source": "V3"
+  },
+  {
+    "id": "security-003",
+    "title": "CSRF",
+    "level": "L2",
+    "tags": [
+      "Security",
+      "Web"
+    ],
+    "short": "CSRF causes a browser to send an unwanted authenticated request.",
+    "answer": "It is especially relevant to cookie-based authentication. CORS is not a general CSRF defense.",
+    "code": "Cookie auth + forged state-changing request",
+    "followups": [
+      "Does CORS solve CSRF?"
+    ],
+    "mistakes": [],
+    "interview": "CSRF causes a browser to send an unwanted authenticated request.",
+    "source": "V3"
+  },
+  {
+    "id": "security-004",
+    "title": "Password storage",
+    "level": "L2",
+    "tags": [
+      "Security",
+      "Authentication"
+    ],
+    "short": "Store passwords using adaptive one-way hashing with unique salts.",
+    "answer": "bcrypt, scrypt and Argon2 are typical choices. Never store plaintext or reversibly encrypted passwords.",
+    "code": "// bcrypt/Argon2 hash",
+    "followups": [
+      "Why salt?",
+      "Why not SHA-256?"
+    ],
+    "mistakes": [],
+    "interview": "Store passwords using adaptive one-way hashing with unique salts.",
+    "source": "V3"
+  },
+  {
+    "id": "security-005",
+    "title": "OAuth 2.0",
+    "level": "L2",
+    "tags": [
+      "OAuth",
+      "Security"
+    ],
+    "short": "OAuth 2.0 is an authorization framework for delegated access.",
+    "answer": "Authorization Code with PKCE is common for user-facing apps. OpenID Connect adds identity.",
+    "code": "Client -> Authorization Server -> Token -> Resource Server",
+    "followups": [
+      "OAuth vs OIDC?"
+    ],
+    "mistakes": [],
+    "interview": "OAuth 2.0 is an authorization framework for delegated access.",
+    "source": "V3"
+  },
+  {
+    "id": "security-006",
+    "title": "CORS",
+    "level": "L2",
+    "tags": [
+      "Security",
+      "Web"
+    ],
+    "short": "CORS controls whether browser JavaScript can read cross-origin responses.",
+    "answer": "It is browser-enforced; server-side authorization is still required.",
+    "code": "Access-Control-Allow-Origin: https://example.com",
+    "followups": [
+      "What is preflight?"
+    ],
+    "mistakes": [],
+    "interview": "CORS controls whether browser JavaScript can read cross-origin responses.",
+    "source": "V3"
+  },
+  {
+    "id": "security-007",
+    "title": "Refresh token",
+    "level": "L2",
+    "tags": [
+      "JWT",
+      "Tokens"
+    ],
+    "short": "A refresh token can obtain a new access token without re-authentication.",
+    "answer": "Refresh tokens need stronger protection, rotation and revocation strategies.",
+    "code": "grant_type=refresh_token",
+    "followups": [
+      "Rotation?"
+    ],
+    "mistakes": [],
+    "interview": "A refresh token can obtain a new access token without re-authentication.",
+    "source": "V3"
+  },
+  {
+    "id": "security-008",
+    "title": "RBAC",
+    "level": "L2",
+    "tags": [
+      "Authorization",
+      "RBAC"
+    ],
+    "short": "Role-based access control grants permissions through roles.",
+    "answer": "Roles map identities to authorities. Complex systems may need policies/permissions.",
+    "code": "@PreAuthorize(\"hasRole('ADMIN')\")",
+    "followups": [
+      "RBAC vs ABAC?"
+    ],
+    "mistakes": [],
+    "interview": "Role-based access control grants permissions through roles.",
+    "source": "V3"
+  },
+  {
+    "id": "security-009",
+    "title": "Service-to-service security",
+    "level": "L3",
+    "tags": [
+      "Microservices",
+      "Security"
+    ],
+    "short": "Use encrypted transport, authenticated workload identity and least privilege.",
+    "answer": "mTLS, OAuth2 client credentials or workload identity are common approaches.",
+    "code": "Service A --mTLS/OAuth--> Service B",
+    "followups": [
+      "mTLS vs JWT?"
+    ],
+    "mistakes": [],
+    "interview": "Use encrypted transport, authenticated workload identity and least privilege.",
+    "source": "V3"
+  },
+  {
+    "id": "security-010",
+    "title": "REST API security checklist",
+    "level": "L3",
+    "tags": [
+      "REST",
+      "Security"
+    ],
+    "short": "Check authentication, authorization, validation, TLS, secrets, rate limits and safe logging.",
+    "answer": "Review broken access control, injection, token handling, request limits and dependency vulnerabilities.",
+    "code": "identity -> permission -> validation -> business rules",
+    "followups": [
+      "How prevent IDOR?"
+    ],
+    "mistakes": [],
+    "interview": "Check authentication, authorization, validation, TLS, secrets, rate limits and safe logging.",
+    "source": "V3"
+  },
+  {
+    "id": "cloud-010",
+    "title": "Secure cloud backend",
+    "level": "L3",
+    "tags": [
+      "Security",
+      "Cloud"
+    ],
+    "short": "Use least-privilege identity, encryption, secret management, private networking and audit logs.",
+    "answer": "Prefer workload identities/roles over static keys and use layered network/application controls.",
+    "code": "WAF -> LB -> private services -> DB",
+    "followups": [
+      "How rotate secrets?"
+    ],
+    "mistakes": [],
+    "interview": "Use least-privilege identity, encryption, secret management, private networking and audit logs.",
+    "source": "V3"
+  },
+  {
+    "id": "iq-120",
+    "title": "What is Spring Security?",
+    "level": "L2",
+    "tags": [
+      "IQ300",
+      "java"
+    ],
+    "short": "A comprehensive framework for authentication and authorization in Spring applications, providing a filter-chain architecture that intercepts requests to enforce login mechanisms (form login, basic auth, OAuth2/JWT), method- and URL-level ac",
+    "answer": "A comprehensive framework for authentication and authorization in Spring applications, providing a filter-chain architecture that intercepts requests to enforce login mechanisms (form login, basic auth, OAuth2/JWT), method- and URL-level access control, CSRF protection, session management, and integration with identity providers.",
+    "code": "",
+    "followups": [],
+    "mistakes": [],
+    "interview": "A comprehensive framework for authentication and authorization in Spring applications, providing a filter-chain architecture that intercepts requests to enforce login mechanisms (form login, basic auth, OAuth2/JWT), method- and URL-level access control, CSRF protection, session management, and integration with identity",
+    "source": "IQ300"
+  },
+  {
+    "id": "iq-121",
+    "title": "How does JWT authentication work?",
+    "level": "L1",
+    "tags": [
+      "IQ300",
+      "security"
+    ],
+    "short": "On login, the server validates credentials and issues a signed JSON Web Token containing claims (user id, roles, expiry) and a signature. The client sends this token in the \\Authorization: Bearer \\ header on subsequent requests; the server ",
+    "answer": "On login, the server validates credentials and issues a signed JSON Web Token containing claims (user id, roles, expiry) and a signature. The client sends this token in the \\<code>Authorization: Bearer <token>\\</code> header on subsequent requests; the server verifies the signature and expiry (no database/session lookup needed) to authenticate the request, making JWT auth stateless and easy to scale horizontally.",
+    "code": "",
+    "followups": [],
+    "mistakes": [],
+    "interview": "On login, the server validates credentials and issues a signed JSON Web Token containing claims (user id, roles, expiry) and a signature. The client sends this token in the \\Authorization: Bearer \\ header on subsequent requests; the server verifies the signature and expiry (no database/session lookup needed) to authent",
+    "source": "IQ300"
+  },
+  {
+    "id": "iq-122",
+    "title": "What is OAuth2?",
+    "level": "L1",
+    "tags": [
+      "IQ300",
+      "security"
+    ],
+    "short": "An authorization framework that lets a client obtain limited access to a resource on behalf of a user without handling the user's credentials directly, via an authorization server issuing access tokens. It defines several grant types (autho",
+    "answer": "An authorization framework that lets a client obtain limited access to a resource on behalf of a user without handling the user's credentials directly, via an authorization server issuing access tokens. It defines several grant types (authorization code, client credentials, etc.) for different scenarios like web apps, mobile apps, and service-to-service calls.",
+    "code": "",
+    "followups": [],
+    "mistakes": [],
+    "interview": "An authorization framework that lets a client obtain limited access to a resource on behalf of a user without handling the user's credentials directly, via an authorization server issuing access tokens. It defines several grant types (authorization code, client credentials, etc.) for different scenarios like web apps, ",
+    "source": "IQ300"
+  },
+  {
+    "id": "iq-123",
+    "title": "Difference between authentication and authorization.",
+    "level": "L1",
+    "tags": [
+      "IQ300",
+      "security"
+    ],
+    "short": "Authentication verifies who you are (validating credentials — login). Authorization determines what you're allowed to do once identified (checking permissions/roles against a requested resource or action). Authentication always happens firs",
+    "answer": "Authentication verifies who you are (validating credentials — login). Authorization determines what you're allowed to do once identified (checking permissions/roles against a requested resource or action). Authentication always happens first; authorization decisions depend on its outcome.",
+    "code": "",
+    "followups": [],
+    "mistakes": [],
+    "interview": "Authentication verifies who you are (validating credentials — login). Authorization determines what you're allowed to do once identified (checking permissions/roles against a requested resource or action). Authentication always happens first; authorization decisions depend on its outcome.",
+    "source": "IQ300"
+  },
+  {
+    "id": "iq-266",
+    "title": "Design an authentication service.",
+    "level": "L1",
+    "tags": [
+      "IQ300",
+      "security"
+    ],
+    "short": "Handles credential verification (hashed/salted passwords, e.g. bcrypt), issues stateless tokens (JWT access token plus a longer-lived refresh token) or manages server-side sessions, supports MFA, rate-limits login attempts to blunt brute-fo",
+    "answer": "Handles credential verification (hashed/salted passwords, e.g. bcrypt), issues stateless tokens (JWT access token plus a longer-lived refresh token) or manages server-side sessions, supports MFA, rate-limits login attempts to blunt brute-force attacks, and exposes token validation/introspection for other services — often centralized behind an API gateway so individual microservices don't each reimplement auth.",
+    "code": "",
+    "followups": [],
+    "mistakes": [],
+    "interview": "Handles credential verification (hashed/salted passwords, e.g. bcrypt), issues stateless tokens (JWT access token plus a longer-lived refresh token) or manages server-side sessions, supports MFA, rate-limits login attempts to blunt brute-force attacks, and exposes token validation/introspection for other services — oft",
+    "source": "IQ300"
+  },
+  {
+    "id": "iq-323",
+    "title": "Explain API Gateway authentication flow.",
+    "level": "L1",
+    "tags": [
+      "IQ300",
+      "security"
+    ],
+    "short": "The gateway sits in front of backend services and intercepts every incoming request, validating the presented credential (e.g. a JWT's signature and expiry, or introspecting an opaque token against an auth server) before forwarding the requ",
+    "answer": "The gateway sits in front of backend services and intercepts every incoming request, validating the presented credential (e.g. a JWT's signature and expiry, or introspecting an opaque token against an auth server) before forwarding the request — so individual downstream services can trust the request has already been authenticated, often just reading pre-validated identity/claims passed via headers rather than re-validating themselves.",
+    "code": "",
+    "followups": [],
+    "mistakes": [],
+    "interview": "The gateway sits in front of backend services and intercepts every incoming request, validating the presented credential (e.g. a JWT's signature and expiry, or introspecting an opaque token against an auth server) before forwarding the request — so individual downstream services can trust the request has already been a",
+    "source": "IQ300"
+  },
+  {
+    "id": "iq-324",
+    "title": "Explain JWT validation flow.",
+    "level": "L1",
+    "tags": [
+      "IQ300",
+      "security"
+    ],
+    "short": "The verifier decodes the token's header and payload, checks the signature against the issuer's public key (or shared secret) to confirm it hasn't been tampered with, checks standard claims like expiry (\\exp\\) and issuer (\\iss\\), and then tr",
+    "answer": "The verifier decodes the token's header and payload, checks the signature against the issuer's public key (or shared secret) to confirm it hasn't been tampered with, checks standard claims like expiry (\\<code>exp\\</code>) and issuer (\\<code>iss\\</code>), and then trusts the claims inside (user id, roles) for authorization decisions — all without needing to call back to the issuing server for typical stateless JWT validation.",
+    "code": "",
+    "followups": [],
+    "mistakes": [],
+    "interview": "The verifier decodes the token's header and payload, checks the signature against the issuer's public key (or shared secret) to confirm it hasn't been tampered with, checks standard claims like expiry (\\exp\\) and issuer (\\iss\\), and then trusts the claims inside (user id, roles) for authorization decisions — all withou",
+    "source": "IQ300"
+  },
+  {
+    "id": "iq-325",
+    "title": "Explain OAuth2 authorization code flow.",
+    "level": "L1",
+    "tags": [
+      "IQ300",
+      "security"
+    ],
+    "short": "The client redirects the user to the authorization server to log in and consent; the server redirects back to the client with a short-lived authorization code; the client's backend exchanges that code (plus its client secret) for an access ",
+    "answer": "The client redirects the user to the authorization server to log in and consent; the server redirects back to the client with a short-lived authorization code; the client's backend exchanges that code (plus its client secret) for an access token (and often a refresh token) via a direct server-to-server call — keeping the actual token exchange off the user's browser, which is why this flow is considered secure for server-side web apps.",
+    "code": "",
+    "followups": [],
+    "mistakes": [],
+    "interview": "The client redirects the user to the authorization server to log in and consent; the server redirects back to the client with a short-lived authorization code; the client's backend exchanges that code (plus its client secret) for an access token (and often a refresh token) via a direct server-to-server call — keeping t",
+    "source": "IQ300"
+  }
+]

@@ -1,0 +1,164 @@
+[
+  {
+    "id": "system-001",
+    "title": "How to start system design",
+    "level": "L3",
+    "tags": [
+      "System Design",
+      "Interview"
+    ],
+    "short": "Clarify requirements, scale, consistency, latency, availability and constraints.",
+    "answer": "Restate functional requirements, estimate traffic/data, propose high-level architecture and drill into bottlenecks.",
+    "code": "Requirements -> Scale -> API -> Data -> Components",
+    "followups": [
+      "How estimate QPS?"
+    ],
+    "mistakes": [],
+    "interview": "Clarify requirements, scale, consistency, latency, availability and constraints.",
+    "source": "V3"
+  },
+  {
+    "id": "system-002",
+    "title": "Design a URL shortener",
+    "level": "L3",
+    "tags": [
+      "System Design",
+      "APIs"
+    ],
+    "short": "Store a unique short key to URL mapping and optimize reads with cache.",
+    "answer": "Write persists mapping; reads check cache then DB. Discuss collisions, expiry and analytics.",
+    "code": "POST /shorten -> DB\nGET /abc123 -> cache -> DB",
+    "followups": [
+      "How generate IDs?"
+    ],
+    "mistakes": [],
+    "interview": "Store a unique short key to URL mapping and optimize reads with cache.",
+    "source": "V3"
+  },
+  {
+    "id": "system-003",
+    "title": "Design a rate limiter",
+    "level": "L3",
+    "tags": [
+      "System Design",
+      "Resilience"
+    ],
+    "short": "Define allowance per identity using token bucket/sliding-window logic.",
+    "answer": "For multiple instances, shared low-latency state or gateway enforcement may be needed.",
+    "code": "Token bucket: capacity=100",
+    "followups": [
+      "What if Redis fails?"
+    ],
+    "mistakes": [],
+    "interview": "Define allowance per identity using token bucket/sliding-window logic.",
+    "source": "V3"
+  },
+  {
+    "id": "system-004",
+    "title": "Design notification service",
+    "level": "L3",
+    "tags": [
+      "System Design",
+      "Messaging"
+    ],
+    "short": "Accept requests durably, queue work, deliver via provider adapters and track status.",
+    "answer": "API + outbox + broker + workers + provider adapters; add retries/idempotency/DLQ.",
+    "code": "API -> Outbox -> Broker -> Workers -> Providers",
+    "followups": [
+      "Provider outage?"
+    ],
+    "mistakes": [],
+    "interview": "Accept requests durably, queue work, deliver via provider adapters and track status.",
+    "source": "V3"
+  },
+  {
+    "id": "system-005",
+    "title": "Design order management",
+    "level": "L3",
+    "tags": [
+      "System Design",
+      "Microservices"
+    ],
+    "short": "Make order state durable and coordinate payment/inventory/fulfillment with local transactions.",
+    "answer": "Order service owns state; outbox publishes events; Saga/state machine coordinates outcomes.",
+    "code": "Order -> Outbox -> Broker -> Payment/Inventory",
+    "followups": [
+      "Payment succeeds, inventory fails?"
+    ],
+    "mistakes": [],
+    "interview": "Make order state durable and coordinate payment/inventory/fulfillment with local transactions.",
+    "source": "V3"
+  },
+  {
+    "id": "system-006",
+    "title": "Design file upload service",
+    "level": "L3",
+    "tags": [
+      "System Design",
+      "Storage"
+    ],
+    "short": "Use object storage, preferably direct signed uploads for large files.",
+    "answer": "API creates signed URL; client uploads directly; async workers validate/process.",
+    "code": "API -> signed URL -> Object Storage -> Worker",
+    "followups": [
+      "How validate file type?"
+    ],
+    "mistakes": [],
+    "interview": "Use object storage, preferably direct signed uploads for large files.",
+    "source": "V3"
+  },
+  {
+    "id": "system-007",
+    "title": "Caching design",
+    "level": "L3",
+    "tags": [
+      "System Design",
+      "Performance"
+    ],
+    "short": "Place caches at client/CDN/gateway/app/distributed layers based on need.",
+    "answer": "Define key, TTL, invalidation, stampede protection and consistency.",
+    "code": "Client -> CDN -> API -> Redis -> DB",
+    "followups": [
+      "Cache-aside?"
+    ],
+    "mistakes": [],
+    "interview": "Place caches at client/CDN/gateway/app/distributed layers based on need.",
+    "source": "V3"
+  },
+  {
+    "id": "system-008",
+    "title": "High availability",
+    "level": "L3",
+    "tags": [
+      "System Design",
+      "Availability"
+    ],
+    "short": "Remove single points of failure with redundancy across critical components.",
+    "answer": "Use multiple instances/zones, health checks and appropriate data replication.",
+    "code": "LB -> AZ1/AZ2 -> replicated DB",
+    "followups": [
+      "RTO vs RPO?"
+    ],
+    "mistakes": [],
+    "interview": "Remove single points of failure with redundancy across critical components.",
+    "source": "V3"
+  },
+  {
+    "id": "system-013",
+    "title": "Capacity estimation",
+    "level": "L3",
+    "tags": [
+      "System Design",
+      "Scalability"
+    ],
+    "short": "Translate users/actions into QPS, storage, bandwidth and peak requirements.",
+    "answer": "State assumptions and use order-of-magnitude numbers.",
+    "code": "1M users*10 req/day=10M/day",
+    "followups": [
+      "Why estimate peak QPS?"
+    ],
+    "mistakes": [],
+    "interview": "Translate users/actions into QPS, storage, bandwidth and peak requirements.",
+    "source": "V3"
+  }
+]

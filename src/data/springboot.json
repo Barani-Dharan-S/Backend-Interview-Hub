@@ -1,0 +1,662 @@
+[
+  {
+    "id": "jpa-010",
+    "title": "Spring Data JPA save()",
+    "level": "L2",
+    "tags": [
+      "Spring Data",
+      "JPA"
+    ],
+    "short": "save generally delegates to persist for new entities and merge for existing ones.",
+    "answer": "New-state detection depends on entity metadata/state. SQL may be deferred.",
+    "code": "repo.save(order);",
+    "followups": [
+      "How detect new?"
+    ],
+    "mistakes": [],
+    "interview": "save generally delegates to persist for new entities and merge for existing ones.",
+    "source": "V3"
+  },
+  {
+    "id": "adv-006",
+    "title": "Transactional method calling another transactional method",
+    "level": "L3",
+    "tags": [
+      "Spring",
+      "Transactions"
+    ],
+    "short": "Propagation applies when the call crosses the Spring proxy boundary.",
+    "answer": "REQUIRED usually shares; REQUIRES_NEW suspends the outer transaction. Self-invocation can bypass interception.",
+    "code": "serviceA.outer()->serviceB.inner()",
+    "followups": [
+      "What if inner marks rollback-only?"
+    ],
+    "mistakes": [],
+    "interview": "Propagation applies when the call crosses the Spring proxy boundary.",
+    "source": "V3"
+  },
+  {
+    "id": "adv-007",
+    "title": "Transactional exception vs global handler",
+    "level": "L3",
+    "tags": [
+      "Spring",
+      "REST"
+    ],
+    "short": "The transaction interceptor decides rollback; controller advice formats the HTTP response.",
+    "answer": "A RuntimeException propagating through the transactional proxy can trigger rollback. Advice is not the rollback mechanism.",
+    "code": "Service -> transaction -> exception -> advice",
+    "followups": [
+      "What if service catches it?"
+    ],
+    "mistakes": [],
+    "interview": "The transaction interceptor decides rollback; controller advice formats the HTTP response.",
+    "source": "V3"
+  },
+  {
+    "id": "adv-008",
+    "title": "Spring Boot startup",
+    "level": "L2",
+    "tags": [
+      "Spring Boot",
+      "Internals"
+    ],
+    "short": "SpringApplication bootstraps the application context and infrastructure.",
+    "answer": "Configuration loads, beans are discovered/created and the web server starts for web applications.",
+    "code": "SpringApplication.run(App.class,args);",
+    "followups": [
+      "What is ApplicationContext?"
+    ],
+    "mistakes": [],
+    "interview": "SpringApplication bootstraps the application context and infrastructure.",
+    "source": "V3"
+  },
+  {
+    "id": "spring-001",
+    "title": "Dependency Injection",
+    "level": "L2",
+    "tags": [
+      "Spring Core",
+      "IoC"
+    ],
+    "short": "The Spring container creates and supplies collaborators.",
+    "answer": "Constructor injection makes dependencies explicit, supports final fields and improves tests.",
+    "code": "@Service class OrderService{private final PaymentClient c; OrderService(PaymentClient c){this.c=c;}}",
+    "followups": [
+      "Why constructor injection?"
+    ],
+    "mistakes": [],
+    "interview": "The Spring container creates and supplies collaborators.",
+    "source": "V3"
+  },
+  {
+    "id": "spring-002",
+    "title": "Spring bean lifecycle",
+    "level": "L2",
+    "tags": [
+      "Spring Core",
+      "Beans"
+    ],
+    "short": "Beans are instantiated, injected, initialized and eventually destroyed when applicable.",
+    "answer": "Startup includes post-processors and callbacks such as @PostConstruct. Lifecycle is container-managed.",
+    "code": "@PostConstruct void init(){validateConfig();}",
+    "followups": [
+      "BeanPostProcessor?"
+    ],
+    "mistakes": [],
+    "interview": "Beans are instantiated, injected, initialized and eventually destroyed when applicable.",
+    "source": "V3"
+  },
+  {
+    "id": "spring-003",
+    "title": "@Component vs @Service vs @Repository",
+    "level": "L2",
+    "tags": [
+      "Spring Core",
+      "Stereotypes"
+    ],
+    "short": "They are component stereotypes; @Repository also supports persistence exception translation.",
+    "answer": "All can be discovered by component scanning. The annotations communicate architectural roles.",
+    "code": "@Service class OrderService {}\n@Repository class OrderDao {}",
+    "followups": [
+      "Does @Service add transactions?"
+    ],
+    "mistakes": [],
+    "interview": "They are component stereotypes; @Repository also supports persistence exception translation.",
+    "source": "V3"
+  },
+  {
+    "id": "spring-004",
+    "title": "@RestController",
+    "level": "L2",
+    "tags": [
+      "Spring MVC",
+      "REST"
+    ],
+    "short": "It combines @Controller and @ResponseBody.",
+    "answer": "Return values are serialized through HTTP message converters, commonly JSON.",
+    "code": "@RestController\n@RequestMapping(\"/orders\")",
+    "followups": [
+      "Controller vs RestController?"
+    ],
+    "mistakes": [],
+    "interview": "It combines @Controller and @ResponseBody.",
+    "source": "V3"
+  },
+  {
+    "id": "spring-005",
+    "title": "Spring Boot auto-configuration",
+    "level": "L2",
+    "tags": [
+      "Spring Boot",
+      "Configuration"
+    ],
+    "short": "Boot conditionally configures infrastructure based on classpath, properties and existing beans.",
+    "answer": "Conditional configuration provides sensible defaults and backs off when appropriate user configuration exists.",
+    "code": "@SpringBootApplication",
+    "followups": [
+      "How debug auto-configuration?"
+    ],
+    "mistakes": [],
+    "interview": "Boot conditionally configures infrastructure based on classpath, properties and existing beans.",
+    "source": "V3"
+  },
+  {
+    "id": "spring-006",
+    "title": "@Configuration vs @Bean",
+    "level": "L2",
+    "tags": [
+      "Spring Core",
+      "Configuration"
+    ],
+    "short": "@Configuration groups bean definitions; @Bean registers the returned object.",
+    "answer": "@Bean is useful for third-party objects or customized construction.",
+    "code": "@Configuration class Config{@Bean Clock clock(){return Clock.systemUTC();}}",
+    "followups": [
+      "proxyBeanMethods?"
+    ],
+    "mistakes": [],
+    "interview": "@Configuration groups bean definitions; @Bean registers the returned object.",
+    "source": "V3"
+  },
+  {
+    "id": "spring-007",
+    "title": "Spring AOP and proxies",
+    "level": "L3",
+    "tags": [
+      "AOP",
+      "Internals"
+    ],
+    "short": "Spring AOP commonly applies cross-cutting behavior through proxies.",
+    "answer": "Transactions, security and caching can be proxy-based. Self-invocation can bypass advice.",
+    "code": "@Transactional void save(){}",
+    "followups": [
+      "JDK proxy vs CGLIB?"
+    ],
+    "mistakes": [],
+    "interview": "Spring AOP commonly applies cross-cutting behavior through proxies.",
+    "source": "V3"
+  },
+  {
+    "id": "spring-008",
+    "title": "@Transactional propagation",
+    "level": "L2",
+    "tags": [
+      "Transactions",
+      "Spring"
+    ],
+    "short": "Propagation controls participation in existing transactions.",
+    "answer": "REQUIRED joins/creates; REQUIRES_NEW suspends the current transaction and starts another.",
+    "code": "@Transactional(propagation=Propagation.REQUIRES_NEW)",
+    "followups": [
+      "REQUIRED vs REQUIRES_NEW?"
+    ],
+    "mistakes": [],
+    "interview": "Propagation controls participation in existing transactions.",
+    "source": "V3"
+  },
+  {
+    "id": "spring-012",
+    "title": "Validation without @Valid",
+    "level": "L2",
+    "tags": [
+      "Validation",
+      "Spring"
+    ],
+    "short": "Yes; Bean Validation can be invoked programmatically or through method validation.",
+    "answer": "Inject Validator for manual validation or use @Validated with method constraints.",
+    "code": "validator.validate(request);",
+    "followups": [
+      "When manual validation?"
+    ],
+    "mistakes": [],
+    "interview": "Yes; Bean Validation can be invoked programmatically or through method validation.",
+    "source": "V3"
+  },
+  {
+    "id": "spring-013",
+    "title": "Spring Boot Actuator",
+    "level": "L2",
+    "tags": [
+      "Observability",
+      "Operations"
+    ],
+    "short": "Actuator exposes operational endpoints such as health and metrics.",
+    "answer": "Expose only necessary endpoints and secure them.",
+    "code": "management.endpoints.web.exposure.include=health,metrics",
+    "followups": [
+      "How secure actuator?"
+    ],
+    "mistakes": [],
+    "interview": "Actuator exposes operational endpoints such as health and metrics.",
+    "source": "V3"
+  },
+  {
+    "id": "spring-015",
+    "title": "Spring profiles",
+    "level": "L2",
+    "tags": [
+      "Configuration",
+      "Deployment"
+    ],
+    "short": "Profiles activate environment-specific configuration/beans.",
+    "answer": "Useful for environment differences, not as a replacement for runtime feature flags.",
+    "code": "@Profile(\"dev\")",
+    "followups": [
+      "Profiles vs feature flags?"
+    ],
+    "mistakes": [],
+    "interview": "Profiles activate environment-specific configuration/beans.",
+    "source": "V3"
+  },
+  {
+    "id": "spring-016",
+    "title": "Filter vs interceptor vs controller advice",
+    "level": "L3",
+    "tags": [
+      "Spring MVC",
+      "HTTP"
+    ],
+    "short": "Filters are servlet-level, interceptors are MVC lifecycle hooks, advice handles MVC-wide concerns.",
+    "answer": "Choose based on lifecycle boundary: filters for low-level request concerns, interceptors for handlers, advice for errors/binding.",
+    "code": "Filter -> DispatcherServlet -> Interceptor -> Controller",
+    "followups": [
+      "Where extract JWT?"
+    ],
+    "mistakes": [],
+    "interview": "Filters are servlet-level, interceptors are MVC lifecycle hooks, advice handles MVC-wide concerns.",
+    "source": "V3"
+  },
+  {
+    "id": "spring-017",
+    "title": "Spring Cache",
+    "level": "L2",
+    "tags": [
+      "Caching",
+      "Performance"
+    ],
+    "short": "Spring Cache abstracts method-result caching.",
+    "answer": "Cache keys, TTL, eviction and consistency must be designed.",
+    "code": "@Cacheable(cacheNames=\"products\",key=\"#id\")",
+    "followups": [
+      "How invalidate stale data?"
+    ],
+    "mistakes": [],
+    "interview": "Spring Cache abstracts method-result caching.",
+    "source": "V3"
+  },
+  {
+    "id": "spring-019",
+    "title": "Spring Boot starter",
+    "level": "L2",
+    "tags": [
+      "Spring Boot",
+      "Build"
+    ],
+    "short": "A starter groups dependencies for a capability.",
+    "answer": "It simplifies dependency setup and works with Boot dependency management.",
+    "code": "<artifactId>spring-boot-starter-web</artifactId>",
+    "followups": [
+      "Starter vs BOM?"
+    ],
+    "mistakes": [],
+    "interview": "A starter groups dependencies for a capability.",
+    "source": "V3"
+  },
+  {
+    "id": "iq-069",
+    "title": "What is Spring Boot?",
+    "level": "L1",
+    "tags": [
+      "IQ300",
+      "springboot"
+    ],
+    "short": "Spring Boot is an opinionated framework built on top of the Spring Framework that simplifies building production-ready applications by providing auto-configuration, embedded servers (Tomcat/Jetty/Netty), starter dependencies that bundle com",
+    "answer": "Spring Boot is an opinionated framework built on top of the Spring Framework that simplifies building production-ready applications by providing auto-configuration, embedded servers (Tomcat/Jetty/Netty), starter dependencies that bundle common libraries, and sensible defaults — drastically cutting the boilerplate XML/config that plain Spring required.",
+    "code": "",
+    "followups": [],
+    "mistakes": [],
+    "interview": "Spring Boot is an opinionated framework built on top of the Spring Framework that simplifies building production-ready applications by providing auto-configuration, embedded servers (Tomcat/Jetty/Netty), starter dependencies that bundle common libraries, and sensible defaults — drastically cutting the boilerplate XML/c",
+    "source": "IQ300"
+  },
+  {
+    "id": "iq-070",
+    "title": "Difference between Spring and Spring Boot.",
+    "level": "L1",
+    "tags": [
+      "IQ300",
+      "springboot"
+    ],
+    "short": "Spring is a comprehensive framework offering dependency injection, AOP, and modules for web, data, security, etc., but historically required extensive manual configuration (XML or Java config). Spring Boot builds on Spring, adding auto-conf",
+    "answer": "Spring is a comprehensive framework offering dependency injection, AOP, and modules for web, data, security, etc., but historically required extensive manual configuration (XML or Java config). Spring Boot builds on Spring, adding auto-configuration, embedded servers, starter POMs, and Actuator, so you can get a working application running with minimal setup rather than wiring everything by hand.",
+    "code": "",
+    "followups": [],
+    "mistakes": [],
+    "interview": "Spring is a comprehensive framework offering dependency injection, AOP, and modules for web, data, security, etc., but historically required extensive manual configuration (XML or Java config). Spring Boot builds on Spring, adding auto-configuration, embedded servers, starter POMs, and Actuator, so you can get a workin",
+    "source": "IQ300"
+  },
+  {
+    "id": "iq-073",
+    "title": "What are Spring beans?",
+    "level": "L1",
+    "tags": [
+      "IQ300",
+      "java"
+    ],
+    "short": "Beans are objects that are instantiated, assembled, and managed by the Spring IoC container. They're defined via annotations (\\@Component\\, \\@Service\\, \\@Bean\\ methods) or XML, and the container handles their creation, dependency injection,",
+    "answer": "Beans are objects that are instantiated, assembled, and managed by the Spring IoC container. They're defined via annotations (\\<code>@Component\\</code>, \\<code>@Service\\</code>, \\<code>@Bean\\</code> methods) or XML, and the container handles their creation, dependency injection, and lifecycle (init/destroy callbacks).",
+    "code": "",
+    "followups": [],
+    "mistakes": [],
+    "interview": "Beans are objects that are instantiated, assembled, and managed by the Spring IoC container. They're defined via annotations (\\@Component\\, \\@Service\\, \\@Bean\\ methods) or XML, and the container handles their creation, dependency injection, and lifecycle (init/destroy callbacks).",
+    "source": "IQ300"
+  },
+  {
+    "id": "iq-074",
+    "title": "Bean lifecycle in Spring.",
+    "level": "L1",
+    "tags": [
+      "IQ300",
+      "java"
+    ],
+    "short": "Roughly: the container instantiates the bean, populates properties (dependency injection), calls \\Aware\\ interface callbacks if implemented (e.g. \\BeanNameAware\\), invokes \\BeanPostProcessor.postProcessBeforeInitialization\\, calls \\@PostCon",
+    "answer": "Roughly: the container instantiates the bean, populates properties (dependency injection), calls \\<code>Aware\\</code> interface callbacks if implemented (e.g. \\<code>BeanNameAware\\</code>), invokes \\<code>BeanPostProcessor.postProcessBeforeInitialization\\</code>, calls \\<code>@PostConstruct\\</code>/\\<code>InitializingBean.afterPropertiesSet()\\</code>/custom init-method, then \\<code>postProcessAfterInitialization\\</code> — after which the bean is ready for use. On shutdown, \\<code>@PreDestroy\\</code>/\\<code>DisposableBean.destroy()\\</code>/custom destroy-method run.",
+    "code": "",
+    "followups": [],
+    "mistakes": [],
+    "interview": "Roughly: the container instantiates the bean, populates properties (dependency injection), calls \\Aware\\ interface callbacks if implemented (e.g. \\BeanNameAware\\), invokes \\BeanPostProcessor.postProcessBeforeInitialization\\, calls \\@PostConstruct\\/\\InitializingBean.afterPropertiesSet()\\/custom init-method, then \\postPr",
+    "source": "IQ300"
+  },
+  {
+    "id": "iq-076",
+    "title": "What is `@RestController`?",
+    "level": "L1",
+    "tags": [
+      "IQ300",
+      "springboot"
+    ],
+    "short": "A convenience annotation combining \\@Controller\\ and \\@ResponseBody\\ — every handler method's return value is automatically serialized (usually to JSON) directly into the HTTP response body, rather than being resolved as a view name, making",
+    "answer": "A convenience annotation combining \\<code>@Controller\\</code> and \\<code>@ResponseBody\\</code> — every handler method's return value is automatically serialized (usually to JSON) directly into the HTTP response body, rather than being resolved as a view name, making it the standard annotation for building REST APIs.",
+    "code": "",
+    "followups": [],
+    "mistakes": [],
+    "interview": "A convenience annotation combining \\@Controller\\ and \\@ResponseBody\\ — every handler method's return value is automatically serialized (usually to JSON) directly into the HTTP response body, rather than being resolved as a view name, making it the standard annotation for building REST APIs.",
+    "source": "IQ300"
+  },
+  {
+    "id": "iq-077",
+    "title": "Difference between `@Controller` and `@RestController`.",
+    "level": "L1",
+    "tags": [
+      "IQ300",
+      "springboot"
+    ],
+    "short": "\\@Controller\\ is used for traditional MVC where methods typically return a view name to be resolved and rendered (e.g. a Thymeleaf template), unless individually annotated with \\@ResponseBody\\. \\@RestController\\ applies \\@ResponseBody\\ to e",
+    "answer": "\\<code>@Controller\\</code> is used for traditional MVC where methods typically return a view name to be resolved and rendered (e.g. a Thymeleaf template), unless individually annotated with \\<code>@ResponseBody\\</code>. \\<code>@RestController\\</code> applies \\<code>@ResponseBody\\</code> to every method by default, so return values go straight into the HTTP response body as data (JSON/XML) — the standard choice for REST APIs.",
+    "code": "",
+    "followups": [],
+    "mistakes": [],
+    "interview": "\\@Controller\\ is used for traditional MVC where methods typically return a view name to be resolved and rendered (e.g. a Thymeleaf template), unless individually annotated with \\@ResponseBody\\. \\@RestController\\ applies \\@ResponseBody\\ to every method by default, so return values go straight into the HTTP response body",
+    "source": "IQ300"
+  },
+  {
+    "id": "iq-086",
+    "title": "How does Spring Boot auto-configuration work?",
+    "level": "L1",
+    "tags": [
+      "IQ300",
+      "springboot"
+    ],
+    "short": "It relies on conditional configuration classes registered in \\META-INF/spring/org.springframework.boot.autoconfigure.AutoConfiguration.imports\\ (previously \\spring.factories\\). Each auto-configuration class is annotated with conditions like",
+    "answer": "It relies on conditional configuration classes registered in \\<code>META-INF/spring/org.springframework.boot.autoconfigure.AutoConfiguration.imports\\</code> (previously \\<code>spring.factories\\</code>). Each auto-configuration class is annotated with conditions like \\<code>@ConditionalOnClass\\</code>, \\<code>@ConditionalOnMissingBean\\</code>, or \\<code>@ConditionalOnProperty\\</code>, so it only activates if certain classes are on the classpath and the developer hasn't already supplied their own bean — giving convention-over-configuration behavior that's still fully overridable.",
+    "code": "",
+    "followups": [],
+    "mistakes": [],
+    "interview": "It relies on conditional configuration classes registered in \\META-INF/spring/org.springframework.boot.autoconfigure.AutoConfiguration.imports\\ (previously \\spring.factories\\). Each auto-configuration class is annotated with conditions like \\@ConditionalOnClass\\, \\@ConditionalOnMissingBean\\, or \\@ConditionalOnProperty\\",
+    "source": "IQ300"
+  },
+  {
+    "id": "iq-087",
+    "title": "What is Spring Boot Starter?",
+    "level": "L1",
+    "tags": [
+      "IQ300",
+      "springboot"
+    ],
+    "short": "Starters are curated dependency descriptors (e.g. \\spring-boot-starter-web\\, \\spring-boot-starter-data-jpa\\) that pull in a coherent, version-compatible set of libraries for a particular purpose, so you don't have to hunt down and align ind",
+    "answer": "Starters are curated dependency descriptors (e.g. \\<code>spring-boot-starter-web\\</code>, \\<code>spring-boot-starter-data-jpa\\</code>) that pull in a coherent, version-compatible set of libraries for a particular purpose, so you don't have to hunt down and align individual dependency versions manually.",
+    "code": "",
+    "followups": [],
+    "mistakes": [],
+    "interview": "Starters are curated dependency descriptors (e.g. \\spring-boot-starter-web\\, \\spring-boot-starter-data-jpa\\) that pull in a coherent, version-compatible set of libraries for a particular purpose, so you don't have to hunt down and align individual dependency versions manually.",
+    "source": "IQ300"
+  },
+  {
+    "id": "iq-092",
+    "title": "Explain profiles in Spring Boot.",
+    "level": "L1",
+    "tags": [
+      "IQ300",
+      "springboot"
+    ],
+    "short": "Profiles let you define environment-specific beans and configuration that only activate under a named profile (e.g. \"dev\", \"test\", \"prod\"). Beans annotated \\@Profile(\"prod\")\\ are only registered when that profile is active, and profile-spec",
+    "answer": "Profiles let you define environment-specific beans and configuration that only activate under a named profile (e.g. \"dev\", \"test\", \"prod\"). Beans annotated \\<code>@Profile(\"prod\")\\</code> are only registered when that profile is active, and profile-specific property files override the base \\<code>application.properties\\</code>.",
+    "code": "",
+    "followups": [],
+    "mistakes": [],
+    "interview": "Profiles let you define environment-specific beans and configuration that only activate under a named profile (e.g. \"dev\", \"test\", \"prod\"). Beans annotated \\@Profile(\"prod\")\\ are only registered when that profile is active, and profile-specific property files override the base \\application.properties\\.",
+    "source": "IQ300"
+  },
+  {
+    "id": "iq-093",
+    "title": "What is the embedded server in Spring Boot?",
+    "level": "L1",
+    "tags": [
+      "IQ300",
+      "springboot"
+    ],
+    "short": "Spring Boot bundles an HTTP server (Tomcat by default, or Jetty/Undertow/Netty as alternatives) directly inside the application JAR, so the app is a self-contained, runnable artifact (\\java -jar app.jar\\) rather than needing a separately de",
+    "answer": "Spring Boot bundles an HTTP server (Tomcat by default, or Jetty/Undertow/Netty as alternatives) directly inside the application JAR, so the app is a self-contained, runnable artifact (\\<code>java -jar app.jar\\</code>) rather than needing a separately deployed WAR on an external servlet container.",
+    "code": "",
+    "followups": [],
+    "mistakes": [],
+    "interview": "Spring Boot bundles an HTTP server (Tomcat by default, or Jetty/Undertow/Netty as alternatives) directly inside the application JAR, so the app is a self-contained, runnable artifact (\\java -jar app.jar\\) rather than needing a separately deployed WAR on an external servlet container.",
+    "source": "IQ300"
+  },
+  {
+    "id": "iq-104",
+    "title": "What is `@ControllerAdvice`?",
+    "level": "L1",
+    "tags": [
+      "IQ300",
+      "springboot"
+    ],
+    "short": "A specialization of \\@Component\\ that lets a single class provide cross-cutting behavior — exception handling, model attributes, or data binding — applied globally across all (or a targeted subset of) controllers, keeping error-handling log",
+    "answer": "A specialization of \\<code>@Component\\</code> that lets a single class provide cross-cutting behavior — exception handling, model attributes, or data binding — applied globally across all (or a targeted subset of) controllers, keeping error-handling logic centralized rather than repeated.",
+    "code": "",
+    "followups": [],
+    "mistakes": [],
+    "interview": "A specialization of \\@Component\\ that lets a single class provide cross-cutting behavior — exception handling, model attributes, or data binding — applied globally across all (or a targeted subset of) controllers, keeping error-handling logic centralized rather than repeated.",
+    "source": "IQ300"
+  },
+  {
+    "id": "iq-107",
+    "title": "What is Spring Boot Actuator?",
+    "level": "L1",
+    "tags": [
+      "IQ300",
+      "springboot"
+    ],
+    "short": "A production-readiness module exposing operational endpoints over HTTP/JMX — health checks, metrics, environment info, thread dumps, and more — for monitoring and managing a running application without adding custom code for each concern. E",
+    "answer": "A production-readiness module exposing operational endpoints over HTTP/JMX — health checks, metrics, environment info, thread dumps, and more — for monitoring and managing a running application without adding custom code for each concern. Endpoints are added via \\<code>spring-boot-starter-actuator\\</code> and selectively exposed via configuration.",
+    "code": "",
+    "followups": [],
+    "mistakes": [],
+    "interview": "A production-readiness module exposing operational endpoints over HTTP/JMX — health checks, metrics, environment info, thread dumps, and more — for monitoring and managing a running application without adding custom code for each concern. Endpoints are added via \\spring-boot-starter-actuator\\ and selectively exposed vi",
+    "source": "IQ300"
+  },
+  {
+    "id": "iq-110",
+    "title": "What is Spring Boot DevTools?",
+    "level": "L1",
+    "tags": [
+      "IQ300",
+      "springboot"
+    ],
+    "short": "A development-time dependency that improves the local dev loop: automatic application restart when classpath files change, live reload of browser resources, sensible dev-only default property overrides, and disabling of caching — none of it",
+    "answer": "A development-time dependency that improves the local dev loop: automatic application restart when classpath files change, live reload of browser resources, sensible dev-only default property overrides, and disabling of caching — none of it active in a production-packaged jar.",
+    "code": "",
+    "followups": [],
+    "mistakes": [],
+    "interview": "A development-time dependency that improves the local dev loop: automatic application restart when classpath files change, live reload of browser resources, sensible dev-only default property overrides, and disabling of caching — none of it active in a production-packaged jar.",
+    "source": "IQ300"
+  },
+  {
+    "id": "iq-113",
+    "title": "How do you upload files in Spring Boot?",
+    "level": "L1",
+    "tags": [
+      "IQ300",
+      "springboot"
+    ],
+    "short": "Accept a \\MultipartFile\\ parameter in a controller method (with \\@RequestParam(\"file\")\\) for a \\multipart/form-data\\ request; Spring's \\MultipartResolver\\ handles the parsing. From there you read bytes/stream from the \\MultipartFile\\ and sa",
+    "answer": "Accept a \\<code>MultipartFile\\</code> parameter in a controller method (with \\<code>@RequestParam(\"file\")\\</code>) for a \\<code>multipart/form-data\\</code> request; Spring's \\<code>MultipartResolver\\</code> handles the parsing. From there you read bytes/stream from the \\<code>MultipartFile\\</code> and save to disk, a database, or object storage (e.g. S3).",
+    "code": "",
+    "followups": [],
+    "mistakes": [],
+    "interview": "Accept a \\MultipartFile\\ parameter in a controller method (with \\@RequestParam(\"file\")\\) for a \\multipart/form-data\\ request; Spring's \\MultipartResolver\\ handles the parsing. From there you read bytes/stream from the \\MultipartFile\\ and save to disk, a database, or object storage (e.g. S3).",
+    "source": "IQ300"
+  },
+  {
+    "id": "iq-120",
+    "title": "What is Spring Security?",
+    "level": "L2",
+    "tags": [
+      "IQ300",
+      "java"
+    ],
+    "short": "A comprehensive framework for authentication and authorization in Spring applications, providing a filter-chain architecture that intercepts requests to enforce login mechanisms (form login, basic auth, OAuth2/JWT), method- and URL-level ac",
+    "answer": "A comprehensive framework for authentication and authorization in Spring applications, providing a filter-chain architecture that intercepts requests to enforce login mechanisms (form login, basic auth, OAuth2/JWT), method- and URL-level access control, CSRF protection, session management, and integration with identity providers.",
+    "code": "",
+    "followups": [],
+    "mistakes": [],
+    "interview": "A comprehensive framework for authentication and authorization in Spring applications, providing a filter-chain architecture that intercepts requests to enforce login mechanisms (form login, basic auth, OAuth2/JWT), method- and URL-level access control, CSRF protection, session management, and integration with identity",
+    "source": "IQ300"
+  },
+  {
+    "id": "iq-147",
+    "title": "What is `@Transactional`?",
+    "level": "L2",
+    "tags": [
+      "IQ300",
+      "springboot"
+    ],
+    "short": "Marks a method or class as needing to run within a database transaction — Spring wraps the call with transaction begin/commit/rollback logic via a proxy. By default it rolls back on unchecked exceptions and commits otherwise, and its behavi",
+    "answer": "Marks a method or class as needing to run within a database transaction — Spring wraps the call with transaction begin/commit/rollback logic via a proxy. By default it rolls back on unchecked exceptions and commits otherwise, and its behavior (propagation, isolation, readOnly, rollback rules) is configurable via annotation attributes.",
+    "code": "",
+    "followups": [],
+    "mistakes": [],
+    "interview": "Marks a method or class as needing to run within a database transaction — Spring wraps the call with transaction begin/commit/rollback logic via a proxy. By default it rolls back on unchecked exceptions and commits otherwise, and its behavior (propagation, isolation, readOnly, rollback rules) is configurable via annota",
+    "source": "IQ300"
+  },
+  {
+    "id": "iq-148",
+    "title": "Propagation types in `@Transactional`.",
+    "level": "L2",
+    "tags": [
+      "IQ300",
+      "springboot"
+    ],
+    "short": "\\REQUIRED\\ (default) joins an existing transaction or creates one if none exists. \\REQUIRES\\_NEW\\ always suspends any existing transaction and starts a fresh one. \\SUPPORTS\\ joins one if present, else runs non-transactionally. \\MANDATORY\\ r",
+    "answer": "\\<code>REQUIRED\\</code> (default) joins an existing transaction or creates one if none exists. \\<code>REQUIRES\\_NEW\\</code> always suspends any existing transaction and starts a fresh one. \\<code>SUPPORTS\\</code> joins one if present, else runs non-transactionally. \\<code>MANDATORY\\</code> requires an existing transaction, throwing if none exists. \\<code>NEVER\\</code>/\\<code>NOT\\_SUPPORTED\\</code> run without a transaction, the former erroring if one exists. \\<code>NESTED\\</code> creates a savepoint within the current transaction that can be rolled back independently.",
+    "code": "",
+    "followups": [],
+    "mistakes": [],
+    "interview": "\\REQUIRED\\ (default) joins an existing transaction or creates one if none exists. \\REQUIRES\\_NEW\\ always suspends any existing transaction and starts a fresh one. \\SUPPORTS\\ joins one if present, else runs non-transactionally. \\MANDATORY\\ requires an existing transaction, throwing if none exists. \\NEVER\\/\\NOT\\_SUPPORTE",
+    "source": "IQ300"
+  },
+  {
+    "id": "iq-164",
+    "title": "What is Spring Cloud Gateway?",
+    "level": "L1",
+    "tags": [
+      "IQ300",
+      "cloud"
+    ],
+    "short": "Spring's reactive, non-blocking API gateway built on Spring WebFlux/Netty, used to route requests to downstream services based on predicates (path, header, etc.), apply filters (auth, rate limiting, request rewriting), and integrate with se",
+    "answer": "Spring's reactive, non-blocking API gateway built on Spring WebFlux/Netty, used to route requests to downstream services based on predicates (path, header, etc.), apply filters (auth, rate limiting, request rewriting), and integrate with service discovery for dynamic routing — the modern replacement for the older Netflix Zuul gateway in the Spring ecosystem.",
+    "code": "",
+    "followups": [],
+    "mistakes": [],
+    "interview": "Spring's reactive, non-blocking API gateway built on Spring WebFlux/Netty, used to route requests to downstream services based on predicates (path, header, etc.), apply filters (auth, rate limiting, request rewriting), and integrate with service discovery for dynamic routing — the modern replacement for the older Netfl",
+    "source": "IQ300"
+  },
+  {
+    "id": "iq-177",
+    "title": "What is Spring Cloud Config?",
+    "level": "L1",
+    "tags": [
+      "IQ300",
+      "cloud"
+    ],
+    "short": "A centralized configuration server for Spring Cloud microservices — it serves environment/application-specific configuration (often backed by a Git repository) over HTTP to client applications on startup, and can push updated configuration ",
+    "answer": "A centralized configuration server for Spring Cloud microservices — it serves environment/application-specific configuration (often backed by a Git repository) over HTTP to client applications on startup, and can push updated configuration to running services via a refresh mechanism, decoupling config management from individual service deployments.",
+    "code": "",
+    "followups": [],
+    "mistakes": [],
+    "interview": "A centralized configuration server for Spring Cloud microservices — it serves environment/application-specific configuration (often backed by a Git repository) over HTTP to client applications on startup, and can push updated configuration to running services via a refresh mechanism, decoupling config management from i",
+    "source": "IQ300"
+  },
+  {
+    "id": "iq-296",
+    "title": "What happens internally when a Spring Boot application starts?",
+    "level": "L2",
+    "tags": [
+      "IQ300",
+      "springboot"
+    ],
+    "short": "The \\main()\\ method calls \\SpringApplication.run()\\, which creates an \\ApplicationContext\\, determines the application type (servlet/reactive/none), loads and processes auto-configuration classes and \\@ComponentScan\\-discovered beans, appli",
+    "answer": "The \\<code>main()\\</code> method calls \\<code>SpringApplication.run()\\</code>, which creates an \\<code>ApplicationContext\\</code>, determines the application type (servlet/reactive/none), loads and processes auto-configuration classes and \\<code>@ComponentScan\\</code>-discovered beans, applies \\<code>BeanFactoryPostProcessor\\</code>s and \\<code>BeanPostProcessor\\</code>s, instantiates and wires all singleton beans (resolving dependency injection), starts the embedded web server if applicable, and finally publishes an \\<code>ApplicationReadyEvent\\</code>.",
+    "code": "",
+    "followups": [],
+    "mistakes": [],
+    "interview": "The \\main()\\ method calls \\SpringApplication.run()\\, which creates an \\ApplicationContext\\, determines the application type (servlet/reactive/none), loads and processes auto-configuration classes and \\@ComponentScan\\-discovered beans, applies \\BeanFactoryPostProcessor\\s and \\BeanPostProcessor\\s, instantiates and wires ",
+    "source": "IQ300"
+  },
+  {
+    "id": "iq-298",
+    "title": "Explain the complete request lifecycle in Spring Boot.",
+    "level": "L1",
+    "tags": [
+      "IQ300",
+      "springboot"
+    ],
+    "short": "Request arrives at the embedded server → passes through the servlet filter chain (e.g. Spring Security filters, CORS, logging) → \\DispatcherServlet\\ resolves the matching handler via \\HandlerMapping\\ → any \\HandlerInterceptor\\s run pre-hand",
+    "answer": "Request arrives at the embedded server → passes through the servlet filter chain (e.g. Spring Security filters, CORS, logging) → \\<code>DispatcherServlet\\</code> resolves the matching handler via \\<code>HandlerMapping\\</code> → any \\<code>HandlerInterceptor\\</code>s run pre-handle → the controller method executes (with argument resolution and validation) → the return value is converted to the response body via message converters → interceptors run post-handle → the response is sent, with any exceptions along the way routed to an \\<code>@ExceptionHandler\\</code>.",
+    "code": "",
+    "followups": [],
+    "mistakes": [],
+    "interview": "Request arrives at the embedded server → passes through the servlet filter chain (e.g. Spring Security filters, CORS, logging) → \\DispatcherServlet\\ resolves the matching handler via \\HandlerMapping\\ → any \\HandlerInterceptor\\s run pre-handle → the controller method executes (with argument resolution and validation) → ",
+    "source": "IQ300"
+  }
+]

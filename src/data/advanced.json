@@ -1,0 +1,138 @@
+[
+  {
+    "id": "adv-001",
+    "title": "Class loading in JVM",
+    "level": "L3",
+    "tags": [
+      "JVM",
+      "Internals"
+    ],
+    "short": "The JVM loads, links and initializes classes as needed.",
+    "answer": "Loading finds bytecode; linking verifies/prepares/resolves; initialization runs class initialization when required.",
+    "code": "Class.forName(\"com.example.User\");",
+    "followups": [
+      "Parent delegation?"
+    ],
+    "mistakes": [],
+    "interview": "The JVM loads, links and initializes classes as needed."
+  },
+  {
+    "id": "adv-002",
+    "title": "Java memory leak",
+    "level": "L3",
+    "tags": [
+      "JVM",
+      "Production"
+    ],
+    "short": "Reachable objects that should have been released can still consume heap.",
+    "answer": "Common causes include static collections, unbounded caches, listeners and ThreadLocal misuse.",
+    "code": "static final Map<String,Object> CACHE=new HashMap<>();",
+    "followups": [
+      "How diagnose?"
+    ],
+    "mistakes": [],
+    "interview": "Reachable objects that should have been released can still consume heap."
+  },
+  {
+    "id": "adv-003",
+    "title": "ThreadLocal risks",
+    "level": "L3",
+    "tags": [
+      "Concurrency",
+      "Production"
+    ],
+    "short": "ThreadLocal is thread-scoped, which can be risky in pooled threads.",
+    "answer": "Remove values in finally where appropriate. ThreadLocal does not automatically propagate across executor threads.",
+    "code": "try{ctx.set(v);work();}finally{ctx.remove();}",
+    "followups": [
+      "When useful?"
+    ],
+    "mistakes": [],
+    "interview": "ThreadLocal is thread-scoped, which can be risky in pooled threads."
+  },
+  {
+    "id": "adv-004",
+    "title": "CompletableFuture",
+    "level": "L2",
+    "tags": [
+      "Concurrency",
+      "Async"
+    ],
+    "short": "It represents a future result and supports asynchronous composition.",
+    "answer": "thenApply transforms, thenCompose flattens dependent futures and allOf combines work.",
+    "code": "CompletableFuture.supplyAsync(this::load).thenApply(this::transform);",
+    "followups": [
+      "thenApply vs thenCompose?"
+    ],
+    "mistakes": [],
+    "interview": "It represents a future result and supports asynchronous composition."
+  },
+  {
+    "id": "adv-005",
+    "title": "ExecutorService vs ForkJoinPool",
+    "level": "L2",
+    "tags": [
+      "Concurrency",
+      "Threads"
+    ],
+    "short": "ExecutorService is general; ForkJoinPool is optimized for work stealing.",
+    "answer": "Choose based on workload and isolation; blocking I/O should not casually share a CPU-oriented common pool.",
+    "code": "ExecutorService pool=Executors.newFixedThreadPool(10);",
+    "followups": [
+      "What is work stealing?"
+    ],
+    "mistakes": [],
+    "interview": "ExecutorService is general; ForkJoinPool is optimized for work stealing."
+  },
+  {
+    "id": "adv-006",
+    "title": "Transactional method calling another transactional method",
+    "level": "L3",
+    "tags": [
+      "Spring",
+      "Transactions"
+    ],
+    "short": "Propagation applies when the call crosses the Spring proxy boundary.",
+    "answer": "REQUIRED usually shares; REQUIRES_NEW suspends the outer transaction. Self-invocation can bypass interception.",
+    "code": "serviceA.outer()->serviceB.inner()",
+    "followups": [
+      "What if inner marks rollback-only?"
+    ],
+    "mistakes": [],
+    "interview": "Propagation applies when the call crosses the Spring proxy boundary."
+  },
+  {
+    "id": "adv-007",
+    "title": "Transactional exception vs global handler",
+    "level": "L3",
+    "tags": [
+      "Spring",
+      "REST"
+    ],
+    "short": "The transaction interceptor decides rollback; controller advice formats the HTTP response.",
+    "answer": "A RuntimeException propagating through the transactional proxy can trigger rollback. Advice is not the rollback mechanism.",
+    "code": "Service -> transaction -> exception -> advice",
+    "followups": [
+      "What if service catches it?"
+    ],
+    "mistakes": [],
+    "interview": "The transaction interceptor decides rollback; controller advice formats the HTTP response."
+  },
+  {
+    "id": "adv-008",
+    "title": "Spring Boot startup",
+    "level": "L2",
+    "tags": [
+      "Spring Boot",
+      "Internals"
+    ],
+    "short": "SpringApplication bootstraps the application context and infrastructure.",
+    "answer": "Configuration loads, beans are discovered/created and the web server starts for web applications.",
+    "code": "SpringApplication.run(App.class,args);",
+    "followups": [
+      "What is ApplicationContext?"
+    ],
+    "mistakes": [],
+    "interview": "SpringApplication bootstraps the application context and infrastructure."
+  }
+]
