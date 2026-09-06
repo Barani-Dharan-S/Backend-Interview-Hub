@@ -1,23 +1,5 @@
 [
   {
-    "id": "micro-019",
-    "title": "Service mesh",
-    "level": "L3",
-    "tags": [
-      "Cloud",
-      "Networking"
-    ],
-    "short": "A service mesh moves service-to-service networking policies into infrastructure proxies/nodes.",
-    "answer": "It can provide mTLS, routing and telemetry but adds platform complexity.",
-    "code": "A -> proxy -> proxy -> B",
-    "followups": [
-      "When avoid a mesh?"
-    ],
-    "mistakes": [],
-    "interview": "A service mesh moves service-to-service networking policies into infrastructure proxies/nodes.",
-    "source": "V3"
-  },
-  {
     "id": "cloud-001",
     "title": "AWS vs Azure vs GCP",
     "level": "L2",
@@ -33,7 +15,8 @@
     ],
     "mistakes": [],
     "interview": "All provide core compute, networking, storage and managed services; requirements drive selection.",
-    "source": "V3"
+    "source": "V3",
+    "topic": "cloud"
   },
   {
     "id": "cloud-002",
@@ -51,7 +34,8 @@
     ],
     "mistakes": [],
     "interview": "Vertical adds resources to an instance; horizontal adds instances.",
-    "source": "V3"
+    "source": "V3",
+    "topic": "cloud"
   },
   {
     "id": "cloud-003",
@@ -69,7 +53,8 @@
     ],
     "mistakes": [],
     "interview": "It distributes traffic across healthy instances.",
-    "source": "V3"
+    "source": "V3",
+    "topic": "cloud"
   },
   {
     "id": "cloud-004",
@@ -87,7 +72,8 @@
     ],
     "mistakes": [],
     "interview": "A container packages an application and dependencies while sharing the host kernel.",
-    "source": "V3"
+    "source": "V3",
+    "topic": "cloud"
   },
   {
     "id": "cloud-005",
@@ -105,7 +91,27 @@
     ],
     "mistakes": [],
     "interview": "Kubernetes orchestrates containerized workloads using desired state.",
-    "source": "V3"
+    "source": "V3",
+    "topic": "cloud"
+  },
+  {
+    "id": "cloud-006",
+    "title": "Readiness vs liveness",
+    "level": "L2",
+    "tags": [
+      "Kubernetes",
+      "Operations"
+    ],
+    "short": "Readiness controls traffic eligibility; liveness controls restart decisions.",
+    "answer": "A process can be alive but temporarily not ready. Avoid fragile deep liveness checks.",
+    "code": "/actuator/health/readiness",
+    "followups": [
+      "Startup probe?"
+    ],
+    "mistakes": [],
+    "interview": "Readiness controls traffic eligibility; liveness controls restart decisions.",
+    "source": "V3",
+    "topic": "cloud"
   },
   {
     "id": "cloud-007",
@@ -123,7 +129,8 @@
     ],
     "mistakes": [],
     "interview": "Autoscaling changes capacity based on workload signals.",
-    "source": "V3"
+    "source": "V3",
+    "topic": "cloud"
   },
   {
     "id": "cloud-008",
@@ -141,7 +148,8 @@
     ],
     "mistakes": [],
     "interview": "It stores blobs as objects addressed by keys.",
-    "source": "V3"
+    "source": "V3",
+    "topic": "cloud"
   },
   {
     "id": "cloud-009",
@@ -159,7 +167,8 @@
     ],
     "mistakes": [],
     "interview": "Infrastructure is declared in version-controlled files.",
-    "source": "V3"
+    "source": "V3",
+    "topic": "cloud"
   },
   {
     "id": "cloud-010",
@@ -177,38 +186,591 @@
     ],
     "mistakes": [],
     "interview": "Use least-privilege identity, encryption, secret management, private networking and audit logs.",
-    "source": "V3"
+    "source": "V3",
+    "topic": "cloud"
   },
   {
-    "id": "iq-164",
-    "title": "What is Spring Cloud Gateway?",
-    "level": "L1",
+    "id": "iq-280",
+    "title": "How did you improve performance?",
+    "level": "L2",
     "tags": [
       "IQ300",
-      "cloud"
+      "java"
     ],
-    "short": "Spring's reactive, non-blocking API gateway built on Spring WebFlux/Netty, used to route requests to downstream services based on predicates (path, header, etc.), apply filters (auth, rate limiting, request rewriting), and integrate with se",
-    "answer": "Spring's reactive, non-blocking API gateway built on Spring WebFlux/Netty, used to route requests to downstream services based on predicates (path, header, etc.), apply filters (auth, rate limiting, request rewriting), and integrate with service discovery for dynamic routing — the modern replacement for the older Netflix Zuul gateway in the Spring ecosystem.",
+    "short": "Typical levers to discuss: identifying the actual bottleneck via profiling/metrics first, optimizing slow SQL queries (indexing, avoiding N+1), adding caching for hot read paths, tuning connection/thread pool sizes, moving non-critical work",
+    "answer": "Typical levers to discuss: identifying the actual bottleneck via profiling/metrics first, optimizing slow SQL queries (indexing, avoiding N+1), adding caching for hot read paths, tuning connection/thread pool sizes, moving non-critical work to asynchronous processing, and reducing unnecessary serialization/network calls — describe a specific before/after with your own project's numbers if possible.",
     "code": "",
     "followups": [],
     "mistakes": [],
-    "interview": "Spring's reactive, non-blocking API gateway built on Spring WebFlux/Netty, used to route requests to downstream services based on predicates (path, header, etc.), apply filters (auth, rate limiting, request rewriting), and integrate with service discovery for dynamic routing — the modern replacement for the older Netfl",
-    "source": "IQ300"
+    "interview": "Typical levers to discuss: identifying the actual bottleneck via profiling/metrics first, optimizing slow SQL queries (indexing, avoiding N+1), adding caching for hot read paths, tuning connection/thread pool sizes, moving non-critical work to asynchronous processing, and reducing unnecessary serialization/network call",
+    "source": "IQ300",
+    "topic": "cloud"
   },
   {
-    "id": "iq-177",
-    "title": "What is Spring Cloud Config?",
+    "id": "iq-281",
+    "title": "How did you reduce latency?",
     "level": "L1",
     "tags": [
       "IQ300",
-      "cloud"
+      "java"
     ],
-    "short": "A centralized configuration server for Spring Cloud microservices — it serves environment/application-specific configuration (often backed by a Git repository) over HTTP to client applications on startup, and can push updated configuration ",
-    "answer": "A centralized configuration server for Spring Cloud microservices — it serves environment/application-specific configuration (often backed by a Git repository) over HTTP to client applications on startup, and can push updated configuration to running services via a refresh mechanism, decoupling config management from individual service deployments.",
+    "short": "Common approaches: caching frequently accessed data, batching or parallelizing independent downstream calls (e.g. with \\CompletableFuture\\), replacing synchronous blocking calls with non-blocking/reactive ones where it mattered, optimizing ",
+    "answer": "Common approaches: caching frequently accessed data, batching or parallelizing independent downstream calls (e.g. with \\<code>CompletableFuture\\</code>), replacing synchronous blocking calls with non-blocking/reactive ones where it mattered, optimizing database queries and adding appropriate indexes, and moving non-essential work off the critical request path into async processing.",
     "code": "",
     "followups": [],
     "mistakes": [],
-    "interview": "A centralized configuration server for Spring Cloud microservices — it serves environment/application-specific configuration (often backed by a Git repository) over HTTP to client applications on startup, and can push updated configuration to running services via a refresh mechanism, decoupling config management from i",
-    "source": "IQ300"
+    "interview": "Common approaches: caching frequently accessed data, batching or parallelizing independent downstream calls (e.g. with \\CompletableFuture\\), replacing synchronous blocking calls with non-blocking/reactive ones where it mattered, optimizing database queries and adding appropriate indexes, and moving non-essential work o",
+    "source": "IQ300",
+    "topic": "cloud"
+  },
+  {
+    "id": "iq-290",
+    "title": "Explain a deployment failure you handled.",
+    "level": "L1",
+    "tags": [
+      "IQ300",
+      "java"
+    ],
+    "short": "Describe what broke during/after a deployment (a config mismatch, a failed migration, a breaking API change), how you detected it quickly (health checks, monitoring, alerts), how you mitigated it (rollback, hotfix, feature flag), and what y",
+    "answer": "Describe what broke during/after a deployment (a config mismatch, a failed migration, a breaking API change), how you detected it quickly (health checks, monitoring, alerts), how you mitigated it (rollback, hotfix, feature flag), and what you improved in the CI/CD process afterward (better pre-deploy checks, canary rollout, automated rollback triggers).",
+    "code": "",
+    "followups": [],
+    "mistakes": [],
+    "interview": "Describe what broke during/after a deployment (a config mismatch, a failed migration, a breaking API change), how you detected it quickly (health checks, monitoring, alerts), how you mitigated it (rollback, hotfix, feature flag), and what you improved in the CI/CD process afterward (better pre-deploy checks, canary rol",
+    "source": "IQ300",
+    "topic": "cloud"
+  },
+  {
+    "id": "iq-291",
+    "title": "Explain CI/CD in your project.",
+    "level": "L1",
+    "tags": [
+      "IQ300",
+      "java"
+    ],
+    "short": "Describe the pipeline stages: code commit triggers build and unit tests, static analysis/quality gates, packaging (e.g. Docker image build), automated integration/deployment to a staging environment, further automated tests, and a controlle",
+    "answer": "Describe the pipeline stages: code commit triggers build and unit tests, static analysis/quality gates, packaging (e.g. Docker image build), automated integration/deployment to a staging environment, further automated tests, and a controlled promotion to production (manual approval, canary, or fully automated), with rollback capability at each stage.",
+    "code": "",
+    "followups": [],
+    "mistakes": [],
+    "interview": "Describe the pipeline stages: code commit triggers build and unit tests, static analysis/quality gates, packaging (e.g. Docker image build), automated integration/deployment to a staging environment, further automated tests, and a controlled promotion to production (manual approval, canary, or fully automated), with ro",
+    "source": "IQ300",
+    "topic": "cloud"
+  },
+  {
+    "id": "iq-292",
+    "title": "Explain your Git branching strategy.",
+    "level": "L1",
+    "tags": [
+      "IQ300",
+      "java"
+    ],
+    "short": "Describe the model used (e.g. trunk-based development, GitFlow, or a simpler feature-branch + main model), how feature branches were created and merged (pull requests with code review), how releases/hotfixes were handled, and any branch pro",
+    "answer": "Describe the model used (e.g. trunk-based development, GitFlow, or a simpler feature-branch + main model), how feature branches were created and merged (pull requests with code review), how releases/hotfixes were handled, and any branch protection rules or required checks before merging.",
+    "code": "",
+    "followups": [],
+    "mistakes": [],
+    "interview": "Describe the model used (e.g. trunk-based development, GitFlow, or a simpler feature-branch + main model), how feature branches were created and merged (pull requests with code review), how releases/hotfixes were handled, and any branch protection rules or required checks before merging.",
+    "source": "IQ300",
+    "topic": "cloud"
+  },
+  {
+    "id": "iq-293",
+    "title": "Explain your Jenkins pipeline.",
+    "level": "L1",
+    "tags": [
+      "IQ300",
+      "java"
+    ],
+    "short": "Describe the stages defined in your Jenkinsfile: checkout, build, unit test, static analysis, packaging/containerization, deployment to a target environment, and post-build actions (notifications, artifact archiving) — mention any paralleli",
+    "answer": "Describe the stages defined in your Jenkinsfile: checkout, build, unit test, static analysis, packaging/containerization, deployment to a target environment, and post-build actions (notifications, artifact archiving) — mention any parallelization, shared libraries, or approval gates you used.",
+    "code": "",
+    "followups": [],
+    "mistakes": [],
+    "interview": "Describe the stages defined in your Jenkinsfile: checkout, build, unit test, static analysis, packaging/containerization, deployment to a target environment, and post-build actions (notifications, artifact archiving) — mention any parallelization, shared libraries, or approval gates you used.",
+    "source": "IQ300",
+    "topic": "cloud"
+  },
+  {
+    "id": "iq-294",
+    "title": "Explain monitoring and alerting in your project.",
+    "level": "L1",
+    "tags": [
+      "IQ300",
+      "java"
+    ],
+    "short": "Describe what was monitored (application metrics via Actuator/Micrometer/Prometheus, infrastructure metrics, logs), where dashboards lived (Grafana/Kibana), what thresholds triggered alerts (error rate, latency, resource exhaustion), and ho",
+    "answer": "Describe what was monitored (application metrics via Actuator/Micrometer/Prometheus, infrastructure metrics, logs), where dashboards lived (Grafana/Kibana), what thresholds triggered alerts (error rate, latency, resource exhaustion), and how alerts were routed to the team (e.g. paging/Slack) for timely response.",
+    "code": "",
+    "followups": [],
+    "mistakes": [],
+    "interview": "Describe what was monitored (application metrics via Actuator/Micrometer/Prometheus, infrastructure metrics, logs), where dashboards lived (Grafana/Kibana), what thresholds triggered alerts (error rate, latency, resource exhaustion), and how alerts were routed to the team (e.g. paging/Slack) for timely response.",
+    "source": "IQ300",
+    "topic": "cloud"
+  },
+  {
+    "id": "iq-295",
+    "title": "Explain logging and debugging in production.",
+    "level": "L1",
+    "tags": [
+      "IQ300",
+      "java"
+    ],
+    "short": "Describe your logging practices (structured logs, correlation/trace ids for tracing a request across services, appropriate log levels), where logs were aggregated (ELK stack or similar), and how you used them together with metrics/traces to",
+    "answer": "Describe your logging practices (structured logs, correlation/trace ids for tracing a request across services, appropriate log levels), where logs were aggregated (ELK stack or similar), and how you used them together with metrics/traces to debug a production issue without needing direct server access.",
+    "code": "",
+    "followups": [],
+    "mistakes": [],
+    "interview": "Describe your logging practices (structured logs, correlation/trace ids for tracing a request across services, appropriate log levels), where logs were aggregated (ELK stack or similar), and how you used them together with metrics/traces to debug a production issue without needing direct server access.",
+    "source": "IQ300",
+    "topic": "cloud"
+  },
+  {
+    "topic": "cloud",
+    "level": "L2",
+    "title": "What is a container image?",
+    "tags": [
+      "Docker",
+      "Containers"
+    ],
+    "short": "An image is an immutable packaged filesystem and metadata used to create containers.",
+    "answer": "A Dockerfile describes image build steps. Containers are runtime instances of images, with writable runtime layers and isolated processes. Images should be small, reproducible and free of unnecessary secrets.",
+    "code": "FROM eclipse-temurin:21-jre\nCOPY app.jar /app.jar\nENTRYPOINT [\"java\",\"-jar\",\"/app.jar\"]",
+    "followups": [
+      "Image vs container?",
+      "How do you reduce image size?"
+    ],
+    "mistakes": [
+      "Baking secrets into images.",
+      "Treating a container as a lightweight virtual machine with its own full kernel."
+    ],
+    "interview": "A container image packages the application and its dependencies; a container is a running instance using the host kernel and container isolation.",
+    "source": "V9",
+    "id": "v9-064"
+  },
+  {
+    "topic": "cloud",
+    "level": "L2",
+    "title": "What is a Kubernetes Deployment?",
+    "tags": [
+      "Kubernetes",
+      "Deployment"
+    ],
+    "short": "A Deployment manages a desired number of pod replicas and supports controlled rollouts and rollbacks.",
+    "answer": "The Deployment describes a pod template and replica count. Kubernetes creates ReplicaSets and replaces pods to converge on the desired state.",
+    "code": "apiVersion: apps/v1\nkind: Deployment\nspec:\n  replicas: 3\n  template:\n    spec:\n      containers:\n      - name: api\n        image: backend:1.2",
+    "followups": [
+      "Deployment vs Service?",
+      "How does rolling update work?"
+    ],
+    "mistakes": [
+      "Exposing a Deployment directly as a stable network endpoint.",
+      "Assuming a pod IP is permanent."
+    ],
+    "interview": "A Deployment manages application replicas and rollout state. A Service provides stable networking to the selected pods.",
+    "source": "V9",
+    "id": "v9-065"
+  },
+  {
+    "topic": "cloud",
+    "level": "L2",
+    "title": "What is a Kubernetes Service?",
+    "tags": [
+      "Kubernetes",
+      "Networking"
+    ],
+    "short": "A Service provides a stable virtual endpoint and load balances traffic to matching pods.",
+    "answer": "Pods are ephemeral, so clients should not depend on pod IPs. A Service selects pods using labels and provides stable DNS and networking semantics.",
+    "code": "apiVersion: v1\nkind: Service\nspec:\n  selector:\n    app: orders\n  ports:\n  - port: 80\n    targetPort: 8080",
+    "followups": [
+      "ClusterIP vs LoadBalancer?",
+      "How does service discovery work in Kubernetes?"
+    ],
+    "mistakes": [
+      "Treating Service as a process running inside the pod.",
+      "Selecting pods with incorrect labels."
+    ],
+    "interview": "A Kubernetes Service gives stable discovery and routing to changing pod instances.",
+    "source": "V9",
+    "id": "v9-066"
+  },
+  {
+    "topic": "cloud",
+    "level": "L2",
+    "title": "What is autoscaling?",
+    "tags": [
+      "Cloud",
+      "Scaling"
+    ],
+    "short": "Autoscaling changes compute capacity based on demand or resource signals.",
+    "answer": "Horizontal scaling adds instances or pods; vertical scaling increases resources per instance. Good autoscaling needs meaningful metrics, cooldown behavior and protection against oscillation.",
+    "code": "HPA: desiredReplicas = metric / target\n// Kubernetes adjusts pod count",
+    "followups": [
+      "Horizontal vs vertical scaling?",
+      "Why can CPU be a poor autoscaling metric?"
+    ],
+    "mistakes": [
+      "Assuming more instances always fix latency.",
+      "Scaling on a metric unrelated to actual bottleneck."
+    ],
+    "interview": "Autoscaling adjusts capacity as demand changes. I choose the scaling dimension and signal based on the workload and verify that downstream dependencies can scale too.",
+    "source": "V9",
+    "id": "v9-067"
+  },
+  {
+    "topic": "cloud",
+    "level": "L2",
+    "title": "What is a VPC or virtual network?",
+    "tags": [
+      "Cloud",
+      "Networking"
+    ],
+    "short": "It is an isolated logical network in a cloud environment containing subnets, routes and security controls.",
+    "answer": "A typical design separates public and private subnets, places load balancers at appropriate boundaries and keeps databases private. Exact components vary by provider.",
+    "code": "Internet -> public load balancer -> private application subnet -> private database subnet",
+    "followups": [
+      "Public vs private subnet?",
+      "Security group vs network ACL?"
+    ],
+    "mistakes": [
+      "Putting databases directly on public subnets without need.",
+      "Treating network isolation as sufficient application authorization."
+    ],
+    "interview": "A cloud virtual network defines routing and network boundaries. I combine private placement with identity and application-layer authorization.",
+    "source": "V9",
+    "id": "v9-068"
+  },
+  {
+    "topic": "cloud",
+    "level": "L2",
+    "title": "What is IAM?",
+    "tags": [
+      "Cloud Security",
+      "IAM"
+    ],
+    "short": "Identity and Access Management controls who or what can access cloud resources and what actions are allowed.",
+    "answer": "IAM typically uses identities, roles, policies and temporary credentials. Least privilege means granting only required actions on required resources.",
+    "code": "Role -> policy -> allow\nresource: storage://orders/*\naction: read",
+    "followups": [
+      "User vs role?",
+      "Why prefer temporary credentials?"
+    ],
+    "mistakes": [
+      "Using root or administrator credentials for applications.",
+      "Granting wildcard permissions everywhere."
+    ],
+    "interview": "IAM provides identity and authorization for cloud resources. I prefer workload roles and short-lived credentials with least privilege.",
+    "source": "V9",
+    "id": "v9-069"
+  },
+  {
+    "topic": "cloud",
+    "level": "L2",
+    "title": "What is a managed database?",
+    "tags": [
+      "Cloud",
+      "Database"
+    ],
+    "short": "A managed database delegates operational tasks such as provisioning, patching, backups and failover to the cloud provider.",
+    "answer": "Managed does not mean no responsibility. The application still owns schema, indexes, query behavior, credentials, data lifecycle and recovery objectives.",
+    "code": "Application -> managed PostgreSQL\n                 provider handles patching/backups",
+    "followups": [
+      "Managed vs self-hosted?",
+      "What should still be monitored?"
+    ],
+    "mistakes": [
+      "Assuming the provider guarantees application-level correctness.",
+      "Skipping backup restore testing."
+    ],
+    "interview": "Managed databases reduce operational work but do not remove engineering responsibility for performance, security, backups and recovery testing.",
+    "source": "V9",
+    "id": "v9-070"
+  },
+  {
+    "topic": "cloud",
+    "level": "L2",
+    "title": "What is blue-green deployment?",
+    "tags": [
+      "Deployment",
+      "DevOps"
+    ],
+    "short": "Blue-green deployment maintains two environments and switches traffic from the old version to the new version after validation.",
+    "answer": "The inactive environment receives the new release. After smoke tests, routing changes to it. Rollback can be fast by switching traffic back, provided database changes are backward compatible.",
+    "code": "Blue: v1 <- traffic\nGreen: v2 <- deploy/test\nSwitch traffic -> Green",
+    "followups": [
+      "Blue-green vs rolling deployment?",
+      "How do you handle database schema changes?"
+    ],
+    "mistakes": [
+      "Ignoring database compatibility during rollback.",
+      "Calling a canary deployment blue-green."
+    ],
+    "interview": "Blue-green reduces release switching risk by keeping old and new environments available. Database changes must support both versions during the transition.",
+    "source": "V9",
+    "id": "v9-071"
+  },
+  {
+    "topic": "cloud",
+    "subtopic": "kubernetes",
+    "level": "L3",
+    "title": "How would you design Kubernetes autoscaling for a Java API?",
+    "tags": [
+      "cloud",
+      "L3",
+      "Production"
+    ],
+    "short": "Scale on demand/saturation signals while respecting startup time and downstream capacity.",
+    "answer": "CPU may miss I/O saturation. Combine appropriate metrics, set min/max replicas, use readiness and graceful termination, and cap scale-out to protect the database.",
+    "code": "HPA minReplicas=3 maxReplicas=30; metric=CPU/concurrency",
+    "followups": [
+      "HPA vs VPA?",
+      "How do you prevent scale oscillation?"
+    ],
+    "mistakes": [
+      "Scaling only on CPU for an I/O-bound service."
+    ],
+    "interview": "Autoscaling is a capacity loop. I choose signals tied to demand and verify that dependencies can absorb the additional load.",
+    "source": "V10",
+    "id": "v10-060"
+  },
+  {
+    "topic": "cloud",
+    "subtopic": "kubernetes",
+    "level": "L3",
+    "title": "How do you design Kubernetes liveness/readiness correctly?",
+    "tags": [
+      "cloud",
+      "L3",
+      "Production"
+    ],
+    "short": "Readiness controls traffic; liveness detects unrecoverable process failure; startup probes protect slow initialization.",
+    "answer": "A dependency outage should generally affect readiness rather than trigger liveness restarts. Probes should be cheap and representative of their purpose.",
+    "code": "readiness=/actuator/health/readiness\nliveness=/actuator/health/liveness",
+    "followups": [
+      "What is startupProbe?",
+      "Should readiness check the DB?"
+    ],
+    "mistakes": [
+      "Putting fragile downstream checks in liveness."
+    ],
+    "interview": "I keep probe semantics separate so a transient database outage does not restart every pod and create a second incident.",
+    "source": "V10",
+    "id": "v10-061"
+  },
+  {
+    "topic": "cloud",
+    "subtopic": "kubernetes",
+    "level": "L3",
+    "title": "How do you debug Kubernetes OOMKills for Java?",
+    "tags": [
+      "cloud",
+      "L3",
+      "Production"
+    ],
+    "short": "Compare container RSS with heap, metaspace, direct buffers, thread stacks and native memory.",
+    "answer": "The container can be killed even when Java heap is below Xmx. Leave headroom for non-heap memory and inspect cgroup limits and GC behavior.",
+    "code": "-XX:MaxRAMPercentage=70\n// leave container headroom",
+    "followups": [
+      "What counts toward container memory?",
+      "Heap OOM vs OOMKill?"
+    ],
+    "mistakes": [
+      "Setting Xmx equal to the pod limit."
+    ],
+    "interview": "I distinguish Java heap OOM from container OOMKill. The JVM and native libraries need memory outside the heap.",
+    "source": "V10",
+    "id": "v10-062"
+  },
+  {
+    "topic": "cloud",
+    "subtopic": "kubernetes",
+    "level": "L3",
+    "title": "How do you design safe Kubernetes rolling releases?",
+    "tags": [
+      "cloud",
+      "L3",
+      "Production"
+    ],
+    "short": "Combine compatible application/database versions, readiness, graceful shutdown and controlled rollout parameters.",
+    "answer": "Mixed versions must work together. Use readiness gates, termination grace periods, maxSurge/maxUnavailable and automated rollback signals.",
+    "code": "maxUnavailable: 0\nmaxSurge: 1",
+    "followups": [
+      "Rolling vs canary?",
+      "How do you drain connections?"
+    ],
+    "mistakes": [
+      "Incompatible schema changes during rolling deployment."
+    ],
+    "interview": "A Kubernetes rollout is only safe if the application and schema are backward compatible during coexistence.",
+    "source": "V10",
+    "id": "v10-063"
+  },
+  {
+    "topic": "cloud",
+    "subtopic": "kubernetes",
+    "level": "L3",
+    "title": "How do you design disaster recovery for a backend?",
+    "tags": [
+      "cloud",
+      "L3",
+      "Production"
+    ],
+    "short": "Define RPO/RTO first, then choose backups/replication and recovery procedures that meet them.",
+    "answer": "Stateless services can be rebuilt from immutable artifacts; data requires tested backups or replication. Include DNS, secrets, dependencies and external providers in the recovery plan.",
+    "code": "RPO=5m; RTO=30m\n// validate through restore drills",
+    "followups": [
+      "Backup vs replication?",
+      "How do you test DR?"
+    ],
+    "mistakes": [
+      "Designing DR without RPO/RTO targets."
+    ],
+    "interview": "I start with business recovery objectives and test restores/failover rather than assuming backups are usable.",
+    "source": "V10",
+    "id": "v10-064"
+  },
+  {
+    "topic": "cloud",
+    "subtopic": "kubernetes",
+    "level": "L3",
+    "title": "How do you control noisy-neighbor behavior in cloud systems?",
+    "tags": [
+      "cloud",
+      "L3",
+      "Production"
+    ],
+    "short": "Enforce per-tenant quotas, concurrency limits and resource isolation.",
+    "answer": "Measure resource consumption by tenant and apply rate/queue/database budgets. Premium tenants may require dedicated partitions or compute.",
+    "code": "tenantQuota[tenantId] = {rate:100, concurrency:20}",
+    "followups": [
+      "Where should quotas live?",
+      "How do you handle premium tenants?"
+    ],
+    "mistakes": [
+      "Using only a global rate limit."
+    ],
+    "interview": "Noisy-neighbor protection is capacity fairness. I enforce limits at the earliest useful boundary and observe usage by tenant.",
+    "source": "V10",
+    "id": "v10-065"
+  },
+  {
+    "topic": "cloud",
+    "subtopic": "kubernetes",
+    "level": "L3",
+    "title": "How do you optimize cloud cost without harming reliability?",
+    "tags": [
+      "cloud",
+      "L3",
+      "Production"
+    ],
+    "short": "Optimize cost per useful unit of work while preserving SLOs and resilience.",
+    "answer": "Rightsize compute, autoscale, manage storage/log retention and data transfer, and use committed capacity for predictable workloads. Track cost per request/tenant alongside latency and availability.",
+    "code": "costPerRequest = infraCost / successfulRequests",
+    "followups": [
+      "Why can autoscaling increase cost?",
+      "How do you control log spend?"
+    ],
+    "mistakes": [
+      "Cutting redundancy or observability without measuring risk."
+    ],
+    "interview": "I optimize measured cost per unit of business work, not by blindly choosing the cheapest infrastructure.",
+    "source": "V10",
+    "id": "v10-066"
+  },
+  {
+    "id": "v10.1-046",
+    "title": "Kubernetes repeatedly OOMKills a Java service",
+    "level": "L3",
+    "tags": [
+      "kubernetes",
+      "oomkill",
+      "java",
+      "Production Scenario",
+      "V10.1"
+    ],
+    "short": "Container memory is larger than Java heap; the process can be OOMKilled while heap is not full.",
+    "answer": "I would compare container RSS with heap usage and account for metaspace, thread stacks, direct memory and native allocations. Then I would fix leaks or allocation pressure and size the JVM with explicit headroom inside the container limit.",
+    "code": "Size JVM memory within the container limit, leaving headroom for non-heap/native memory. Investigate allocation or leaks before simply increasing the container limit. Set realistic requests/limits and test peak load.",
+    "followups": [
+      "How does -Xmx relate to container limits?",
+      "How do you investigate native memory?",
+      "What is the difference between requests and limits?"
+    ],
+    "mistakes": [
+      "Setting Xmx equal to the container memory limit.",
+      "Assuming OOMKilled always means a Java heap leak."
+    ],
+    "interview": "I would never infer container safety from heap usage alone. Kubernetes limits apply to the whole process.",
+    "source": "V10.1",
+    "topic": "cloud",
+    "subtopic": "kubernetes",
+    "scenario": "A Java pod is stable under normal traffic but gets OOMKilled during peak load. The JVM heap appears below the configured heap maximum shortly before termination.",
+    "investigation": "Compare container memory limit with JVM heap plus metaspace, thread stacks, native memory, direct buffers and other process overhead. Inspect container memory metrics and JVM native-memory data.",
+    "resolution": "Size JVM memory within the container limit, leaving headroom for non-heap/native memory. Investigate allocation or leaks before simply increasing the container limit. Set realistic requests/limits and test peak load.",
+    "prevention": "Monitor container RSS and JVM heap separately, alert before the limit and include container limits in JVM sizing decisions."
+  },
+  {
+    "id": "v10.1-047",
+    "title": "A rolling deployment causes capacity to drop below the SLO",
+    "level": "L3",
+    "tags": [
+      "kubernetes",
+      "rolling deployment",
+      "availability",
+      "Production Scenario",
+      "V10.1"
+    ],
+    "short": "Zero-downtime deployment depends on capacity, readiness and rollout policy together.",
+    "answer": "I would ensure the rollout maintains enough ready capacity, usually with maxUnavailable set appropriately and maxSurge supported by cluster capacity. Readiness must prevent traffic from reaching unready pods.",
+    "code": "Use readiness probes that reflect serving capability and configure rollout capacity so enough replicas remain available. For critical services, use maxUnavailable=0 where capacity permits and ensure cluster resources can support surge pods.",
+    "followups": [
+      "What is maxSurge?",
+      "Why can maxUnavailable=0 still fail?",
+      "How do readiness probes interact with deployments?"
+    ],
+    "mistakes": [
+      "Assuming rolling updates are automatically zero downtime.",
+      "Ignoring cluster capacity for surge pods."
+    ],
+    "interview": "I would test deployments as production traffic events, not just application tests.",
+    "source": "V10.1",
+    "topic": "cloud",
+    "subtopic": "kubernetes",
+    "scenario": "A service runs four pods. During rolling deployment, one old pod is terminated before a new pod becomes ready, leaving only three serving instances and causing latency spikes.",
+    "investigation": "Inspect deployment strategy, maxUnavailable, maxSurge and readiness behavior. Compare available replicas with traffic and per-pod capacity.",
+    "resolution": "Use readiness probes that reflect serving capability and configure rollout capacity so enough replicas remain available. For critical services, use maxUnavailable=0 where capacity permits and ensure cluster resources can support surge pods.",
+    "prevention": "Load-test rollouts, monitor available replicas and latency during deployments and ensure the cluster has spare capacity for surge."
+  },
+  {
+    "id": "v10.1-048",
+    "title": "A Kubernetes HPA scales too late during traffic spikes",
+    "level": "L3",
+    "tags": [
+      "hpa",
+      "autoscaling",
+      "latency",
+      "Production Scenario",
+      "V10.1"
+    ],
+    "short": "Autoscaling is constrained by detection time plus pod startup time; the metric must predict saturation early enough.",
+    "answer": "I would measure the complete scaling loop. If CPU is delayed, I would consider request concurrency or queue depth, increase baseline capacity for known peaks and optimize pod startup time.",
+    "code": "Use a metric that correlates earlier with saturation, such as request rate, concurrency or queue depth, and tune target utilization and startup capacity. Keep a minimum replica buffer for predictable peaks.",
+    "followups": [
+      "When is queue depth a better metric?",
+      "How does cluster autoscaler interact with HPA?",
+      "What is scale-to-zero trade-off?"
+    ],
+    "mistakes": [
+      "Choosing CPU because it is easy to measure.",
+      "Ignoring pod startup latency."
+    ],
+    "interview": "I would tune autoscaling from the service’s actual bottleneck and response time, not blindly use CPU at 70 percent.",
+    "source": "V10.1",
+    "topic": "cloud",
+    "subtopic": "kubernetes",
+    "scenario": "Traffic doubles in 30 seconds, but CPU-based HPA takes several minutes to add enough pods. p95 latency breaches the SLO before scaling completes.",
+    "investigation": "Measure scale-up detection delay, pod startup time and whether CPU is a leading indicator for this workload. Check stabilization and metrics scrape intervals.",
+    "resolution": "Use a metric that correlates earlier with saturation, such as request rate, concurrency or queue depth, and tune target utilization and startup capacity. Keep a minimum replica buffer for predictable peaks.",
+    "prevention": "Load-test burst traffic, measure time-to-ready and set alerts on saturation before the SLO is breached."
   }
 ]

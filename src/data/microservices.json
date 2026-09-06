@@ -4182,5 +4182,1293 @@
     ],
     "interview": "An error budget quantifies how much unreliability is acceptable. When it is consumed, teams can slow risky changes and prioritize reliability.",
     "source": "V9.1"
+  },
+  {
+    "topic": "microservices",
+    "subtopic": "architecture",
+    "level": "L3",
+    "title": "How do you design a reliable order workflow across microservices?",
+    "tags": [
+      "microservices",
+      "L3",
+      "Production"
+    ],
+    "short": "Model the workflow as explicit states with local transactions, durable events, idempotency and compensations.",
+    "answer": "Order service persists its state and an outbox event. Payment and inventory own their local transactions. A saga coordinates progress and compensation when a step fails.",
+    "code": "CREATED -> PAYMENT_PENDING -> PAID -> INVENTORY_RESERVED -> CONFIRMED",
+    "followups": [
+      "Choreography vs orchestration?",
+      "How do you recover a stuck saga?"
+    ],
+    "mistakes": [
+      "Treating the workflow as one database transaction."
+    ],
+    "interview": "I avoid distributed ACID transactions. Each service owns its data, events connect local commits, and compensations handle partial failure.",
+    "source": "V10",
+    "id": "v10-022"
+  },
+  {
+    "topic": "microservices",
+    "subtopic": "messaging",
+    "level": "L3",
+    "title": "How do you prevent retry storms?",
+    "tags": [
+      "microservices",
+      "L3",
+      "Production"
+    ],
+    "short": "Use bounded retries, exponential backoff, jitter, retry budgets and a total deadline.",
+    "answer": "Nested retries multiply traffic. Retry only transient failures, preferably at one appropriate layer, and stop when the request deadline is exhausted.",
+    "code": "attempt=0..2; delay=base*2^attempt + jitter",
+    "followups": [
+      "Why jitter?",
+      "How does idempotency interact with retries?"
+    ],
+    "mistakes": [
+      "Retrying at every service layer."
+    ],
+    "interview": "Retries must fit inside a latency budget and be safe for the operation. I also monitor retry volume separately from request volume.",
+    "source": "V10",
+    "id": "v10-023"
+  },
+  {
+    "topic": "microservices",
+    "subtopic": "architecture",
+    "level": "L3",
+    "title": "How do you design a distributed rate limiter?",
+    "tags": [
+      "microservices",
+      "L3",
+      "Production"
+    ],
+    "short": "Use a shared atomic algorithm such as token bucket with per-client or per-tenant state.",
+    "answer": "Redis or another shared store can hold tokens and refill time, updated atomically. Define fail-open/closed behavior and expose 429 responses.",
+    "code": "key=tenantId; tokens/refill updated atomically",
+    "followups": [
+      "Fixed vs sliding window?",
+      "What if Redis fails?"
+    ],
+    "mistakes": [
+      "Using local counters in a horizontally scaled service."
+    ],
+    "interview": "I choose token bucket when bursts are allowed, keep state shared across instances and protect the limiter store with timeouts.",
+    "source": "V10",
+    "id": "v10-024"
+  },
+  {
+    "topic": "microservices",
+    "subtopic": "messaging",
+    "level": "L3",
+    "title": "How do you handle Kafka schema evolution safely?",
+    "tags": [
+      "microservices",
+      "L3",
+      "Production"
+    ],
+    "short": "Make event changes backward/forward compatible and roll out consumers before producers when needed.",
+    "answer": "Prefer additive fields and tolerant readers. Use explicit event versions when semantics change and enforce compatibility through a schema registry where appropriate.",
+    "code": "OrderCreated v2 { orderId, customerId, optional priority }",
+    "followups": [
+      "When do you version an event?",
+      "Avro vs JSON?"
+    ],
+    "mistakes": [
+      "Removing or renaming fields immediately."
+    ],
+    "interview": "I design events as long-lived contracts. Old and new consumers must coexist during deployment.",
+    "source": "V10",
+    "id": "v10-025"
+  },
+  {
+    "topic": "microservices",
+    "subtopic": "messaging",
+    "level": "L3",
+    "title": "Explain the outbox pattern and its limits",
+    "tags": [
+      "microservices",
+      "L3",
+      "Production"
+    ],
+    "short": "Outbox closes the database-to-message dual-write gap but still requires idempotent delivery.",
+    "answer": "Business data and an outbox row commit in one local transaction. A relay publishes later. Publishing can be duplicated, so consumers must tolerate redelivery and the relay needs retry/cleanup.",
+    "code": "INSERT business row; INSERT outbox row; COMMIT;",
+    "followups": [
+      "Polling vs CDC?",
+      "How do you clean outbox rows?"
+    ],
+    "mistakes": [
+      "Claiming outbox guarantees exactly-once end to end."
+    ],
+    "interview": "Outbox gives a durable handoff from DB to broker, not magical exactly-once business processing.",
+    "source": "V10",
+    "id": "v10-026"
+  },
+  {
+    "topic": "microservices",
+    "subtopic": "messaging",
+    "level": "L3",
+    "title": "How do you troubleshoot Kafka consumer lag?",
+    "tags": [
+      "microservices",
+      "L3",
+      "Production"
+    ],
+    "short": "Inspect partition-level lag, processing latency, rebalance rate, downstream latency and partition/consumer capacity.",
+    "answer": "If one partition is hot, adding consumers may not help. Check max poll settings, batch size, consumer throughput and broker health.",
+    "code": "metrics: lag, records/sec, processing ms, rebalances",
+    "followups": [
+      "Can consumers exceed partition count?",
+      "What causes hot partitions?"
+    ],
+    "mistakes": [
+      "Scaling consumers without checking partition distribution."
+    ],
+    "interview": "I first determine whether lag is uniform or concentrated. Then I identify whether the bottleneck is partitions, consumer code or downstream I/O.",
+    "source": "V10",
+    "id": "v10-027"
+  },
+  {
+    "topic": "microservices",
+    "subtopic": "messaging",
+    "level": "L3",
+    "title": "How do you guarantee ordering in Kafka where it matters?",
+    "tags": [
+      "microservices",
+      "L3",
+      "Production"
+    ],
+    "short": "Use a stable partition key so related events land in the same partition and process that partition sequentially.",
+    "answer": "Kafka ordering is per partition. Using orderId as the key keeps an order events events together. Global ordering is expensive and usually unnecessary.",
+    "code": "new ProducerRecord<>(\"orders\", orderId, event)",
+    "followups": [
+      "What if one key is hot?",
+      "Can one partition be processed concurrently?"
+    ],
+    "mistakes": [
+      "Claiming a topic is globally ordered."
+    ],
+    "interview": "I promise only partition ordering. For order-specific ordering, orderId is the partition key and consumers process the partition in sequence.",
+    "source": "V10",
+    "id": "v10-028"
+  },
+  {
+    "topic": "microservices",
+    "subtopic": "messaging",
+    "level": "L3",
+    "title": "How do you design a poison-message/DLT strategy?",
+    "tags": [
+      "microservices",
+      "L3",
+      "Production"
+    ],
+    "short": "Bound transient retries, preserve diagnostic metadata and provide controlled replay.",
+    "answer": "After retry exhaustion, publish to a DLT with original topic/partition/offset, exception and trace metadata. Replay only after fixing the cause and ensure idempotency.",
+    "code": "DLT metadata: topic, partition, offset, error, traceId",
+    "followups": [
+      "Retry topic vs DLT?",
+      "How do you replay safely?"
+    ],
+    "mistakes": [
+      "Dropping failed messages silently."
+    ],
+    "interview": "A DLT is a recovery mechanism, not a trash bin. I alert on growth and replay deliberately.",
+    "source": "V10",
+    "id": "v10-029"
+  },
+  {
+    "topic": "microservices",
+    "subtopic": "architecture",
+    "level": "L3",
+    "title": "How do you safely use distributed locks?",
+    "tags": [
+      "microservices",
+      "L3",
+      "Production"
+    ],
+    "short": "Prefer idempotency or database constraints; if a lock is required, use leases and fencing.",
+    "answer": "A lease can expire while a stale holder continues running. A fencing token lets the resource reject operations from an old holder.",
+    "code": "owner + leaseUntil + fencingVersion",
+    "followups": [
+      "Why is SETNX alone insufficient?",
+      "What is fencing?"
+    ],
+    "mistakes": [
+      "Assuming the lock holder is always current."
+    ],
+    "interview": "Distributed locks are not automatically safe under partitions. I use them only when simpler ownership or uniqueness mechanisms cannot solve the problem.",
+    "source": "V10",
+    "id": "v10-030"
+  },
+  {
+    "topic": "microservices",
+    "subtopic": "resilience",
+    "level": "L3",
+    "title": "How do you handle partial failure in fan-out requests?",
+    "tags": [
+      "microservices",
+      "L3",
+      "Production"
+    ],
+    "short": "Classify dependencies as required or optional and use bounded parallelism plus per-call deadlines.",
+    "answer": "Optional dependency failures can produce partial results; required failures fail the request. Bound fan-out so concurrency does not exhaust threads or downstream quotas.",
+    "code": "required=[inventory]; optional=[recommendations,ads]",
+    "followups": [
+      "How do you propagate cancellation?",
+      "When should you cache fan-out data?"
+    ],
+    "mistakes": [
+      "Calling every dependency serially with one large timeout."
+    ],
+    "interview": "I use concurrency to reduce latency but make failure policy explicit and keep the fan-out within a resource budget.",
+    "source": "V10",
+    "id": "v10-032"
+  },
+  {
+    "topic": "microservices",
+    "subtopic": "data",
+    "level": "L3",
+    "title": "How do you design zero-downtime database migrations in microservices?",
+    "tags": [
+      "microservices",
+      "L3",
+      "Production"
+    ],
+    "short": "Use expand-and-contract and keep old/new application versions compatible.",
+    "answer": "Add new schema elements first, deploy dual-compatible code, backfill, switch reads/writes, then remove old elements after rollout completion.",
+    "code": "ADD COLUMN status_v2 ...;",
+    "followups": [
+      "How do you backfill safely?",
+      "How do you roll back?"
+    ],
+    "mistakes": [
+      "Combining destructive schema changes with the code release."
+    ],
+    "interview": "Schema evolution is part of distributed deployment. Compatibility must hold while multiple service versions run simultaneously.",
+    "source": "V10",
+    "id": "v10-033"
+  },
+  {
+    "topic": "microservices",
+    "subtopic": "architecture",
+    "level": "L3",
+    "title": "How do you choose REST vs messaging?",
+    "tags": [
+      "microservices",
+      "L3",
+      "Production"
+    ],
+    "short": "Use synchronous communication when the caller needs an immediate result; messaging when buffering, decoupling or eventual consistency are valuable.",
+    "answer": "REST creates temporal coupling; messaging creates durable asynchronous handoff. Many real workflows combine both.",
+    "code": "GET /inventory/{id}\nOrderCreated -> inventory consumer",
+    "followups": [
+      "How do retries differ?",
+      "How do you trace async flows?"
+    ],
+    "mistakes": [
+      "Using messaging for every request/response."
+    ],
+    "interview": "I choose based on latency, coupling, failure and consistency requirements rather than using messaging everywhere.",
+    "source": "V10",
+    "id": "v10-034"
+  },
+  {
+    "topic": "microservices",
+    "subtopic": "architecture",
+    "level": "L3",
+    "title": "How do you design multi-region active-active services?",
+    "tags": [
+      "microservices",
+      "L3",
+      "Production"
+    ],
+    "short": "Design the data consistency and conflict model first, then route stateless compute accordingly.",
+    "answer": "Choose single-writer, region-local writes or multi-writer semantics. Define replication lag, conflict resolution, global IDs and failover.",
+    "code": "Region A/B -> regional traffic; writes follow explicit consistency policy",
+    "followups": [
+      "How do you handle split brain?",
+      "RPO/RTO?"
+    ],
+    "mistakes": [
+      "Assuming replication automatically resolves write conflicts."
+    ],
+    "interview": "Active-active is mainly a data problem. Two application clusters do not create an active-active system unless writes and failover are well defined.",
+    "source": "V10",
+    "id": "v10-035"
+  },
+  {
+    "topic": "microservices",
+    "subtopic": "architecture",
+    "level": "L3",
+    "title": "How do you design tenant isolation in microservices?",
+    "tags": [
+      "microservices",
+      "L3",
+      "Production"
+    ],
+    "short": "Make tenant identity an end-to-end invariant across authorization, data, cache and resource quotas.",
+    "answer": "Derive tenant from trusted identity, enforce it in queries, namespace caches and apply per-tenant limits. Test cross-tenant access explicitly.",
+    "code": "WHERE tenant_id = authenticatedTenant",
+    "followups": [
+      "Shared DB vs separate DB?",
+      "How do you test IDOR?"
+    ],
+    "mistakes": [
+      "Trusting client-supplied tenantId."
+    ],
+    "interview": "Tenant isolation cannot depend on a single controller check; the data boundary must enforce it too.",
+    "source": "V10",
+    "id": "v10-036"
+  },
+  {
+    "topic": "microservices",
+    "subtopic": "messaging",
+    "level": "L3",
+    "title": "How do you handle backpressure in event consumers?",
+    "tags": [
+      "microservices",
+      "L3",
+      "Production"
+    ],
+    "short": "Bound queues and concurrency so overload becomes controlled delay or rejection rather than unbounded memory growth.",
+    "answer": "Measure processing capacity and queue depth. For HTTP use bounded worker pools; for Kafka tune consumer concurrency and pause/resume or poll behavior.",
+    "code": "boundedQueue + fixedWorkers + rejectionPolicy",
+    "followups": [
+      "How does Kafka buffer?",
+      "What is load shedding?"
+    ],
+    "mistakes": [
+      "Using unbounded queues."
+    ],
+    "interview": "Backpressure is a capacity boundary. Predictable throttling is safer than allowing memory and latency to grow indefinitely.",
+    "source": "V10",
+    "id": "v10-037"
+  },
+  {
+    "topic": "microservices",
+    "subtopic": "resilience",
+    "level": "L3",
+    "title": "How do you design service-to-service timeout budgets?",
+    "tags": [
+      "microservices",
+      "L3",
+      "Production"
+    ],
+    "short": "Derive downstream deadlines from the top-level request budget rather than assigning the same timeout everywhere.",
+    "answer": "A 1-second request cannot give three downstreams one second each. Propagate a deadline and reserve time for retries, serialization and response handling.",
+    "code": "total=1000ms; payment=400ms; db=200ms; remaining=budget",
+    "followups": [
+      "How do you propagate deadlines?",
+      "What happens to async work after the request?"
+    ],
+    "mistakes": [
+      "Giving every dependency the full client timeout."
+    ],
+    "interview": "Timeouts are budgets. I make every downstream respect the remaining deadline so work stops before the caller has already timed out.",
+    "source": "V10",
+    "id": "v10-038"
+  },
+  {
+    "topic": "microservices",
+    "subtopic": "data",
+    "level": "L3",
+    "title": "How do you design an idempotent payment integration?",
+    "tags": [
+      "microservices",
+      "L3",
+      "Production"
+    ],
+    "short": "Use a durable payment intent and provider idempotency key, then reconcile ambiguous outcomes.",
+    "answer": "A timeout can happen after the provider charges the card. Retrying with a new request risks double charge. Persist provider request IDs and query/webhook state to converge.",
+    "code": "paymentIntentId -> providerIdempotencyKey",
+    "followups": [
+      "How do you handle duplicate webhooks?",
+      "What if provider has no idempotency key?"
+    ],
+    "mistakes": [
+      "Creating a new payment after every timeout."
+    ],
+    "interview": "The hardest case is an ambiguous timeout. I never create a second charge blindly; I retry the same logical operation or reconcile it.",
+    "source": "V10",
+    "id": "v10-039"
+  },
+  {
+    "topic": "microservices",
+    "subtopic": "architecture",
+    "level": "L3",
+    "title": "How do you design graceful shutdown for microservices?",
+    "tags": [
+      "microservices",
+      "L3",
+      "Production"
+    ],
+    "short": "Drain traffic, stop accepting new work, finish safe in-flight work and stop consumers cleanly.",
+    "answer": "Readiness should fail before termination, load balancers need time to drain, and consumers should stop polling and commit completed work. Long jobs need cancellation/recovery semantics.",
+    "code": "readiness=false -> drain -> stop consumers -> close resources",
+    "followups": [
+      "How does Kubernetes termination work?",
+      "How do you handle long jobs?"
+    ],
+    "mistakes": [
+      "Only adding a shutdown hook."
+    ],
+    "interview": "Graceful shutdown is an orchestration problem across the app, load balancer and worker system, not just a JVM hook.",
+    "source": "V10",
+    "id": "v10-040"
+  },
+  {
+    "topic": "microservices",
+    "subtopic": "messaging",
+    "level": "L3",
+    "title": "How do you use distributed tracing across REST and Kafka?",
+    "tags": [
+      "microservices",
+      "L3",
+      "Production"
+    ],
+    "short": "Propagate standard trace context through HTTP and message headers and create spans at asynchronous boundaries.",
+    "answer": "Inject trace context when producing, extract when consuming, and retain correlation metadata. Use sampling appropriate to volume.",
+    "code": "traceparent header -> Kafka headers -> consumer span",
+    "followups": [
+      "Trace ID vs span ID?",
+      "How do you sample high-volume topics?"
+    ],
+    "mistakes": [
+      "Starting a new unrelated trace for every message."
+    ],
+    "interview": "I use standard trace propagation so a trace can show the request, producer, broker and consumer work rather than unrelated log IDs.",
+    "source": "V10",
+    "id": "v10-041"
+  },
+  {
+    "id": "v10.1-001",
+    "title": "Payment API latency jumped from 200 ms to 4 seconds",
+    "level": "L3",
+    "tags": [
+      "microservices",
+      "latency",
+      "troubleshooting",
+      "Production Scenario",
+      "V10.1"
+    ],
+    "short": "The first step is not increasing CPU or blindly increasing timeouts; it is locating which dependency owns the latency.",
+    "answer": "I would use traces to decompose the four seconds, then inspect thread pools, database connections, downstream calls and GC. Once the bottleneck is identified I would fix that dependency, keep timeouts bounded and validate the change under production-like load.",
+    "code": "If a downstream service is slow, enforce a bounded timeout and avoid multiplying the load with aggressive retries. If the database pool is exhausted, identify the slow query or leaked connection and tune pool size only after fixing the bottleneck. Roll back a recent change if correlation is strong, then validate with load tests.",
+    "followups": [
+      "What if traces show the database is fast but the downstream API is slow?",
+      "How would retries affect this incident?",
+      "Which metrics would you put on the dashboard?"
+    ],
+    "mistakes": [
+      "Increasing every timeout to hide the problem.",
+      "Looking only at average latency."
+    ],
+    "interview": "I would start with traces and latency percentiles, isolate the slow segment, fix the bottleneck, and then add guardrails so the same dependency cannot exhaust the service.",
+    "source": "V10.1",
+    "topic": "microservices",
+    "subtopic": "operations",
+    "scenario": "A payment endpoint that normally responds in about 200 ms starts taking 4 seconds during peak traffic, while CPU is only 45%.",
+    "investigation": "Start with distributed traces and endpoint latency percentiles. Break the request into application time, database time, downstream calls and queue waits. Check connection-pool utilization, thread-pool queue depth, GC pauses and downstream timeout/retry metrics. Compare p50, p95 and p99 rather than only averages.",
+    "resolution": "If a downstream service is slow, enforce a bounded timeout and avoid multiplying the load with aggressive retries. If the database pool is exhausted, identify the slow query or leaked connection and tune pool size only after fixing the bottleneck. Roll back a recent change if correlation is strong, then validate with load tests.",
+    "prevention": "Define latency SLOs, instrument traces, cap retries with exponential backoff and jitter, monitor pool saturation and alert on p95/p99 latency and downstream dependency health."
+  },
+  {
+    "id": "v10.1-002",
+    "title": "A retry policy causes a retry storm across three services",
+    "level": "L3",
+    "tags": [
+      "retry",
+      "cascading failure",
+      "resilience",
+      "Production Scenario",
+      "V10.1"
+    ],
+    "short": "Retries can improve transient failures, but uncoordinated retries can turn a small outage into a distributed overload.",
+    "answer": "I would first stop retry multiplication by limiting attempts and identifying one layer responsible for retries. Then I would add exponential backoff, jitter, circuit breaking and concurrency limits, and verify the behavior with failure tests.",
+    "code": "Choose one retry owner for a given dependency, keep attempts low, use exponential backoff with jitter, and fail fast when the operation is not safely retryable. Add circuit breaking and bounded concurrency so a failing dependency cannot consume every worker.",
+    "followups": [
+      "When should an operation not be retried?",
+      "What is retry jitter?",
+      "How would you implement a retry budget?"
+    ],
+    "mistakes": [
+      "Retrying every exception.",
+      "Using fixed one-second retry delays."
+    ],
+    "interview": "Retries should be treated as load amplification. I want bounded attempts, backoff, jitter, one clear retry owner and a way to fail fast.",
+    "source": "V10.1",
+    "topic": "microservices",
+    "subtopic": "resilience",
+    "scenario": "Service A calls B and B calls C. C becomes slow, and all three services start issuing retries until traffic multiplies and the incident spreads.",
+    "investigation": "Calculate the effective request multiplication across the call chain. Inspect retry counters, timeout rates, thread-pool saturation and downstream load. Check whether every layer retries the same operation and whether retries have backoff, jitter and attempt limits.",
+    "resolution": "Choose one retry owner for a given dependency, keep attempts low, use exponential backoff with jitter, and fail fast when the operation is not safely retryable. Add circuit breaking and bounded concurrency so a failing dependency cannot consume every worker.",
+    "prevention": "Document retry ownership, use retry budgets, instrument attempts separately from business requests, and test dependency failures with load tests and fault injection."
+  },
+  {
+    "id": "v10.1-003",
+    "title": "Kafka consumers are falling behind during peak traffic",
+    "level": "L3",
+    "tags": [
+      "kafka",
+      "consumer lag",
+      "backpressure",
+      "Production Scenario",
+      "V10.1"
+    ],
+    "short": "Consumer lag is a symptom; the fix depends on whether the bottleneck is partitions, processing time, downstream I/O or a hot partition.",
+    "answer": "I would inspect lag per partition and consumer throughput, then identify whether processing, database I/O or partition skew is limiting throughput. I would scale consumers within the partition limit and optimize the slow stage rather than simply adding instances.",
+    "code": "Increase consumer parallelism only up to the useful partition count, optimize the slow processing step and batch database operations where safe. If the workload is legitimately larger, increase partitions with a capacity plan. Pause or isolate expensive work rather than allowing it to block all partitions.",
+    "followups": [
+      "What happens if you add more consumers than partitions?",
+      "How do you handle a hot partition?",
+      "How would you preserve ordering?"
+    ],
+    "mistakes": [
+      "Assuming more pods always increase throughput.",
+      "Ignoring partition skew."
+    ],
+    "interview": "I would correlate lag with throughput and processing latency, identify the bottleneck, then scale or optimize the constrained stage while protecting the downstream database.",
+    "source": "V10.1",
+    "topic": "microservices",
+    "subtopic": "messaging",
+    "scenario": "A Kafka topic is receiving messages faster than consumers can process them. Consumer lag grows continuously during peak hours.",
+    "investigation": "Check lag by partition, consumer throughput, processing latency, rebalance frequency and consumer errors. Determine whether the bottleneck is CPU, database calls, external APIs, serialization, partition skew or insufficient partitions.",
+    "resolution": "Increase consumer parallelism only up to the useful partition count, optimize the slow processing step and batch database operations where safe. If the workload is legitimately larger, increase partitions with a capacity plan. Pause or isolate expensive work rather than allowing it to block all partitions.",
+    "prevention": "Alert on lag growth rate, monitor per-partition skew and processing time, size partitions for expected throughput and test peak traffic before releases."
+  },
+  {
+    "id": "v10.1-004",
+    "title": "An order is created twice after a client timeout",
+    "level": "L3",
+    "tags": [
+      "idempotency",
+      "orders",
+      "duplicate transaction",
+      "Production Scenario",
+      "V10.1"
+    ],
+    "short": "Idempotency makes a retried request safe by ensuring the same business operation is applied once from the caller perspective.",
+    "answer": "I would introduce an idempotency key and enforce uniqueness at the persistence boundary. The first successful operation stores the key and result atomically; later retries return that stored result.",
+    "code": "Require an idempotency key for create operations with retryable clients. Store the key with the resulting order in the same transaction or use a unique database constraint. On a duplicate key, return the original result instead of executing the operation again.",
+    "followups": [
+      "Where should the idempotency key be stored?",
+      "How long should it be retained?",
+      "What if two identical requests arrive concurrently?"
+    ],
+    "mistakes": [
+      "Using an in-memory map in a multi-instance service.",
+      "Checking for duplicates and inserting in separate non-atomic steps."
+    ],
+    "interview": "For payment or order creation I never rely on the client not retrying. I make the operation idempotent at the server and enforce it with a durable uniqueness constraint.",
+    "source": "V10.1",
+    "topic": "microservices",
+    "subtopic": "data",
+    "scenario": "The client times out after submitting an order, retries the request, and the backend creates two orders.",
+    "investigation": "Check whether the request had an idempotency key, whether the first request actually committed, and whether the key was stored atomically with the business result. Trace both requests to see whether they raced or were sequential retries.",
+    "resolution": "Require an idempotency key for create operations with retryable clients. Store the key with the resulting order in the same transaction or use a unique database constraint. On a duplicate key, return the original result instead of executing the operation again.",
+    "prevention": "Document idempotency semantics, set an appropriate retention period for keys and test retries, concurrent duplicates and network timeouts."
+  },
+  {
+    "id": "v10.1-005",
+    "title": "A Saga leaves an order in an inconsistent business state",
+    "level": "L3",
+    "tags": [
+      "saga",
+      "eventual consistency",
+      "distributed transaction",
+      "Production Scenario",
+      "V10.1"
+    ],
+    "short": "A Saga does not create ACID atomicity across services; it coordinates a business workflow and compensates failed steps.",
+    "answer": "I would treat the workflow as a state machine. Payment failure should produce a durable transition to compensation, release inventory, and finally move the order to a terminal state such as payment-failed. Each step must be idempotent.",
+    "code": "Model the workflow explicitly. On payment failure, transition the order to a compensating state and release inventory. Prefer an orchestrated Saga when the workflow has many steps and compensation rules need centralized visibility. Make each command idempotent.",
+    "followups": [
+      "Choreography or orchestration?",
+      "How do you recover if the orchestrator crashes?",
+      "How do you make compensation idempotent?"
+    ],
+    "mistakes": [
+      "Calling a distributed transaction across all databases by default.",
+      "Designing compensation without considering partial failures."
+    ],
+    "interview": "I would explicitly model the Saga state and compensation path. The system should make intermediate states visible and recoverable rather than assuming every distributed step commits together.",
+    "source": "V10.1",
+    "topic": "microservices",
+    "subtopic": "data",
+    "scenario": "Order creation succeeds, inventory reservation succeeds, but payment fails after several seconds. The order remains marked as confirmed.",
+    "investigation": "Trace the Saga state transitions and identify the last durable event. Check whether every forward action has a compensating action and whether state transitions are persisted before publishing the next command.",
+    "resolution": "Model the workflow explicitly. On payment failure, transition the order to a compensating state and release inventory. Prefer an orchestrated Saga when the workflow has many steps and compensation rules need centralized visibility. Make each command idempotent.",
+    "prevention": "Persist Saga state, define compensations for each reversible step, add timeouts and reconciliation jobs, and expose intermediate states instead of pretending the workflow is atomic."
+  },
+  {
+    "id": "v10.1-006",
+    "title": "Outbox events are duplicated after a service restart",
+    "level": "L3",
+    "tags": [
+      "outbox",
+      "events",
+      "duplicates",
+      "Production Scenario",
+      "V10.1"
+    ],
+    "short": "The transactional outbox solves database-to-message atomicity, not exactly-once business processing.",
+    "answer": "I would keep the outbox publisher at least once and give every event a stable ID. Consumers deduplicate by that ID or by a business constraint, so a publisher restart cannot create a second business effect.",
+    "code": "Assume at-least-once delivery. Keep the outbox durable, publish with a stable event ID, and make consumers idempotent using a processed-event table or business uniqueness constraint. Do not delete the outbox row before successful handoff.",
+    "followups": [
+      "How does CDC compare with an outbox publisher?",
+      "Where do you store processed event IDs?",
+      "Can Kafka exactly-once semantics solve the business duplicate?"
+    ],
+    "mistakes": [
+      "Assuming the outbox guarantees exactly once.",
+      "Making the consumer non-idempotent."
+    ],
+    "interview": "I would design for duplicate delivery rather than trying to prove exactly-once execution across the database and broker.",
+    "source": "V10.1",
+    "topic": "microservices",
+    "subtopic": "data",
+    "scenario": "A service writes an order and an outbox row in one database transaction. After restart, the publisher sends the event again and consumers process it twice.",
+    "investigation": "Inspect outbox status transitions and publisher acknowledgements. Determine whether the event was sent but the publisher crashed before marking it published. Check consumer idempotency.",
+    "resolution": "Assume at-least-once delivery. Keep the outbox durable, publish with a stable event ID, and make consumers idempotent using a processed-event table or business uniqueness constraint. Do not delete the outbox row before successful handoff.",
+    "prevention": "Monitor unpublished age, publisher failures and duplicate-event rates. Document at-least-once semantics and test crash windows between publish and acknowledgement."
+  },
+  {
+    "id": "v10.1-007",
+    "title": "A database connection pool is exhausted in one service",
+    "level": "L3",
+    "tags": [
+      "database",
+      "connection pool",
+      "production",
+      "Production Scenario",
+      "V10.1"
+    ],
+    "short": "A larger pool is not automatically faster; it can overload the database and increase contention.",
+    "answer": "I would inspect pool wait time and transaction duration first. If connections are held by slow SQL or long transactions, fix those causes. Only then would I size the pool against database capacity and service concurrency.",
+    "code": "Fix leaked or long-held connections and slow SQL first. Then tune pool size based on database capacity and concurrency, with bounded acquisition time. Reject or shed excess work rather than allowing unbounded queues.",
+    "followups": [
+      "How do you choose pool size?",
+      "What happens if every microservice uses a pool of 100?",
+      "How can slow SQL exhaust an application?"
+    ],
+    "mistakes": [
+      "Increasing pool size without checking database limits.",
+      "Ignoring connection acquisition latency."
+    ],
+    "interview": "Connection-pool exhaustion is usually a saturation problem. I would find why connections are held too long, then apply bounded pool and queue limits.",
+    "source": "V10.1",
+    "topic": "microservices",
+    "subtopic": "operations",
+    "scenario": "Requests begin timing out, while the database itself has available CPU. Application logs show many requests waiting for a connection.",
+    "investigation": "Check active, idle and pending connection counts, connection acquisition time and query duration. Look for long transactions, missing closes, slow queries and sudden traffic increases. Compare pool size with database connection limits.",
+    "resolution": "Fix leaked or long-held connections and slow SQL first. Then tune pool size based on database capacity and concurrency, with bounded acquisition time. Reject or shed excess work rather than allowing unbounded queues.",
+    "prevention": "Monitor pool saturation and acquisition latency, use leak detection where supported, keep transactions short and load-test connection limits."
+  },
+  {
+    "id": "v10.1-008",
+    "title": "A deployment causes cascading failures because health checks are wrong",
+    "level": "L3",
+    "tags": [
+      "health check",
+      "kubernetes",
+      "deployment",
+      "Production Scenario",
+      "V10.1"
+    ],
+    "short": "Health checks are part of traffic control, not just status reporting.",
+    "answer": "I would separate readiness from liveness. Readiness can fail when the instance cannot safely serve requests, while liveness should not restart the service merely because a dependency is down. For slow startup I would use a startup probe.",
+    "code": "Use readiness to represent whether the instance can serve traffic, while liveness should detect an unrecoverable process condition. Avoid making liveness depend on every downstream service. Add startup probes for slow initialization and graceful shutdown handling.",
+    "followups": [
+      "Should readiness call the database?",
+      "When should a liveness probe fail?",
+      "Why use a startup probe?"
+    ],
+    "mistakes": [
+      "Putting every dependency in liveness.",
+      "Using a process-up check as the only readiness signal."
+    ],
+    "interview": "I want health probes to control traffic safely without causing restart storms. Readiness answers can I serve traffic; liveness answers am I fundamentally alive.",
+    "source": "V10.1",
+    "topic": "microservices",
+    "subtopic": "operations",
+    "scenario": "A new version starts successfully but depends on a downstream service that is unavailable. Kubernetes keeps routing traffic to it because the readiness check only verifies that the process is running.",
+    "investigation": "Compare readiness and liveness definitions with actual dependency readiness. Inspect startup time, dependency failures and pod routing. Check whether liveness is restarting healthy-but-dependent pods unnecessarily.",
+    "resolution": "Use readiness to represent whether the instance can serve traffic, while liveness should detect an unrecoverable process condition. Avoid making liveness depend on every downstream service. Add startup probes for slow initialization and graceful shutdown handling.",
+    "prevention": "Test dependency outages during deployment, expose meaningful health endpoints and alert on ready-pod count and failed probes."
+  },
+  {
+    "id": "v10.1-009",
+    "title": "Two services deadlock each other through synchronous calls",
+    "level": "L3",
+    "tags": [
+      "deadlock",
+      "synchronous calls",
+      "distributed systems",
+      "Production Scenario",
+      "V10.1"
+    ],
+    "short": "A distributed call cycle is a design problem; increasing thread pools only delays exhaustion.",
+    "answer": "I would identify the circular dependency from traces, then remove the synchronous cycle rather than tuning thread pools. Usually one side should become event-driven or the workflow ownership should be moved to a single coordinator.",
+    "code": "Break the synchronous cycle. Move one interaction to an asynchronous event or redesign ownership so only one service coordinates the workflow. Add bounded timeouts and avoid holding database transactions while making remote calls.",
+    "followups": [
+      "How would you detect service dependency cycles?",
+      "Why are remote calls inside database transactions risky?",
+      "When would asynchronous messaging help?"
+    ],
+    "mistakes": [
+      "Solving the cycle by adding more threads.",
+      "Holding locks or transactions across remote calls."
+    ],
+    "interview": "I would fix the dependency graph first. Timeouts are a safety net, not a solution to a circular synchronous architecture.",
+    "source": "V10.1",
+    "topic": "microservices",
+    "subtopic": "resilience",
+    "scenario": "Service A waits for B while B waits for A during a rare workflow. Threads accumulate and both services eventually stop making progress.",
+    "investigation": "Use traces to find the circular call graph and inspect thread-pool queues. Determine whether the dependency is direct or hidden through another service. Check timeout values and whether each request holds resources while waiting.",
+    "resolution": "Break the synchronous cycle. Move one interaction to an asynchronous event or redesign ownership so only one service coordinates the workflow. Add bounded timeouts and avoid holding database transactions while making remote calls.",
+    "prevention": "Review service dependency graphs, enforce architecture rules against cycles and test failure paths. Prefer asynchronous workflows for long-running cross-service processes."
+  },
+  {
+    "id": "v10.1-010",
+    "title": "A cache outage takes down the entire API",
+    "level": "L3",
+    "tags": [
+      "cache",
+      "redis",
+      "cascading failure",
+      "Production Scenario",
+      "V10.1"
+    ],
+    "short": "A cache should accelerate the source of truth, not become a hidden single point of overload.",
+    "answer": "I would prevent cache failure from causing a cache stampede against the database. I would cap fallback concurrency, coalesce hot-key loads and allow non-critical requests to degrade gracefully.",
+    "code": "Protect the database with bounded fallback concurrency, request coalescing for hot keys, local caching for safe data and rate limiting. Decide which requests can degrade gracefully when the cache is unavailable.",
+    "followups": [
+      "What is cache stampede?",
+      "How does request coalescing work?",
+      "When would local caching be unsafe?"
+    ],
+    "mistakes": [
+      "Assuming the database can absorb all cache misses.",
+      "Adding a cache without defining failure behavior."
+    ],
+    "interview": "I would design the cache as an optional accelerator and explicitly protect the database when the accelerator disappears.",
+    "source": "V10.1",
+    "topic": "microservices",
+    "subtopic": "resilience",
+    "scenario": "Redis becomes unavailable. The service falls back to the database, database CPU reaches 100%, and API latency collapses.",
+    "investigation": "Compare cache hit rate, database QPS and fallback traffic before and after the cache outage. Check whether all instances miss the same hot keys and whether requests are queued.",
+    "resolution": "Protect the database with bounded fallback concurrency, request coalescing for hot keys, local caching for safe data and rate limiting. Decide which requests can degrade gracefully when the cache is unavailable.",
+    "prevention": "Treat cache failure as a normal failure mode. Load-test cache outages, monitor fallback QPS and database saturation, and define explicit cache consistency and availability behavior."
+  },
+  {
+    "id": "v10.1-011",
+    "title": "A poison Kafka message blocks an entire partition",
+    "level": "L3",
+    "tags": [
+      "kafka",
+      "dead-letter",
+      "consumer",
+      "Production Scenario",
+      "V10.1"
+    ],
+    "short": "Retries are useful for transient failures; permanent failures need isolation so one record cannot block the stream indefinitely.",
+    "answer": "I would classify the exception, cap retries, send permanent failures to a DLT with enough metadata for replay, and alert operations. The consumer can then continue with later records where the business ordering rules allow it.",
+    "code": "Use bounded retries for transient errors and route permanently failing records to a dead-letter topic or quarantine flow. Record the original topic, partition and offset. Provide an operational replay mechanism after the bad record is fixed.",
+    "followups": [
+      "How do you replay a DLT message?",
+      "What if strict ordering is mandatory?",
+      "How do you distinguish transient from permanent failures?"
+    ],
+    "mistakes": [
+      "Using infinite retries.",
+      "Dropping the bad message without an audit trail."
+    ],
+    "interview": "I would not retry a deterministic deserialization or validation error forever. I would isolate it, preserve metadata and make replay controlled.",
+    "source": "V10.1",
+    "topic": "microservices",
+    "subtopic": "messaging",
+    "scenario": "One malformed message repeatedly fails processing. The consumer retries it forever, so later messages in the same partition are never processed.",
+    "investigation": "Inspect the failing offset, exception type and retry count. Determine whether the error is transient or permanent and whether ordering requires the partition to stop.",
+    "resolution": "Use bounded retries for transient errors and route permanently failing records to a dead-letter topic or quarantine flow. Record the original topic, partition and offset. Provide an operational replay mechanism after the bad record is fixed.",
+    "prevention": "Monitor DLT volume and retry age, classify exceptions and test poison-message recovery without losing ordering guarantees."
+  },
+  {
+    "id": "v10.1-012",
+    "title": "A hot key causes one Redis shard to become overloaded",
+    "level": "L3",
+    "tags": [
+      "redis",
+      "hot key",
+      "scaling",
+      "Production Scenario",
+      "V10.1"
+    ],
+    "short": "Horizontal scaling does not solve a single hot key if the key maps to one shard.",
+    "answer": "I would identify hot keys first. For safe data I could add local caching or request coalescing; for very hot mutable data I may distribute a logical key across multiple physical keys if consistency rules allow it.",
+    "code": "Use local caching for extremely hot immutable or slowly changing data, request coalescing and controlled replication. If the data model permits, shard a logical hot key into multiple physical keys and aggregate the results.",
+    "followups": [
+      "When is local caching safe?",
+      "How would you split a hot key?",
+      "What consistency trade-offs appear?"
+    ],
+    "mistakes": [
+      "Adding shards without addressing key skew.",
+      "Splitting a key without considering writes and consistency."
+    ],
+    "interview": "I would treat key popularity distribution as a capacity concern, not just total cache size.",
+    "source": "V10.1",
+    "topic": "microservices",
+    "subtopic": "operations",
+    "scenario": "A popular product key receives a large fraction of traffic. One Redis shard has much higher CPU and latency than the others.",
+    "investigation": "Measure requests per key and shard distribution. Confirm that hashing is working but a small number of keys dominate traffic. Check whether replicas are serving reads and whether clients support key splitting.",
+    "resolution": "Use local caching for extremely hot immutable or slowly changing data, request coalescing and controlled replication. If the data model permits, shard a logical hot key into multiple physical keys and aggregate the results.",
+    "prevention": "Track top-key traffic, set alerts for skew and load-test hot-key behavior before large launches."
+  },
+  {
+    "id": "v10.1-013",
+    "title": "A rolling deployment mixes incompatible API versions",
+    "level": "L3",
+    "tags": [
+      "api versioning",
+      "deployment",
+      "backward compatibility",
+      "Production Scenario",
+      "V10.1"
+    ],
+    "short": "Distributed deployments require compatibility across versions that coexist during rollout.",
+    "answer": "I would make the producer change backward compatible, deploy it while old consumers still work, then migrate consumers and remove the old contract only after the compatibility window.",
+    "code": "Use backward-compatible changes first: add optional fields before removing old ones. Deploy consumers before producers when necessary, or support explicit API versions. For events, use schema evolution rules and compatibility checks.",
+    "followups": [
+      "How do you version Kafka events?",
+      "What is consumer-driven contract testing?",
+      "How would you remove a field safely?"
+    ],
+    "mistakes": [
+      "Breaking the contract in the first deployment.",
+      "Testing only a single version pair."
+    ],
+    "interview": "During a rolling deployment I assume old and new versions coexist. Therefore contracts must be compatible throughout the rollout.",
+    "source": "V10.1",
+    "topic": "microservices",
+    "subtopic": "communication",
+    "scenario": "Version 2 of a producer is deployed before all consumers are upgraded. It removes a field that older consumers still require, causing errors during the rollout.",
+    "investigation": "Inspect deployment order and consumer compatibility. Check schema/API contract tests and trace failures to the exact version combination.",
+    "resolution": "Use backward-compatible changes first: add optional fields before removing old ones. Deploy consumers before producers when necessary, or support explicit API versions. For events, use schema evolution rules and compatibility checks.",
+    "prevention": "Use contract testing, compatibility gates and a deprecation window. Never assume all instances switch versions simultaneously."
+  },
+  {
+    "id": "v10.1-014",
+    "title": "A distributed trace is missing the downstream service",
+    "level": "L3",
+    "tags": [
+      "observability",
+      "tracing",
+      "opentelemetry",
+      "Production Scenario",
+      "V10.1"
+    ],
+    "short": "Tracing only works end to end when context is propagated across every boundary.",
+    "answer": "I would verify trace-context propagation first, then instrumentation and sampling. I would use correlation IDs in logs to bridge gaps and add an integration test that checks context survives a service-to-service call.",
+    "code": "Enable consistent W3C trace-context propagation and instrument the client/server boundaries. Check sampling configuration so child spans are not unexpectedly dropped. Keep correlation IDs in logs as a fallback.",
+    "followups": [
+      "How do you propagate context through Kafka?",
+      "What is sampling?",
+      "Why keep correlation IDs if traces exist?"
+    ],
+    "mistakes": [
+      "Assuming missing spans always mean the service was not called.",
+      "Ignoring sampling configuration."
+    ],
+    "interview": "I would verify propagation before blaming the tracing backend. A trace is only useful if context survives HTTP, messaging and asynchronous boundaries.",
+    "source": "V10.1",
+    "topic": "microservices",
+    "subtopic": "operations",
+    "scenario": "The gateway trace shows the request entering Service A, but the span for Service B is absent even though B was definitely called.",
+    "investigation": "Check trace propagation headers, instrumentation configuration, sampling decisions and protocol support. Compare gateway and downstream logs using correlation IDs.",
+    "resolution": "Enable consistent W3C trace-context propagation and instrument the client/server boundaries. Check sampling configuration so child spans are not unexpectedly dropped. Keep correlation IDs in logs as a fallback.",
+    "prevention": "Standardize instrumentation and propagation libraries, validate traces in integration tests and monitor the percentage of requests with complete traces."
+  },
+  {
+    "id": "v10.1-015",
+    "title": "A graceful shutdown loses in-flight requests",
+    "level": "L3",
+    "tags": [
+      "graceful shutdown",
+      "kubernetes",
+      "deployment",
+      "Production Scenario",
+      "V10.1"
+    ],
+    "short": "Graceful shutdown is a coordination problem between the orchestrator, load balancer and application.",
+    "answer": "I would make the pod unready first, stop new work, drain in-flight requests for a bounded period and only then close the application. The termination grace period must exceed the expected drain window.",
+    "code": "On shutdown, fail readiness first, allow load balancers to stop routing, stop accepting new work, wait for in-flight requests up to a bounded grace period, then close resources. Handle SIGTERM correctly.",
+    "followups": [
+      "How does Kubernetes termination work?",
+      "What should happen to Kafka consumers during shutdown?",
+      "How do you handle requests longer than the grace period?"
+    ],
+    "mistakes": [
+      "Immediately closing the server on SIGTERM.",
+      "Using an extremely long grace period as a substitute for correct draining."
+    ],
+    "interview": "I would explicitly design the shutdown sequence rather than relying on process termination to be graceful.",
+    "source": "V10.1",
+    "topic": "microservices",
+    "subtopic": "operations",
+    "scenario": "During a deployment, pods terminate while requests are still running. Clients receive intermittent 502/connection errors.",
+    "investigation": "Check termination grace period, readiness transition, preStop behavior and whether the application stops accepting new traffic before closing listeners. Inspect request duration versus termination timing.",
+    "resolution": "On shutdown, fail readiness first, allow load balancers to stop routing, stop accepting new work, wait for in-flight requests up to a bounded grace period, then close resources. Handle SIGTERM correctly.",
+    "prevention": "Test rolling deployments with long-running requests, monitor termination errors and set grace periods based on actual request and shutdown durations."
+  },
+  {
+    "id": "v10.1-016",
+    "title": "A database migration breaks old application pods",
+    "level": "L3",
+    "tags": [
+      "database migration",
+      "zero downtime",
+      "deployment",
+      "Production Scenario",
+      "V10.1"
+    ],
+    "short": "A zero-downtime database migration must tolerate multiple application versions at once.",
+    "answer": "I would use an expand-and-contract approach. First add compatible schema elements, then deploy code that understands both versions, migrate data, switch traffic and remove the old structure later.",
+    "code": "Use expand-and-contract migrations: add the new structure first, deploy code that can work with both versions, backfill if needed, switch reads/writes, and remove the old structure only after all old code is gone.",
+    "followups": [
+      "How do you roll back after a destructive migration?",
+      "How would you backfill a large table?",
+      "What is dual write and what risks does it have?"
+    ],
+    "mistakes": [
+      "Renaming or dropping fields in the first migration.",
+      "Assuming rollback means reverting the database schema automatically."
+    ],
+    "interview": "I assume rolling deployments mean old and new application code share the same database. Therefore schema changes must be backward compatible during the transition.",
+    "source": "V10.1",
+    "topic": "microservices",
+    "subtopic": "data",
+    "scenario": "A new release adds a column and immediately renames an existing column. During the rolling deployment, old pods still query the old column and start failing.",
+    "investigation": "Check schema changes against the versions of application code running simultaneously. Identify whether the migration is backward compatible.",
+    "resolution": "Use expand-and-contract migrations: add the new structure first, deploy code that can work with both versions, backfill if needed, switch reads/writes, and remove the old structure only after all old code is gone.",
+    "prevention": "Automate compatibility checks and make database migrations part of deployment design. Test rollback paths, not just forward deployment."
+  },
+  {
+    "id": "v10.1-017",
+    "title": "A multi-tenant service leaks one tenant’s data",
+    "level": "L3",
+    "tags": [
+      "multi-tenant",
+      "authorization",
+      "security",
+      "Production Scenario",
+      "V10.1"
+    ],
+    "short": "Multi-tenancy requires defense in depth; a single forgotten filter can become a data-isolation incident.",
+    "answer": "I would derive tenant identity from authenticated claims, enforce it consistently at the data-access boundary and add tests proving tenant A can never read tenant B data. For critical systems I would add database-level isolation as another layer.",
+    "code": "Enforce tenant identity at a trusted application boundary and include tenant constraints in repository/data-access policies. Add database-level protections where the database supports them. Never accept tenant ID solely from the request body.",
+    "followups": [
+      "Schema-per-tenant or shared schema?",
+      "How do you test isolation?",
+      "How would you audit tenant access?"
+    ],
+    "mistakes": [
+      "Relying on UI-provided tenant IDs.",
+      "Putting tenant checks only in controllers."
+    ],
+    "interview": "I would never trust a tenant ID supplied by the client. Tenant identity must come from authenticated context and be enforced below the controller layer.",
+    "source": "V10.1",
+    "topic": "microservices",
+    "subtopic": "security",
+    "scenario": "A query endpoint returns records from another tenant because tenant filtering was applied in one controller but forgotten in a repository method.",
+    "investigation": "Trace the request from token claims to authorization checks and database queries. Look for every data-access path that can bypass the controller-level check.",
+    "resolution": "Enforce tenant identity at a trusted application boundary and include tenant constraints in repository/data-access policies. Add database-level protections where the database supports them. Never accept tenant ID solely from the request body.",
+    "prevention": "Write authorization tests for cross-tenant access, use tenant-aware repository patterns and audit sensitive access. Treat tenant context as security-critical data."
+  },
+  {
+    "id": "v10.1-018",
+    "title": "A distributed lock is held after the worker crashes",
+    "level": "L3",
+    "tags": [
+      "distributed lock",
+      "redis",
+      "recovery",
+      "Production Scenario",
+      "V10.1"
+    ],
+    "short": "A distributed lock should reduce overlap, not be the only protection against duplicate execution.",
+    "answer": "I would use a lease with an owner token and safe renewal. If the worker dies, the lease expires and another worker can continue. The job must still be idempotent because distributed locks cannot provide perfect failure exclusion.",
+    "code": "Use a lock with a unique owner token and bounded lease. Renew it only while the worker is healthy, and release only when the token matches. Make the job itself idempotent because lease expiry can still allow another worker to take over.",
+    "followups": [
+      "What is the fencing-token problem?",
+      "Why is idempotency still required?",
+      "What happens during a network partition?"
+    ],
+    "mistakes": [
+      "Using a lock with no expiry.",
+      "Releasing a lock without verifying ownership."
+    ],
+    "interview": "I use leases for recovery and idempotency for correctness. The lock is an optimization for coordination, not the sole business guarantee.",
+    "source": "V10.1",
+    "topic": "microservices",
+    "subtopic": "data",
+    "scenario": "A scheduled job acquires a distributed lock and the process crashes before releasing it. Other workers stop processing the job.",
+    "investigation": "Check lock ownership, TTL and renewal behavior. Determine whether the lock can expire safely and whether a worker can accidentally release another worker’s lock.",
+    "resolution": "Use a lock with a unique owner token and bounded lease. Renew it only while the worker is healthy, and release only when the token matches. Make the job itself idempotent because lease expiry can still allow another worker to take over.",
+    "prevention": "Test crashes, long-running jobs and clock/network issues. Monitor stale locks and job execution overlap."
+  },
+  {
+    "id": "v10.1-019",
+    "title": "A service becomes overloaded even though request rate is normal",
+    "level": "L3",
+    "tags": [
+      "backpressure",
+      "thread pool",
+      "saturation",
+      "Production Scenario",
+      "V10.1"
+    ],
+    "short": "Backpressure means the system limits work to what downstream capacity can sustain.",
+    "answer": "I would cap concurrency and queue depth so slow downstream calls cannot consume all resources. Then I would add timeouts and bulkheads and decide which work can be rejected, delayed or moved asynchronously.",
+    "code": "Apply bounded concurrency and queue sizes, reject or shed excess work, set timeouts and isolate slow dependencies with bulkheads. Prefer asynchronous processing when the business flow allows it.",
+    "followups": [
+      "How does a bounded queue protect a service?",
+      "When should requests be rejected with 429 or 503?",
+      "How do virtual threads change this analysis?"
+    ],
+    "mistakes": [
+      "Using unbounded executor queues.",
+      "Assuming more threads always improve throughput."
+    ],
+    "interview": "The service is overloaded by waiting work, not necessarily by incoming request count. I would control concurrency and queue growth first.",
+    "source": "V10.1",
+    "topic": "microservices",
+    "subtopic": "resilience",
+    "scenario": "Traffic volume is steady, but a downstream dependency becomes slower. Worker threads accumulate waiting on I/O and memory usage rises until the service becomes unhealthy.",
+    "investigation": "Inspect active threads, executor queue depth, request concurrency, downstream latency and memory. Look for unbounded queues and synchronous blocking calls.",
+    "resolution": "Apply bounded concurrency and queue sizes, reject or shed excess work, set timeouts and isolate slow dependencies with bulkheads. Prefer asynchronous processing when the business flow allows it.",
+    "prevention": "Monitor saturation signals, load-test dependency slowness and define overload behavior explicitly instead of allowing unbounded waiting."
+  },
+  {
+    "id": "v10.1-020",
+    "title": "A downstream timeout is shorter than the upstream timeout",
+    "level": "L3",
+    "tags": [
+      "timeout",
+      "deadline",
+      "distributed systems",
+      "Production Scenario",
+      "V10.1"
+    ],
+    "short": "Timeouts should form a coherent deadline budget, not independent arbitrary numbers.",
+    "answer": "I would define a total request deadline and allocate smaller budgets to downstream calls. When the deadline is exceeded, the work should be cancelled or abandoned safely so the system does not keep consuming capacity for a request that no longer matters.",
+    "code": "Use an end-to-end deadline budget. Each downstream call must have a timeout less than the remaining deadline, and cancellation should propagate where the protocol supports it.",
+    "followups": [
+      "How do you propagate deadlines over HTTP?",
+      "What if the downstream operation is not cancellable?",
+      "How does this relate to retries?"
+    ],
+    "mistakes": [
+      "Giving every dependency a fixed large timeout.",
+      "Ignoring work that continues after client timeout."
+    ],
+    "interview": "I treat timeouts as a budget. Every downstream dependency must respect the remaining deadline.",
+    "source": "V10.1",
+    "topic": "microservices",
+    "subtopic": "resilience",
+    "scenario": "The gateway allows 5 seconds, Service A allows 4 seconds, but Service B allows 10 seconds. Requests keep running downstream after the caller has already timed out.",
+    "investigation": "Map timeouts across the request chain and inspect work that continues after upstream cancellation. Measure wasted downstream work.",
+    "resolution": "Use an end-to-end deadline budget. Each downstream call must have a timeout less than the remaining deadline, and cancellation should propagate where the protocol supports it.",
+    "prevention": "Standardize timeout policies, propagate deadlines and test cancellation under load."
+  },
+  {
+    "id": "v10.1-021",
+    "title": "A feature flag causes inconsistent behavior across instances",
+    "level": "L3",
+    "tags": [
+      "feature flag",
+      "configuration",
+      "deployment",
+      "Production Scenario",
+      "V10.1"
+    ],
+    "short": "Feature flags are distributed configuration and need consistency semantics just like any other configuration.",
+    "answer": "I would first define the consistency requirement. For pricing, I may need user or transaction stickiness and a versioned flag. I would also expose the active configuration version so incidents can be correlated to rollout state.",
+    "code": "Define whether the flag is evaluated per request, user or tenant. For correctness-sensitive changes, use versioned configuration and atomic rollout rules. Ensure all instances can report their active configuration.",
+    "followups": [
+      "How would you roll back a bad flag?",
+      "What if a flag service is unavailable?",
+      "How do you make a transaction use one consistent flag value?"
+    ],
+    "mistakes": [
+      "Changing business-critical flags without auditability.",
+      "Assuming all instances update instantly."
+    ],
+    "interview": "I would not treat feature flags as harmless UI switches. In backend systems they can change business behavior and need rollout, audit and consistency controls.",
+    "source": "V10.1",
+    "topic": "microservices",
+    "subtopic": "operations",
+    "scenario": "Half the instances use the new pricing algorithm and half use the old one because flag updates arrive at different times.",
+    "investigation": "Check flag propagation latency, caching, evaluation rules and whether requests can move between instances during a session.",
+    "resolution": "Define whether the flag is evaluated per request, user or tenant. For correctness-sensitive changes, use versioned configuration and atomic rollout rules. Ensure all instances can report their active configuration.",
+    "prevention": "Audit flag changes, expose configuration version in diagnostics and define rollback behavior before enabling production flags."
+  },
+  {
+    "id": "v10.1-022",
+    "title": "An event consumer commits the database but crashes before acknowledging Kafka",
+    "level": "L3",
+    "tags": [
+      "kafka",
+      "at-least-once",
+      "idempotency",
+      "Production Scenario",
+      "V10.1"
+    ],
+    "short": "Kafka offset management and database commits are separate systems; without a transaction bridge, duplicate delivery is normal.",
+    "answer": "I would commit the business transaction first and acknowledge the message only after success. Because a crash can happen between those actions, the handler must be idempotent using a stable event ID or business uniqueness constraint.",
+    "code": "Design the handler for at-least-once delivery. Use a unique event ID or business key to make the database operation idempotent, and acknowledge only after successful processing.",
+    "followups": [
+      "Can Kafka transactions solve this?",
+      "How would you implement an inbox table?",
+      "What if the event has no stable ID?"
+    ],
+    "mistakes": [
+      "Assuming manual offset commit creates exactly once.",
+      "Acknowledging before the business transaction commits."
+    ],
+    "interview": "I assume at-least-once delivery. The correctness mechanism is idempotent business processing, not hoping the consumer never crashes between commit and acknowledgement.",
+    "source": "V10.1",
+    "topic": "microservices",
+    "subtopic": "messaging",
+    "scenario": "The consumer processes an event and commits a database transaction, then crashes before committing the Kafka offset. After restart the same event is delivered again.",
+    "investigation": "Compare consumer offset progression with database transaction logs. Confirm whether the business effect is repeatable and whether an event ID is stored.",
+    "resolution": "Design the handler for at-least-once delivery. Use a unique event ID or business key to make the database operation idempotent, and acknowledge only after successful processing.",
+    "prevention": "Test crash windows between business commit and offset commit. Monitor duplicate delivery and keep stable event identifiers."
+  },
+  {
+    "id": "v10.1-023",
+    "title": "A cache stampede occurs after a popular key expires",
+    "level": "L3",
+    "tags": [
+      "cache",
+      "stampede",
+      "redis",
+      "Production Scenario",
+      "V10.1"
+    ],
+    "short": "A cache stampede is a synchronized miss that overwhelms the source of truth.",
+    "answer": "I would prevent multiple callers from refreshing the same hot key concurrently, add TTL jitter and allow stale data when the business permits it. The database should also have a bounded fallback path.",
+    "code": "Use request coalescing or a single-flight mechanism so only one request refreshes a key. Add TTL jitter and stale-while-revalidate where acceptable. Protect the source with bounded concurrency.",
+    "followups": [
+      "What is stale-while-revalidate?",
+      "How would you handle a cache miss when Redis is down?",
+      "When is stale data unacceptable?"
+    ],
+    "mistakes": [
+      "Using the same TTL for every hot key.",
+      "Letting every miss query the database."
+    ],
+    "interview": "I would design for cache expiry as a failure mode. Request coalescing, TTL jitter and stale-while-revalidate are useful controls.",
+    "source": "V10.1",
+    "topic": "microservices",
+    "subtopic": "resilience",
+    "scenario": "A popular product cache entry expires. Thousands of requests miss simultaneously and all query the database.",
+    "investigation": "Look at cache-miss rate, database QPS and key popularity around the expiration time. Check whether TTLs are synchronized across instances.",
+    "resolution": "Use request coalescing or a single-flight mechanism so only one request refreshes a key. Add TTL jitter and stale-while-revalidate where acceptable. Protect the source with bounded concurrency.",
+    "prevention": "Monitor hot keys, avoid synchronized expirations and load-test cache expiry events rather than only steady-state cache hits."
+  },
+  {
+    "id": "v10.1-024",
+    "title": "A service discovery outage prevents new pods from finding dependencies",
+    "level": "L3",
+    "tags": [
+      "service discovery",
+      "availability",
+      "kubernetes",
+      "Production Scenario",
+      "V10.1"
+    ],
+    "short": "A control-plane failure should not immediately become a data-plane outage if safe cached state can keep traffic flowing.",
+    "answer": "I would separate control-plane availability from data-plane traffic. Clients should cache usable discovery information for a bounded period, while the discovery system itself is highly available.",
+    "code": "Use highly available discovery, client-side caching with bounded staleness and resilient DNS behavior. Ensure startup does not require an indefinitely available discovery control plane if existing endpoints can be reused safely.",
+    "followups": [
+      "Client-side or server-side discovery?",
+      "How does DNS caching affect recovery?",
+      "What happens when an instance IP changes?"
+    ],
+    "mistakes": [
+      "Making every request synchronously query discovery.",
+      "Ignoring stale discovery data."
+    ],
+    "interview": "I would design discovery failure so existing traffic can continue for some bounded period instead of making every request depend on the control plane.",
+    "source": "V10.1",
+    "topic": "microservices",
+    "subtopic": "communication",
+    "scenario": "The service discovery component becomes unavailable. Existing connections continue to work, but newly started pods cannot resolve downstream services.",
+    "investigation": "Check discovery health, DNS/cache behavior and whether clients cache resolved endpoints. Compare existing versus newly created instances.",
+    "resolution": "Use highly available discovery, client-side caching with bounded staleness and resilient DNS behavior. Ensure startup does not require an indefinitely available discovery control plane if existing endpoints can be reused safely.",
+    "prevention": "Test control-plane outages, monitor discovery availability and define how long clients can safely use cached endpoints."
+  },
+  {
+    "id": "v10.1-025",
+    "title": "A payment is charged but the order service records failure",
+    "level": "L3",
+    "tags": [
+      "payment",
+      "distributed transaction",
+      "reconciliation",
+      "Production Scenario",
+      "V10.1"
+    ],
+    "short": "External payment calls create an uncertain outcome; the safe design is idempotency plus reconciliation, not blind retry.",
+    "answer": "I would never blindly retry a timed-out payment. I would use a stable idempotency key, query the provider for the existing result, persist the final state and reconcile unknown transactions asynchronously.",
+    "code": "Use an idempotency key with the payment provider and persist the payment attempt state. On timeout, query the provider by idempotency key or transaction ID before retrying. Add reconciliation for uncertain states.",
+    "followups": [
+      "How would you model payment states?",
+      "What if the provider does not support idempotency?",
+      "How do you reconcile thousands of pending payments?"
+    ],
+    "mistakes": [
+      "Treating timeout as proof that no charge happened.",
+      "Generating a new payment ID for every retry."
+    ],
+    "interview": "Payment is a classic example where timeout does not mean failure. I need an idempotency key and a way to reconcile uncertain outcomes.",
+    "source": "V10.1",
+    "topic": "microservices",
+    "subtopic": "data",
+    "scenario": "The payment provider confirms a charge, but the order service times out before recording the success. A retry risks charging the customer twice.",
+    "investigation": "Trace the payment provider request and inspect provider transaction IDs. Determine whether the timeout happened before or after the provider committed the charge.",
+    "resolution": "Use an idempotency key with the payment provider and persist the payment attempt state. On timeout, query the provider by idempotency key or transaction ID before retrying. Add reconciliation for uncertain states.",
+    "prevention": "Persist provider IDs, model pending/unknown states, reconcile regularly and test timeouts after external commit."
+  },
+  {
+    "id": "v10.1-026",
+    "title": "A message schema change breaks consumers after deployment",
+    "level": "L3",
+    "tags": [
+      "kafka",
+      "schema evolution",
+      "compatibility",
+      "Production Scenario",
+      "V10.1"
+    ],
+    "short": "Event schemas are contracts; changing them without compatibility rules is equivalent to breaking an API.",
+    "answer": "I would treat the event schema as a versioned contract. I would prefer additive changes and enforce compatibility checks before deployment. If a breaking change is unavoidable, I would introduce a new version and migrate consumers deliberately.",
+    "code": "Use explicit schema evolution rules. Prefer additive, backward-compatible changes, version schemas where necessary and use a schema registry or contract checks to reject incompatible producer changes.",
+    "followups": [
+      "Backward or forward compatibility?",
+      "How do you version events?",
+      "What is a schema registry?"
+    ],
+    "mistakes": [
+      "Changing field types casually.",
+      "Testing only the producer."
+    ],
+    "interview": "I would put schema compatibility in the deployment pipeline so an incompatible event cannot reach production accidentally.",
+    "source": "V10.1",
+    "topic": "microservices",
+    "subtopic": "messaging",
+    "scenario": "A producer changes a field type from integer to string. Some consumers deserialize the event successfully while older consumers fail.",
+    "investigation": "Compare schema versions and consumer compatibility rules. Identify which consumers are still on older versions.",
+    "resolution": "Use explicit schema evolution rules. Prefer additive, backward-compatible changes, version schemas where necessary and use a schema registry or contract checks to reject incompatible producer changes.",
+    "prevention": "Run compatibility tests in CI and maintain a deprecation window for consumers before removing old fields or changing semantics."
   }
 ]

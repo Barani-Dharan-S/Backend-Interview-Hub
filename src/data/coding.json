@@ -558,7 +558,12 @@
     ],
     "interview": "I use two pointers on a char array. Time is O(n). Space is O(n) for the array.",
     "source": "V9",
-    "id": "v9-080"
+    "id": "v9-080",
+    "problem": "Reverse a string without using StringBuilder.reverse()",
+    "example": "",
+    "approach": "Convert to a char array and swap from both ends.",
+    "complexity": "Analyze time and space complexity for the implementation shown.",
+    "streams": ""
   },
   {
     "topic": "coding",
@@ -579,7 +584,12 @@
     ],
     "interview": "For ASCII input this is O(n) time and O(1) auxiliary space.",
     "source": "V9",
-    "id": "v9-081"
+    "id": "v9-081",
+    "problem": "Check whether two strings are anagrams",
+    "example": "",
+    "approach": "Count characters in the first string and decrement counts for the second.",
+    "complexity": "Analyze time and space complexity for the implementation shown.",
+    "streams": ""
   },
   {
     "topic": "coding",
@@ -600,7 +610,12 @@
     ],
     "interview": "Two passes give O(n) time and O(k) space for k distinct characters.",
     "source": "V9",
-    "id": "v9-082"
+    "id": "v9-082",
+    "problem": "Find the first non-repeated character",
+    "example": "",
+    "approach": "Count frequencies, then scan the original order.",
+    "complexity": "Analyze time and space complexity for the implementation shown.",
+    "streams": ""
   },
   {
     "topic": "coding",
@@ -621,7 +636,12 @@
     ],
     "interview": "Average O(n) time and O(n) extra space.",
     "source": "V9",
-    "id": "v9-083"
+    "id": "v9-083",
+    "problem": "Find duplicate elements in an integer array",
+    "example": "",
+    "approach": "Track seen values and add repeats to a second set.",
+    "complexity": "Analyze time and space complexity for the implementation shown.",
+    "streams": ""
   },
   {
     "topic": "coding",
@@ -642,7 +662,12 @@
     ],
     "interview": "One pass gives O(n) time and O(1) extra space.",
     "source": "V9",
-    "id": "v9-084"
+    "id": "v9-084",
+    "problem": "Find the second largest distinct number",
+    "example": "",
+    "approach": "Maintain largest and second-largest distinct values in one pass.",
+    "complexity": "Analyze time and space complexity for the implementation shown.",
+    "streams": ""
   },
   {
     "topic": "coding",
@@ -663,7 +688,12 @@
     ],
     "interview": "O(n) time and O(1) extra space.",
     "source": "V9",
-    "id": "v9-085"
+    "id": "v9-085",
+    "problem": "Move all zeros to the end",
+    "example": "",
+    "approach": "Compact non-zero values then fill the remaining positions with zeros.",
+    "complexity": "Analyze time and space complexity for the implementation shown.",
+    "streams": ""
   },
   {
     "topic": "coding",
@@ -684,7 +714,12 @@
     ],
     "interview": "O(n) time and O(1) extra space.",
     "source": "V9",
-    "id": "v9-086"
+    "id": "v9-086",
+    "problem": "Find the missing number from 1 to n",
+    "example": "",
+    "approach": "XOR all expected values and all input values; equal values cancel.",
+    "complexity": "Analyze time and space complexity for the implementation shown.",
+    "streams": ""
   },
   {
     "topic": "coding",
@@ -705,7 +740,12 @@
     ],
     "interview": "Kadane is O(n) time and O(1) space.",
     "source": "V9",
-    "id": "v9-087"
+    "id": "v9-087",
+    "problem": "Find the maximum subarray sum",
+    "example": "",
+    "approach": "Kadane keeps the best subarray ending at the current position and the global best.",
+    "complexity": "Analyze time and space complexity for the implementation shown.",
+    "streams": ""
   },
   {
     "topic": "coding",
@@ -726,7 +766,12 @@
     ],
     "interview": "O(n) time and O(n) worst-case space.",
     "source": "V9",
-    "id": "v9-088"
+    "id": "v9-088",
+    "problem": "Validate balanced parentheses",
+    "example": "",
+    "approach": "Push openings and match each closing bracket against the top of the stack.",
+    "complexity": "Analyze time and space complexity for the implementation shown.",
+    "streams": ""
   },
   {
     "topic": "coding",
@@ -747,7 +792,12 @@
     ],
     "interview": "This implementation gives average O(1) get/put behavior from LinkedHashMap. Production concurrency and distributed requirements need additional design.",
     "source": "V9",
-    "id": "v9-089"
+    "id": "v9-089",
+    "problem": "Implement an LRU cache",
+    "example": "",
+    "approach": "LinkedHashMap can maintain access order and remove the eldest entry.",
+    "complexity": "Analyze time and space complexity for the implementation shown.",
+    "streams": ""
   },
   {
     "id": "v91-coding-01",
@@ -764,7 +814,12 @@
     "followups": "How would you print primes from 1 to N?",
     "mistakes": "Checking every number from 2 to n is unnecessary.",
     "interview": "Interview answer: I handle values below two and even numbers first, then test only odd divisors up to the square root.",
-    "source": "V9.1"
+    "source": "V9.1",
+    "problem": "Check whether a number is prime",
+    "example": "",
+    "approach": "Check divisibility only up to the square root because a composite number must have a factor at or below sqrt(n).",
+    "complexity": "Analyze time and space complexity for the implementation shown.",
+    "streams": ""
   },
   {
     "id": "v91-coding-02",
@@ -781,7 +836,12 @@
     "followups": "How would recursion change the solution?",
     "mistakes": "What happens when long overflows?",
     "interview": "Interview answer: I initialize the result to one and multiply by each value through n. In real code I would consider BigInteger when n can exceed long range.",
-    "source": "V9.1"
+    "source": "V9.1",
+    "problem": "Calculate factorial of a number",
+    "example": "",
+    "approach": "Factorial is the product from 1 through n. An iterative implementation avoids recursive stack growth.",
+    "complexity": "Analyze time and space complexity for the implementation shown.",
+    "streams": ""
   },
   {
     "id": "v91-coding-03",
@@ -798,7 +858,12 @@
     "followups": "How would you generate Fibonacci with Streams?",
     "mistakes": "How do you avoid overflow for large n?",
     "interview": "Interview answer: I keep only the last two Fibonacci values, so each term is produced once with constant auxiliary space.",
-    "source": "V9.1"
+    "source": "V9.1",
+    "problem": "Print Fibonacci series up to N terms",
+    "example": "",
+    "approach": "Keep the previous two values and generate each next value iteratively.",
+    "complexity": "Analyze time and space complexity for the implementation shown.",
+    "streams": ""
   },
   {
     "id": "v91-coding-04",
@@ -815,7 +880,12 @@
     "followups": "How do you handle negative numbers?",
     "mistakes": "What if reversing causes integer overflow?",
     "interview": "Interview answer: I reverse the digits mathematically and compare them with the original number, using constant extra space.",
-    "source": "V9.1"
+    "source": "V9.1",
+    "problem": "Check whether a number is a palindrome",
+    "example": "",
+    "approach": "Reverse the digits mathematically and compare the reversed value with the original. Avoid converting to a string when the problem expects arithmetic.",
+    "complexity": "Analyze time and space complexity for the implementation shown.",
+    "streams": ""
   },
   {
     "id": "v91-coding-05",
@@ -832,7 +902,12 @@
     "followups": "How would you avoid Math.pow?",
     "mistakes": "Can the solution handle very large numbers?",
     "interview": "Interview answer: I count the digits, raise each digit to that count and sum them. If the sum equals the original number, it is an Armstrong number.",
-    "source": "V9.1"
+    "source": "V9.1",
+    "problem": "Check whether a number is an Armstrong number",
+    "example": "",
+    "approach": "First count the digits, then compute the powered sum and compare it with the original.",
+    "complexity": "Analyze time and space complexity for the implementation shown.",
+    "streams": ""
   },
   {
     "id": "v91-coding-06",
@@ -849,7 +924,12 @@
     "followups": "How would sorting solve it?",
     "mistakes": "Be careful not to reuse the same element twice.",
     "interview": "Interview answer: A HashMap gives expected constant-time lookup for the complement, allowing a single pass instead of the O(n²) brute-force approach.",
-    "source": "V9.1"
+    "source": "V9.1",
+    "problem": "Solve the Two Sum problem",
+    "example": "",
+    "approach": "Store previously seen values in a map from value to index. For each number, look for target minus the current value.",
+    "complexity": "Analyze time and space complexity for the implementation shown.",
+    "streams": ""
   },
   {
     "id": "v91-coding-07",
@@ -866,7 +946,12 @@
     "followups": "How would sorting change the solution?",
     "mistakes": "Do not use a Set because it loses multiplicity.",
     "interview": "Interview answer: I store frequencies rather than just membership, so duplicate occurrences are preserved correctly.",
-    "source": "V9.1"
+    "source": "V9.1",
+    "problem": "Find the intersection of two arrays including duplicates",
+    "example": "",
+    "approach": "Count values from one array, then consume those counts while scanning the second array.",
+    "complexity": "Analyze time and space complexity for the implementation shown.",
+    "streams": ""
   },
   {
     "id": "v91-coding-08",
@@ -883,7 +968,12 @@
     "followups": "How would you do this with a boolean array?",
     "mistakes": "Why not HashSet if order matters?",
     "interview": "Interview answer: LinkedHashSet gives uniqueness plus insertion order, and I build the final string from the retained characters.",
-    "source": "V9.1"
+    "source": "V9.1",
+    "problem": "Remove duplicate characters while preserving order",
+    "example": "",
+    "approach": "Use a LinkedHashSet to preserve insertion order, then build the result.",
+    "complexity": "Analyze time and space complexity for the implementation shown.",
+    "streams": ""
   },
   {
     "id": "v91-coding-09",
@@ -900,7 +990,12 @@
     "followups": "How do you find elements occurring more than n/3?",
     "mistakes": "Why does cancellation preserve a majority candidate?",
     "interview": "Interview answer: Boyer-Moore keeps a candidate and balance. A true majority survives pairwise cancellation, and I verify the candidate when existence is not guaranteed.",
-    "source": "V9.1"
+    "source": "V9.1",
+    "problem": "Find the majority element using Boyer-Moore",
+    "example": "",
+    "approach": "Boyer-Moore treats different values as canceling pairs, leaving the majority candidate. Verify it if majority is not guaranteed.",
+    "complexity": "Analyze time and space complexity for the implementation shown.",
+    "streams": ""
   },
   {
     "id": "v91-coding-10",
@@ -917,7 +1012,12 @@
     "followups": "Heap vs Quickselect?",
     "mistakes": "What causes the worst case?",
     "interview": "Interview answer: Quickselect partitions the array and continues only on the side containing the target rank, giving average linear time without a full sort.",
-    "source": "V9.1"
+    "source": "V9.1",
+    "problem": "Find the kth largest element using Quickselect",
+    "example": "",
+    "approach": "Use partitioning around a pivot so that the target index is isolated recursively or iteratively.",
+    "complexity": "Analyze time and space complexity for the implementation shown.",
+    "streams": ""
   },
   {
     "id": "v91-coding-11",
@@ -934,7 +1034,12 @@
     "followups": "How would sorting solve it?",
     "mistakes": "Why is the expected complexity linear?",
     "interview": "Interview answer: I use a set and only expand sequences from their smallest element, so each value participates in the counting work a constant number of times.",
-    "source": "V9.1"
+    "source": "V9.1",
+    "problem": "Find the longest consecutive sequence in an array",
+    "example": "",
+    "approach": "Store all values in a set and only start counting when the previous value is absent.",
+    "complexity": "Analyze time and space complexity for the implementation shown.",
+    "streams": ""
   },
   {
     "id": "v91-coding-12",
@@ -951,7 +1056,12 @@
     "followups": "What if intervals touch at endpoints?",
     "mistakes": "Can it be done in linear time if already sorted?",
     "interview": "Interview answer: Sorting by start makes it possible to decide overlap using only the last merged interval.",
-    "source": "V9.1"
+    "source": "V9.1",
+    "problem": "Merge overlapping intervals",
+    "example": "",
+    "approach": "Sort by start time and merge each interval into the previous result when the ranges overlap.",
+    "complexity": "Analyze time and space complexity for the implementation shown.",
+    "streams": ""
   },
   {
     "id": "v91-coding-13",
@@ -968,7 +1078,12 @@
     "followups": "How does this differ from no-repeating-characters?",
     "mistakes": "What if K is larger than the alphabet?",
     "interview": "Interview answer: The sliding window grows until it violates the distinct-character limit, then moves its left boundary until the window is valid again.",
-    "source": "V9.1"
+    "source": "V9.1",
+    "problem": "Find the longest substring with at most K distinct characters",
+    "example": "",
+    "approach": "Maintain a sliding window and frequency map. Expand right, and shrink left while the number of distinct characters exceeds K.",
+    "complexity": "Analyze time and space complexity for the implementation shown.",
+    "streams": ""
   },
   {
     "id": "v91-coding-14",
@@ -985,7 +1100,12 @@
     "followups": "How do duplicates change the algorithm?",
     "mistakes": "How would you find a target instead?",
     "interview": "Interview answer: The sorted portions let me determine whether the minimum lies to the right or at/before mid, so the search interval halves each time.",
-    "source": "V9.1"
+    "source": "V9.1",
+    "problem": "Find the minimum value in a rotated sorted array",
+    "example": "",
+    "approach": "Compare the middle value with the right boundary to decide which half contains the minimum.",
+    "complexity": "Analyze time and space complexity for the implementation shown.",
+    "streams": ""
   },
   {
     "id": "v91-coding-15",
@@ -1002,7 +1122,12 @@
     "followups": "How would you count occurrences?",
     "mistakes": "Why does ordinary binary search not give the first occurrence?",
     "interview": "Interview answer: I modify binary search after finding the target so it continues toward the required boundary instead of stopping at the first match.",
-    "source": "V9.1"
+    "source": "V9.1",
+    "problem": "Find the first and last position of a target",
+    "example": "",
+    "approach": "Run binary search twice: once biased left for the first occurrence and once biased right for the last occurrence.",
+    "complexity": "Analyze time and space complexity for the implementation shown.",
+    "streams": ""
   },
   {
     "id": "v91-coding-16",
@@ -1019,7 +1144,12 @@
     "followups": "How can you reduce auxiliary space?",
     "mistakes": "Why use <= when pushing duplicate minimums?",
     "interview": "Interview answer: The second stack stores the minimum associated with the current stack state, so min retrieval remains constant time.",
-    "source": "V9.1"
+    "source": "V9.1",
+    "problem": "Implement a stack with a minimum value in O(1)",
+    "example": "",
+    "approach": "Keep a second stack containing the minimum value seen at each relevant level.",
+    "complexity": "Analyze time and space complexity for the implementation shown.",
+    "streams": ""
   },
   {
     "id": "v91-coding-17",
@@ -1036,7 +1166,12 @@
     "followups": "What happens in a skewed tree?",
     "mistakes": "How would you insert a value?",
     "interview": "Interview answer: BST ordering lets me discard half the subtree at each decision when the tree is balanced.",
-    "source": "V9.1"
+    "source": "V9.1",
+    "problem": "Implement a binary search tree search",
+    "example": "",
+    "approach": "At each node, compare the target with the node value and move left or right according to the BST ordering.",
+    "complexity": "Analyze time and space complexity for the implementation shown.",
+    "streams": ""
   },
   {
     "id": "v91-coding-18",
@@ -1053,7 +1188,12 @@
     "followups": "DFS vs BFS?",
     "mistakes": "How would you return List<List<Integer>> instead of printing?",
     "interview": "Interview answer: BFS uses a queue to process nodes in level order, and I capture the current queue size to print each level separately.",
-    "source": "V9.1"
+    "source": "V9.1",
+    "problem": "Breadth-first traversal of a binary tree",
+    "example": "",
+    "approach": "Use a queue: enqueue the root, process one node, and enqueue its children.",
+    "complexity": "Analyze time and space complexity for the implementation shown.",
+    "streams": ""
   },
   {
     "id": "v91-coding-19",
@@ -1070,7 +1210,12 @@
     "followups": "How do you find the cycle entry?",
     "mistakes": "Why is the space constant?",
     "interview": "Interview answer: Two pointers moving at different speeds must meet inside a cycle, while the fast pointer reaches null when the list is acyclic.",
-    "source": "V9.1"
+    "source": "V9.1",
+    "problem": "Detect a cycle in a linked list",
+    "example": "",
+    "approach": "Floyd’s tortoise-and-hare algorithm moves one pointer by one step and another by two; if they meet, a cycle exists.",
+    "complexity": "Analyze time and space complexity for the implementation shown.",
+    "streams": ""
   },
   {
     "id": "v91-coding-20",
@@ -1087,7 +1232,12 @@
     "followups": "For an even-length list, which middle should be returned?",
     "mistakes": "Can the list be traversed only once?",
     "interview": "Interview answer: The fast pointer moves twice as quickly, so when it reaches the end the slow pointer has traversed half the list.",
-    "source": "V9.1"
+    "source": "V9.1",
+    "problem": "Find the middle node of a linked list",
+    "example": "",
+    "approach": "Move slow one step and fast two steps. When fast reaches the end, slow is at the middle.",
+    "complexity": "Analyze time and space complexity for the implementation shown.",
+    "streams": ""
   },
   {
     "id": "v91-coding-21",
@@ -1104,6 +1254,11 @@
     "followups": "Why use while instead of if?",
     "mistakes": "How would you use ArrayBlockingQueue instead?",
     "interview": "Interview answer: I protect queue state with a lock and use conditions so producers wait while full and consumers wait while empty. The while checks are required because a condition wake-up does not guarantee the state is available.",
-    "source": "V9.1"
+    "source": "V9.1",
+    "problem": "Implement a thread-safe bounded producer-consumer queue",
+    "example": "",
+    "approach": "Use a ReentrantLock with two Conditions: notFull and notEmpty. Conditions coordinate state changes without busy waiting.",
+    "complexity": "Analyze time and space complexity for the implementation shown.",
+    "streams": ""
   }
 ]

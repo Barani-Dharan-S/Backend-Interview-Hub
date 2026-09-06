@@ -1953,5 +1953,405 @@
     ],
     "interview": "Partitioning is often a database-local organization technique; sharding distributes ownership across nodes. Sharding should be driven by capacity and access-pattern requirements.",
     "source": "V9.1"
+  },
+  {
+    "topic": "sql",
+    "subtopic": "indexes",
+    "level": "L3",
+    "title": "How do you read an execution plan for a slow query?",
+    "tags": [
+      "sql",
+      "L3",
+      "Production"
+    ],
+    "short": "Find expensive operators, poor access paths and row-estimate errors, then compare actual behavior with the expected plan.",
+    "answer": "Look for large scans, bad join strategies, repeated loops, sorts/spills and cardinality misestimation. Use EXPLAIN ANALYZE where supported and verify indexes/statistics.",
+    "code": "EXPLAIN ANALYZE SELECT ...;",
+    "followups": [
+      "What is sargability?",
+      "When can a full scan be correct?"
+    ],
+    "mistakes": [
+      "Adding indexes without reading the plan."
+    ],
+    "interview": "I identify the most expensive operator and validate why the optimizer chose it before changing indexes or SQL.",
+    "source": "V10",
+    "id": "v10-042"
+  },
+  {
+    "topic": "sql",
+    "subtopic": "indexes",
+    "level": "L3",
+    "title": "How do you choose composite index column order?",
+    "tags": [
+      "sql",
+      "L3",
+      "Production"
+    ],
+    "short": "Match leading index columns to real equality, range and ordering predicates.",
+    "answer": "Composite B-tree indexes are ordered by leading columns. A common pattern is equality predicates followed by range/order columns, but workload and plan evidence decide the final order.",
+    "code": "CREATE INDEX idx_orders_customer_status_created ON orders(customer_id,status,created_at);",
+    "followups": [
+      "Can it support ORDER BY?",
+      "What is a covering index?"
+    ],
+    "mistakes": [
+      "Always putting the highest-cardinality column first."
+    ],
+    "interview": "I choose index order from query patterns, not a universal selectivity rule, then verify with the execution plan.",
+    "source": "V10",
+    "id": "v10-043"
+  },
+  {
+    "topic": "sql",
+    "subtopic": "transactions",
+    "level": "L3",
+    "title": "How do you prevent and recover from database deadlocks?",
+    "tags": [
+      "sql",
+      "L3",
+      "Production"
+    ],
+    "short": "Use consistent lock ordering, short transactions and appropriate indexes; retry the whole transaction when a deadlock victim is detected.",
+    "answer": "Different update orders create cycles. Consistent ordering and reduced transaction scope lower probability. Recovery must repeat the logical transaction because the database may have rolled it back.",
+    "code": "UPDATE accounts SET ... WHERE id IN (?,?) ORDER BY id;",
+    "followups": [
+      "Deadlock vs lock timeout?",
+      "Why retry the whole transaction?"
+    ],
+    "mistakes": [
+      "Retrying only one SQL statement inside a rolled-back transaction."
+    ],
+    "interview": "Deadlocks are a concurrency condition. I reduce them by design and make safe retries part of the application behavior.",
+    "source": "V10",
+    "id": "v10-044"
+  },
+  {
+    "topic": "sql",
+    "subtopic": "modeling",
+    "level": "L3",
+    "title": "When is keyset pagination better than OFFSET?",
+    "tags": [
+      "sql",
+      "L3",
+      "Production"
+    ],
+    "short": "Keyset pagination scales better for deep pages because it seeks from the last seen key instead of skipping many rows.",
+    "answer": "Use a deterministic composite ordering such as created_at plus id and query from the last tuple. It is ideal for feeds/infinite scroll but less convenient for arbitrary page numbers.",
+    "code": "WHERE (created_at,id) < (?,?) ORDER BY created_at DESC,id DESC LIMIT 50",
+    "followups": [
+      "How do you make ordering deterministic?",
+      "When is OFFSET fine?"
+    ],
+    "mistakes": [
+      "Using a non-unique sort key alone."
+    ],
+    "interview": "For large tables I prefer keyset pagination when users move sequentially through results.",
+    "source": "V10",
+    "id": "v10-045"
+  },
+  {
+    "topic": "sql",
+    "subtopic": "indexes",
+    "level": "L3",
+    "title": "How do you diagnose connection-pool exhaustion?",
+    "tags": [
+      "sql",
+      "L3",
+      "Production"
+    ],
+    "short": "Inspect pool waiters, connection hold time, slow queries and database capacity before increasing pool size.",
+    "answer": "A full pool can come from leaks, long transactions, slow queries or an undersized pool. Increasing it blindly can simply overload the database.",
+    "code": "metrics: active, idle, pending, acquireLatency, usageDuration",
+    "followups": [
+      "How do leaks appear?",
+      "How do you choose pool size?"
+    ],
+    "mistakes": [
+      "Increasing max connections until the DB saturates."
+    ],
+    "interview": "I correlate pool metrics with SQL and transaction traces to identify why connections are held too long.",
+    "source": "V10",
+    "id": "v10-046"
+  },
+  {
+    "topic": "sql",
+    "subtopic": "joins",
+    "level": "L3",
+    "title": "How do window functions differ from GROUP BY?",
+    "tags": [
+      "sql",
+      "L3",
+      "Production"
+    ],
+    "short": "GROUP BY collapses rows; window functions calculate across related rows while retaining row detail.",
+    "answer": "Use ROW_NUMBER/RANK for ranking, LAG/LEAD for comparisons and SUM OVER for running totals.",
+    "code": "RANK() OVER (PARTITION BY department_id ORDER BY salary DESC)",
+    "followups": [
+      "RANK vs DENSE_RANK?",
+      "Top N per group?"
+    ],
+    "mistakes": [
+      "Using GROUP BY and losing row-level detail."
+    ],
+    "interview": "I use GROUP BY for one row per group and window functions when I need group calculations alongside each original row.",
+    "source": "V10",
+    "id": "v10-047"
+  },
+  {
+    "topic": "sql",
+    "subtopic": "modeling",
+    "level": "L3",
+    "title": "How do you archive a huge table safely?",
+    "tags": [
+      "sql",
+      "L3",
+      "Production"
+    ],
+    "short": "Move cold data in controlled batches or partitions and avoid giant delete transactions.",
+    "answer": "Time-based partitioning can make retention a metadata operation. Otherwise archive by stable key in bounded batches while monitoring locks, WAL/redo and replication lag.",
+    "code": "-- Prefer partition detach/drop for time-based retention.",
+    "followups": [
+      "Partitioning vs sharding?",
+      "How do you preserve auditability?"
+    ],
+    "mistakes": [
+      "One huge DELETE during peak traffic."
+    ],
+    "interview": "For very large historical data I prefer partition-based retention because dropping an old partition is safer than deleting millions of rows in one transaction.",
+    "source": "V10",
+    "id": "v10-048"
+  },
+  {
+    "topic": "sql",
+    "subtopic": "transactions",
+    "level": "L3",
+    "title": "How do you design an idempotent database command?",
+    "tags": [
+      "sql",
+      "L3",
+      "Production"
+    ],
+    "short": "Use a unique business/idempotency key and atomic insert/update semantics.",
+    "answer": "A unique constraint works across instances and restarts. Handle duplicate-key outcomes by returning or loading the existing logical result.",
+    "code": "CREATE UNIQUE INDEX ux_payment_key ON payments(idempotency_key);",
+    "followups": [
+      "How do you return the original response?",
+      "How do you handle concurrent requests?"
+    ],
+    "mistakes": [
+      "Check-then-insert in separate non-atomic steps."
+    ],
+    "interview": "Database uniqueness is a strong primitive for idempotency because the database arbitrates concurrent first attempts.",
+    "source": "V10",
+    "id": "v10-049"
+  },
+  {
+    "topic": "sql",
+    "subtopic": "modeling",
+    "level": "L3",
+    "title": "How do you perform a large data backfill safely?",
+    "tags": [
+      "sql",
+      "L3",
+      "Production"
+    ],
+    "short": "Use small batches, stable keys, throttling and observability so the backfill does not starve production traffic.",
+    "answer": "Prefer primary-key ranges, commit frequently, pause on replication lag or lock pressure, and make the job restartable.",
+    "code": "UPDATE users SET new_col=... WHERE id > ? AND id <= ?;",
+    "followups": [
+      "How do you verify completeness?",
+      "How do you roll back?"
+    ],
+    "mistakes": [
+      "One massive transaction for millions of rows."
+    ],
+    "interview": "A backfill is production workload. I make it resumable, bounded and adaptive to database health.",
+    "source": "V10",
+    "id": "v10-050"
+  },
+  {
+    "topic": "sql",
+    "subtopic": "transactions",
+    "level": "L3",
+    "title": "How do you diagnose lock contention?",
+    "tags": [
+      "sql",
+      "L3",
+      "Production"
+    ],
+    "short": "Find blocked sessions, lock owners, transaction age and the SQL holding the resource.",
+    "answer": "Long transactions and missing indexes often turn small updates into long lock waits. Correlate database lock views with application traces and transaction boundaries.",
+    "code": "-- Inspect blocked/blocked-by sessions using DB-specific lock views.",
+    "followups": [
+      "Lock vs latch?",
+      "How does isolation affect locking?"
+    ],
+    "mistakes": [
+      "Only increasing timeout values."
+    ],
+    "interview": "I identify who is waiting, who holds the lock and why the holder is slow. Then I shorten the transaction or improve the access path.",
+    "source": "V10",
+    "id": "v10-051"
+  },
+  {
+    "id": "v10.1-038",
+    "title": "A query becomes slow after the table grows tenfold",
+    "level": "L3",
+    "tags": [
+      "sql",
+      "execution plan",
+      "performance",
+      "Production Scenario",
+      "V10.1"
+    ],
+    "short": "Query performance is data-dependent; an index that worked at small scale may become ineffective as selectivity and distribution change.",
+    "answer": "I would compare execution plans and cardinality estimates first. Then I would tune indexes or query shape, update statistics and consider partitioning or archival only if the data model and access pattern justify it.",
+    "code": "Choose indexes based on the actual predicates and ordering, update statistics and reduce unnecessary rows/columns. If the workload has outgrown one table, consider partitioning or archival based on access patterns.",
+    "followups": [
+      "What makes an index selective?",
+      "What is a covering index?",
+      "When can an optimizer ignore an index?"
+    ],
+    "mistakes": [
+      "Adding indexes without checking write cost.",
+      "Optimizing only against a tiny test dataset."
+    ],
+    "interview": "I would not tune SQL from the text alone. I need the execution plan and realistic data distribution.",
+    "source": "V10.1",
+    "topic": "sql",
+    "subtopic": "indexes",
+    "scenario": "A query that was fast with 2 million rows becomes slow at 20 million rows even though the SQL text has not changed.",
+    "investigation": "Compare execution plans before and after growth. Inspect row estimates, index usage, scan type, selectivity, sort/hash operations and returned row counts.",
+    "resolution": "Choose indexes based on the actual predicates and ordering, update statistics and reduce unnecessary rows/columns. If the workload has outgrown one table, consider partitioning or archival based on access patterns.",
+    "prevention": "Monitor plan regressions, index usage and data growth. Include representative data volume in performance testing."
+  },
+  {
+    "id": "v10.1-039",
+    "title": "A deadlock appears after a new transaction flow is deployed",
+    "level": "L3",
+    "tags": [
+      "deadlock",
+      "locking",
+      "transaction",
+      "Production Scenario",
+      "V10.1"
+    ],
+    "short": "Deadlocks usually come from inconsistent lock ordering combined with concurrency.",
+    "answer": "I would inspect the deadlock graph, identify the lock order and make the transaction paths acquire resources consistently. I would also keep transactions short and use bounded retry only when the business operation is safe to repeat.",
+    "code": "Make transactions acquire shared resources in a consistent order, keep transactions short and avoid unnecessary locks. Add safe retry for deadlock victims when the operation is idempotent and the database recommends it.",
+    "followups": [
+      "Deadlock versus lock timeout?",
+      "When is retry safe?",
+      "How do isolation levels affect locking?"
+    ],
+    "mistakes": [
+      "Increasing lock timeouts.",
+      "Retrying non-idempotent operations blindly."
+    ],
+    "interview": "I would fix the lock-ordering design first and use retry only as a resilience measure, not the primary solution.",
+    "source": "V10.1",
+    "topic": "sql",
+    "subtopic": "transactions",
+    "scenario": "Two transactions update the same business entities in different orders. Under concurrency, each waits for a lock held by the other.",
+    "investigation": "Capture deadlock graphs or database diagnostics. Identify the resources and lock acquisition order for each transaction.",
+    "resolution": "Make transactions acquire shared resources in a consistent order, keep transactions short and avoid unnecessary locks. Add safe retry for deadlock victims when the operation is idempotent and the database recommends it.",
+    "prevention": "Test concurrent access patterns, monitor deadlock frequency and document lock ordering for critical workflows."
+  },
+  {
+    "id": "v10.1-040",
+    "title": "An index exists but the query still performs a full scan",
+    "level": "L3",
+    "tags": [
+      "index",
+      "sargability",
+      "execution plan",
+      "Production Scenario",
+      "V10.1"
+    ],
+    "short": "Having an index is not enough; the predicate must allow the optimizer to use it efficiently.",
+    "answer": "I would inspect the plan and predicate. If a function wraps the indexed column, I would usually rewrite it as a range predicate so the database can use the index, then verify with EXPLAIN.",
+    "code": "Rewrite predicates into sargable ranges where possible, for example a half-open timestamp interval. Use functional indexes only when supported and justified by workload.",
+    "followups": [
+      "What is sargability?",
+      "When is a functional index useful?",
+      "Why can a selective index still be ignored?"
+    ],
+    "mistakes": [
+      "Assuming every WHERE clause can use the index.",
+      "Applying functions to indexed columns unnecessarily."
+    ],
+    "interview": "I would validate index usability through the execution plan, not by checking that the index exists.",
+    "source": "V10.1",
+    "topic": "sql",
+    "subtopic": "indexes",
+    "scenario": "A query filters on a timestamp column with a function applied to it. An index exists, but the optimizer chooses a full table scan.",
+    "investigation": "Inspect the predicate and execution plan. Check whether the expression prevents efficient index range access and whether selectivity is sufficient.",
+    "resolution": "Rewrite predicates into sargable ranges where possible, for example a half-open timestamp interval. Use functional indexes only when supported and justified by workload.",
+    "prevention": "Review common predicates during index design and test with production-like statistics."
+  },
+  {
+    "id": "v10.1-041",
+    "title": "A large delete locks the table and causes API timeouts",
+    "level": "L3",
+    "tags": [
+      "delete",
+      "locking",
+      "batch",
+      "Production Scenario",
+      "V10.1"
+    ],
+    "short": "Large maintenance transactions can create operational incidents even when the SQL is logically correct.",
+    "answer": "I would avoid one giant transaction. I would batch the deletion, control commit frequency and consider partition-based retention if the data is naturally time-partitioned.",
+    "code": "Delete in bounded batches, commit between batches when business rules allow and schedule heavy maintenance during lower traffic. For very large time-based data, partitioning can make retention operations cheaper.",
+    "followups": [
+      "When should batching not be used?",
+      "How does partition dropping help retention?",
+      "What are the consistency implications of batch deletes?"
+    ],
+    "mistakes": [
+      "Deleting millions of rows in one transaction.",
+      "Ignoring transaction-log and replication impact."
+    ],
+    "interview": "For large data operations I care about lock duration, log volume and impact on foreground traffic, not only total execution time.",
+    "source": "V10.1",
+    "topic": "sql",
+    "subtopic": "transactions",
+    "scenario": "A maintenance job deletes millions of old rows in one transaction. Application requests start timing out because of lock and I/O pressure.",
+    "investigation": "Inspect transaction duration, lock waits, log growth and database I/O. Determine whether the delete conflicts with active queries.",
+    "resolution": "Delete in bounded batches, commit between batches when business rules allow and schedule heavy maintenance during lower traffic. For very large time-based data, partitioning can make retention operations cheaper.",
+    "prevention": "Load-test maintenance jobs against production-like traffic and monitor lock duration and transaction log growth."
+  },
+  {
+    "id": "v10.1-042",
+    "title": "Pagination becomes slower on deep pages",
+    "level": "L3",
+    "tags": [
+      "pagination",
+      "keyset",
+      "performance",
+      "Production Scenario",
+      "V10.1"
+    ],
+    "short": "OFFSET pagination makes the database walk past rows that are not returned; keyset pagination starts from the last seen key.",
+    "answer": "For very deep pages I would replace OFFSET with keyset pagination using an indexed, deterministic sort key such as created_at plus a unique ID. This keeps work closer to the requested page size.",
+    "code": "Use keyset/seek pagination based on a stable indexed ordering for large datasets. Keep cursor semantics explicit and avoid exposing mutable offset-based navigation when consistent traversal matters.",
+    "followups": [
+      "How do you paginate with duplicate timestamps?",
+      "What makes a cursor stable?",
+      "When is offset pagination acceptable?"
+    ],
+    "mistakes": [
+      "Using only created_at when timestamps are not unique.",
+      "Treating a cursor as a random page number."
+    ],
+    "interview": "I would use offset pagination for simple shallow navigation and keyset pagination for large, high-volume feeds.",
+    "source": "V10.1",
+    "topic": "sql",
+    "subtopic": "fundamentals",
+    "scenario": "An API uses OFFSET 5,000,000 LIMIT 50. The first pages are fast, but deep pages become increasingly slow.",
+    "investigation": "Inspect the execution plan and amount of rows scanned/discarded before the requested page. Measure latency as offset grows.",
+    "resolution": "Use keyset/seek pagination based on a stable indexed ordering for large datasets. Keep cursor semantics explicit and avoid exposing mutable offset-based navigation when consistent traversal matters.",
+    "prevention": "Index the cursor columns, define deterministic ordering and test pagination at realistic data volume."
   }
 ]

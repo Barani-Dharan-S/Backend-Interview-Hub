@@ -15,7 +15,8 @@
     ],
     "mistakes": [],
     "interview": "Clarify requirements, scale, consistency, latency, availability and constraints.",
-    "source": "V3"
+    "source": "V3",
+    "topic": "system-design"
   },
   {
     "id": "system-002",
@@ -33,7 +34,8 @@
     ],
     "mistakes": [],
     "interview": "Store a unique short key to URL mapping and optimize reads with cache.",
-    "source": "V3"
+    "source": "V3",
+    "topic": "system-design"
   },
   {
     "id": "system-003",
@@ -51,7 +53,8 @@
     ],
     "mistakes": [],
     "interview": "Define allowance per identity using token bucket/sliding-window logic.",
-    "source": "V3"
+    "source": "V3",
+    "topic": "system-design"
   },
   {
     "id": "system-004",
@@ -69,7 +72,8 @@
     ],
     "mistakes": [],
     "interview": "Accept requests durably, queue work, deliver via provider adapters and track status.",
-    "source": "V3"
+    "source": "V3",
+    "topic": "system-design"
   },
   {
     "id": "system-005",
@@ -87,7 +91,8 @@
     ],
     "mistakes": [],
     "interview": "Make order state durable and coordinate payment/inventory/fulfillment with local transactions.",
-    "source": "V3"
+    "source": "V3",
+    "topic": "system-design"
   },
   {
     "id": "system-006",
@@ -105,7 +110,8 @@
     ],
     "mistakes": [],
     "interview": "Use object storage, preferably direct signed uploads for large files.",
-    "source": "V3"
+    "source": "V3",
+    "topic": "system-design"
   },
   {
     "id": "system-007",
@@ -123,7 +129,8 @@
     ],
     "mistakes": [],
     "interview": "Place caches at client/CDN/gateway/app/distributed layers based on need.",
-    "source": "V3"
+    "source": "V3",
+    "topic": "system-design"
   },
   {
     "id": "system-008",
@@ -141,7 +148,84 @@
     ],
     "mistakes": [],
     "interview": "Remove single points of failure with redundancy across critical components.",
-    "source": "V3"
+    "source": "V3",
+    "topic": "system-design"
+  },
+  {
+    "id": "system-009",
+    "title": "CAP theorem practically",
+    "level": "L3",
+    "tags": [
+      "Distributed Systems",
+      "Theory"
+    ],
+    "short": "During a partition, you cannot guarantee both strong consistency and availability for every operation.",
+    "answer": "CAP describes partition behavior; different operations can make different trade-offs.",
+    "code": "Partition -> consistency/availability choice",
+    "followups": [
+      "CAP vs ACID?"
+    ],
+    "mistakes": [],
+    "interview": "During a partition, you cannot guarantee both strong consistency and availability for every operation.",
+    "source": "V3",
+    "topic": "system-design"
+  },
+  {
+    "id": "system-010",
+    "title": "Database sharding",
+    "level": "L3",
+    "tags": [
+      "Databases",
+      "Scalability"
+    ],
+    "short": "Partition data across nodes using a shard key.",
+    "answer": "A good key distributes load and supports common access patterns; cross-shard queries add complexity.",
+    "code": "user_id hash -> shard",
+    "followups": [
+      "How choose shard key?"
+    ],
+    "mistakes": [],
+    "interview": "Partition data across nodes using a shard key.",
+    "source": "V3",
+    "topic": "system-design"
+  },
+  {
+    "id": "system-011",
+    "title": "Read replicas vs sharding",
+    "level": "L3",
+    "tags": [
+      "Databases",
+      "Scalability"
+    ],
+    "short": "Replicas scale reads; sharding partitions data to scale capacity/write load.",
+    "answer": "Replicas may lag; sharding complicates queries and rebalancing.",
+    "code": "Primary -> replicas\nShard A/B/C",
+    "followups": [
+      "When replicas stop helping?"
+    ],
+    "mistakes": [],
+    "interview": "Replicas scale reads; sharding partitions data to scale capacity/write load.",
+    "source": "V3",
+    "topic": "system-design"
+  },
+  {
+    "id": "system-012",
+    "title": "Eventual consistency in design",
+    "level": "L3",
+    "tags": [
+      "Distributed Systems",
+      "Data"
+    ],
+    "short": "Reads can temporarily lag writes while replicas/events converge.",
+    "answer": "Define acceptable stale windows and user-visible pending states.",
+    "code": "Write -> event -> read model",
+    "followups": [
+      "Which operations need strong consistency?"
+    ],
+    "mistakes": [],
+    "interview": "Reads can temporarily lag writes while replicas/events converge.",
+    "source": "V3",
+    "topic": "system-design"
   },
   {
     "id": "system-013",
@@ -159,6 +243,871 @@
     ],
     "mistakes": [],
     "interview": "Translate users/actions into QPS, storage, bandwidth and peak requirements.",
-    "source": "V3"
+    "source": "V3",
+    "topic": "system-design"
+  },
+  {
+    "id": "system-014",
+    "title": "Backpressure",
+    "level": "L3",
+    "tags": [
+      "Messaging",
+      "Performance"
+    ],
+    "short": "Backpressure prevents producers from overwhelming consumers.",
+    "answer": "Use bounded queues, flow control, batching, rate limits or load shedding.",
+    "code": "Producer -> bounded queue -> Consumer",
+    "followups": [
+      "Backpressure vs buffering?"
+    ],
+    "mistakes": [],
+    "interview": "Backpressure prevents producers from overwhelming consumers.",
+    "source": "V3",
+    "topic": "system-design"
+  },
+  {
+    "id": "system-015",
+    "title": "Observability by design",
+    "level": "L3",
+    "tags": [
+      "Observability",
+      "Production"
+    ],
+    "short": "Design metrics, structured logs and trace context from day one.",
+    "answer": "Include trace IDs, latency/error metrics, dependency timing and business counters.",
+    "code": "Request -> traceId -> metrics/logs/spans",
+    "followups": [
+      "What is an SLO?"
+    ],
+    "mistakes": [],
+    "interview": "Design metrics, structured logs and trace context from day one.",
+    "source": "V3",
+    "topic": "system-design"
+  },
+  {
+    "id": "iq-260",
+    "title": "Design a payment processing service.",
+    "level": "L1",
+    "tags": [
+      "IQ300",
+      "java"
+    ],
+    "short": "Key elements: an idempotent API (client supplies an idempotency key so retried requests don't double-charge), a state machine for a payment's lifecycle (initiated → authorized → captured → settled/failed), synchronous validation plus asynch",
+    "answer": "Key elements: an idempotent API (client supplies an idempotency key so retried requests don't double-charge), a state machine for a payment's lifecycle (initiated → authorized → captured → settled/failed), synchronous validation plus asynchronous settlement via messaging, a ledger table recording every state transition for audit, integration with external payment gateways behind a circuit breaker with retry/backoff, and strong consistency (often via a database transaction plus the outbox pattern) between the ledger write and any event published downstream.",
+    "code": "",
+    "followups": [],
+    "mistakes": [],
+    "interview": "Key elements: an idempotent API (client supplies an idempotency key so retried requests don't double-charge), a state machine for a payment's lifecycle (initiated → authorized → captured → settled/failed), synchronous validation plus asynchronous settlement via messaging, a ledger table recording every state transition",
+    "source": "IQ300",
+    "topic": "system-design"
+  },
+  {
+    "id": "iq-261",
+    "title": "Design a trade order management service.",
+    "level": "L1",
+    "tags": [
+      "IQ300",
+      "java"
+    ],
+    "short": "Core needs: capturing an order with strict validation (instrument, quantity, price, account limits), a well-defined order lifecycle state machine (new → validated → routed → executed/rejected → settled), low-latency order intake often via a",
+    "answer": "Core needs: capturing an order with strict validation (instrument, quantity, price, account limits), a well-defined order lifecycle state machine (new → validated → routed → executed/rejected → settled), low-latency order intake often via a message queue for downstream matching/execution, an immutable audit trail of every state change for compliance, and idempotent processing since financial systems can't tolerate duplicate order submission from retries.",
+    "code": "",
+    "followups": [],
+    "mistakes": [],
+    "interview": "Core needs: capturing an order with strict validation (instrument, quantity, price, account limits), a well-defined order lifecycle state machine (new → validated → routed → executed/rejected → settled), low-latency order intake often via a message queue for downstream matching/execution, an immutable audit trail of ev",
+    "source": "IQ300",
+    "topic": "system-design"
+  },
+  {
+    "id": "iq-262",
+    "title": "Design a notification service.",
+    "level": "L1",
+    "tags": [
+      "IQ300",
+      "java"
+    ],
+    "short": "A central service accepting notification requests (email/SMS/push) via an API or message queue, decoupled from senders via a queue per channel so spikes don't block the caller, template management for message content, retry with backoff and",
+    "answer": "A central service accepting notification requests (email/SMS/push) via an API or message queue, decoupled from senders via a queue per channel so spikes don't block the caller, template management for message content, retry with backoff and a dead-letter queue for failed sends, delivery-status tracking, and rate limiting/throttling per user or per channel provider to respect external API limits.",
+    "code": "",
+    "followups": [],
+    "mistakes": [],
+    "interview": "A central service accepting notification requests (email/SMS/push) via an API or message queue, decoupled from senders via a queue per channel so spikes don't block the caller, template management for message content, retry with backoff and a dead-letter queue for failed sends, delivery-status tracking, and rate limiti",
+    "source": "IQ300",
+    "topic": "system-design"
+  },
+  {
+    "id": "iq-265",
+    "title": "Design a wallet service.",
+    "level": "L1",
+    "tags": [
+      "IQ300",
+      "java"
+    ],
+    "short": "Needs a strongly consistent balance model (often an append-only ledger of debits/credits rather than just a mutable balance field, so the balance is always derivable and auditable), atomic transfer operations (debit one account and credit a",
+    "answer": "Needs a strongly consistent balance model (often an append-only ledger of debits/credits rather than just a mutable balance field, so the balance is always derivable and auditable), atomic transfer operations (debit one account and credit another within a single transaction, or via a saga if accounts live in different services), idempotency keys to prevent duplicate transfers on retry, and optimistic or pessimistic locking to prevent race conditions on concurrent updates to the same account.",
+    "code": "",
+    "followups": [],
+    "mistakes": [],
+    "interview": "Needs a strongly consistent balance model (often an append-only ledger of debits/credits rather than just a mutable balance field, so the balance is always derivable and auditable), atomic transfer operations (debit one account and credit another within a single transaction, or via a saga if accounts live in different ",
+    "source": "IQ300",
+    "topic": "system-design"
+  },
+  {
+    "id": "iq-266",
+    "title": "Design an authentication service.",
+    "level": "L1",
+    "tags": [
+      "IQ300",
+      "security"
+    ],
+    "short": "Handles credential verification (hashed/salted passwords, e.g. bcrypt), issues stateless tokens (JWT access token plus a longer-lived refresh token) or manages server-side sessions, supports MFA, rate-limits login attempts to blunt brute-fo",
+    "answer": "Handles credential verification (hashed/salted passwords, e.g. bcrypt), issues stateless tokens (JWT access token plus a longer-lived refresh token) or manages server-side sessions, supports MFA, rate-limits login attempts to blunt brute-force attacks, and exposes token validation/introspection for other services — often centralized behind an API gateway so individual microservices don't each reimplement auth.",
+    "code": "",
+    "followups": [],
+    "mistakes": [],
+    "interview": "Handles credential verification (hashed/salted passwords, e.g. bcrypt), issues stateless tokens (JWT access token plus a longer-lived refresh token) or manages server-side sessions, supports MFA, rate-limits login attempts to blunt brute-force attacks, and exposes token validation/introspection for other services — oft",
+    "source": "IQ300",
+    "topic": "system-design"
+  },
+  {
+    "id": "iq-267",
+    "title": "Design a transaction ledger service.",
+    "level": "L2",
+    "tags": [
+      "IQ300",
+      "java"
+    ],
+    "short": "An append-only, immutable record of every financial event (never update/delete existing entries — corrections are made via new offsetting entries), each entry tied to an account and a running or derivable balance, strong consistency and dur",
+    "answer": "An append-only, immutable record of every financial event (never update/delete existing entries — corrections are made via new offsetting entries), each entry tied to an account and a running or derivable balance, strong consistency and durability guarantees, indexing for fast per-account history queries, and clear separation between the ledger (source of truth) and any derived/cached balance views for performance.",
+    "code": "",
+    "followups": [],
+    "mistakes": [],
+    "interview": "An append-only, immutable record of every financial event (never update/delete existing entries — corrections are made via new offsetting entries), each entry tied to an account and a running or derivable balance, strong consistency and durability guarantees, indexing for fast per-account history queries, and clear sep",
+    "source": "IQ300",
+    "topic": "system-design"
+  },
+  {
+    "id": "iq-268",
+    "title": "Design an inventory service.",
+    "level": "L1",
+    "tags": [
+      "IQ300",
+      "java"
+    ],
+    "short": "Tracks available stock per SKU/warehouse, needs to prevent overselling under concurrent demand (via database row locking, optimistic locking with retries, or reserving stock atomically with a decrement-if-sufficient operation), supports res",
+    "answer": "Tracks available stock per SKU/warehouse, needs to prevent overselling under concurrent demand (via database row locking, optimistic locking with retries, or reserving stock atomically with a decrement-if-sufficient operation), supports reservation/release flows (hold stock during checkout, release on timeout or cancellation), and typically publishes stock-change events for other services (pricing, replenishment) to consume.",
+    "code": "",
+    "followups": [],
+    "mistakes": [],
+    "interview": "Tracks available stock per SKU/warehouse, needs to prevent overselling under concurrent demand (via database row locking, optimistic locking with retries, or reserving stock atomically with a decrement-if-sufficient operation), supports reservation/release flows (hold stock during checkout, release on timeout or cancel",
+    "source": "IQ300",
+    "topic": "system-design"
+  },
+  {
+    "id": "iq-269",
+    "title": "How would you make a payment API idempotent?",
+    "level": "L1",
+    "tags": [
+      "IQ300",
+      "java"
+    ],
+    "short": "Require the client to supply a unique idempotency key per logical operation; on receiving a request, check if that key has already been processed (and store its result) — if so, return the previously recorded response instead of reprocessin",
+    "answer": "Require the client to supply a unique idempotency key per logical operation; on receiving a request, check if that key has already been processed (and store its result) — if so, return the previously recorded response instead of reprocessing, typically implemented with a unique constraint on the idempotency key in a dedicated table checked within the same transaction as the payment write.",
+    "code": "",
+    "followups": [],
+    "mistakes": [],
+    "interview": "Require the client to supply a unique idempotency key per logical operation; on receiving a request, check if that key has already been processed (and store its result) — if so, return the previously recorded response instead of reprocessing, typically implemented with a unique constraint on the idempotency key in a de",
+    "source": "IQ300",
+    "topic": "system-design"
+  },
+  {
+    "id": "iq-270",
+    "title": "How would you prevent duplicate transactions?",
+    "level": "L2",
+    "tags": [
+      "IQ300",
+      "java"
+    ],
+    "short": "Idempotency keys tied to a unique constraint at the database level (so even concurrent duplicate requests can't both succeed), deduplication checks before processing, and designing operations to be naturally idempotent where possible (e.g. ",
+    "answer": "Idempotency keys tied to a unique constraint at the database level (so even concurrent duplicate requests can't both succeed), deduplication checks before processing, and designing operations to be naturally idempotent where possible (e.g. \"set state to X\" rather than \"increment by X\") so an accidental replay is harmless.",
+    "code": "",
+    "followups": [],
+    "mistakes": [],
+    "interview": "Idempotency keys tied to a unique constraint at the database level (so even concurrent duplicate requests can't both succeed), deduplication checks before processing, and designing operations to be naturally idempotent where possible (e.g. \"set state to X\" rather than \"increment by X\") so an accidental replay is harmle",
+    "source": "IQ300",
+    "topic": "system-design"
+  },
+  {
+    "id": "iq-271",
+    "title": "How would you scale a REST API?",
+    "level": "L1",
+    "tags": [
+      "IQ300",
+      "java"
+    ],
+    "short": "Horizontally scale stateless service instances behind a load balancer, cache frequently read/expensive data (in-memory or Redis), use a CDN for static content, optimize database access (indexing, read replicas, connection pooling), apply as",
+    "answer": "Horizontally scale stateless service instances behind a load balancer, cache frequently read/expensive data (in-memory or Redis), use a CDN for static content, optimize database access (indexing, read replicas, connection pooling), apply asynchronous processing/queuing for non-critical-path work, and use rate limiting/circuit breakers to protect the system under load spikes.",
+    "code": "",
+    "followups": [],
+    "mistakes": [],
+    "interview": "Horizontally scale stateless service instances behind a load balancer, cache frequently read/expensive data (in-memory or Redis), use a CDN for static content, optimize database access (indexing, read replicas, connection pooling), apply asynchronous processing/queuing for non-critical-path work, and use rate limiting/",
+    "source": "IQ300",
+    "topic": "system-design"
+  },
+  {
+    "id": "iq-272",
+    "title": "How would you design a highly available service?",
+    "level": "L1",
+    "tags": [
+      "IQ300",
+      "java"
+    ],
+    "short": "Eliminate single points of failure by running multiple redundant instances across availability zones/regions, use health checks with automatic failover/restart, replicate data (with a defined consistency model), design for graceful degradat",
+    "answer": "Eliminate single points of failure by running multiple redundant instances across availability zones/regions, use health checks with automatic failover/restart, replicate data (with a defined consistency model), design for graceful degradation (fallbacks when a dependency is down), and use load balancing plus circuit breakers so one failing component doesn't cascade to the whole system.",
+    "code": "",
+    "followups": [],
+    "mistakes": [],
+    "interview": "Eliminate single points of failure by running multiple redundant instances across availability zones/regions, use health checks with automatic failover/restart, replicate data (with a defined consistency model), design for graceful degradation (fallbacks when a dependency is down), and use load balancing plus circuit b",
+    "source": "IQ300",
+    "topic": "system-design"
+  },
+  {
+    "id": "iq-273",
+    "title": "How would you handle retries in a payment system?",
+    "level": "L1",
+    "tags": [
+      "IQ300",
+      "java"
+    ],
+    "short": "Only retry safely idempotent operations (using an idempotency key), apply exponential backoff with jitter to avoid retry storms, cap the maximum number of attempts before routing to manual review or a dead-letter path, and clearly distingui",
+    "answer": "Only retry safely idempotent operations (using an idempotency key), apply exponential backoff with jitter to avoid retry storms, cap the maximum number of attempts before routing to manual review or a dead-letter path, and clearly distinguish retryable failures (timeouts, transient network errors) from non-retryable ones (declined card, invalid account) that shouldn't be retried at all.",
+    "code": "",
+    "followups": [],
+    "mistakes": [],
+    "interview": "Only retry safely idempotent operations (using an idempotency key), apply exponential backoff with jitter to avoid retry storms, cap the maximum number of attempts before routing to manual review or a dead-letter path, and clearly distinguish retryable failures (timeouts, transient network errors) from non-retryable on",
+    "source": "IQ300",
+    "topic": "system-design"
+  },
+  {
+    "id": "iq-274",
+    "title": "How would you ensure consistency across multiple services?",
+    "level": "L1",
+    "tags": [
+      "IQ300",
+      "java"
+    ],
+    "short": "Favor a single service owning each piece of data (avoiding shared databases), use the Saga pattern with compensating transactions for multi-service business operations instead of distributed two-phase commit, use the outbox pattern to relia",
+    "answer": "Favor a single service owning each piece of data (avoiding shared databases), use the Saga pattern with compensating transactions for multi-service business operations instead of distributed two-phase commit, use the outbox pattern to reliably publish state-change events, and accept eventual consistency where strict immediate consistency isn't truly required, making that tradeoff explicit in the design.",
+    "code": "",
+    "followups": [],
+    "mistakes": [],
+    "interview": "Favor a single service owning each piece of data (avoiding shared databases), use the Saga pattern with compensating transactions for multi-service business operations instead of distributed two-phase commit, use the outbox pattern to reliably publish state-change events, and accept eventual consistency where strict im",
+    "source": "IQ300",
+    "topic": "system-design"
+  },
+  {
+    "id": "iq-275",
+    "title": "How would you design an audit logging system?",
+    "level": "L1",
+    "tags": [
+      "IQ300",
+      "java"
+    ],
+    "short": "Capture an immutable, append-only record of who did what, when, and to what entity (before/after state where relevant), write audit entries within the same transaction as the business change (or reliably via the outbox pattern) so they can'",
+    "answer": "Capture an immutable, append-only record of who did what, when, and to what entity (before/after state where relevant), write audit entries within the same transaction as the business change (or reliably via the outbox pattern) so they can't be silently lost, store them in a separate, tamper-resistant store, and index by entity/user/time for compliance queries and investigations.",
+    "code": "",
+    "followups": [],
+    "mistakes": [],
+    "interview": "Capture an immutable, append-only record of who did what, when, and to what entity (before/after state where relevant), write audit entries within the same transaction as the business change (or reliably via the outbox pattern) so they can't be silently lost, store them in a separate, tamper-resistant store, and index ",
+    "source": "IQ300",
+    "topic": "system-design"
+  },
+  {
+    "id": "iq-316",
+    "title": "Explain caching strategy.",
+    "level": "L1",
+    "tags": [
+      "IQ300",
+      "java"
+    ],
+    "short": "Decide what to cache (frequently read, expensive to compute/fetch, tolerant of some staleness), where (in-process like Caffeine for lowest latency, or distributed like Redis for consistency across instances), the eviction policy (LRU/LFU/TT",
+    "answer": "Decide what to cache (frequently read, expensive to compute/fetch, tolerant of some staleness), where (in-process like Caffeine for lowest latency, or distributed like Redis for consistency across instances), the eviction policy (LRU/LFU/TTL) matching access patterns, and how to keep it correct — cache-aside (app manages reads/writes to cache and DB), write-through, or write-behind — along with a clear invalidation strategy so stale data doesn't linger.",
+    "code": "",
+    "followups": [],
+    "mistakes": [],
+    "interview": "Decide what to cache (frequently read, expensive to compute/fetch, tolerant of some staleness), where (in-process like Caffeine for lowest latency, or distributed like Redis for consistency across instances), the eviction policy (LRU/LFU/TTL) matching access patterns, and how to keep it correct — cache-aside (app manag",
+    "source": "IQ300",
+    "topic": "system-design"
+  },
+  {
+    "id": "iq-317",
+    "title": "Explain Redis caching.",
+    "level": "L1",
+    "tags": [
+      "IQ300",
+      "java"
+    ],
+    "short": "Redis is an in-memory key-value store commonly used as a distributed cache — shared across all instances of a horizontally-scaled service (unlike a local in-JVM cache), supporting TTL-based expiration, various data structures (strings, hash",
+    "answer": "Redis is an in-memory key-value store commonly used as a distributed cache — shared across all instances of a horizontally-scaled service (unlike a local in-JVM cache), supporting TTL-based expiration, various data structures (strings, hashes, sorted sets) beyond simple key-value, and very low latency since data lives in memory rather than on disk.",
+    "code": "",
+    "followups": [],
+    "mistakes": [],
+    "interview": "Redis is an in-memory key-value store commonly used as a distributed cache — shared across all instances of a horizontally-scaled service (unlike a local in-JVM cache), supporting TTL-based expiration, various data structures (strings, hashes, sorted sets) beyond simple key-value, and very low latency since data lives ",
+    "source": "IQ300",
+    "topic": "system-design"
+  },
+  {
+    "id": "iq-318",
+    "title": "Explain cache eviction.",
+    "level": "L1",
+    "tags": [
+      "IQ300",
+      "java"
+    ],
+    "short": "When a cache reaches its size limit, an eviction policy decides which entries to remove to make room for new ones — common policies include LRU (evict least recently used), LFU (evict least frequently used), and TTL-based expiration (entrie",
+    "answer": "When a cache reaches its size limit, an eviction policy decides which entries to remove to make room for new ones — common policies include LRU (evict least recently used), LFU (evict least frequently used), and TTL-based expiration (entries automatically expire after a set time regardless of usage), chosen based on the access pattern of the cached data.",
+    "code": "",
+    "followups": [],
+    "mistakes": [],
+    "interview": "When a cache reaches its size limit, an eviction policy decides which entries to remove to make room for new ones — common policies include LRU (evict least recently used), LFU (evict least frequently used), and TTL-based expiration (entries automatically expire after a set time regardless of usage), chosen based on th",
+    "source": "IQ300",
+    "topic": "system-design"
+  },
+  {
+    "id": "iq-319",
+    "title": "Explain cache consistency.",
+    "level": "L1",
+    "tags": [
+      "IQ300",
+      "java"
+    ],
+    "short": "The challenge of keeping cached data in sync with the underlying source of truth (the database) as it changes. Strategies include cache invalidation on write (delete/update the cache entry when the DB changes), a short TTL to bound stalenes",
+    "answer": "The challenge of keeping cached data in sync with the underlying source of truth (the database) as it changes. Strategies include cache invalidation on write (delete/update the cache entry when the DB changes), a short TTL to bound staleness, write-through caching (updating cache and DB together), and accepting eventual consistency for data where brief staleness is acceptable.",
+    "code": "",
+    "followups": [],
+    "mistakes": [],
+    "interview": "The challenge of keeping cached data in sync with the underlying source of truth (the database) as it changes. Strategies include cache invalidation on write (delete/update the cache entry when the DB changes), a short TTL to bound staleness, write-through caching (updating cache and DB together), and accepting eventua",
+    "source": "IQ300",
+    "topic": "system-design"
+  },
+  {
+    "topic": "system-design",
+    "level": "L2",
+    "title": "How do you estimate capacity in system design?",
+    "tags": [
+      "Capacity",
+      "Scalability"
+    ],
+    "short": "Start with users, request rates, payload sizes and storage growth, then translate them into approximate compute, network and database requirements.",
+    "answer": "I estimate average and peak requests per second, read/write ratio, data size per request, daily storage growth and retention. The goal is order-of-magnitude sizing that guides architecture rather than false precision.",
+    "code": "1M users * 10 requests/day = 10M/day\n10M / 86400 ~= 116 avg RPS\nUse a peak multiplier for capacity planning.",
+    "followups": [
+      "Why use peak RPS?",
+      "How do you estimate storage?"
+    ],
+    "mistakes": [
+      "Treating average RPS as production capacity.",
+      "Using unrealistic precision for uncertain assumptions."
+    ],
+    "interview": "Capacity estimation is about making assumptions explicit and finding bottlenecks early. I calculate average and peak load, storage and bandwidth before selecting components.",
+    "source": "V9",
+    "id": "v9-072"
+  },
+  {
+    "topic": "system-design",
+    "level": "L2",
+    "title": "What is caching and where can it be applied?",
+    "tags": [
+      "Caching",
+      "Performance"
+    ],
+    "short": "Caching stores reusable data closer to consumers to reduce latency and backend load.",
+    "answer": "Caches can exist in the browser, CDN, API layer, service memory or distributed stores such as Redis. The design must define TTL, invalidation, consistency and cache stampede behavior.",
+    "code": "Cache miss -> DB -> set cache\nCache hit -> return cached value",
+    "followups": [
+      "Cache-aside vs write-through?",
+      "How do you prevent cache stampede?"
+    ],
+    "mistakes": [
+      "Treating cached data as always correct.",
+      "Adding caching without an invalidation strategy."
+    ],
+    "interview": "Caching improves latency and reduces load, but it introduces staleness and invalidation complexity. I define the consistency and failure behavior explicitly.",
+    "source": "V9",
+    "id": "v9-073"
+  },
+  {
+    "topic": "system-design",
+    "level": "L3",
+    "title": "How do you design a rate limiter?",
+    "tags": [
+      "Rate Limiting",
+      "Distributed Systems"
+    ],
+    "short": "A rate limiter controls request frequency using algorithms such as token bucket or sliding window.",
+    "answer": "Token bucket allows bursts up to a configured capacity while replenishing tokens at a fixed rate. A distributed limiter needs shared state or a gateway that owns the limit.",
+    "code": "tokens = min(capacity, tokens + refillRate * elapsed);\nif (tokens >= 1) { tokens--; allow(); } else reject();",
+    "followups": [
+      "Token bucket vs leaky bucket?",
+      "Per-user vs per-IP limits?"
+    ],
+    "mistakes": [
+      "Using only local memory for a multi-instance global limit.",
+      "Returning an ambiguous response without retry guidance."
+    ],
+    "interview": "I choose a limiter based on whether bursts are allowed and where state should live. For distributed services, the policy and shared state must be consistent enough for the business requirement.",
+    "source": "V9",
+    "id": "v9-074"
+  },
+  {
+    "topic": "system-design",
+    "level": "L2",
+    "title": "How does a CDN improve a backend system?",
+    "tags": [
+      "CDN",
+      "Performance"
+    ],
+    "short": "A CDN serves cacheable content from edge locations close to users, reducing origin latency and traffic.",
+    "answer": "Static assets are the simplest case, but CDNs can also cache selected API responses when semantics allow. Cache keys, TTLs, invalidation and authorization must be designed carefully.",
+    "code": "User -> Edge CDN -> Origin\n             cache hit: response",
+    "followups": [
+      "CDN vs API Gateway?",
+      "Can personalized responses be cached?"
+    ],
+    "mistakes": [
+      "Caching private data publicly.",
+      "Assuming CDN removes origin scaling requirements completely."
+    ],
+    "interview": "A CDN reduces distance to cacheable content and shields the origin. I pay particular attention to cache keys, authorization and invalidation.",
+    "source": "V9",
+    "id": "v9-075"
+  },
+  {
+    "topic": "system-design",
+    "level": "L3",
+    "title": "How would you design a notification service?",
+    "tags": [
+      "System Design",
+      "Events"
+    ],
+    "short": "Separate notification intent from channel delivery, use durable queues, idempotent consumers and provider-specific adapters.",
+    "answer": "An application emits a NotificationRequested event. Workers consume it, select email/SMS/push channels, call providers with retries and record delivery state. A dead-letter path handles poison messages.",
+    "code": "App -> Event/Queue -> Notification Worker\n                         -> Email Provider\n                         -> SMS Provider",
+    "followups": [
+      "How do you avoid duplicate notifications?",
+      "How do you handle provider outages?"
+    ],
+    "mistakes": [
+      "Calling providers synchronously inside the main transaction.",
+      "Retrying indefinitely and spamming users."
+    ],
+    "interview": "I decouple notification delivery with durable messaging, idempotent processing and bounded retries. Provider failures should not block the core business transaction.",
+    "source": "V9",
+    "id": "v9-076"
+  },
+  {
+    "topic": "system-design",
+    "level": "L3",
+    "title": "How would you design a URL shortener?",
+    "tags": [
+      "System Design",
+      "Scalability"
+    ],
+    "short": "Generate a compact unique key, map it to the destination, cache hot mappings and handle high read traffic efficiently.",
+    "answer": "The write path creates a unique ID or encoded sequence and stores the mapping. The read path checks cache then the database. Abuse controls, expiration and analytics can be separate concerns.",
+    "code": "POST /shorten -> key=abc123 -> DB\nGET /abc123 -> cache/DB -> 302 destination",
+    "followups": [
+      "How do you generate unique IDs at scale?",
+      "How do you prevent malicious links?"
+    ],
+    "mistakes": [
+      "Using a random key without collision handling.",
+      "Putting analytics synchronously on every redirect."
+    ],
+    "interview": "A URL shortener is read-heavy, so I optimize lookup latency with caching and a compact key-generation strategy, while isolating analytics from the redirect path.",
+    "source": "V9",
+    "id": "v9-077"
+  },
+  {
+    "topic": "system-design",
+    "level": "L3",
+    "title": "How would you design an audit logging system?",
+    "tags": [
+      "System Design",
+      "Audit"
+    ],
+    "short": "Audit logs should be append-oriented, tamper-resistant and correlated to actor, action, resource and time.",
+    "answer": "Business services emit audit events with request and actor context. A durable pipeline stores them separately from mutable business data, with retention and access controls.",
+    "code": "Service -> Audit Event -> Queue -> Append-only Store\n{actor, action, resource, timestamp, requestId}",
+    "followups": [
+      "How do you prevent audit loss?",
+      "What data should never be logged?"
+    ],
+    "mistakes": [
+      "Logging secrets or credentials.",
+      "Relying only on application text logs for compliance records."
+    ],
+    "interview": "Audit logging is a separate integrity concern. I capture who did what and when, make delivery durable, restrict access and avoid sensitive secrets.",
+    "source": "V9",
+    "id": "v9-078"
+  },
+  {
+    "topic": "system-design",
+    "level": "L2",
+    "title": "What is a load balancer health check?",
+    "tags": [
+      "Load Balancing",
+      "Reliability"
+    ],
+    "short": "A health check determines whether an instance should receive traffic based on its readiness or health state.",
+    "answer": "Liveness answers whether a process should be restarted; readiness answers whether it should receive traffic. A readiness endpoint should reflect the dependencies required to serve requests without becoming so strict that temporary issues cause instability.",
+    "code": "GET /actuator/health/readiness\n200 -> eligible for traffic\n503 -> remove from rotation",
+    "followups": [
+      "Liveness vs readiness?",
+      "Should readiness call every dependency?"
+    ],
+    "mistakes": [
+      "Using liveness as a dependency health check and causing restart loops.",
+      "Making health checks more expensive than real requests."
+    ],
+    "interview": "Readiness protects users from instances that are alive but unable to serve. Liveness is for process recovery; they should have different purposes.",
+    "source": "V9",
+    "id": "v9-079"
+  },
+  {
+    "topic": "system-design",
+    "subtopic": "distributed",
+    "level": "L3",
+    "title": "Design a high-scale notification system",
+    "tags": [
+      "system-design",
+      "L3",
+      "Production"
+    ],
+    "short": "Separate request acceptance from asynchronous delivery across channel-specific workers.",
+    "answer": "Persist a notification command, publish via an outbox, route to email/SMS/push workers, apply provider rate limits, retry transient failures and track delivery state idempotently.",
+    "code": "POST /notifications -> notificationId\nworkers -> provider adapters",
+    "followups": [
+      "How do you prevent duplicate SMS?",
+      "How do you handle provider outage?"
+    ],
+    "mistakes": [
+      "Sending provider calls synchronously in the request thread."
+    ],
+    "interview": "I would make acceptance durable and delivery asynchronous. Each channel has its own retry/rate policy and the overall state is an idempotent state machine.",
+    "source": "V10",
+    "id": "v10-067"
+  },
+  {
+    "topic": "system-design",
+    "subtopic": "distributed",
+    "level": "L3",
+    "title": "Design a payment ledger",
+    "tags": [
+      "system-design",
+      "L3",
+      "Production"
+    ],
+    "short": "Use immutable double-entry entries and idempotent transaction identifiers.",
+    "answer": "Every business transaction creates balanced debit/credit entries. Corrections are compensating entries. Derived balances can be optimized separately and reconciled.",
+    "code": "ledger(txId, accountId, debit, credit)\nSUM(debit)=SUM(credit) per tx",
+    "followups": [
+      "How do you reconcile external providers?",
+      "How do you handle concurrent writes?"
+    ],
+    "mistakes": [
+      "Overwriting a balance without an immutable ledger."
+    ],
+    "interview": "For financial systems I prefer an append-only ledger because history remains auditable and balance invariants are explicit.",
+    "source": "V10",
+    "id": "v10-068"
+  },
+  {
+    "topic": "system-design",
+    "subtopic": "distributed",
+    "level": "L3",
+    "title": "Design an inventory reservation service",
+    "tags": [
+      "system-design",
+      "L3",
+      "Production"
+    ],
+    "short": "Reserve stock atomically, expire abandoned reservations and make confirmation idempotent.",
+    "answer": "Use an atomic conditional update or row lock so available stock cannot become negative. Reservations have expiry and order identity.",
+    "code": "UPDATE inventory SET available=available-? WHERE sku=? AND available>=?;",
+    "followups": [
+      "How do you handle hot SKUs?",
+      "What if expiry runs twice?"
+    ],
+    "mistakes": [
+      "Read-then-update without protecting the invariant."
+    ],
+    "interview": "The key invariant is never reserving more than available. I enforce it atomically in the database and model expiry as a recoverable state transition.",
+    "source": "V10",
+    "id": "v10-069"
+  },
+  {
+    "topic": "system-design",
+    "subtopic": "distributed",
+    "level": "L3",
+    "title": "Design a distributed job scheduler",
+    "tags": [
+      "system-design",
+      "L3",
+      "Production"
+    ],
+    "short": "Persist jobs, claim them with leases and make execution idempotent.",
+    "answer": "Workers claim ready jobs with owner/version/lease, heartbeat while working and allow expired leases to be retried. Exactly-once execution is usually not realistic, so handlers must tolerate duplicates.",
+    "code": "UPDATE jobs SET owner=?, lease_until=? WHERE id=? AND lease_until < now();",
+    "followups": [
+      "How do you scale millions of jobs?",
+      "How do you avoid duplicate execution?"
+    ],
+    "mistakes": [
+      "Assuming a lock provides exactly-once execution."
+    ],
+    "interview": "I design for durable at-least-once execution with recovery. The job itself is responsible for idempotent side effects.",
+    "source": "V10",
+    "id": "v10-070"
+  },
+  {
+    "topic": "system-design",
+    "subtopic": "apis",
+    "level": "L3",
+    "title": "Design a large file upload service",
+    "tags": [
+      "system-design",
+      "L3",
+      "Production"
+    ],
+    "short": "Upload directly to object storage using scoped multipart/resumable URLs and keep metadata in a database.",
+    "answer": "The backend creates an upload session and signed parts; the client transfers data directly. Completion records checksum/size and triggers asynchronous scanning/processing.",
+    "code": "POST /uploads -> signed parts\nPUT -> object storage\nPOST /complete",
+    "followups": [
+      "How do you resume uploads?",
+      "How do you secure downloads?"
+    ],
+    "mistakes": [
+      "Proxying every large file through application servers."
+    ],
+    "interview": "I keep large payloads out of the application cluster. The backend controls authorization and metadata while object storage handles transfer scale.",
+    "source": "V10",
+    "id": "v10-071"
+  },
+  {
+    "topic": "system-design",
+    "subtopic": "apis",
+    "level": "L3",
+    "title": "Design a high-throughput audit platform",
+    "tags": [
+      "system-design",
+      "L3",
+      "Production"
+    ],
+    "short": "Capture structured immutable audit events asynchronously and partition storage by useful access dimensions.",
+    "answer": "Applications emit actor/action/resource/tenant/trace metadata. A durable broker buffers ingestion and consumers write searchable/retained projections.",
+    "code": "AuditEvent(actor,action,resource,tenant,traceId,timestamp)",
+    "followups": [
+      "How do you prevent loss?",
+      "How do you search years of data?"
+    ],
+    "mistakes": [
+      "Treating ordinary application logs as a complete audit trail."
+    ],
+    "interview": "Audit records are different from debug logs. I make them structured, access-controlled and durable, with retention and replay considerations.",
+    "source": "V10",
+    "id": "v10-072"
+  },
+  {
+    "topic": "system-design",
+    "subtopic": "scaling",
+    "level": "L3",
+    "title": "Design a product catalog cache",
+    "tags": [
+      "system-design",
+      "L3",
+      "Production"
+    ],
+    "short": "Use cache-aside with bounded TTL and protection against hot-key stampedes.",
+    "answer": "The database remains source of truth. Reads load on miss; writes invalidate or publish versions. Request coalescing and jittered expiry protect the database.",
+    "code": "MISS -> DB -> SET product:key TTL",
+    "followups": [
+      "Write-through vs cache-aside?",
+      "How do you handle hot keys?"
+    ],
+    "mistakes": [
+      "Assuming cache invalidation is globally instantaneous."
+    ],
+    "interview": "I define staleness tolerance first, then choose cache-aside and protect popular keys from synchronized expiry.",
+    "source": "V10",
+    "id": "v10-073"
+  },
+  {
+    "topic": "system-design",
+    "subtopic": "distributed",
+    "level": "L3",
+    "title": "Design an e-commerce checkout system",
+    "tags": [
+      "system-design",
+      "L3",
+      "Production"
+    ],
+    "short": "Use explicit order state, idempotent commands and asynchronous coordination between inventory and payment.",
+    "answer": "Create an order intent, reserve inventory, authorize payment and transition state. Outbox/events connect services; compensation handles failures.",
+    "code": "CREATED -> PAYMENT_PENDING -> CONFIRMED\n(or COMPENSATING/FAILED)",
+    "followups": [
+      "Payment succeeds but inventory fails?",
+      "How do you prevent duplicate checkout?"
+    ],
+    "mistakes": [
+      "Trying to wrap every service in one distributed ACID transaction."
+    ],
+    "interview": "I optimize checkout for correctness: durable state, idempotency and compensations rather than a distributed transaction.",
+    "source": "V10",
+    "id": "v10-074"
+  },
+  {
+    "topic": "system-design",
+    "subtopic": "scaling",
+    "level": "L3",
+    "title": "Design a public API rate limiter",
+    "tags": [
+      "system-design",
+      "L3",
+      "Production"
+    ],
+    "short": "Use a distributed token bucket or sliding-window algorithm and expose predictable client behavior.",
+    "answer": "Shared atomic state is required across instances. Return 429 with Retry-After and protect the limiter store with timeouts and a defined failure policy.",
+    "code": "X-RateLimit-Limit: 100\nRetry-After: 1",
+    "followups": [
+      "Global vs per-tenant limits?",
+      "How do you avoid hot keys?"
+    ],
+    "mistakes": [
+      "Using per-instance synchronized counters."
+    ],
+    "interview": "I choose the algorithm from burst requirements, enforce it atomically across instances and decide explicitly what happens if the limiter store fails.",
+    "source": "V10",
+    "id": "v10-075"
+  },
+  {
+    "topic": "system-design",
+    "subtopic": "scaling",
+    "level": "L3",
+    "title": "Design a distributed cache for a high-read backend",
+    "tags": [
+      "system-design",
+      "L3",
+      "Production"
+    ],
+    "short": "Use cache-aside, bounded memory and explicit invalidation/staleness semantics.",
+    "answer": "Choose keys and TTLs, protect hot keys, measure hit rate and keep the source of truth authoritative. For critical correctness, use versioning or bypass cache when stale data is unsafe.",
+    "code": "GET cache:key -> MISS -> DB -> SET",
+    "followups": [
+      "How do you handle cache failure?",
+      "What is stale-while-revalidate?"
+    ],
+    "mistakes": [
+      "Adding Redis without defining consistency or eviction."
+    ],
+    "interview": "Caching is a consistency decision as much as a performance decision. I define acceptable staleness before selecting the strategy.",
+    "source": "V10",
+    "id": "v10-076"
+  },
+  {
+    "id": "v10.1-049",
+    "title": "Design an order system that remains correct during duplicate requests",
+    "level": "L3",
+    "tags": [
+      "order system",
+      "idempotency",
+      "system design",
+      "Production Scenario",
+      "V10.1"
+    ],
+    "short": "Correctness comes from durable idempotency and explicit state transitions, not from assuming requests arrive once.",
+    "answer": "I would design order creation around an idempotency key and durable order state. The payment flow would have its own idempotency and reconciliation because an external timeout does not prove failure.",
+    "code": "Create an idempotent order command keyed by a client-generated idempotency key. Persist the key and order result atomically. Use a payment provider idempotency key derived from the order attempt and model payment as a state machine with reconciliation.",
+    "followups": [
+      "How would you scale the order database?",
+      "How would you publish OrderCreated reliably?",
+      "What if payment remains pending for 30 minutes?"
+    ],
+    "mistakes": [
+      "Treating order creation and payment as one synchronous ACID transaction.",
+      "Ignoring duplicate client requests."
+    ],
+    "interview": "I would first define the business state machine and failure semantics, then design APIs and storage around those guarantees.",
+    "source": "V10.1",
+    "topic": "system-design",
+    "subtopic": "apis",
+    "scenario": "Customers can retry order creation because mobile networks are unreliable. The system must not create duplicate orders or double-charge customers.",
+    "investigation": "Identify the command boundary, idempotency key, order state machine and payment interaction. Separate order creation from payment outcome and model uncertain states.",
+    "resolution": "Create an idempotent order command keyed by a client-generated idempotency key. Persist the key and order result atomically. Use a payment provider idempotency key derived from the order attempt and model payment as a state machine with reconciliation.",
+    "prevention": "Test retries, concurrent duplicates, provider timeouts and partial failures. Store durable correlation IDs and expose safe status queries."
+  },
+  {
+    "id": "v10.1-050",
+    "title": "Design a notification service for millions of users",
+    "level": "L3",
+    "tags": [
+      "notification",
+      "queue",
+      "system design",
+      "Production Scenario",
+      "V10.1"
+    ],
+    "short": "The API should not synchronously wait for external notification providers at scale.",
+    "answer": "I would make notification submission asynchronous. The API writes a durable command, channel workers consume it, apply provider-specific rate limits and retries, and persist delivery status for observability and reconciliation.",
+    "code": "Accept notification commands into a durable queue, route by channel, use provider-specific workers and bounded retries with backoff. Track delivery state and use idempotency keys to prevent duplicate sends where the provider supports them.",
+    "followups": [
+      "How do you preserve ordering for notifications?",
+      "How do you handle provider rate limits?",
+      "How do you prevent duplicate SMS?"
+    ],
+    "mistakes": [
+      "Retrying without provider rate limits.",
+      "Using one shared worker pool for all channels."
+    ],
+    "interview": "I would separate acceptance from delivery so provider slowness does not directly make the public API unavailable.",
+    "source": "V10.1",
+    "topic": "system-design",
+    "subtopic": "distributed",
+    "scenario": "A platform sends email, SMS and push notifications. Traffic is bursty and a provider may become slow or unavailable.",
+    "investigation": "Estimate peak notification rate, provider quotas, queue capacity and retry volume. Separate request acceptance from delivery execution.",
+    "resolution": "Accept notification commands into a durable queue, route by channel, use provider-specific workers and bounded retries with backoff. Track delivery state and use idempotency keys to prevent duplicate sends where the provider supports them.",
+    "prevention": "Monitor queue age, provider latency, delivery success and retry rates. Apply per-provider rate limits and circuit breakers."
+  },
+  {
+    "id": "v10.1-051",
+    "title": "Design a distributed rate limiter for APIs",
+    "level": "L3",
+    "tags": [
+      "rate limiter",
+      "redis",
+      "system design",
+      "Production Scenario",
+      "V10.1"
+    ],
+    "short": "A distributed rate limiter is a consistency and availability trade-off, not just a counter.",
+    "answer": "I would use a token bucket or sliding-window approach with atomic state updates in a shared store. I would define the failure policy explicitly and expose rate-limit headers so clients can behave predictably.",
+    "code": "Use a centralized or distributed counter/token-bucket implementation with atomic operations. Return 429 with retry guidance. Decide whether fail-open or fail-closed is safer for the business operation.",
+    "followups": [
+      "Token bucket versus sliding window?",
+      "How do you avoid a Redis bottleneck?",
+      "What happens during a Redis outage?"
+    ],
+    "mistakes": [
+      "Using local counters when the limit must be global.",
+      "Ignoring burst behavior."
+    ],
+    "interview": "I would first clarify the accuracy requirement. Then I would choose token bucket or sliding window, atomic updates and an explicit fail-open/fail-closed policy.",
+    "source": "V10.1",
+    "topic": "system-design",
+    "subtopic": "distributed",
+    "scenario": "A public API must enforce 100 requests per minute per customer across many application instances.",
+    "investigation": "Define whether the limit is strict or approximate, the key dimensions and failure behavior. Estimate request volume and state size. Decide whether the limiter must be globally consistent.",
+    "resolution": "Use a centralized or distributed counter/token-bucket implementation with atomic operations. Return 429 with retry guidance. Decide whether fail-open or fail-closed is safer for the business operation.",
+    "prevention": "Monitor allowed/blocked rates and limiter latency, protect the limiter itself and load-test bursts at the boundary."
   }
 ]

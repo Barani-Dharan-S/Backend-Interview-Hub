@@ -10741,7 +10741,12 @@
     ],
     "interview": "I use two pointers on a char array. Time is O(n). Space is O(n) for the array.",
     "source": "V9",
-    "id": "v9-080"
+    "id": "v9-080",
+    "problem": "Reverse characters with a two-pointer swap.",
+    "example": null,
+    "approach": "Convert to a char array and swap from both ends.",
+    "complexity": "See approach and implementation for complexity details.",
+    "streams": null
   },
   {
     "topic": "coding",
@@ -10762,7 +10767,12 @@
     ],
     "interview": "For ASCII input this is O(n) time and O(1) auxiliary space.",
     "source": "V9",
-    "id": "v9-081"
+    "id": "v9-081",
+    "problem": "Determine whether two strings contain identical character frequencies.",
+    "example": null,
+    "approach": "Count characters in the first string and decrement counts for the second.",
+    "complexity": "See approach and implementation for complexity details.",
+    "streams": null
   },
   {
     "topic": "coding",
@@ -10783,7 +10793,12 @@
     ],
     "interview": "Two passes give O(n) time and O(k) space for k distinct characters.",
     "source": "V9",
-    "id": "v9-082"
+    "id": "v9-082",
+    "problem": "Return the first character whose frequency is one.",
+    "example": null,
+    "approach": "Count frequencies, then scan the original order.",
+    "complexity": "See approach and implementation for complexity details.",
+    "streams": null
   },
   {
     "topic": "coding",
@@ -10804,7 +10819,12 @@
     ],
     "interview": "Average O(n) time and O(n) extra space.",
     "source": "V9",
-    "id": "v9-083"
+    "id": "v9-083",
+    "problem": "Return values that occur more than once.",
+    "example": null,
+    "approach": "Track seen values and add repeats to a second set.",
+    "complexity": "See approach and implementation for complexity details.",
+    "streams": null
   },
   {
     "topic": "coding",
@@ -10825,7 +10845,12 @@
     ],
     "interview": "One pass gives O(n) time and O(1) extra space.",
     "source": "V9",
-    "id": "v9-084"
+    "id": "v9-084",
+    "problem": "Find the second largest distinct value without sorting.",
+    "example": null,
+    "approach": "Maintain largest and second-largest distinct values in one pass.",
+    "complexity": "See approach and implementation for complexity details.",
+    "streams": null
   },
   {
     "topic": "coding",
@@ -10846,7 +10871,12 @@
     ],
     "interview": "O(n) time and O(1) extra space.",
     "source": "V9",
-    "id": "v9-085"
+    "id": "v9-085",
+    "problem": "Move zeros to the end while preserving non-zero order.",
+    "example": null,
+    "approach": "Compact non-zero values then fill the remaining positions with zeros.",
+    "complexity": "See approach and implementation for complexity details.",
+    "streams": null
   },
   {
     "topic": "coding",
@@ -10867,7 +10897,12 @@
     ],
     "interview": "O(n) time and O(1) extra space.",
     "source": "V9",
-    "id": "v9-086"
+    "id": "v9-086",
+    "problem": "Find the missing value from 1 through n.",
+    "example": null,
+    "approach": "XOR all expected values and all input values; equal values cancel.",
+    "complexity": "See approach and implementation for complexity details.",
+    "streams": null
   },
   {
     "topic": "coding",
@@ -10888,7 +10923,12 @@
     ],
     "interview": "Kadane is O(n) time and O(1) space.",
     "source": "V9",
-    "id": "v9-087"
+    "id": "v9-087",
+    "problem": "Find the largest sum of any contiguous subarray.",
+    "example": null,
+    "approach": "Kadane keeps the best subarray ending at the current position and the global best.",
+    "complexity": "See approach and implementation for complexity details.",
+    "streams": null
   },
   {
     "topic": "coding",
@@ -10909,7 +10949,12 @@
     ],
     "interview": "O(n) time and O(n) worst-case space.",
     "source": "V9",
-    "id": "v9-088"
+    "id": "v9-088",
+    "problem": "Check whether brackets are correctly nested and closed.",
+    "example": null,
+    "approach": "Push openings and match each closing bracket against the top of the stack.",
+    "complexity": "See approach and implementation for complexity details.",
+    "streams": null
   },
   {
     "topic": "coding",
@@ -10920,7 +10965,7 @@
       "Design"
     ],
     "short": "Build a fixed-capacity cache that evicts the least recently used entry.",
-    "answer": "LinkedHashMap can maintain access order and remove the eldest entry.",
+    "answer": "An LRU cache removes the entry that has not been accessed for the longest time. The key requirement is O(1) lookup and O(1) insertion/removal. The classic design combines a HashMap with a doubly linked list: the map finds a node directly, while the list maintains usage order. On get, the node is moved to the most-recently-used end. On put, an existing node is updated and moved to the end, or a new node is added; if the capacity is exceeded, the least-recently-used node at the opposite end is evicted. In Java, LinkedHashMap can implement this using access-order and removeEldestEntry.",
     "code": "import java.util.*;\npublic class Main {\n    static class LruCache<K,V> extends LinkedHashMap<K,V> {\n        private final int capacity;\n        LruCache(int capacity){ super(capacity,0.75f,true); this.capacity=capacity; }\n        protected boolean removeEldestEntry(Map.Entry<K,V> e){ return size()>capacity; }\n    }\n    public static void main(String[] args){\n        LruCache<Integer,String> cache=new LruCache<>(2);\n        cache.put(1,\"A\"); cache.put(2,\"B\"); cache.get(1); cache.put(3,\"C\");\n        System.out.println(cache);\n    }\n}",
     "followups": [
       "How would you implement LRU from scratch?"
@@ -10928,9 +10973,14 @@
     "mistakes": [
       "Forgetting access-order=true."
     ],
-    "interview": "This implementation gives average O(1) get/put behavior from LinkedHashMap. Production concurrency and distributed requirements need additional design.",
+    "interview": "I would implement an LRU cache using a HashMap plus a doubly linked list. The HashMap gives O(1) lookup, while the list maintains recency order. Every get or successful update moves the entry to the most-recently-used end, and when capacity is exceeded we remove the least-recently-used entry. In Java, LinkedHashMap with access-order is a concise implementation of the same idea.",
     "source": "V9",
-    "id": "v9-089"
+    "id": "v9-089",
+    "problem": "Implement an LRU (Least Recently Used) cache with a fixed capacity. get(key) should return the value and mark the entry as recently used. put(key, value) should insert or update the entry and evict the least recently used entry when the capacity is exceeded.",
+    "example": "Capacity = 2\nput(1, \"A\")\nput(2, \"B\")\nget(1) -> \"A\"\nput(3, \"C\") -> evicts key 2\nget(2) -> null",
+    "approach": "Use a HashMap for O(1) key lookup and a doubly linked list to maintain recency order. The head represents the least recently used entry and the tail represents the most recently used entry. A get moves the entry to the tail; a put inserts or updates at the tail and removes the head when capacity is exceeded. Java LinkedHashMap can provide the same behavior with accessOrder=true.",
+    "complexity": "get: O(1)\nput: O(1)\nSpace: O(capacity)",
+    "streams": null
   },
   {
     "id": "v91-001",
@@ -13516,12 +13566,17 @@
       "Basics"
     ],
     "short": "Determine whether an integer is prime.",
-    "answer": "Check divisibility only up to the square root because a composite number must have a factor at or below sqrt(n).",
+    "answer": "A prime number has no divisor other than 1 and itself. We only need to test possible factors up to the square root of n because if n = a × b and both factors were greater than sqrt(n), their product would be greater than n. We can skip even numbers after checking 2, reducing unnecessary checks.",
     "code": "import java.util.*;\n\npublic class Main {\n    static boolean isPrime(int n) {\n        if (n < 2) return false;\n        if (n % 2 == 0) return n == 2;\n        for (int i = 3; i <= n / i; i += 2) {\n            if (n % i == 0) return false;\n        }\n        return true;\n    }\n\n    public static void main(String[] args) {\n        int n = 29;\n        System.out.println(n + \" is prime: \" + isPrime(n));\n    }\n}",
     "followups": "How would you print primes from 1 to N?",
     "mistakes": "Checking every number from 2 to n is unnecessary.",
-    "interview": "Interview answer: I handle values below two and even numbers first, then test only odd divisors up to the square root.",
-    "source": "V9.1"
+    "interview": "I first reject numbers below 2, then handle 2 separately. After that I test only odd divisors up to the square root of the number. If any divisor divides the number evenly, it is composite; otherwise it is prime. This gives O(sqrt(n)) time and O(1) space.",
+    "source": "V9.1",
+    "problem": "Write a Java program to determine whether an integer is prime. A prime number is greater than 1 and has exactly two positive divisors: 1 and itself.",
+    "example": "Input: 29\nOutput: 29 is prime: true",
+    "approach": "Handle values below 2 first, then test divisibility by 2 and odd divisors only up to sqrt(n). If no divisor is found, the number is prime.",
+    "complexity": "Time: O(sqrt(n))\nSpace: O(1)",
+    "streams": null
   },
   {
     "id": "v91-coding-02",
@@ -13533,12 +13588,17 @@
       "Numbers"
     ],
     "short": "Calculate n! using an iterative approach.",
-    "answer": "Factorial is the product from 1 through n. An iterative implementation avoids recursive stack growth.",
+    "answer": "Factorial is naturally calculated by repeated multiplication. I prefer an iterative solution here because it avoids recursive call-stack growth and makes the boundary case 0! = 1 straightforward. For a long result, the supported input range is limited by long overflow, so for very large factorials BigInteger would be appropriate.",
     "code": "import java.util.*;\n\npublic class Main {\n    static long factorial(int n) {\n        if (n < 0) throw new IllegalArgumentException(\"n must be non-negative\");\n        long result = 1;\n        for (int i = 2; i <= n; i++) result *= i;\n        return result;\n    }\n\n    public static void main(String[] args) {\n        int n = 5;\n        System.out.println(n + \"! = \" + factorial(n));\n    }\n}",
     "followups": "How would recursion change the solution?",
     "mistakes": "What happens when long overflows?",
-    "interview": "Interview answer: I initialize the result to one and multiply by each value through n. In real code I would consider BigInteger when n can exceed long range.",
-    "source": "V9.1"
+    "interview": "I initialize the result to 1 and multiply it by each value from 2 to n. This handles 0 correctly because the loop does not execute. An iterative solution uses constant auxiliary space; if the input can exceed long range, I would use BigInteger instead.",
+    "source": "V9.1",
+    "problem": "Write a Java program to calculate the factorial of a non-negative integer n. Factorial is n × (n-1) × ... × 1, with 0! = 1.",
+    "example": "Input: 5\nOutput: 5! = 120",
+    "approach": "Start the result at 1 and multiply it by every integer from 2 through n. Validate that n is not negative.",
+    "complexity": "Time: O(n)\nSpace: O(1) excluding the numeric result",
+    "streams": null
   },
   {
     "id": "v91-coding-03",
@@ -13550,12 +13610,17 @@
       "Iteration"
     ],
     "short": "Print the first N Fibonacci numbers.",
-    "answer": "Keep the previous two values and generate each next value iteratively.",
+    "answer": "The iterative approach keeps only the previous two values instead of storing the whole sequence. For each term, I print the current value, calculate the next value as a + b, then shift a and b. This is more space-efficient than building a list. For large terms, long can overflow, so BigInteger may be required.",
     "code": "import java.util.*;\n\npublic class Main {\n    static void printFibonacci(int n) {\n        long a = 0, b = 1;\n        for (int i = 0; i < n; i++) {\n            System.out.print(a + (i + 1 == n ? \"\\n\" : \" \"));\n            long next = a + b;\n            a = b;\n            b = next;\n        }\n    }\n\n    public static void main(String[] args) {\n        printFibonacci(10);\n    }\n}",
     "followups": "How would you generate Fibonacci with Streams?",
     "mistakes": "How do you avoid overflow for large n?",
-    "interview": "Interview answer: I keep only the last two Fibonacci values, so each term is produced once with constant auxiliary space.",
-    "source": "V9.1"
+    "interview": "I maintain two variables for the previous two Fibonacci numbers. In every iteration I output the current number, calculate the next number by adding the two previous values, and then shift the variables. This gives O(n) time and O(1) auxiliary space.",
+    "source": "V9.1",
+    "problem": "Write a Java program to print the first N numbers of the Fibonacci sequence, where the sequence starts with 0, 1 and each next value is the sum of the previous two.",
+    "example": "Input: 10\nOutput: 0 1 1 2 3 5 8 13 21 34",
+    "approach": "Keep two variables representing the previous two Fibonacci values. Print the first value, calculate the next value, then shift the variables forward for each iteration.",
+    "complexity": "Time: O(n)\nSpace: O(1) auxiliary",
+    "streams": null
   },
   {
     "id": "v91-coding-04",
@@ -13567,12 +13632,17 @@
       "Strings"
     ],
     "short": "Determine whether an integer reads the same forward and backward.",
-    "answer": "Reverse the digits mathematically and compare the reversed value with the original. Avoid converting to a string when the problem expects arithmetic.",
+    "answer": "Instead of converting the number to a string, I reverse its digits mathematically. The last digit is n % 10, and n / 10 removes that digit. I build the reversed value and finally compare it with the original. A long variable for the reversed value prevents intermediate overflow for many int inputs.",
     "code": "import java.util.*;\n\npublic class Main {\n    static boolean isPalindrome(int n) {\n        if (n < 0) return false;\n        int original = n;\n        long reversed = 0;\n        while (n > 0) {\n            reversed = reversed * 10 + n % 10;\n            n /= 10;\n        }\n        return reversed == original;\n    }\n\n    public static void main(String[] args) {\n        int n = 1221;\n        System.out.println(\"Palindrome: \" + isPalindrome(n));\n    }\n}",
     "followups": "How do you handle negative numbers?",
     "mistakes": "What if reversing causes integer overflow?",
-    "interview": "Interview answer: I reverse the digits mathematically and compare them with the original number, using constant extra space.",
-    "source": "V9.1"
+    "interview": "I reverse the number mathematically using modulo and division by 10, while keeping a copy of the original value. After all digits are processed, I compare the reversed value with the original. This avoids string conversion and uses constant space.",
+    "source": "V9.1",
+    "problem": "Write a Java program to check whether an integer is a palindrome without converting it to a String. A palindrome reads the same forward and backward.",
+    "example": "Input: 1221\nOutput: Palindrome: true",
+    "approach": "Keep the original number, repeatedly extract the last digit using modulo 10, append it to a reversed number, and remove the last digit using integer division by 10. Compare the reversed number with the original.",
+    "complexity": "Time: O(log10(n))\nSpace: O(1)",
+    "streams": null
   },
   {
     "id": "v91-coding-05",
@@ -13584,12 +13654,17 @@
       "Math"
     ],
     "short": "Check whether a number equals the sum of its digits raised to the number of digits.",
-    "answer": "First count the digits, then compute the powered sum and compare it with the original.",
+    "answer": "An Armstrong number is defined using the number of digits. For 153, there are three digits and 1³ + 5³ + 3³ = 153. I first determine the digit count, then process each digit with modulo 10 and integer division. Math.pow returns a floating-point value, so the result is converted to a long for the integer comparison.",
     "code": "import java.util.*;\n\npublic class Main {\n    static boolean isArmstrong(int n) {\n        if (n < 0) return false;\n        int original = n;\n        int digits = String.valueOf(n).length();\n        long sum = 0;\n        int value = n;\n        do {\n            int digit = value % 10;\n            sum += Math.pow(digit, digits);\n            value /= 10;\n        } while (value > 0);\n        return sum == original;\n    }\n\n    public static void main(String[] args) {\n        int n = 153;\n        System.out.println(n + \" is Armstrong: \" + isArmstrong(n));\n    }\n}",
     "followups": "How would you avoid Math.pow?",
     "mistakes": "Can the solution handle very large numbers?",
-    "interview": "Interview answer: I count the digits, raise each digit to that count and sum them. If the sum equals the original number, it is an Armstrong number.",
-    "source": "V9.1"
+    "interview": "I first count the digits because the exponent depends on the number of digits. Then I extract each digit, raise it to that power, accumulate the sum, and compare the sum with the original number. The algorithm is linear in the number of digits and uses constant space.",
+    "source": "V9.1",
+    "problem": "Write a Java program to determine whether a number is an Armstrong number. For an n-digit number, the sum of each digit raised to the power n must equal the original number.",
+    "example": "Input: 153\nOutput: 153 is Armstrong: true",
+    "approach": "Count the digits, then repeatedly extract each digit and add digit^numberOfDigits to a running sum. Compare the sum with the original number.",
+    "complexity": "Time: O(d), where d is the number of digits\nSpace: O(1)",
+    "streams": null
   },
   {
     "id": "v91-coding-06",
@@ -13601,12 +13676,17 @@
       "HashMap"
     ],
     "short": "Find two indices whose values add up to a target.",
-    "answer": "Store previously seen values in a map from value to index. For each number, look for target minus the current value.",
+    "answer": "The brute-force solution checks every pair and takes O(n²). We can reduce this to O(n) by storing previously seen values in a HashMap. For each current number x, the only value we need is target - x. If that complement is already in the map, we have the answer; otherwise we store x with its index and continue.",
     "code": "import java.util.*;\n\npublic class Main {\n    static int[] twoSum(int[] nums, int target) {\n        Map<Integer, Integer> seen = new HashMap<>();\n        for (int i = 0; i < nums.length; i++) {\n            int need = target - nums[i];\n            if (seen.containsKey(need)) return new int[]{seen.get(need), i};\n            seen.put(nums[i], i);\n        }\n        return new int[0];\n    }\n\n    public static void main(String[] args) {\n        int[] result = twoSum(new int[]{2, 7, 11, 15}, 9);\n        System.out.println(Arrays.toString(result));\n    }\n}",
     "followups": "How would sorting solve it?",
     "mistakes": "Be careful not to reuse the same element twice.",
-    "interview": "Interview answer: A HashMap gives expected constant-time lookup for the complement, allowing a single pass instead of the O(n²) brute-force approach.",
-    "source": "V9.1"
+    "interview": "I use a HashMap from number to index. For every element, I calculate the complement as target minus the current value and check whether that complement has already been seen. If it has, I return the two indices; otherwise I store the current value. This reduces the usual O(n²) brute-force solution to O(n) average time.",
+    "source": "V9.1",
+    "problem": "Given an integer array and a target, find two different indices whose values add up to the target. Return the indices.",
+    "example": "Input: nums = [2, 7, 11, 15], target = 9\nOutput: [0, 1]",
+    "approach": "Scan the array once while storing each previously seen value and its index in a HashMap. For the current value x, look for target - x in the map before storing x.",
+    "complexity": "Time: O(n) average\nSpace: O(n)",
+    "streams": null
   },
   {
     "id": "v91-coding-07",
@@ -13618,12 +13698,17 @@
       "HashMap"
     ],
     "short": "Return the common values while respecting how many times each value occurs.",
-    "answer": "Count values from one array, then consume those counts while scanning the second array.",
+    "answer": "Because duplicates matter, I cannot use a simple Set. I build a frequency map from the first array. While scanning the second array, if the current value has a positive remaining count, I add it to the result and decrement the count. Each occurrence is therefore consumed exactly once.",
     "code": "import java.util.*;\n\npublic class Main {\n    static List<Integer> intersect(int[] a, int[] b) {\n        Map<Integer, Integer> counts = new HashMap<>();\n        for (int n : a) counts.merge(n, 1, Integer::sum);\n        List<Integer> result = new ArrayList<>();\n        for (int n : b) {\n            int count = counts.getOrDefault(n, 0);\n            if (count > 0) {\n                result.add(n);\n                if (count == 1) counts.remove(n); else counts.put(n, count - 1);\n            }\n        }\n        return result;\n    }\n\n    public static void main(String[] args) {\n        System.out.println(intersect(new int[]{1,2,2,3}, new int[]{2,2,2,4}));\n    }\n}",
     "followups": "How would sorting change the solution?",
     "mistakes": "Do not use a Set because it loses multiplicity.",
-    "interview": "Interview answer: I store frequencies rather than just membership, so duplicate occurrences are preserved correctly.",
-    "source": "V9.1"
+    "interview": "Since duplicates must be preserved, I use a frequency map rather than a Set. I count values from the first array, then scan the second array and consume one count whenever a match is found. This gives O(n + m) average time and O(n) additional space.",
+    "source": "V9.1",
+    "problem": "Given two integer arrays, return their intersection including duplicate occurrences. Each value should appear in the result as many times as it appears in both arrays.",
+    "example": "Input: [1,2,2,1] and [2,2]\nOutput: [2,2]",
+    "approach": "Count the frequency of each value in the first array. Scan the second array and consume one count whenever a matching value is found.",
+    "complexity": "Time: O(n + m) average\nSpace: O(n)",
+    "streams": "A Streams solution can be built from a frequency map, but a loop is clearer because we need to mutate and consume counts for duplicate occurrences."
   },
   {
     "id": "v91-coding-08",
@@ -13635,12 +13720,17 @@
       "HashSet"
     ],
     "short": "Remove repeated characters from a string while keeping the first occurrence order.",
-    "answer": "Use a LinkedHashSet to preserve insertion order, then build the result.",
+    "answer": "A normal HashSet removes duplicates but does not provide the required encounter order. LinkedHashSet gives both uniqueness and insertion order. I scan the characters once, add them to the LinkedHashSet, and then build the output from the set.",
     "code": "import java.util.*;\n\npublic class Main {\n    static String removeDuplicates(String s) {\n        Set<Character> seen = new LinkedHashSet<>();\n        for (char c : s.toCharArray()) seen.add(c);\n        StringBuilder result = new StringBuilder();\n        for (char c : seen) result.append(c);\n        return result.toString();\n    }\n\n    public static void main(String[] args) {\n        String input = \"programming\";\n        System.out.println(\"Output: \" + removeDuplicates(input));\n    }\n}",
     "followups": "How would you do this with a boolean array?",
     "mistakes": "Why not HashSet if order matters?",
-    "interview": "Interview answer: LinkedHashSet gives uniqueness plus insertion order, and I build the final string from the retained characters.",
-    "source": "V9.1"
+    "interview": "I use LinkedHashSet because I need two properties at the same time: duplicate removal and preservation of first-occurrence order. I scan the string once, add each character to the set, and then build the result. Average time is O(n).",
+    "source": "V9.1",
+    "problem": "Remove duplicate characters from a string while preserving the order in which each distinct character first appeared.",
+    "example": "Input: programming\nOutput: progamin",
+    "approach": "Use a LinkedHashSet to record characters. It removes duplicates while preserving insertion order, then build the result from the set.",
+    "complexity": "Time: O(n) average\nSpace: O(k), where k is the number of distinct characters",
+    "streams": "chars().distinct() can preserve encounter order in a sequential stream, followed by collecting to a StringBuilder or String."
   },
   {
     "id": "v91-coding-09",
@@ -13652,12 +13742,17 @@
       "Boyer Moore"
     ],
     "short": "Find the element occurring more than n/2 times when such an element exists.",
-    "answer": "Boyer-Moore treats different values as canceling pairs, leaving the majority candidate. Verify it if majority is not guaranteed.",
+    "answer": "Boyer-Moore treats different values as cancelling pairs. When the current count reaches zero, the next value becomes the candidate. If a true majority exists, it cannot be completely cancelled by all other values, so the final candidate must be the majority. If the problem does not guarantee that a majority exists, I verify the candidate with a second pass.",
     "code": "import java.util.*;\n\npublic class Main {\n    static Integer majority(int[] nums) {\n        int candidate = 0, count = 0;\n        for (int n : nums) {\n            if (count == 0) candidate = n;\n            count += n == candidate ? 1 : -1;\n        }\n        int frequency = 0;\n        for (int n : nums) if (n == candidate) frequency++;\n        return frequency > nums.length / 2 ? candidate : null;\n    }\n\n    public static void main(String[] args) {\n        System.out.println(\"Majority: \" + majority(new int[]{2,2,1,2,3,2,2}));\n    }\n}",
     "followups": "How do you find elements occurring more than n/3?",
     "mistakes": "Why does cancellation preserve a majority candidate?",
-    "interview": "Interview answer: Boyer-Moore keeps a candidate and balance. A true majority survives pairwise cancellation, and I verify the candidate when existence is not guaranteed.",
-    "source": "V9.1"
+    "interview": "I use Boyer-Moore voting to find a majority candidate with constant extra space. Matching values increase the count and different values decrease it; when the count reaches zero, I choose a new candidate. Because a majority is not always guaranteed, I verify the candidate in a second pass. Overall complexity is O(n) time and O(1) space.",
+    "source": "V9.1",
+    "problem": "Find the majority element in an integer array: a value that appears strictly more than n/2 times. Return null if no majority exists.",
+    "example": "Input: [2,2,1,1,1,2,2]\nOutput: 2",
+    "approach": "Use Boyer-Moore voting to find a candidate in O(n) time and O(1) space, then perform a second pass to verify the candidate if a majority is not guaranteed by the problem.",
+    "complexity": "Time: O(n)\nSpace: O(1)",
+    "streams": null
   },
   {
     "id": "v91-coding-10",
@@ -13669,12 +13764,17 @@
       "Quickselect"
     ],
     "short": "Find the kth largest value without fully sorting the array.",
-    "answer": "Use partitioning around a pivot so that the target index is isolated recursively or iteratively.",
+    "answer": "Sorting gives O(n log n), but Quickselect can find the kth largest element in average O(n). I convert the request to the equivalent index n-k for ascending order. Partition places the pivot in its final sorted position. If that position is the target, we are done; otherwise I continue only on the relevant side. Randomized pivot selection helps avoid consistently poor partitions.",
     "code": "import java.util.*;\n\npublic class Main {\n    static int kthLargest(int[] nums, int k) {\n        int target = nums.length - k;\n        int left = 0, right = nums.length - 1;\n        Random random = new Random(42);\n        while (left <= right) {\n            int pivotIndex = left + random.nextInt(right - left + 1);\n            pivotIndex = partition(nums, left, right, pivotIndex);\n            if (pivotIndex == target) return nums[pivotIndex];\n            if (pivotIndex < target) left = pivotIndex + 1;\n            else right = pivotIndex - 1;\n        }\n        throw new IllegalArgumentException(\"Invalid k\");\n    }\n\n    static int partition(int[] a, int left, int right, int pivotIndex) {\n        int pivot = a[pivotIndex];\n        int t=a[pivotIndex]; a[pivotIndex]=a[right]; a[right]=t;\n        int store=left;\n        for(int i=left;i<right;i++) if(a[i]<pivot){ t=a[i];a[i]=a[store];a[store]=t;store++; }\n        t=a[store];a[store]=a[right];a[right]=t;\n        return store;\n    }\n\n    public static void main(String[] args) {\n        System.out.println(kthLargest(new int[]{3,2,1,5,6,4}, 2));\n    }\n}",
     "followups": "Heap vs Quickselect?",
     "mistakes": "What causes the worst case?",
-    "interview": "Interview answer: Quickselect partitions the array and continues only on the side containing the target rank, giving average linear time without a full sort.",
-    "source": "V9.1"
+    "interview": "I use Quickselect rather than fully sorting the array. The kth largest element corresponds to index n-k if the array were sorted ascending. After partitioning around a pivot, I continue only on the side containing that target index. Average complexity is O(n), although the worst case is O(n²).",
+    "source": "V9.1",
+    "problem": "Find the kth largest element in an unsorted integer array without fully sorting the array.",
+    "example": "Input: [3,2,1,5,6,4], k = 2\nOutput: 5",
+    "approach": "Use Quickselect. Convert kth largest into the zero-based target index n-k, partition around a pivot, and continue only on the side containing the target index.",
+    "complexity": "Average time: O(n)\nWorst-case time: O(n²)\nSpace: O(1) auxiliary for the iterative partitioning approach",
+    "streams": null
   },
   {
     "id": "v91-coding-11",
@@ -13686,12 +13786,17 @@
       "HashSet"
     ],
     "short": "Find the length of the longest consecutive integer sequence in an unsorted array.",
-    "answer": "Store all values in a set and only start counting when the previous value is absent.",
+    "answer": "Sorting would take O(n log n). A HashSet lets us test whether a value exists in O(1) average time. I only start expanding from a value when its predecessor is absent, which means it is the beginning of a consecutive run. Each value is therefore part of a sequence expansion only a bounded number of times.",
     "code": "import java.util.*;\n\npublic class Main {\n    static int longest(int[] nums) {\n        Set<Integer> set = new HashSet<>();\n        for (int n : nums) set.add(n);\n        int best = 0;\n        for (int n : set) {\n            if (!set.contains(n - 1)) {\n                int current = n;\n                while (set.contains(current)) current++;\n                best = Math.max(best, current - n);\n            }\n        }\n        return best;\n    }\n\n    public static void main(String[] args) {\n        System.out.println(longest(new int[]{100,4,200,1,3,2}));\n    }\n}",
     "followups": "How would sorting solve it?",
     "mistakes": "Why is the expected complexity linear?",
-    "interview": "Interview answer: I use a set and only expand sequences from their smallest element, so each value participates in the counting work a constant number of times.",
-    "source": "V9.1"
+    "interview": "I put all values in a HashSet for constant-time average membership checks. I start a sequence only when the previous value is not present, then extend it while consecutive values exist. This avoids sorting and gives O(n) average time with O(n) space.",
+    "source": "V9.1",
+    "problem": "Find the length of the longest consecutive sequence in an unsorted integer array. The sequence must contain consecutive values and does not need to preserve original array order.",
+    "example": "Input: [100,4,200,1,3,2]\nOutput: 4  (sequence 1,2,3,4)",
+    "approach": "Put all values into a HashSet. A number is the start of a sequence only when n-1 is absent. From each start, keep checking n+1, n+2, and so on.",
+    "complexity": "Time: O(n) average\nSpace: O(n)",
+    "streams": null
   },
   {
     "id": "v91-coding-12",
@@ -13703,12 +13808,17 @@
       "Sorting"
     ],
     "short": "Merge intervals that overlap and return a non-overlapping list.",
-    "answer": "Sort by start time and merge each interval into the previous result when the ranges overlap.",
+    "answer": "The key is to process intervals in start-time order. After sorting, if the next interval starts at or before the end of the last merged interval, they overlap and can be combined by taking the larger end value. Otherwise the next interval is independent. Sorting dominates the complexity.",
     "code": "import java.util.*;\n\npublic class Main {\n    static int[][] merge(int[][] intervals) {\n        if (intervals.length == 0) return new int[0][];\n        Arrays.sort(intervals, Comparator.comparingInt(a -> a[0]));\n        List<int[]> result = new ArrayList<>();\n        for (int[] current : intervals) {\n            if (result.isEmpty() || result.get(result.size() - 1)[1] < current[0]) {\n                result.add(current.clone());\n            } else {\n                int[] last = result.get(result.size() - 1);\n                last[1] = Math.max(last[1], current[1]);\n            }\n        }\n        return result.toArray(new int[0][]);\n    }\n\n    public static void main(String[] args) {\n        int[][] result = merge(new int[][]{{1,3},{2,6},{8,10},{9,12}});\n        for (int[] interval : result) System.out.println(Arrays.toString(interval));\n    }\n}",
     "followups": "What if intervals touch at endpoints?",
     "mistakes": "Can it be done in linear time if already sorted?",
-    "interview": "Interview answer: Sorting by start makes it possible to decide overlap using only the last merged interval.",
-    "source": "V9.1"
+    "interview": "I first sort intervals by their start time. Then I compare each interval with the last merged interval. If they overlap, I extend the existing end; if they do not, I add a new interval. The sorting step makes the overall complexity O(n log n).",
+    "source": "V9.1",
+    "problem": "Merge all overlapping intervals in a collection of intervals, where each interval is represented as [start, end].",
+    "example": "Input: [[1,3],[2,6],[8,10],[15,18]]\nOutput: [[1,6],[8,10],[15,18]]",
+    "approach": "Sort intervals by start time. Maintain the last merged interval. If the next interval starts before or at the current end, extend the end; otherwise start a new merged interval.",
+    "complexity": "Time: O(n log n)\nSpace: O(n) for the output",
+    "streams": null
   },
   {
     "id": "v91-coding-13",
@@ -13720,12 +13830,17 @@
       "HashMap"
     ],
     "short": "Find the maximum-length substring containing at most K distinct characters.",
-    "answer": "Maintain a sliding window and frequency map. Expand right, and shrink left while the number of distinct characters exceeds K.",
+    "answer": "This is a classic sliding-window problem. I maintain a window [left, right] and a frequency map for characters inside it. Every character enters the window once as right advances and leaves at most once as left advances. Whenever the number of distinct characters exceeds K, I shrink from the left until the window becomes valid again.",
     "code": "import java.util.*;\n\npublic class Main {\n    static int longest(String s, int k) {\n        if (k <= 0) return 0;\n        Map<Character, Integer> freq = new HashMap<>();\n        int left = 0, best = 0;\n        for (int right = 0; right < s.length(); right++) {\n            freq.merge(s.charAt(right), 1, Integer::sum);\n            while (freq.size() > k) {\n                char c = s.charAt(left++);\n                int count = freq.get(c);\n                if (count == 1) freq.remove(c); else freq.put(c, count - 1);\n            }\n            best = Math.max(best, right - left + 1);\n        }\n        return best;\n    }\n\n    public static void main(String[] args) {\n        System.out.println(longest(\"eceba\", 2));\n    }\n}",
     "followups": "How does this differ from no-repeating-characters?",
     "mistakes": "What if K is larger than the alphabet?",
-    "interview": "Interview answer: The sliding window grows until it violates the distinct-character limit, then moves its left boundary until the window is valid again.",
-    "source": "V9.1"
+    "interview": "I use a sliding window and a frequency map. I expand the right side and count characters. If the window contains more than K distinct characters, I move the left side forward and decrement counts until the window is valid. Each character is added and removed at most once, giving O(n) time.",
+    "source": "V9.1",
+    "problem": "Find the length of the longest substring containing at most K distinct characters.",
+    "example": "Input: s = \"eceba\", k = 2\nOutput: 3  (\"ece\")",
+    "approach": "Use a sliding window with two pointers and a frequency map. Expand the right pointer, and whenever the window contains more than K distinct characters, move the left pointer until the constraint is satisfied again.",
+    "complexity": "Time: O(n)\nSpace: O(k) or O(alphabet size)",
+    "streams": null
   },
   {
     "id": "v91-coding-14",
@@ -13737,12 +13852,17 @@
       "Binary Search"
     ],
     "short": "Find the minimum element in a sorted array rotated at an unknown pivot.",
-    "answer": "Compare the middle value with the right boundary to decide which half contains the minimum.",
+    "answer": "A rotated sorted array still has enough ordering to use binary search. If nums[mid] is greater than nums[right], the rotation point and therefore the minimum must be to the right of mid. Otherwise the right half is sorted and the minimum can be at mid or to its left, so I move right to mid.",
     "code": "import java.util.*;\n\npublic class Main {\n    static int findMin(int[] nums) {\n        int left = 0, right = nums.length - 1;\n        while (left < right) {\n            int mid = left + (right - left) / 2;\n            if (nums[mid] > nums[right]) left = mid + 1;\n            else right = mid;\n        }\n        return nums[left];\n    }\n\n    public static void main(String[] args) {\n        System.out.println(findMin(new int[]{4,5,6,7,0,1,2}));\n    }\n}",
     "followups": "How do duplicates change the algorithm?",
     "mistakes": "How would you find a target instead?",
-    "interview": "Interview answer: The sorted portions let me determine whether the minimum lies to the right or at/before mid, so the search interval halves each time.",
-    "source": "V9.1"
+    "interview": "I use binary search instead of scanning the array. I compare the middle element with the right boundary. If the middle is larger, the minimum must be in the right half; otherwise the minimum is at mid or in the left half. This gives O(log n) time and O(1) space.",
+    "source": "V9.1",
+    "problem": "Find the minimum element in a rotated sorted array containing distinct integers.",
+    "example": "Input: [4,5,6,7,0,1,2]\nOutput: 0",
+    "approach": "Use binary search. Compare the middle element with the rightmost element. If middle is greater, the minimum lies to the right; otherwise the minimum is at middle or to the left.",
+    "complexity": "Time: O(log n)\nSpace: O(1)",
+    "streams": null
   },
   {
     "id": "v91-coding-15",
@@ -13754,12 +13874,17 @@
       "Binary Search"
     ],
     "short": "Return the first and last indices of a target in a sorted array with duplicates.",
-    "answer": "Run binary search twice: once biased left for the first occurrence and once biased right for the last occurrence.",
+    "answer": "A normal binary search finds one occurrence but not necessarily the boundaries. I modify binary search so that after finding the target I record the index and continue searching toward the required boundary. Two searches give the first and last positions while keeping logarithmic complexity.",
     "code": "import java.util.*;\n\npublic class Main {\n    static int[] range(int[] nums, int target) {\n        return new int[]{bound(nums, target, true), bound(nums, target, false)};\n    }\n    static int bound(int[] a, int target, boolean first) {\n        int left=0,right=a.length-1,answer=-1;\n        while(left<=right){\n            int mid=left+(right-left)/2;\n            if(a[mid]==target){answer=mid;if(first)right=mid-1;else left=mid+1;}\n            else if(a[mid]<target)left=mid+1;else right=mid-1;\n        }\n        return answer;\n    }\n    public static void main(String[] args){\n        System.out.println(Arrays.toString(range(new int[]{1,2,2,2,3,4},2)));\n    }\n}",
     "followups": "How would you count occurrences?",
     "mistakes": "Why does ordinary binary search not give the first occurrence?",
-    "interview": "Interview answer: I modify binary search after finding the target so it continues toward the required boundary instead of stopping at the first match.",
-    "source": "V9.1"
+    "interview": "Because the array is sorted, I use two modified binary searches. The first keeps moving left after finding the target to get the first occurrence, and the second keeps moving right to get the last occurrence. The total time is O(log n) and space is O(1).",
+    "source": "V9.1",
+    "problem": "Given a sorted integer array and a target, return the first and last index where the target occurs. Return [-1, -1] if it is absent.",
+    "example": "Input: [5,7,7,8,8,10], target = 8\nOutput: [3,4]",
+    "approach": "Run binary search twice. The first search continues left after finding the target to locate the first occurrence; the second continues right to locate the last occurrence.",
+    "complexity": "Time: O(log n)\nSpace: O(1)",
+    "streams": null
   },
   {
     "id": "v91-coding-16",
@@ -13771,12 +13896,17 @@
       "Data Structures"
     ],
     "short": "Design a stack supporting push, pop, peek and retrieving the minimum in constant time.",
-    "answer": "Keep a second stack containing the minimum value seen at each relevant level.",
+    "answer": "A normal stack cannot return the minimum in O(1) unless we maintain extra information. I use a second stack that stores the minimum seen so far. Whenever I push a value that is less than or equal to the current minimum, I also push it onto the minimum stack. When that value is popped from the main stack, I remove it from the minimum stack. The top of the minimum stack is always the current minimum.",
     "code": "import java.util.*;\n\npublic class Main {\n    static class MinStack {\n        private final Deque<Integer> values = new ArrayDeque<>();\n        private final Deque<Integer> mins = new ArrayDeque<>();\n        void push(int x) { values.push(x); if (mins.isEmpty() || x <= mins.peek()) mins.push(x); }\n        int pop() { int x=values.pop(); if(x==mins.peek()) mins.pop(); return x; }\n        int peek() { return values.peek(); }\n        int min() { return mins.peek(); }\n    }\n    public static void main(String[] args){\n        MinStack s=new MinStack(); s.push(5);s.push(3);s.push(7);s.push(2);\n        System.out.println(\"Min: \"+s.min()); s.pop(); System.out.println(\"Min: \"+s.min());\n    }\n}",
     "followups": "How can you reduce auxiliary space?",
     "mistakes": "Why use <= when pushing duplicate minimums?",
-    "interview": "Interview answer: The second stack stores the minimum associated with the current stack state, so min retrieval remains constant time.",
-    "source": "V9.1"
+    "interview": "I use two stacks. The first stores all values, and the second stores the minimum values seen at each relevant point. This lets getMin simply read the top of the minimum stack, so push, pop and getMin are all O(1).",
+    "source": "V9.1",
+    "problem": "Design a stack that supports push, pop, peek and retrieving the minimum element, with getMin running in O(1) time.",
+    "example": "Operations: push(5), push(2), push(7), getMin() -> 2, pop(), getMin() -> 2",
+    "approach": "Maintain a normal stack for values and a second stack containing the minimum value relevant to each level. Push to the minimum stack when the new value is <= the current minimum, and remove it when that value is popped.",
+    "complexity": "push: O(1)\npop: O(1)\ngetMin: O(1)\nSpace: O(n)",
+    "streams": null
   },
   {
     "id": "v91-coding-17",
@@ -13788,12 +13918,17 @@
       "Binary Search Tree"
     ],
     "short": "Search for a value in a binary search tree.",
-    "answer": "At each node, compare the target with the node value and move left or right according to the BST ordering.",
+    "answer": "A binary search tree maintains the ordering property: values smaller than a node are in its left subtree and larger values are in its right subtree. Therefore each comparison lets us discard half of the remaining search path in a balanced tree. The iterative implementation avoids recursive stack usage.",
     "code": "import java.util.*;\n\npublic class Main {\n    static class Node { int value; Node left,right; Node(int value){this.value=value;} }\n    static boolean contains(Node root, int target) {\n        Node current=root;\n        while(current!=null){\n            if(current.value==target)return true;\n            current = target < current.value ? current.left : current.right;\n        }\n        return false;\n    }\n    public static void main(String[] args){\n        Node root=new Node(8);root.left=new Node(3);root.right=new Node(10);root.left.left=new Node(1);root.left.right=new Node(6);\n        System.out.println(contains(root,6));\n    }\n}",
     "followups": "What happens in a skewed tree?",
     "mistakes": "How would you insert a value?",
-    "interview": "Interview answer: BST ordering lets me discard half the subtree at each decision when the tree is balanced.",
-    "source": "V9.1"
+    "interview": "I use the BST ordering property. At each node, if the target equals the node value I return true; if it is smaller I move left, otherwise I move right. The average complexity is O(log n) for a balanced tree, with O(n) worst case for a skewed tree.",
+    "source": "V9.1",
+    "problem": "Search for a target value in a binary search tree. Return true if the target exists, otherwise false.",
+    "example": "BST root = 8 with left subtree 3 and right subtree 10\nTarget = 10\nOutput: true",
+    "approach": "At each node, compare the target with the node value. If target is smaller move left; if larger move right; if equal return true. Stop when the current node becomes null.",
+    "complexity": "Average time: O(log n) for a balanced BST\nWorst-case time: O(n)\nSpace: O(1) iterative auxiliary space",
+    "streams": null
   },
   {
     "id": "v91-coding-18",
@@ -13805,12 +13940,17 @@
       "Queue"
     ],
     "short": "Print a binary tree level by level.",
-    "answer": "Use a queue: enqueue the root, process one node, and enqueue its children.",
+    "answer": "Breadth-first traversal explores a tree level by level. A queue is ideal because nodes are processed in the same order in which their children are discovered. By capturing the queue size before processing a level, I know exactly how many nodes belong to that level.",
     "code": "import java.util.*;\n\npublic class Main {\n    static class Node { int value; Node left,right; Node(int v){value=v;} }\n    static void bfs(Node root) {\n        if(root==null)return;\n        Queue<Node> queue=new ArrayDeque<>(); queue.offer(root);\n        while(!queue.isEmpty()){\n            int size=queue.size();\n            for(int i=0;i<size;i++){\n                Node n=queue.poll(); System.out.print(n.value+(i+1==size?\"\\n\":\" \"));\n                if(n.left!=null)queue.offer(n.left); if(n.right!=null)queue.offer(n.right);\n            }\n        }\n    }\n    public static void main(String[] args){\n        Node root=new Node(1);root.left=new Node(2);root.right=new Node(3);root.left.left=new Node(4);root.left.right=new Node(5);\n        bfs(root);\n    }\n}",
     "followups": "DFS vs BFS?",
     "mistakes": "How would you return List<List<Integer>> instead of printing?",
-    "interview": "Interview answer: BFS uses a queue to process nodes in level order, and I capture the current queue size to print each level separately.",
-    "source": "V9.1"
+    "interview": "I use a queue for level-order traversal. I enqueue the root, then repeatedly remove a node, print it, and enqueue its children. If I need explicit levels, I capture the queue size before each level. Every node is visited once, so time is O(n).",
+    "source": "V9.1",
+    "problem": "Perform a breadth-first, level-order traversal of a binary tree and print the node values level by level.",
+    "example": "Tree: [1,2,3,4,5]\nOutput:\n1\n2 3\n4 5",
+    "approach": "Use a Queue. Add the root, process nodes from the front, and add their children to the back. Capture the queue size at the start of each level to separate output by level.",
+    "complexity": "Time: O(n)\nSpace: O(w), where w is the maximum tree width",
+    "streams": null
   },
   {
     "id": "v91-coding-19",
@@ -13822,12 +13962,17 @@
       "Two Pointers"
     ],
     "short": "Determine whether a singly linked list contains a cycle.",
-    "answer": "Floyd’s tortoise-and-hare algorithm moves one pointer by one step and another by two; if they meet, a cycle exists.",
+    "answer": "The two-pointer technique avoids storing every visited node. The slow pointer moves one step while the fast pointer moves two. In an acyclic list, fast reaches the end. In a cyclic list, fast eventually laps slow and both point to the same node.",
     "code": "import java.util.*;\n\npublic class Main {\n    static class Node { int value; Node next; Node(int v){value=v;} }\n    static boolean hasCycle(Node head) {\n        Node slow=head, fast=head;\n        while(fast!=null && fast.next!=null){\n            slow=slow.next; fast=fast.next.next;\n            if(slow==fast)return true;\n        }\n        return false;\n    }\n    public static void main(String[] args){\n        Node a=new Node(1),b=new Node(2),c=new Node(3); a.next=b;b.next=c;c.next=b;\n        System.out.println(\"Cycle: \"+hasCycle(a));\n    }\n}",
     "followups": "How do you find the cycle entry?",
     "mistakes": "Why is the space constant?",
-    "interview": "Interview answer: Two pointers moving at different speeds must meet inside a cycle, while the fast pointer reaches null when the list is acyclic.",
-    "source": "V9.1"
+    "interview": "I use Floyd’s cycle detection algorithm with slow and fast pointers. Slow moves one step and fast moves two. If they meet, the list contains a cycle. If fast reaches null, it does not. This achieves O(n) time and O(1) space.",
+    "source": "V9.1",
+    "problem": "Determine whether a singly linked list contains a cycle.",
+    "example": "List: 1 -> 2 -> 3 -> 2 ...\nOutput: true",
+    "approach": "Use Floyd’s tortoise-and-hare algorithm. Move slow by one node and fast by two nodes. If a cycle exists, they eventually meet; if fast reaches null, there is no cycle.",
+    "complexity": "Time: O(n)\nSpace: O(1)",
+    "streams": null
   },
   {
     "id": "v91-coding-20",
@@ -13839,12 +13984,17 @@
       "Two Pointers"
     ],
     "short": "Return the middle node of a singly linked list.",
-    "answer": "Move slow one step and fast two steps. When fast reaches the end, slow is at the middle.",
+    "answer": "The slow/fast pointer technique finds the middle in one pass. Slow advances one node for every two nodes advanced by fast. Therefore, when fast reaches the end, slow has travelled approximately half the list. No length calculation or second traversal is needed.",
     "code": "import java.util.*;\n\npublic class Main {\n    static class Node { int value; Node next; Node(int v){value=v;} }\n    static Node middle(Node head) {\n        Node slow=head, fast=head;\n        while(fast!=null && fast.next!=null){ slow=slow.next; fast=fast.next.next; }\n        return slow;\n    }\n    public static void main(String[] args){\n        Node a=new Node(1),b=new Node(2),c=new Node(3),d=new Node(4),e=new Node(5);\n        a.next=b;b.next=c;c.next=d;d.next=e;\n        System.out.println(\"Middle: \"+middle(a).value);\n    }\n}",
     "followups": "For an even-length list, which middle should be returned?",
     "mistakes": "Can the list be traversed only once?",
-    "interview": "Interview answer: The fast pointer moves twice as quickly, so when it reaches the end the slow pointer has traversed half the list.",
-    "source": "V9.1"
+    "interview": "I use two pointers: slow moves one step and fast moves two steps. When fast reaches the end, slow is at the middle. This requires only one traversal and constant extra space. The loop condition can be adjusted depending on whether the first or second middle is required for even-length lists.",
+    "source": "V9.1",
+    "problem": "Find the middle node of a singly linked list. For an even-length list, return the second middle node.",
+    "example": "List: 1 -> 2 -> 3 -> 4 -> 5\nOutput: 3",
+    "approach": "Use slow and fast pointers. Slow moves one node at a time while fast moves two. When fast reaches the end, slow points to the middle. With the chosen loop condition, an even-length list returns the second middle.",
+    "complexity": "Time: O(n)\nSpace: O(1)",
+    "streams": null
   },
   {
     "id": "v91-coding-21",
@@ -13856,12 +14006,17 @@
       "Blocking Queue"
     ],
     "short": "Implement a bounded queue where producers wait when full and consumers wait when empty.",
-    "answer": "Use a ReentrantLock with two Conditions: notFull and notEmpty. Conditions coordinate state changes without busy waiting.",
+    "answer": "A bounded producer-consumer queue needs both mutual exclusion and coordination. ReentrantLock protects head, tail and count so only one thread changes the state at a time. Two Conditions represent the two states that cause waiting: notFull for producers and notEmpty for consumers. The conditions must be checked in while loops because a thread can wake up without the condition being true, and because another thread may consume the available capacity before the awakened thread reacquires the lock.",
     "code": "import java.util.*;\nimport java.util.concurrent.locks.*;\n\npublic class Main {\n    static class BoundedQueue<T> {\n        private final Object[] items;\n        private int head, tail, count;\n        private final Lock lock = new ReentrantLock();\n        private final Condition notFull = lock.newCondition();\n        private final Condition notEmpty = lock.newCondition();\n        BoundedQueue(int capacity){ items=new Object[capacity]; }\n        void put(T value) throws InterruptedException {\n            lock.lock();\n            try { while(count==items.length) notFull.await(); items[tail]=value; tail=(tail+1)%items.length; count++; notEmpty.signal(); }\n            finally { lock.unlock(); }\n        }\n        @SuppressWarnings(\"unchecked\") T take() throws InterruptedException {\n            lock.lock();\n            try { while(count==0) notEmpty.await(); T value=(T)items[head]; items[head]=null; head=(head+1)%items.length; count--; notFull.signal(); return value; }\n            finally { lock.unlock(); }\n        }\n    }\n    public static void main(String[] args) throws Exception {\n        BoundedQueue<Integer> q=new BoundedQueue<>(2); q.put(10);q.put(20);System.out.println(q.take());System.out.println(q.take());\n    }\n}",
     "followups": "Why use while instead of if?",
     "mistakes": "How would you use ArrayBlockingQueue instead?",
-    "interview": "Interview answer: I protect queue state with a lock and use conditions so producers wait while full and consumers wait while empty. The while checks are required because a condition wake-up does not guarantee the state is available.",
-    "source": "V9.1"
+    "interview": "I would protect the bounded buffer with a ReentrantLock and use two Conditions. Producers wait on notFull while the buffer is full, and consumers wait on notEmpty while it is empty. After a successful put I signal consumers, and after a successful take I signal producers. The state checks use while loops to handle spurious wakeups and races safely.",
+    "source": "V9.1",
+    "problem": "Implement a fixed-capacity thread-safe bounded queue with put and take operations. Producers should wait when the queue is full, and consumers should wait when it is empty.",
+    "example": "Capacity = 2\nProducer: put(A), put(B), put(C)\nConsumer: take()\nThe third put waits until a consumer removes an item.",
+    "approach": "Protect the queue state with a ReentrantLock and use two Conditions: notFull for producers and notEmpty for consumers. In put, await while the queue is full; after insertion signal consumers. In take, await while empty; after removal signal producers.",
+    "complexity": "put: O(1) excluding waiting\ntake: O(1) excluding waiting\nSpace: O(capacity)",
+    "streams": null
   },
   {
     "topic": "java",
@@ -15662,5 +15817,1637 @@
     "interview": "Caching is a consistency decision as much as a performance decision. I define acceptable staleness before selecting the strategy.",
     "source": "V10",
     "id": "v10-076"
+  },
+  {
+    "id": "v10.1-001",
+    "title": "Payment API latency jumped from 200 ms to 4 seconds",
+    "level": "L3",
+    "tags": [
+      "microservices",
+      "latency",
+      "troubleshooting",
+      "Production Scenario",
+      "V10.1"
+    ],
+    "short": "The first step is not increasing CPU or blindly increasing timeouts; it is locating which dependency owns the latency.",
+    "answer": "I would use traces to decompose the four seconds, then inspect thread pools, database connections, downstream calls and GC. Once the bottleneck is identified I would fix that dependency, keep timeouts bounded and validate the change under production-like load.",
+    "code": "If a downstream service is slow, enforce a bounded timeout and avoid multiplying the load with aggressive retries. If the database pool is exhausted, identify the slow query or leaked connection and tune pool size only after fixing the bottleneck. Roll back a recent change if correlation is strong, then validate with load tests.",
+    "followups": [
+      "What if traces show the database is fast but the downstream API is slow?",
+      "How would retries affect this incident?",
+      "Which metrics would you put on the dashboard?"
+    ],
+    "mistakes": [
+      "Increasing every timeout to hide the problem.",
+      "Looking only at average latency."
+    ],
+    "interview": "I would start with traces and latency percentiles, isolate the slow segment, fix the bottleneck, and then add guardrails so the same dependency cannot exhaust the service.",
+    "source": "V10.1",
+    "topic": "microservices",
+    "subtopic": "operations",
+    "scenario": "A payment endpoint that normally responds in about 200 ms starts taking 4 seconds during peak traffic, while CPU is only 45%.",
+    "investigation": "Start with distributed traces and endpoint latency percentiles. Break the request into application time, database time, downstream calls and queue waits. Check connection-pool utilization, thread-pool queue depth, GC pauses and downstream timeout/retry metrics. Compare p50, p95 and p99 rather than only averages.",
+    "resolution": "If a downstream service is slow, enforce a bounded timeout and avoid multiplying the load with aggressive retries. If the database pool is exhausted, identify the slow query or leaked connection and tune pool size only after fixing the bottleneck. Roll back a recent change if correlation is strong, then validate with load tests.",
+    "prevention": "Define latency SLOs, instrument traces, cap retries with exponential backoff and jitter, monitor pool saturation and alert on p95/p99 latency and downstream dependency health."
+  },
+  {
+    "id": "v10.1-002",
+    "title": "A retry policy causes a retry storm across three services",
+    "level": "L3",
+    "tags": [
+      "retry",
+      "cascading failure",
+      "resilience",
+      "Production Scenario",
+      "V10.1"
+    ],
+    "short": "Retries can improve transient failures, but uncoordinated retries can turn a small outage into a distributed overload.",
+    "answer": "I would first stop retry multiplication by limiting attempts and identifying one layer responsible for retries. Then I would add exponential backoff, jitter, circuit breaking and concurrency limits, and verify the behavior with failure tests.",
+    "code": "Choose one retry owner for a given dependency, keep attempts low, use exponential backoff with jitter, and fail fast when the operation is not safely retryable. Add circuit breaking and bounded concurrency so a failing dependency cannot consume every worker.",
+    "followups": [
+      "When should an operation not be retried?",
+      "What is retry jitter?",
+      "How would you implement a retry budget?"
+    ],
+    "mistakes": [
+      "Retrying every exception.",
+      "Using fixed one-second retry delays."
+    ],
+    "interview": "Retries should be treated as load amplification. I want bounded attempts, backoff, jitter, one clear retry owner and a way to fail fast.",
+    "source": "V10.1",
+    "topic": "microservices",
+    "subtopic": "resilience",
+    "scenario": "Service A calls B and B calls C. C becomes slow, and all three services start issuing retries until traffic multiplies and the incident spreads.",
+    "investigation": "Calculate the effective request multiplication across the call chain. Inspect retry counters, timeout rates, thread-pool saturation and downstream load. Check whether every layer retries the same operation and whether retries have backoff, jitter and attempt limits.",
+    "resolution": "Choose one retry owner for a given dependency, keep attempts low, use exponential backoff with jitter, and fail fast when the operation is not safely retryable. Add circuit breaking and bounded concurrency so a failing dependency cannot consume every worker.",
+    "prevention": "Document retry ownership, use retry budgets, instrument attempts separately from business requests, and test dependency failures with load tests and fault injection."
+  },
+  {
+    "id": "v10.1-003",
+    "title": "Kafka consumers are falling behind during peak traffic",
+    "level": "L3",
+    "tags": [
+      "kafka",
+      "consumer lag",
+      "backpressure",
+      "Production Scenario",
+      "V10.1"
+    ],
+    "short": "Consumer lag is a symptom; the fix depends on whether the bottleneck is partitions, processing time, downstream I/O or a hot partition.",
+    "answer": "I would inspect lag per partition and consumer throughput, then identify whether processing, database I/O or partition skew is limiting throughput. I would scale consumers within the partition limit and optimize the slow stage rather than simply adding instances.",
+    "code": "Increase consumer parallelism only up to the useful partition count, optimize the slow processing step and batch database operations where safe. If the workload is legitimately larger, increase partitions with a capacity plan. Pause or isolate expensive work rather than allowing it to block all partitions.",
+    "followups": [
+      "What happens if you add more consumers than partitions?",
+      "How do you handle a hot partition?",
+      "How would you preserve ordering?"
+    ],
+    "mistakes": [
+      "Assuming more pods always increase throughput.",
+      "Ignoring partition skew."
+    ],
+    "interview": "I would correlate lag with throughput and processing latency, identify the bottleneck, then scale or optimize the constrained stage while protecting the downstream database.",
+    "source": "V10.1",
+    "topic": "microservices",
+    "subtopic": "messaging",
+    "scenario": "A Kafka topic is receiving messages faster than consumers can process them. Consumer lag grows continuously during peak hours.",
+    "investigation": "Check lag by partition, consumer throughput, processing latency, rebalance frequency and consumer errors. Determine whether the bottleneck is CPU, database calls, external APIs, serialization, partition skew or insufficient partitions.",
+    "resolution": "Increase consumer parallelism only up to the useful partition count, optimize the slow processing step and batch database operations where safe. If the workload is legitimately larger, increase partitions with a capacity plan. Pause or isolate expensive work rather than allowing it to block all partitions.",
+    "prevention": "Alert on lag growth rate, monitor per-partition skew and processing time, size partitions for expected throughput and test peak traffic before releases."
+  },
+  {
+    "id": "v10.1-004",
+    "title": "An order is created twice after a client timeout",
+    "level": "L3",
+    "tags": [
+      "idempotency",
+      "orders",
+      "duplicate transaction",
+      "Production Scenario",
+      "V10.1"
+    ],
+    "short": "Idempotency makes a retried request safe by ensuring the same business operation is applied once from the caller perspective.",
+    "answer": "I would introduce an idempotency key and enforce uniqueness at the persistence boundary. The first successful operation stores the key and result atomically; later retries return that stored result.",
+    "code": "Require an idempotency key for create operations with retryable clients. Store the key with the resulting order in the same transaction or use a unique database constraint. On a duplicate key, return the original result instead of executing the operation again.",
+    "followups": [
+      "Where should the idempotency key be stored?",
+      "How long should it be retained?",
+      "What if two identical requests arrive concurrently?"
+    ],
+    "mistakes": [
+      "Using an in-memory map in a multi-instance service.",
+      "Checking for duplicates and inserting in separate non-atomic steps."
+    ],
+    "interview": "For payment or order creation I never rely on the client not retrying. I make the operation idempotent at the server and enforce it with a durable uniqueness constraint.",
+    "source": "V10.1",
+    "topic": "microservices",
+    "subtopic": "data",
+    "scenario": "The client times out after submitting an order, retries the request, and the backend creates two orders.",
+    "investigation": "Check whether the request had an idempotency key, whether the first request actually committed, and whether the key was stored atomically with the business result. Trace both requests to see whether they raced or were sequential retries.",
+    "resolution": "Require an idempotency key for create operations with retryable clients. Store the key with the resulting order in the same transaction or use a unique database constraint. On a duplicate key, return the original result instead of executing the operation again.",
+    "prevention": "Document idempotency semantics, set an appropriate retention period for keys and test retries, concurrent duplicates and network timeouts."
+  },
+  {
+    "id": "v10.1-005",
+    "title": "A Saga leaves an order in an inconsistent business state",
+    "level": "L3",
+    "tags": [
+      "saga",
+      "eventual consistency",
+      "distributed transaction",
+      "Production Scenario",
+      "V10.1"
+    ],
+    "short": "A Saga does not create ACID atomicity across services; it coordinates a business workflow and compensates failed steps.",
+    "answer": "I would treat the workflow as a state machine. Payment failure should produce a durable transition to compensation, release inventory, and finally move the order to a terminal state such as payment-failed. Each step must be idempotent.",
+    "code": "Model the workflow explicitly. On payment failure, transition the order to a compensating state and release inventory. Prefer an orchestrated Saga when the workflow has many steps and compensation rules need centralized visibility. Make each command idempotent.",
+    "followups": [
+      "Choreography or orchestration?",
+      "How do you recover if the orchestrator crashes?",
+      "How do you make compensation idempotent?"
+    ],
+    "mistakes": [
+      "Calling a distributed transaction across all databases by default.",
+      "Designing compensation without considering partial failures."
+    ],
+    "interview": "I would explicitly model the Saga state and compensation path. The system should make intermediate states visible and recoverable rather than assuming every distributed step commits together.",
+    "source": "V10.1",
+    "topic": "microservices",
+    "subtopic": "data",
+    "scenario": "Order creation succeeds, inventory reservation succeeds, but payment fails after several seconds. The order remains marked as confirmed.",
+    "investigation": "Trace the Saga state transitions and identify the last durable event. Check whether every forward action has a compensating action and whether state transitions are persisted before publishing the next command.",
+    "resolution": "Model the workflow explicitly. On payment failure, transition the order to a compensating state and release inventory. Prefer an orchestrated Saga when the workflow has many steps and compensation rules need centralized visibility. Make each command idempotent.",
+    "prevention": "Persist Saga state, define compensations for each reversible step, add timeouts and reconciliation jobs, and expose intermediate states instead of pretending the workflow is atomic."
+  },
+  {
+    "id": "v10.1-006",
+    "title": "Outbox events are duplicated after a service restart",
+    "level": "L3",
+    "tags": [
+      "outbox",
+      "events",
+      "duplicates",
+      "Production Scenario",
+      "V10.1"
+    ],
+    "short": "The transactional outbox solves database-to-message atomicity, not exactly-once business processing.",
+    "answer": "I would keep the outbox publisher at least once and give every event a stable ID. Consumers deduplicate by that ID or by a business constraint, so a publisher restart cannot create a second business effect.",
+    "code": "Assume at-least-once delivery. Keep the outbox durable, publish with a stable event ID, and make consumers idempotent using a processed-event table or business uniqueness constraint. Do not delete the outbox row before successful handoff.",
+    "followups": [
+      "How does CDC compare with an outbox publisher?",
+      "Where do you store processed event IDs?",
+      "Can Kafka exactly-once semantics solve the business duplicate?"
+    ],
+    "mistakes": [
+      "Assuming the outbox guarantees exactly once.",
+      "Making the consumer non-idempotent."
+    ],
+    "interview": "I would design for duplicate delivery rather than trying to prove exactly-once execution across the database and broker.",
+    "source": "V10.1",
+    "topic": "microservices",
+    "subtopic": "data",
+    "scenario": "A service writes an order and an outbox row in one database transaction. After restart, the publisher sends the event again and consumers process it twice.",
+    "investigation": "Inspect outbox status transitions and publisher acknowledgements. Determine whether the event was sent but the publisher crashed before marking it published. Check consumer idempotency.",
+    "resolution": "Assume at-least-once delivery. Keep the outbox durable, publish with a stable event ID, and make consumers idempotent using a processed-event table or business uniqueness constraint. Do not delete the outbox row before successful handoff.",
+    "prevention": "Monitor unpublished age, publisher failures and duplicate-event rates. Document at-least-once semantics and test crash windows between publish and acknowledgement."
+  },
+  {
+    "id": "v10.1-007",
+    "title": "A database connection pool is exhausted in one service",
+    "level": "L3",
+    "tags": [
+      "database",
+      "connection pool",
+      "production",
+      "Production Scenario",
+      "V10.1"
+    ],
+    "short": "A larger pool is not automatically faster; it can overload the database and increase contention.",
+    "answer": "I would inspect pool wait time and transaction duration first. If connections are held by slow SQL or long transactions, fix those causes. Only then would I size the pool against database capacity and service concurrency.",
+    "code": "Fix leaked or long-held connections and slow SQL first. Then tune pool size based on database capacity and concurrency, with bounded acquisition time. Reject or shed excess work rather than allowing unbounded queues.",
+    "followups": [
+      "How do you choose pool size?",
+      "What happens if every microservice uses a pool of 100?",
+      "How can slow SQL exhaust an application?"
+    ],
+    "mistakes": [
+      "Increasing pool size without checking database limits.",
+      "Ignoring connection acquisition latency."
+    ],
+    "interview": "Connection-pool exhaustion is usually a saturation problem. I would find why connections are held too long, then apply bounded pool and queue limits.",
+    "source": "V10.1",
+    "topic": "microservices",
+    "subtopic": "operations",
+    "scenario": "Requests begin timing out, while the database itself has available CPU. Application logs show many requests waiting for a connection.",
+    "investigation": "Check active, idle and pending connection counts, connection acquisition time and query duration. Look for long transactions, missing closes, slow queries and sudden traffic increases. Compare pool size with database connection limits.",
+    "resolution": "Fix leaked or long-held connections and slow SQL first. Then tune pool size based on database capacity and concurrency, with bounded acquisition time. Reject or shed excess work rather than allowing unbounded queues.",
+    "prevention": "Monitor pool saturation and acquisition latency, use leak detection where supported, keep transactions short and load-test connection limits."
+  },
+  {
+    "id": "v10.1-008",
+    "title": "A deployment causes cascading failures because health checks are wrong",
+    "level": "L3",
+    "tags": [
+      "health check",
+      "kubernetes",
+      "deployment",
+      "Production Scenario",
+      "V10.1"
+    ],
+    "short": "Health checks are part of traffic control, not just status reporting.",
+    "answer": "I would separate readiness from liveness. Readiness can fail when the instance cannot safely serve requests, while liveness should not restart the service merely because a dependency is down. For slow startup I would use a startup probe.",
+    "code": "Use readiness to represent whether the instance can serve traffic, while liveness should detect an unrecoverable process condition. Avoid making liveness depend on every downstream service. Add startup probes for slow initialization and graceful shutdown handling.",
+    "followups": [
+      "Should readiness call the database?",
+      "When should a liveness probe fail?",
+      "Why use a startup probe?"
+    ],
+    "mistakes": [
+      "Putting every dependency in liveness.",
+      "Using a process-up check as the only readiness signal."
+    ],
+    "interview": "I want health probes to control traffic safely without causing restart storms. Readiness answers can I serve traffic; liveness answers am I fundamentally alive.",
+    "source": "V10.1",
+    "topic": "microservices",
+    "subtopic": "operations",
+    "scenario": "A new version starts successfully but depends on a downstream service that is unavailable. Kubernetes keeps routing traffic to it because the readiness check only verifies that the process is running.",
+    "investigation": "Compare readiness and liveness definitions with actual dependency readiness. Inspect startup time, dependency failures and pod routing. Check whether liveness is restarting healthy-but-dependent pods unnecessarily.",
+    "resolution": "Use readiness to represent whether the instance can serve traffic, while liveness should detect an unrecoverable process condition. Avoid making liveness depend on every downstream service. Add startup probes for slow initialization and graceful shutdown handling.",
+    "prevention": "Test dependency outages during deployment, expose meaningful health endpoints and alert on ready-pod count and failed probes."
+  },
+  {
+    "id": "v10.1-009",
+    "title": "Two services deadlock each other through synchronous calls",
+    "level": "L3",
+    "tags": [
+      "deadlock",
+      "synchronous calls",
+      "distributed systems",
+      "Production Scenario",
+      "V10.1"
+    ],
+    "short": "A distributed call cycle is a design problem; increasing thread pools only delays exhaustion.",
+    "answer": "I would identify the circular dependency from traces, then remove the synchronous cycle rather than tuning thread pools. Usually one side should become event-driven or the workflow ownership should be moved to a single coordinator.",
+    "code": "Break the synchronous cycle. Move one interaction to an asynchronous event or redesign ownership so only one service coordinates the workflow. Add bounded timeouts and avoid holding database transactions while making remote calls.",
+    "followups": [
+      "How would you detect service dependency cycles?",
+      "Why are remote calls inside database transactions risky?",
+      "When would asynchronous messaging help?"
+    ],
+    "mistakes": [
+      "Solving the cycle by adding more threads.",
+      "Holding locks or transactions across remote calls."
+    ],
+    "interview": "I would fix the dependency graph first. Timeouts are a safety net, not a solution to a circular synchronous architecture.",
+    "source": "V10.1",
+    "topic": "microservices",
+    "subtopic": "resilience",
+    "scenario": "Service A waits for B while B waits for A during a rare workflow. Threads accumulate and both services eventually stop making progress.",
+    "investigation": "Use traces to find the circular call graph and inspect thread-pool queues. Determine whether the dependency is direct or hidden through another service. Check timeout values and whether each request holds resources while waiting.",
+    "resolution": "Break the synchronous cycle. Move one interaction to an asynchronous event or redesign ownership so only one service coordinates the workflow. Add bounded timeouts and avoid holding database transactions while making remote calls.",
+    "prevention": "Review service dependency graphs, enforce architecture rules against cycles and test failure paths. Prefer asynchronous workflows for long-running cross-service processes."
+  },
+  {
+    "id": "v10.1-010",
+    "title": "A cache outage takes down the entire API",
+    "level": "L3",
+    "tags": [
+      "cache",
+      "redis",
+      "cascading failure",
+      "Production Scenario",
+      "V10.1"
+    ],
+    "short": "A cache should accelerate the source of truth, not become a hidden single point of overload.",
+    "answer": "I would prevent cache failure from causing a cache stampede against the database. I would cap fallback concurrency, coalesce hot-key loads and allow non-critical requests to degrade gracefully.",
+    "code": "Protect the database with bounded fallback concurrency, request coalescing for hot keys, local caching for safe data and rate limiting. Decide which requests can degrade gracefully when the cache is unavailable.",
+    "followups": [
+      "What is cache stampede?",
+      "How does request coalescing work?",
+      "When would local caching be unsafe?"
+    ],
+    "mistakes": [
+      "Assuming the database can absorb all cache misses.",
+      "Adding a cache without defining failure behavior."
+    ],
+    "interview": "I would design the cache as an optional accelerator and explicitly protect the database when the accelerator disappears.",
+    "source": "V10.1",
+    "topic": "microservices",
+    "subtopic": "resilience",
+    "scenario": "Redis becomes unavailable. The service falls back to the database, database CPU reaches 100%, and API latency collapses.",
+    "investigation": "Compare cache hit rate, database QPS and fallback traffic before and after the cache outage. Check whether all instances miss the same hot keys and whether requests are queued.",
+    "resolution": "Protect the database with bounded fallback concurrency, request coalescing for hot keys, local caching for safe data and rate limiting. Decide which requests can degrade gracefully when the cache is unavailable.",
+    "prevention": "Treat cache failure as a normal failure mode. Load-test cache outages, monitor fallback QPS and database saturation, and define explicit cache consistency and availability behavior."
+  },
+  {
+    "id": "v10.1-011",
+    "title": "A poison Kafka message blocks an entire partition",
+    "level": "L3",
+    "tags": [
+      "kafka",
+      "dead-letter",
+      "consumer",
+      "Production Scenario",
+      "V10.1"
+    ],
+    "short": "Retries are useful for transient failures; permanent failures need isolation so one record cannot block the stream indefinitely.",
+    "answer": "I would classify the exception, cap retries, send permanent failures to a DLT with enough metadata for replay, and alert operations. The consumer can then continue with later records where the business ordering rules allow it.",
+    "code": "Use bounded retries for transient errors and route permanently failing records to a dead-letter topic or quarantine flow. Record the original topic, partition and offset. Provide an operational replay mechanism after the bad record is fixed.",
+    "followups": [
+      "How do you replay a DLT message?",
+      "What if strict ordering is mandatory?",
+      "How do you distinguish transient from permanent failures?"
+    ],
+    "mistakes": [
+      "Using infinite retries.",
+      "Dropping the bad message without an audit trail."
+    ],
+    "interview": "I would not retry a deterministic deserialization or validation error forever. I would isolate it, preserve metadata and make replay controlled.",
+    "source": "V10.1",
+    "topic": "microservices",
+    "subtopic": "messaging",
+    "scenario": "One malformed message repeatedly fails processing. The consumer retries it forever, so later messages in the same partition are never processed.",
+    "investigation": "Inspect the failing offset, exception type and retry count. Determine whether the error is transient or permanent and whether ordering requires the partition to stop.",
+    "resolution": "Use bounded retries for transient errors and route permanently failing records to a dead-letter topic or quarantine flow. Record the original topic, partition and offset. Provide an operational replay mechanism after the bad record is fixed.",
+    "prevention": "Monitor DLT volume and retry age, classify exceptions and test poison-message recovery without losing ordering guarantees."
+  },
+  {
+    "id": "v10.1-012",
+    "title": "A hot key causes one Redis shard to become overloaded",
+    "level": "L3",
+    "tags": [
+      "redis",
+      "hot key",
+      "scaling",
+      "Production Scenario",
+      "V10.1"
+    ],
+    "short": "Horizontal scaling does not solve a single hot key if the key maps to one shard.",
+    "answer": "I would identify hot keys first. For safe data I could add local caching or request coalescing; for very hot mutable data I may distribute a logical key across multiple physical keys if consistency rules allow it.",
+    "code": "Use local caching for extremely hot immutable or slowly changing data, request coalescing and controlled replication. If the data model permits, shard a logical hot key into multiple physical keys and aggregate the results.",
+    "followups": [
+      "When is local caching safe?",
+      "How would you split a hot key?",
+      "What consistency trade-offs appear?"
+    ],
+    "mistakes": [
+      "Adding shards without addressing key skew.",
+      "Splitting a key without considering writes and consistency."
+    ],
+    "interview": "I would treat key popularity distribution as a capacity concern, not just total cache size.",
+    "source": "V10.1",
+    "topic": "microservices",
+    "subtopic": "operations",
+    "scenario": "A popular product key receives a large fraction of traffic. One Redis shard has much higher CPU and latency than the others.",
+    "investigation": "Measure requests per key and shard distribution. Confirm that hashing is working but a small number of keys dominate traffic. Check whether replicas are serving reads and whether clients support key splitting.",
+    "resolution": "Use local caching for extremely hot immutable or slowly changing data, request coalescing and controlled replication. If the data model permits, shard a logical hot key into multiple physical keys and aggregate the results.",
+    "prevention": "Track top-key traffic, set alerts for skew and load-test hot-key behavior before large launches."
+  },
+  {
+    "id": "v10.1-013",
+    "title": "A rolling deployment mixes incompatible API versions",
+    "level": "L3",
+    "tags": [
+      "api versioning",
+      "deployment",
+      "backward compatibility",
+      "Production Scenario",
+      "V10.1"
+    ],
+    "short": "Distributed deployments require compatibility across versions that coexist during rollout.",
+    "answer": "I would make the producer change backward compatible, deploy it while old consumers still work, then migrate consumers and remove the old contract only after the compatibility window.",
+    "code": "Use backward-compatible changes first: add optional fields before removing old ones. Deploy consumers before producers when necessary, or support explicit API versions. For events, use schema evolution rules and compatibility checks.",
+    "followups": [
+      "How do you version Kafka events?",
+      "What is consumer-driven contract testing?",
+      "How would you remove a field safely?"
+    ],
+    "mistakes": [
+      "Breaking the contract in the first deployment.",
+      "Testing only a single version pair."
+    ],
+    "interview": "During a rolling deployment I assume old and new versions coexist. Therefore contracts must be compatible throughout the rollout.",
+    "source": "V10.1",
+    "topic": "microservices",
+    "subtopic": "communication",
+    "scenario": "Version 2 of a producer is deployed before all consumers are upgraded. It removes a field that older consumers still require, causing errors during the rollout.",
+    "investigation": "Inspect deployment order and consumer compatibility. Check schema/API contract tests and trace failures to the exact version combination.",
+    "resolution": "Use backward-compatible changes first: add optional fields before removing old ones. Deploy consumers before producers when necessary, or support explicit API versions. For events, use schema evolution rules and compatibility checks.",
+    "prevention": "Use contract testing, compatibility gates and a deprecation window. Never assume all instances switch versions simultaneously."
+  },
+  {
+    "id": "v10.1-014",
+    "title": "A distributed trace is missing the downstream service",
+    "level": "L3",
+    "tags": [
+      "observability",
+      "tracing",
+      "opentelemetry",
+      "Production Scenario",
+      "V10.1"
+    ],
+    "short": "Tracing only works end to end when context is propagated across every boundary.",
+    "answer": "I would verify trace-context propagation first, then instrumentation and sampling. I would use correlation IDs in logs to bridge gaps and add an integration test that checks context survives a service-to-service call.",
+    "code": "Enable consistent W3C trace-context propagation and instrument the client/server boundaries. Check sampling configuration so child spans are not unexpectedly dropped. Keep correlation IDs in logs as a fallback.",
+    "followups": [
+      "How do you propagate context through Kafka?",
+      "What is sampling?",
+      "Why keep correlation IDs if traces exist?"
+    ],
+    "mistakes": [
+      "Assuming missing spans always mean the service was not called.",
+      "Ignoring sampling configuration."
+    ],
+    "interview": "I would verify propagation before blaming the tracing backend. A trace is only useful if context survives HTTP, messaging and asynchronous boundaries.",
+    "source": "V10.1",
+    "topic": "microservices",
+    "subtopic": "operations",
+    "scenario": "The gateway trace shows the request entering Service A, but the span for Service B is absent even though B was definitely called.",
+    "investigation": "Check trace propagation headers, instrumentation configuration, sampling decisions and protocol support. Compare gateway and downstream logs using correlation IDs.",
+    "resolution": "Enable consistent W3C trace-context propagation and instrument the client/server boundaries. Check sampling configuration so child spans are not unexpectedly dropped. Keep correlation IDs in logs as a fallback.",
+    "prevention": "Standardize instrumentation and propagation libraries, validate traces in integration tests and monitor the percentage of requests with complete traces."
+  },
+  {
+    "id": "v10.1-015",
+    "title": "A graceful shutdown loses in-flight requests",
+    "level": "L3",
+    "tags": [
+      "graceful shutdown",
+      "kubernetes",
+      "deployment",
+      "Production Scenario",
+      "V10.1"
+    ],
+    "short": "Graceful shutdown is a coordination problem between the orchestrator, load balancer and application.",
+    "answer": "I would make the pod unready first, stop new work, drain in-flight requests for a bounded period and only then close the application. The termination grace period must exceed the expected drain window.",
+    "code": "On shutdown, fail readiness first, allow load balancers to stop routing, stop accepting new work, wait for in-flight requests up to a bounded grace period, then close resources. Handle SIGTERM correctly.",
+    "followups": [
+      "How does Kubernetes termination work?",
+      "What should happen to Kafka consumers during shutdown?",
+      "How do you handle requests longer than the grace period?"
+    ],
+    "mistakes": [
+      "Immediately closing the server on SIGTERM.",
+      "Using an extremely long grace period as a substitute for correct draining."
+    ],
+    "interview": "I would explicitly design the shutdown sequence rather than relying on process termination to be graceful.",
+    "source": "V10.1",
+    "topic": "microservices",
+    "subtopic": "operations",
+    "scenario": "During a deployment, pods terminate while requests are still running. Clients receive intermittent 502/connection errors.",
+    "investigation": "Check termination grace period, readiness transition, preStop behavior and whether the application stops accepting new traffic before closing listeners. Inspect request duration versus termination timing.",
+    "resolution": "On shutdown, fail readiness first, allow load balancers to stop routing, stop accepting new work, wait for in-flight requests up to a bounded grace period, then close resources. Handle SIGTERM correctly.",
+    "prevention": "Test rolling deployments with long-running requests, monitor termination errors and set grace periods based on actual request and shutdown durations."
+  },
+  {
+    "id": "v10.1-016",
+    "title": "A database migration breaks old application pods",
+    "level": "L3",
+    "tags": [
+      "database migration",
+      "zero downtime",
+      "deployment",
+      "Production Scenario",
+      "V10.1"
+    ],
+    "short": "A zero-downtime database migration must tolerate multiple application versions at once.",
+    "answer": "I would use an expand-and-contract approach. First add compatible schema elements, then deploy code that understands both versions, migrate data, switch traffic and remove the old structure later.",
+    "code": "Use expand-and-contract migrations: add the new structure first, deploy code that can work with both versions, backfill if needed, switch reads/writes, and remove the old structure only after all old code is gone.",
+    "followups": [
+      "How do you roll back after a destructive migration?",
+      "How would you backfill a large table?",
+      "What is dual write and what risks does it have?"
+    ],
+    "mistakes": [
+      "Renaming or dropping fields in the first migration.",
+      "Assuming rollback means reverting the database schema automatically."
+    ],
+    "interview": "I assume rolling deployments mean old and new application code share the same database. Therefore schema changes must be backward compatible during the transition.",
+    "source": "V10.1",
+    "topic": "microservices",
+    "subtopic": "data",
+    "scenario": "A new release adds a column and immediately renames an existing column. During the rolling deployment, old pods still query the old column and start failing.",
+    "investigation": "Check schema changes against the versions of application code running simultaneously. Identify whether the migration is backward compatible.",
+    "resolution": "Use expand-and-contract migrations: add the new structure first, deploy code that can work with both versions, backfill if needed, switch reads/writes, and remove the old structure only after all old code is gone.",
+    "prevention": "Automate compatibility checks and make database migrations part of deployment design. Test rollback paths, not just forward deployment."
+  },
+  {
+    "id": "v10.1-017",
+    "title": "A multi-tenant service leaks one tenant’s data",
+    "level": "L3",
+    "tags": [
+      "multi-tenant",
+      "authorization",
+      "security",
+      "Production Scenario",
+      "V10.1"
+    ],
+    "short": "Multi-tenancy requires defense in depth; a single forgotten filter can become a data-isolation incident.",
+    "answer": "I would derive tenant identity from authenticated claims, enforce it consistently at the data-access boundary and add tests proving tenant A can never read tenant B data. For critical systems I would add database-level isolation as another layer.",
+    "code": "Enforce tenant identity at a trusted application boundary and include tenant constraints in repository/data-access policies. Add database-level protections where the database supports them. Never accept tenant ID solely from the request body.",
+    "followups": [
+      "Schema-per-tenant or shared schema?",
+      "How do you test isolation?",
+      "How would you audit tenant access?"
+    ],
+    "mistakes": [
+      "Relying on UI-provided tenant IDs.",
+      "Putting tenant checks only in controllers."
+    ],
+    "interview": "I would never trust a tenant ID supplied by the client. Tenant identity must come from authenticated context and be enforced below the controller layer.",
+    "source": "V10.1",
+    "topic": "microservices",
+    "subtopic": "security",
+    "scenario": "A query endpoint returns records from another tenant because tenant filtering was applied in one controller but forgotten in a repository method.",
+    "investigation": "Trace the request from token claims to authorization checks and database queries. Look for every data-access path that can bypass the controller-level check.",
+    "resolution": "Enforce tenant identity at a trusted application boundary and include tenant constraints in repository/data-access policies. Add database-level protections where the database supports them. Never accept tenant ID solely from the request body.",
+    "prevention": "Write authorization tests for cross-tenant access, use tenant-aware repository patterns and audit sensitive access. Treat tenant context as security-critical data."
+  },
+  {
+    "id": "v10.1-018",
+    "title": "A distributed lock is held after the worker crashes",
+    "level": "L3",
+    "tags": [
+      "distributed lock",
+      "redis",
+      "recovery",
+      "Production Scenario",
+      "V10.1"
+    ],
+    "short": "A distributed lock should reduce overlap, not be the only protection against duplicate execution.",
+    "answer": "I would use a lease with an owner token and safe renewal. If the worker dies, the lease expires and another worker can continue. The job must still be idempotent because distributed locks cannot provide perfect failure exclusion.",
+    "code": "Use a lock with a unique owner token and bounded lease. Renew it only while the worker is healthy, and release only when the token matches. Make the job itself idempotent because lease expiry can still allow another worker to take over.",
+    "followups": [
+      "What is the fencing-token problem?",
+      "Why is idempotency still required?",
+      "What happens during a network partition?"
+    ],
+    "mistakes": [
+      "Using a lock with no expiry.",
+      "Releasing a lock without verifying ownership."
+    ],
+    "interview": "I use leases for recovery and idempotency for correctness. The lock is an optimization for coordination, not the sole business guarantee.",
+    "source": "V10.1",
+    "topic": "microservices",
+    "subtopic": "data",
+    "scenario": "A scheduled job acquires a distributed lock and the process crashes before releasing it. Other workers stop processing the job.",
+    "investigation": "Check lock ownership, TTL and renewal behavior. Determine whether the lock can expire safely and whether a worker can accidentally release another worker’s lock.",
+    "resolution": "Use a lock with a unique owner token and bounded lease. Renew it only while the worker is healthy, and release only when the token matches. Make the job itself idempotent because lease expiry can still allow another worker to take over.",
+    "prevention": "Test crashes, long-running jobs and clock/network issues. Monitor stale locks and job execution overlap."
+  },
+  {
+    "id": "v10.1-019",
+    "title": "A service becomes overloaded even though request rate is normal",
+    "level": "L3",
+    "tags": [
+      "backpressure",
+      "thread pool",
+      "saturation",
+      "Production Scenario",
+      "V10.1"
+    ],
+    "short": "Backpressure means the system limits work to what downstream capacity can sustain.",
+    "answer": "I would cap concurrency and queue depth so slow downstream calls cannot consume all resources. Then I would add timeouts and bulkheads and decide which work can be rejected, delayed or moved asynchronously.",
+    "code": "Apply bounded concurrency and queue sizes, reject or shed excess work, set timeouts and isolate slow dependencies with bulkheads. Prefer asynchronous processing when the business flow allows it.",
+    "followups": [
+      "How does a bounded queue protect a service?",
+      "When should requests be rejected with 429 or 503?",
+      "How do virtual threads change this analysis?"
+    ],
+    "mistakes": [
+      "Using unbounded executor queues.",
+      "Assuming more threads always improve throughput."
+    ],
+    "interview": "The service is overloaded by waiting work, not necessarily by incoming request count. I would control concurrency and queue growth first.",
+    "source": "V10.1",
+    "topic": "microservices",
+    "subtopic": "resilience",
+    "scenario": "Traffic volume is steady, but a downstream dependency becomes slower. Worker threads accumulate waiting on I/O and memory usage rises until the service becomes unhealthy.",
+    "investigation": "Inspect active threads, executor queue depth, request concurrency, downstream latency and memory. Look for unbounded queues and synchronous blocking calls.",
+    "resolution": "Apply bounded concurrency and queue sizes, reject or shed excess work, set timeouts and isolate slow dependencies with bulkheads. Prefer asynchronous processing when the business flow allows it.",
+    "prevention": "Monitor saturation signals, load-test dependency slowness and define overload behavior explicitly instead of allowing unbounded waiting."
+  },
+  {
+    "id": "v10.1-020",
+    "title": "A downstream timeout is shorter than the upstream timeout",
+    "level": "L3",
+    "tags": [
+      "timeout",
+      "deadline",
+      "distributed systems",
+      "Production Scenario",
+      "V10.1"
+    ],
+    "short": "Timeouts should form a coherent deadline budget, not independent arbitrary numbers.",
+    "answer": "I would define a total request deadline and allocate smaller budgets to downstream calls. When the deadline is exceeded, the work should be cancelled or abandoned safely so the system does not keep consuming capacity for a request that no longer matters.",
+    "code": "Use an end-to-end deadline budget. Each downstream call must have a timeout less than the remaining deadline, and cancellation should propagate where the protocol supports it.",
+    "followups": [
+      "How do you propagate deadlines over HTTP?",
+      "What if the downstream operation is not cancellable?",
+      "How does this relate to retries?"
+    ],
+    "mistakes": [
+      "Giving every dependency a fixed large timeout.",
+      "Ignoring work that continues after client timeout."
+    ],
+    "interview": "I treat timeouts as a budget. Every downstream dependency must respect the remaining deadline.",
+    "source": "V10.1",
+    "topic": "microservices",
+    "subtopic": "resilience",
+    "scenario": "The gateway allows 5 seconds, Service A allows 4 seconds, but Service B allows 10 seconds. Requests keep running downstream after the caller has already timed out.",
+    "investigation": "Map timeouts across the request chain and inspect work that continues after upstream cancellation. Measure wasted downstream work.",
+    "resolution": "Use an end-to-end deadline budget. Each downstream call must have a timeout less than the remaining deadline, and cancellation should propagate where the protocol supports it.",
+    "prevention": "Standardize timeout policies, propagate deadlines and test cancellation under load."
+  },
+  {
+    "id": "v10.1-021",
+    "title": "A feature flag causes inconsistent behavior across instances",
+    "level": "L3",
+    "tags": [
+      "feature flag",
+      "configuration",
+      "deployment",
+      "Production Scenario",
+      "V10.1"
+    ],
+    "short": "Feature flags are distributed configuration and need consistency semantics just like any other configuration.",
+    "answer": "I would first define the consistency requirement. For pricing, I may need user or transaction stickiness and a versioned flag. I would also expose the active configuration version so incidents can be correlated to rollout state.",
+    "code": "Define whether the flag is evaluated per request, user or tenant. For correctness-sensitive changes, use versioned configuration and atomic rollout rules. Ensure all instances can report their active configuration.",
+    "followups": [
+      "How would you roll back a bad flag?",
+      "What if a flag service is unavailable?",
+      "How do you make a transaction use one consistent flag value?"
+    ],
+    "mistakes": [
+      "Changing business-critical flags without auditability.",
+      "Assuming all instances update instantly."
+    ],
+    "interview": "I would not treat feature flags as harmless UI switches. In backend systems they can change business behavior and need rollout, audit and consistency controls.",
+    "source": "V10.1",
+    "topic": "microservices",
+    "subtopic": "operations",
+    "scenario": "Half the instances use the new pricing algorithm and half use the old one because flag updates arrive at different times.",
+    "investigation": "Check flag propagation latency, caching, evaluation rules and whether requests can move between instances during a session.",
+    "resolution": "Define whether the flag is evaluated per request, user or tenant. For correctness-sensitive changes, use versioned configuration and atomic rollout rules. Ensure all instances can report their active configuration.",
+    "prevention": "Audit flag changes, expose configuration version in diagnostics and define rollback behavior before enabling production flags."
+  },
+  {
+    "id": "v10.1-022",
+    "title": "An event consumer commits the database but crashes before acknowledging Kafka",
+    "level": "L3",
+    "tags": [
+      "kafka",
+      "at-least-once",
+      "idempotency",
+      "Production Scenario",
+      "V10.1"
+    ],
+    "short": "Kafka offset management and database commits are separate systems; without a transaction bridge, duplicate delivery is normal.",
+    "answer": "I would commit the business transaction first and acknowledge the message only after success. Because a crash can happen between those actions, the handler must be idempotent using a stable event ID or business uniqueness constraint.",
+    "code": "Design the handler for at-least-once delivery. Use a unique event ID or business key to make the database operation idempotent, and acknowledge only after successful processing.",
+    "followups": [
+      "Can Kafka transactions solve this?",
+      "How would you implement an inbox table?",
+      "What if the event has no stable ID?"
+    ],
+    "mistakes": [
+      "Assuming manual offset commit creates exactly once.",
+      "Acknowledging before the business transaction commits."
+    ],
+    "interview": "I assume at-least-once delivery. The correctness mechanism is idempotent business processing, not hoping the consumer never crashes between commit and acknowledgement.",
+    "source": "V10.1",
+    "topic": "microservices",
+    "subtopic": "messaging",
+    "scenario": "The consumer processes an event and commits a database transaction, then crashes before committing the Kafka offset. After restart the same event is delivered again.",
+    "investigation": "Compare consumer offset progression with database transaction logs. Confirm whether the business effect is repeatable and whether an event ID is stored.",
+    "resolution": "Design the handler for at-least-once delivery. Use a unique event ID or business key to make the database operation idempotent, and acknowledge only after successful processing.",
+    "prevention": "Test crash windows between business commit and offset commit. Monitor duplicate delivery and keep stable event identifiers."
+  },
+  {
+    "id": "v10.1-023",
+    "title": "A cache stampede occurs after a popular key expires",
+    "level": "L3",
+    "tags": [
+      "cache",
+      "stampede",
+      "redis",
+      "Production Scenario",
+      "V10.1"
+    ],
+    "short": "A cache stampede is a synchronized miss that overwhelms the source of truth.",
+    "answer": "I would prevent multiple callers from refreshing the same hot key concurrently, add TTL jitter and allow stale data when the business permits it. The database should also have a bounded fallback path.",
+    "code": "Use request coalescing or a single-flight mechanism so only one request refreshes a key. Add TTL jitter and stale-while-revalidate where acceptable. Protect the source with bounded concurrency.",
+    "followups": [
+      "What is stale-while-revalidate?",
+      "How would you handle a cache miss when Redis is down?",
+      "When is stale data unacceptable?"
+    ],
+    "mistakes": [
+      "Using the same TTL for every hot key.",
+      "Letting every miss query the database."
+    ],
+    "interview": "I would design for cache expiry as a failure mode. Request coalescing, TTL jitter and stale-while-revalidate are useful controls.",
+    "source": "V10.1",
+    "topic": "microservices",
+    "subtopic": "resilience",
+    "scenario": "A popular product cache entry expires. Thousands of requests miss simultaneously and all query the database.",
+    "investigation": "Look at cache-miss rate, database QPS and key popularity around the expiration time. Check whether TTLs are synchronized across instances.",
+    "resolution": "Use request coalescing or a single-flight mechanism so only one request refreshes a key. Add TTL jitter and stale-while-revalidate where acceptable. Protect the source with bounded concurrency.",
+    "prevention": "Monitor hot keys, avoid synchronized expirations and load-test cache expiry events rather than only steady-state cache hits."
+  },
+  {
+    "id": "v10.1-024",
+    "title": "A service discovery outage prevents new pods from finding dependencies",
+    "level": "L3",
+    "tags": [
+      "service discovery",
+      "availability",
+      "kubernetes",
+      "Production Scenario",
+      "V10.1"
+    ],
+    "short": "A control-plane failure should not immediately become a data-plane outage if safe cached state can keep traffic flowing.",
+    "answer": "I would separate control-plane availability from data-plane traffic. Clients should cache usable discovery information for a bounded period, while the discovery system itself is highly available.",
+    "code": "Use highly available discovery, client-side caching with bounded staleness and resilient DNS behavior. Ensure startup does not require an indefinitely available discovery control plane if existing endpoints can be reused safely.",
+    "followups": [
+      "Client-side or server-side discovery?",
+      "How does DNS caching affect recovery?",
+      "What happens when an instance IP changes?"
+    ],
+    "mistakes": [
+      "Making every request synchronously query discovery.",
+      "Ignoring stale discovery data."
+    ],
+    "interview": "I would design discovery failure so existing traffic can continue for some bounded period instead of making every request depend on the control plane.",
+    "source": "V10.1",
+    "topic": "microservices",
+    "subtopic": "communication",
+    "scenario": "The service discovery component becomes unavailable. Existing connections continue to work, but newly started pods cannot resolve downstream services.",
+    "investigation": "Check discovery health, DNS/cache behavior and whether clients cache resolved endpoints. Compare existing versus newly created instances.",
+    "resolution": "Use highly available discovery, client-side caching with bounded staleness and resilient DNS behavior. Ensure startup does not require an indefinitely available discovery control plane if existing endpoints can be reused safely.",
+    "prevention": "Test control-plane outages, monitor discovery availability and define how long clients can safely use cached endpoints."
+  },
+  {
+    "id": "v10.1-025",
+    "title": "A payment is charged but the order service records failure",
+    "level": "L3",
+    "tags": [
+      "payment",
+      "distributed transaction",
+      "reconciliation",
+      "Production Scenario",
+      "V10.1"
+    ],
+    "short": "External payment calls create an uncertain outcome; the safe design is idempotency plus reconciliation, not blind retry.",
+    "answer": "I would never blindly retry a timed-out payment. I would use a stable idempotency key, query the provider for the existing result, persist the final state and reconcile unknown transactions asynchronously.",
+    "code": "Use an idempotency key with the payment provider and persist the payment attempt state. On timeout, query the provider by idempotency key or transaction ID before retrying. Add reconciliation for uncertain states.",
+    "followups": [
+      "How would you model payment states?",
+      "What if the provider does not support idempotency?",
+      "How do you reconcile thousands of pending payments?"
+    ],
+    "mistakes": [
+      "Treating timeout as proof that no charge happened.",
+      "Generating a new payment ID for every retry."
+    ],
+    "interview": "Payment is a classic example where timeout does not mean failure. I need an idempotency key and a way to reconcile uncertain outcomes.",
+    "source": "V10.1",
+    "topic": "microservices",
+    "subtopic": "data",
+    "scenario": "The payment provider confirms a charge, but the order service times out before recording the success. A retry risks charging the customer twice.",
+    "investigation": "Trace the payment provider request and inspect provider transaction IDs. Determine whether the timeout happened before or after the provider committed the charge.",
+    "resolution": "Use an idempotency key with the payment provider and persist the payment attempt state. On timeout, query the provider by idempotency key or transaction ID before retrying. Add reconciliation for uncertain states.",
+    "prevention": "Persist provider IDs, model pending/unknown states, reconcile regularly and test timeouts after external commit."
+  },
+  {
+    "id": "v10.1-026",
+    "title": "A message schema change breaks consumers after deployment",
+    "level": "L3",
+    "tags": [
+      "kafka",
+      "schema evolution",
+      "compatibility",
+      "Production Scenario",
+      "V10.1"
+    ],
+    "short": "Event schemas are contracts; changing them without compatibility rules is equivalent to breaking an API.",
+    "answer": "I would treat the event schema as a versioned contract. I would prefer additive changes and enforce compatibility checks before deployment. If a breaking change is unavoidable, I would introduce a new version and migrate consumers deliberately.",
+    "code": "Use explicit schema evolution rules. Prefer additive, backward-compatible changes, version schemas where necessary and use a schema registry or contract checks to reject incompatible producer changes.",
+    "followups": [
+      "Backward or forward compatibility?",
+      "How do you version events?",
+      "What is a schema registry?"
+    ],
+    "mistakes": [
+      "Changing field types casually.",
+      "Testing only the producer."
+    ],
+    "interview": "I would put schema compatibility in the deployment pipeline so an incompatible event cannot reach production accidentally.",
+    "source": "V10.1",
+    "topic": "microservices",
+    "subtopic": "messaging",
+    "scenario": "A producer changes a field type from integer to string. Some consumers deserialize the event successfully while older consumers fail.",
+    "investigation": "Compare schema versions and consumer compatibility rules. Identify which consumers are still on older versions.",
+    "resolution": "Use explicit schema evolution rules. Prefer additive, backward-compatible changes, version schemas where necessary and use a schema registry or contract checks to reject incompatible producer changes.",
+    "prevention": "Run compatibility tests in CI and maintain a deprecation window for consumers before removing old fields or changing semantics."
+  },
+  {
+    "id": "v10.1-027",
+    "title": "@Async tasks overwhelm the application thread pool",
+    "level": "L3",
+    "tags": [
+      "async",
+      "thread pool",
+      "production",
+      "Production Scenario",
+      "V10.1"
+    ],
+    "short": "Asynchrony changes where work waits; it does not remove capacity limits.",
+    "answer": "I would use a dedicated bounded executor, measure task duration and choose a rejection or backpressure policy. For durable background work I would prefer a queue so work survives process restarts.",
+    "code": "Use a dedicated bounded executor with an explicit queue and rejection policy. Size it for the workload, isolate unrelated task types and move durable long-running work to a message broker when necessary.",
+    "followups": [
+      "How do you size a thread pool?",
+      "What happens when the executor queue is full?",
+      "When would Kafka be better than @Async?"
+    ],
+    "mistakes": [
+      "Using an unbounded queue.",
+      "Sharing one executor across unrelated workloads."
+    ],
+    "interview": "I would not solve this by simply increasing the thread count. I would bound the executor and choose whether excess work should be rejected, delayed or persisted to messaging.",
+    "source": "V10.1",
+    "topic": "springboot",
+    "subtopic": "config",
+    "scenario": "A new asynchronous feature submits thousands of tasks. The default executor queue grows, memory increases and request latency degrades.",
+    "investigation": "Inspect executor active threads, queue depth, task duration and rejection count. Check whether tasks are CPU-bound or I/O-bound and whether callers need the work synchronously.",
+    "resolution": "Use a dedicated bounded executor with an explicit queue and rejection policy. Size it for the workload, isolate unrelated task types and move durable long-running work to a message broker when necessary.",
+    "prevention": "Monitor executor saturation and load-test bursts. Do not use one unbounded executor for unrelated workloads."
+  },
+  {
+    "id": "v10.1-028",
+    "title": "A transactional method calls an @Async method and data is missing",
+    "level": "L3",
+    "tags": [
+      "transaction",
+      "async",
+      "spring",
+      "Production Scenario",
+      "V10.1"
+    ],
+    "short": "Spring transactions are thread-bound; asynchronous execution creates a different execution context.",
+    "answer": "I would not rely on the async method seeing uncommitted transaction state. If the task needs committed data, I would trigger it after commit or use a durable event/message so the ordering is explicit.",
+    "code": "Do not assume @Async inherits the transaction. Publish an event after commit or move the asynchronous work behind a durable queue. If direct async execution is acceptable, ensure the transaction has committed before the async work starts.",
+    "followups": [
+      "How does @Transactional interact with thread pools?",
+      "How would you publish an event after commit?",
+      "Can TransactionSynchronization be used?"
+    ],
+    "mistakes": [
+      "Assuming @Async inherits the transaction.",
+      "Starting background work before commit."
+    ],
+    "interview": "A transaction does not automatically flow into @Async. Crossing the thread boundary means I need an explicit post-commit or messaging design.",
+    "source": "V10.1",
+    "topic": "springboot",
+    "subtopic": "data",
+    "scenario": "A service saves an entity inside a transaction and then calls an asynchronous method that immediately queries the database. The async task sometimes cannot see the expected data.",
+    "investigation": "Check transaction commit timing and thread boundaries. @Async executes on another thread, so it does not share the caller thread-bound transaction.",
+    "resolution": "Do not assume @Async inherits the transaction. Publish an event after commit or move the asynchronous work behind a durable queue. If direct async execution is acceptable, ensure the transaction has committed before the async work starts.",
+    "prevention": "Test commit/async race conditions and define whether the background task requires committed state or can operate on an in-memory command."
+  },
+  {
+    "id": "v10.1-029",
+    "title": "A Spring Boot application starts slowly after a new release",
+    "level": "L3",
+    "tags": [
+      "startup",
+      "spring boot",
+      "production",
+      "Production Scenario",
+      "V10.1"
+    ],
+    "short": "Startup performance should be measured by phase; otherwise teams tend to guess which bean is responsible.",
+    "answer": "I would profile startup and compare bean initialization and external calls with the previous version. Then I would move non-critical work out of startup and reduce scanning or initialization only where measurements justify it.",
+    "code": "Remove unnecessary scanning, defer non-critical initialization and move expensive startup work out of the critical path. Use lazy initialization selectively, not as a blanket fix.",
+    "followups": [
+      "How does Spring Boot auto-configuration affect startup?",
+      "When is lazy initialization useful?",
+      "How would you debug a startup hang?"
+    ],
+    "mistakes": [
+      "Enabling lazy initialization everywhere without measuring.",
+      "Ignoring external calls during startup."
+    ],
+    "interview": "I would profile first, because startup can be slow due to bean creation, database migration, classpath scanning or remote configuration.",
+    "source": "V10.1",
+    "topic": "springboot",
+    "subtopic": "config",
+    "scenario": "Startup time increases from 15 seconds to 90 seconds after adding several dependencies and configuration classes.",
+    "investigation": "Compare startup profiles between releases. Inspect bean creation, classpath scanning, database initialization, remote configuration and slow post-construct/startup tasks.",
+    "resolution": "Remove unnecessary scanning, defer non-critical initialization and move expensive startup work out of the critical path. Use lazy initialization selectively, not as a blanket fix.",
+    "prevention": "Track startup time as a deployment metric and keep startup dependencies deterministic. Profile before optimizing."
+  },
+  {
+    "id": "v10.1-030",
+    "title": "A controller returns 200 but the business operation failed",
+    "level": "L3",
+    "tags": [
+      "exception handling",
+      "rest api",
+      "reliability",
+      "Production Scenario",
+      "V10.1"
+    ],
+    "short": "An HTTP success response is part of the business contract; swallowing failures can be worse than returning a 500.",
+    "answer": "I would avoid catching exceptions merely to log them. Unexpected failures should reach centralized exception handling, which returns a consistent status and error body. Known business errors should map explicitly to meaningful 4xx responses.",
+    "code": "Let unexpected exceptions propagate to a centralized exception handler and map them to appropriate status codes. Return a stable error contract with correlation information, not internal stack traces.",
+    "followups": [
+      "When should a business error be 409 versus 400?",
+      "How do you avoid leaking stack traces?",
+      "How do you correlate errors across services?"
+    ],
+    "mistakes": [
+      "Returning 200 with an error message.",
+      "Logging and swallowing exceptions."
+    ],
+    "interview": "I want HTTP status to reflect the actual outcome. Centralized exception handling gives consistent client behavior and keeps controllers focused on business flow.",
+    "source": "V10.1",
+    "topic": "springboot",
+    "subtopic": "exceptions",
+    "scenario": "An endpoint catches an exception, logs it and returns a default response, so clients believe the operation succeeded.",
+    "investigation": "Trace the exception path and inspect HTTP status mapping. Check whether global exception handling is bypassed by local catches.",
+    "resolution": "Let unexpected exceptions propagate to a centralized exception handler and map them to appropriate status codes. Return a stable error contract with correlation information, not internal stack traces.",
+    "prevention": "Define an error-response standard, test failure status codes and alert on unexpected 5xx rates rather than only application exceptions."
+  },
+  {
+    "id": "v10.1-031",
+    "title": "A memory leak appears after adding request caching",
+    "level": "L3",
+    "tags": [
+      "memory leak",
+      "cache",
+      "java",
+      "Production Scenario",
+      "V10.1"
+    ],
+    "short": "A cache without bounded cardinality is a memory leak from the application perspective even if every entry is technically reachable.",
+    "answer": "I would confirm the retaining path with a heap dump, then inspect cache cardinality and eviction. The fix is to bound the cache and avoid storing large request objects, not simply increase heap size.",
+    "code": "Bound the cache by size and TTL, store only the data required for reuse and avoid retaining request-scoped objects. If the data needs distributed durability, use an external cache with explicit eviction.",
+    "followups": [
+      "How do you take a heap dump safely?",
+      "How do you distinguish a leak from normal heap growth?",
+      "What GC metrics would you monitor?"
+    ],
+    "mistakes": [
+      "Increasing heap size without finding the retaining object.",
+      "Using an unbounded map as a cache."
+    ],
+    "interview": "I would use heap analysis to prove what is retaining memory, then bound the cache by size and lifetime.",
+    "source": "V10.1",
+    "topic": "springboot",
+    "subtopic": "config",
+    "scenario": "Heap usage grows continuously in production even after traffic returns to normal. A new in-memory cache stores request-derived objects.",
+    "investigation": "Use heap dumps and allocation profiling. Identify the retaining path and cache size, eviction policy and key cardinality. Check whether user/request objects are referenced longer than intended.",
+    "resolution": "Bound the cache by size and TTL, store only the data required for reuse and avoid retaining request-scoped objects. If the data needs distributed durability, use an external cache with explicit eviction.",
+    "prevention": "Monitor heap occupancy and cache cardinality, test long-running workloads and set memory alerts before the process reaches OOM."
+  },
+  {
+    "id": "v10.1-032",
+    "title": "Spring Security allows an endpoint that should be admin-only",
+    "level": "L3",
+    "tags": [
+      "spring security",
+      "authorization",
+      "rbac",
+      "Production Scenario",
+      "V10.1"
+    ],
+    "short": "Authentication proves identity; authorization decides whether that identity can perform the operation.",
+    "answer": "I would verify the filter-chain rule and method-security configuration, then test the endpoint with users having different authorities. Authorization should be enforced server-side and covered by integration tests.",
+    "code": "Define authorization at the correct layer and use explicit authorities/roles consistently. Add integration tests that assert both allowed and forbidden users receive the expected status.",
+    "followups": [
+      "Role versus authority in Spring Security?",
+      "How does @PreAuthorize work?",
+      "How do you test forbidden access?"
+    ],
+    "mistakes": [
+      "Checking permissions only in the frontend.",
+      "Mixing ROLE_ADMIN and ADMIN conventions."
+    ],
+    "interview": "I would debug authorization from the token claims through the filter chain to the method decision, not just inspect the annotation.",
+    "source": "V10.1",
+    "topic": "springboot",
+    "subtopic": "auth",
+    "scenario": "An endpoint is protected by authentication, but any logged-in user can call it because the method-level role check was not applied as expected.",
+    "investigation": "Inspect the filter chain, endpoint matchers, method-security configuration and exact authority names. Verify whether the call is going through a proxy and whether annotations are enabled.",
+    "resolution": "Define authorization at the correct layer and use explicit authorities/roles consistently. Add integration tests that assert both allowed and forbidden users receive the expected status.",
+    "prevention": "Treat authorization tests as security regression tests. Avoid relying on controller visibility or UI restrictions."
+  },
+  {
+    "id": "v10.1-033",
+    "title": "CPU usage spikes after switching to parallel streams",
+    "level": "L3",
+    "tags": [
+      "parallel stream",
+      "forkjoinpool",
+      "cpu",
+      "Production Scenario",
+      "V10.1"
+    ],
+    "short": "Parallel streams can increase throughput for suitable CPU-bound workloads, but they also consume shared executor capacity.",
+    "answer": "I would profile CPU and common-pool contention first. If the workload is already concurrent or too small, sequential processing may be faster. For isolated batch work I would use a dedicated executor with controlled parallelism.",
+    "code": "Remove parallelism if the workload is small or already concurrent. For controlled background workloads, use an appropriately sized executor instead of allowing common-pool work to compete with unrelated tasks.",
+    "followups": [
+      "When is parallelStream appropriate?",
+      "How does the common ForkJoinPool work?",
+      "How do virtual threads differ from parallel streams?"
+    ],
+    "mistakes": [
+      "Using parallel streams for blocking I/O.",
+      "Assuming more parallelism always means more throughput."
+    ],
+    "interview": "I would not assume parallelStream is automatically faster. I would benchmark it and check whether it competes with other workloads for the common pool.",
+    "source": "V10.1",
+    "topic": "java",
+    "subtopic": "concurrency",
+    "scenario": "A batch endpoint uses parallelStream() and production CPU reaches 100%, while unrelated requests become slower.",
+    "investigation": "Inspect ForkJoinPool activity, CPU profiles and request concurrency. Determine whether the work is CPU-bound and whether parallelism is competing with request threads.",
+    "resolution": "Remove parallelism if the workload is small or already concurrent. For controlled background workloads, use an appropriately sized executor instead of allowing common-pool work to compete with unrelated tasks.",
+    "prevention": "Benchmark realistic data sizes and concurrency. Treat the common ForkJoinPool as shared infrastructure rather than a free worker pool."
+  },
+  {
+    "id": "v10.1-034",
+    "title": "ThreadLocal data leaks between requests in a pooled executor",
+    "level": "L3",
+    "tags": [
+      "threadlocal",
+      "thread pool",
+      "memory leak",
+      "Production Scenario",
+      "V10.1"
+    ],
+    "short": "ThreadLocal is thread-scoped, not request-scoped; pooled threads survive after a request finishes.",
+    "answer": "I would always clear ThreadLocal state in a finally block when using it with thread pools. For modern applications I would consider explicit context objects or framework-supported context propagation instead.",
+    "code": "Use try/finally to remove ThreadLocal values, or prefer explicit context propagation mechanisms. Avoid storing large request objects in ThreadLocal.",
+    "followups": [
+      "Why can ThreadLocal cause memory leaks?",
+      "How does InheritableThreadLocal differ?",
+      "How does this interact with virtual threads?"
+    ],
+    "mistakes": [
+      "Setting ThreadLocal without remove().",
+      "Assuming a pooled thread is destroyed after each request."
+    ],
+    "interview": "ThreadLocal is safe only when its lifecycle matches the thread. In a pool, that means I must clean it after every task.",
+    "source": "V10.1",
+    "topic": "java",
+    "subtopic": "concurrency",
+    "scenario": "A request stores user context in ThreadLocal. A later request handled by the same pooled thread unexpectedly sees the previous request’s value.",
+    "investigation": "Inspect where ThreadLocal is set and removed. Confirm thread reuse and whether exceptions can bypass cleanup.",
+    "resolution": "Use try/finally to remove ThreadLocal values, or prefer explicit context propagation mechanisms. Avoid storing large request objects in ThreadLocal.",
+    "prevention": "Add tests for thread reuse and monitor memory retention. Keep request context scoped and cleaned deterministically."
+  },
+  {
+    "id": "v10.1-035",
+    "title": "A synchronized section becomes a throughput bottleneck",
+    "level": "L3",
+    "tags": [
+      "synchronized",
+      "contention",
+      "performance",
+      "Production Scenario",
+      "V10.1"
+    ],
+    "short": "Synchronization provides correctness but can serialize throughput when a hot shared lock protects too much work.",
+    "answer": "I would profile lock contention, minimize the critical section and look for key-based partitioning. If the access pattern fits, ConcurrentHashMap or finer-grained synchronization can improve concurrency.",
+    "code": "Reduce the critical section, use concurrent data structures where appropriate and partition state by key so independent operations do not share one lock. Do not replace synchronized with another lock without measuring.",
+    "followups": [
+      "How does ConcurrentHashMap reduce contention?",
+      "When is ReadWriteLock useful?",
+      "What is lock striping?"
+    ],
+    "mistakes": [
+      "Removing synchronization without proving thread safety.",
+      "Holding a lock while performing remote I/O."
+    ],
+    "interview": "The question is not whether synchronized is slow; it is whether the critical section creates unnecessary contention.",
+    "source": "V10.1",
+    "topic": "java",
+    "subtopic": "concurrency",
+    "scenario": "A high-throughput service synchronizes access to a shared map. As traffic increases, thread contention grows and throughput stops scaling.",
+    "investigation": "Use thread dumps and profiling to measure monitor contention and time spent inside the critical section. Determine whether the shared state can be partitioned.",
+    "resolution": "Reduce the critical section, use concurrent data structures where appropriate and partition state by key so independent operations do not share one lock. Do not replace synchronized with another lock without measuring.",
+    "prevention": "Track lock contention and benchmark with realistic concurrency. Design shared state to minimize contention from the start."
+  },
+  {
+    "id": "v10.1-036",
+    "title": "GC pauses cause intermittent latency spikes",
+    "level": "L3",
+    "tags": [
+      "gc",
+      "latency",
+      "jvm",
+      "Production Scenario",
+      "V10.1"
+    ],
+    "short": "GC tuning starts with understanding allocation and pause behavior; collector flags are not a substitute for profiling.",
+    "answer": "I would correlate p99 latency with GC events, then profile allocation and object lifetime. I would first reduce unnecessary allocation and only then tune collector and heap settings based on measured behavior.",
+    "code": "Reduce unnecessary allocations, investigate object lifetime and choose/tune a collector appropriate to the latency and heap requirements. Avoid changing GC settings blindly.",
+    "followups": [
+      "G1 versus ZGC?",
+      "How do you identify allocation hotspots?",
+      "What is a memory leak versus high allocation rate?"
+    ],
+    "mistakes": [
+      "Increasing heap without analyzing pauses.",
+      "Changing collectors without baseline measurements."
+    ],
+    "interview": "I would prove the latency correlation with GC logs and metrics before changing JVM flags.",
+    "source": "V10.1",
+    "topic": "java",
+    "subtopic": "jvm",
+    "scenario": "A Java service has normal average latency but p99 latency spikes every few minutes. GC logs show long pauses during the same periods.",
+    "investigation": "Correlate GC pause times with request latency, allocation rate, heap occupancy and old-generation collections. Inspect allocation hotspots with profiling.",
+    "resolution": "Reduce unnecessary allocations, investigate object lifetime and choose/tune a collector appropriate to the latency and heap requirements. Avoid changing GC settings blindly.",
+    "prevention": "Track pause time, allocation rate, heap occupancy and p99 latency together. Load-test with production-like object allocation patterns."
+  },
+  {
+    "id": "v10.1-037",
+    "title": "A CompletableFuture chain silently stops after an exception",
+    "level": "L3",
+    "tags": [
+      "completablefuture",
+      "exception handling",
+      "async",
+      "Production Scenario",
+      "V10.1"
+    ],
+    "short": "CompletableFuture exceptions complete the future exceptionally; they do not automatically behave like synchronous exceptions.",
+    "answer": "I would inspect the chain for exceptional completion and ensure the final future is observed. I would use handle or exceptionally for recovery and whenComplete for cleanup, while preserving the failure when recovery is not possible.",
+    "code": "Make exceptional paths explicit and return a terminal future that callers can observe. Use handle or exceptionally for recovery and whenComplete for side-effect cleanup/logging.",
+    "followups": [
+      "thenApply versus thenCompose?",
+      "What happens when an executor rejects a task?",
+      "How do you cancel a future chain?"
+    ],
+    "mistakes": [
+      "Assuming try/catch around submit catches async exceptions.",
+      "Ignoring the final future."
+    ],
+    "interview": "Async errors live in the future. If nobody observes the final stage, the business failure can become invisible.",
+    "source": "V10.1",
+    "topic": "java",
+    "subtopic": "concurrency",
+    "scenario": "A multi-step asynchronous workflow produces no final result for some requests. Logs show an exception in an intermediate stage but no response handling.",
+    "investigation": "Inspect the future chain and exceptional completion paths. Check whether exceptionally/handle/whenComplete is used and whether the final future is awaited.",
+    "resolution": "Make exceptional paths explicit and return a terminal future that callers can observe. Use handle or exceptionally for recovery and whenComplete for side-effect cleanup/logging.",
+    "prevention": "Test both success and failure paths for every asynchronous workflow and propagate correlation IDs through async boundaries."
+  },
+  {
+    "id": "v10.1-038",
+    "title": "A query becomes slow after the table grows tenfold",
+    "level": "L3",
+    "tags": [
+      "sql",
+      "execution plan",
+      "performance",
+      "Production Scenario",
+      "V10.1"
+    ],
+    "short": "Query performance is data-dependent; an index that worked at small scale may become ineffective as selectivity and distribution change.",
+    "answer": "I would compare execution plans and cardinality estimates first. Then I would tune indexes or query shape, update statistics and consider partitioning or archival only if the data model and access pattern justify it.",
+    "code": "Choose indexes based on the actual predicates and ordering, update statistics and reduce unnecessary rows/columns. If the workload has outgrown one table, consider partitioning or archival based on access patterns.",
+    "followups": [
+      "What makes an index selective?",
+      "What is a covering index?",
+      "When can an optimizer ignore an index?"
+    ],
+    "mistakes": [
+      "Adding indexes without checking write cost.",
+      "Optimizing only against a tiny test dataset."
+    ],
+    "interview": "I would not tune SQL from the text alone. I need the execution plan and realistic data distribution.",
+    "source": "V10.1",
+    "topic": "sql",
+    "subtopic": "indexes",
+    "scenario": "A query that was fast with 2 million rows becomes slow at 20 million rows even though the SQL text has not changed.",
+    "investigation": "Compare execution plans before and after growth. Inspect row estimates, index usage, scan type, selectivity, sort/hash operations and returned row counts.",
+    "resolution": "Choose indexes based on the actual predicates and ordering, update statistics and reduce unnecessary rows/columns. If the workload has outgrown one table, consider partitioning or archival based on access patterns.",
+    "prevention": "Monitor plan regressions, index usage and data growth. Include representative data volume in performance testing."
+  },
+  {
+    "id": "v10.1-039",
+    "title": "A deadlock appears after a new transaction flow is deployed",
+    "level": "L3",
+    "tags": [
+      "deadlock",
+      "locking",
+      "transaction",
+      "Production Scenario",
+      "V10.1"
+    ],
+    "short": "Deadlocks usually come from inconsistent lock ordering combined with concurrency.",
+    "answer": "I would inspect the deadlock graph, identify the lock order and make the transaction paths acquire resources consistently. I would also keep transactions short and use bounded retry only when the business operation is safe to repeat.",
+    "code": "Make transactions acquire shared resources in a consistent order, keep transactions short and avoid unnecessary locks. Add safe retry for deadlock victims when the operation is idempotent and the database recommends it.",
+    "followups": [
+      "Deadlock versus lock timeout?",
+      "When is retry safe?",
+      "How do isolation levels affect locking?"
+    ],
+    "mistakes": [
+      "Increasing lock timeouts.",
+      "Retrying non-idempotent operations blindly."
+    ],
+    "interview": "I would fix the lock-ordering design first and use retry only as a resilience measure, not the primary solution.",
+    "source": "V10.1",
+    "topic": "sql",
+    "subtopic": "transactions",
+    "scenario": "Two transactions update the same business entities in different orders. Under concurrency, each waits for a lock held by the other.",
+    "investigation": "Capture deadlock graphs or database diagnostics. Identify the resources and lock acquisition order for each transaction.",
+    "resolution": "Make transactions acquire shared resources in a consistent order, keep transactions short and avoid unnecessary locks. Add safe retry for deadlock victims when the operation is idempotent and the database recommends it.",
+    "prevention": "Test concurrent access patterns, monitor deadlock frequency and document lock ordering for critical workflows."
+  },
+  {
+    "id": "v10.1-040",
+    "title": "An index exists but the query still performs a full scan",
+    "level": "L3",
+    "tags": [
+      "index",
+      "sargability",
+      "execution plan",
+      "Production Scenario",
+      "V10.1"
+    ],
+    "short": "Having an index is not enough; the predicate must allow the optimizer to use it efficiently.",
+    "answer": "I would inspect the plan and predicate. If a function wraps the indexed column, I would usually rewrite it as a range predicate so the database can use the index, then verify with EXPLAIN.",
+    "code": "Rewrite predicates into sargable ranges where possible, for example a half-open timestamp interval. Use functional indexes only when supported and justified by workload.",
+    "followups": [
+      "What is sargability?",
+      "When is a functional index useful?",
+      "Why can a selective index still be ignored?"
+    ],
+    "mistakes": [
+      "Assuming every WHERE clause can use the index.",
+      "Applying functions to indexed columns unnecessarily."
+    ],
+    "interview": "I would validate index usability through the execution plan, not by checking that the index exists.",
+    "source": "V10.1",
+    "topic": "sql",
+    "subtopic": "indexes",
+    "scenario": "A query filters on a timestamp column with a function applied to it. An index exists, but the optimizer chooses a full table scan.",
+    "investigation": "Inspect the predicate and execution plan. Check whether the expression prevents efficient index range access and whether selectivity is sufficient.",
+    "resolution": "Rewrite predicates into sargable ranges where possible, for example a half-open timestamp interval. Use functional indexes only when supported and justified by workload.",
+    "prevention": "Review common predicates during index design and test with production-like statistics."
+  },
+  {
+    "id": "v10.1-041",
+    "title": "A large delete locks the table and causes API timeouts",
+    "level": "L3",
+    "tags": [
+      "delete",
+      "locking",
+      "batch",
+      "Production Scenario",
+      "V10.1"
+    ],
+    "short": "Large maintenance transactions can create operational incidents even when the SQL is logically correct.",
+    "answer": "I would avoid one giant transaction. I would batch the deletion, control commit frequency and consider partition-based retention if the data is naturally time-partitioned.",
+    "code": "Delete in bounded batches, commit between batches when business rules allow and schedule heavy maintenance during lower traffic. For very large time-based data, partitioning can make retention operations cheaper.",
+    "followups": [
+      "When should batching not be used?",
+      "How does partition dropping help retention?",
+      "What are the consistency implications of batch deletes?"
+    ],
+    "mistakes": [
+      "Deleting millions of rows in one transaction.",
+      "Ignoring transaction-log and replication impact."
+    ],
+    "interview": "For large data operations I care about lock duration, log volume and impact on foreground traffic, not only total execution time.",
+    "source": "V10.1",
+    "topic": "sql",
+    "subtopic": "transactions",
+    "scenario": "A maintenance job deletes millions of old rows in one transaction. Application requests start timing out because of lock and I/O pressure.",
+    "investigation": "Inspect transaction duration, lock waits, log growth and database I/O. Determine whether the delete conflicts with active queries.",
+    "resolution": "Delete in bounded batches, commit between batches when business rules allow and schedule heavy maintenance during lower traffic. For very large time-based data, partitioning can make retention operations cheaper.",
+    "prevention": "Load-test maintenance jobs against production-like traffic and monitor lock duration and transaction log growth."
+  },
+  {
+    "id": "v10.1-042",
+    "title": "Pagination becomes slower on deep pages",
+    "level": "L3",
+    "tags": [
+      "pagination",
+      "keyset",
+      "performance",
+      "Production Scenario",
+      "V10.1"
+    ],
+    "short": "OFFSET pagination makes the database walk past rows that are not returned; keyset pagination starts from the last seen key.",
+    "answer": "For very deep pages I would replace OFFSET with keyset pagination using an indexed, deterministic sort key such as created_at plus a unique ID. This keeps work closer to the requested page size.",
+    "code": "Use keyset/seek pagination based on a stable indexed ordering for large datasets. Keep cursor semantics explicit and avoid exposing mutable offset-based navigation when consistent traversal matters.",
+    "followups": [
+      "How do you paginate with duplicate timestamps?",
+      "What makes a cursor stable?",
+      "When is offset pagination acceptable?"
+    ],
+    "mistakes": [
+      "Using only created_at when timestamps are not unique.",
+      "Treating a cursor as a random page number."
+    ],
+    "interview": "I would use offset pagination for simple shallow navigation and keyset pagination for large, high-volume feeds.",
+    "source": "V10.1",
+    "topic": "sql",
+    "subtopic": "fundamentals",
+    "scenario": "An API uses OFFSET 5,000,000 LIMIT 50. The first pages are fast, but deep pages become increasingly slow.",
+    "investigation": "Inspect the execution plan and amount of rows scanned/discarded before the requested page. Measure latency as offset grows.",
+    "resolution": "Use keyset/seek pagination based on a stable indexed ordering for large datasets. Keep cursor semantics explicit and avoid exposing mutable offset-based navigation when consistent traversal matters.",
+    "prevention": "Index the cursor columns, define deterministic ordering and test pagination at realistic data volume."
+  },
+  {
+    "id": "v10.1-043",
+    "title": "JWT validation passes but a user accesses another user’s resource",
+    "level": "L3",
+    "tags": [
+      "jwt",
+      "authorization",
+      "object-level authorization",
+      "Production Scenario",
+      "V10.1"
+    ],
+    "short": "A valid JWT proves who the caller is; it does not automatically prove they may access every resource.",
+    "answer": "I would keep JWT validation and resource authorization separate. The service must compare the authenticated subject and tenant context with the resource owner or permission model before returning data.",
+    "code": "Separate authentication from authorization. Enforce object-level authorization using the authenticated subject, tenant and resource ownership/permissions. Never treat a valid token as permission to every resource.",
+    "followups": [
+      "What is IDOR?",
+      "How do you implement tenant-aware authorization?",
+      "Should authorization be checked at the gateway?"
+    ],
+    "mistakes": [
+      "Assuming authentication implies authorization.",
+      "Trusting user IDs from the URL without authorization checks."
+    ],
+    "interview": "The classic JWT mistake is treating authentication as authorization. I would explicitly authorize the requested object for the authenticated principal.",
+    "source": "V10.1",
+    "topic": "security",
+    "subtopic": "auth",
+    "scenario": "The API validates the JWT correctly, but a user can change /users/123 to /users/124 and retrieve another user’s data.",
+    "investigation": "Confirm token validation and then inspect the authorization decision for the requested resource. Check whether the resource owner is compared with token claims or server-side permissions.",
+    "resolution": "Separate authentication from authorization. Enforce object-level authorization using the authenticated subject, tenant and resource ownership/permissions. Never treat a valid token as permission to every resource.",
+    "prevention": "Add authorization tests for horizontal privilege escalation and audit access to sensitive resources."
+  },
+  {
+    "id": "v10.1-044",
+    "title": "Refresh-token rotation causes unexpected logouts",
+    "level": "L3",
+    "tags": [
+      "refresh token",
+      "rotation",
+      "security",
+      "Production Scenario",
+      "V10.1"
+    ],
+    "short": "Refresh-token rotation improves security, but token state must be modeled per session when multiple devices are supported.",
+    "answer": "I would model refresh tokens as session-specific token families. Each refresh rotates the token and invalidates the predecessor. Reuse of an old token can indicate theft and should revoke that token family.",
+    "code": "Track refresh-token families per device/session. Rotate the token on refresh, invalidate the old token, and detect reuse. Do not store one refresh token as the only session state for a multi-device account unless that behavior is intentional.",
+    "followups": [
+      "How do you revoke JWT access tokens?",
+      "What happens if two refresh requests race?",
+      "Where should refresh tokens be stored?"
+    ],
+    "mistakes": [
+      "Keeping one refresh token per user for all devices.",
+      "Rotating without handling concurrent refreshes."
+    ],
+    "interview": "I would first clarify whether sessions are per device. Then I would use token-family rotation and reuse detection rather than one global refresh token.",
+    "source": "V10.1",
+    "topic": "security",
+    "subtopic": "jwt",
+    "scenario": "A user signs in on two devices. Refresh-token rotation is enabled, but refreshing on one device invalidates the other device’s session unexpectedly.",
+    "investigation": "Inspect whether refresh tokens are rotated per session, globally per user, or stored as a single token. Check token-family tracking and reuse detection.",
+    "resolution": "Track refresh-token families per device/session. Rotate the token on refresh, invalidate the old token, and detect reuse. Do not store one refresh token as the only session state for a multi-device account unless that behavior is intentional.",
+    "prevention": "Define session semantics, expose device/session management and test concurrent refreshes and token theft scenarios."
+  },
+  {
+    "id": "v10.1-045",
+    "title": "An SSRF vulnerability lets the backend call internal services",
+    "level": "L3",
+    "tags": [
+      "ssrf",
+      "api security",
+      "networking",
+      "Production Scenario",
+      "V10.1"
+    ],
+    "short": "SSRF is a server-side trust-boundary problem: user-controlled URLs become server-controlled network requests.",
+    "answer": "I would avoid arbitrary outbound URLs where possible. If required, I would use an allowlist, validate DNS-resolved addresses against blocked ranges, restrict redirects and enforce network egress controls.",
+    "code": "Prefer allowlists for destinations. Validate resolved IP addresses, block private/link-local/loopback ranges, control redirects and use an egress proxy where appropriate. Do not rely only on string checks of the hostname.",
+    "followups": [
+      "Why is DNS rebinding relevant?",
+      "How can a proxy help?",
+      "Which cloud metadata endpoints are sensitive?"
+    ],
+    "mistakes": [
+      "Blocking only localhost strings.",
+      "Allowing redirects to bypass validation."
+    ],
+    "interview": "The strongest SSRF defense is reducing where the server is allowed to connect, not only validating the input string.",
+    "source": "V10.1",
+    "topic": "security",
+    "subtopic": "micro",
+    "scenario": "An image-import endpoint accepts a URL and fetches it from the server. An attacker supplies an internal metadata or service address.",
+    "investigation": "Trace outbound URL handling and inspect whether private IPs, loopback addresses, redirects and DNS rebinding are blocked. Identify whether the server follows redirects automatically.",
+    "resolution": "Prefer allowlists for destinations. Validate resolved IP addresses, block private/link-local/loopback ranges, control redirects and use an egress proxy where appropriate. Do not rely only on string checks of the hostname.",
+    "prevention": "Add SSRF tests, restrict outbound network access and monitor unusual outbound destinations."
+  },
+  {
+    "id": "v10.1-046",
+    "title": "Kubernetes repeatedly OOMKills a Java service",
+    "level": "L3",
+    "tags": [
+      "kubernetes",
+      "oomkill",
+      "java",
+      "Production Scenario",
+      "V10.1"
+    ],
+    "short": "Container memory is larger than Java heap; the process can be OOMKilled while heap is not full.",
+    "answer": "I would compare container RSS with heap usage and account for metaspace, thread stacks, direct memory and native allocations. Then I would fix leaks or allocation pressure and size the JVM with explicit headroom inside the container limit.",
+    "code": "Size JVM memory within the container limit, leaving headroom for non-heap/native memory. Investigate allocation or leaks before simply increasing the container limit. Set realistic requests/limits and test peak load.",
+    "followups": [
+      "How does -Xmx relate to container limits?",
+      "How do you investigate native memory?",
+      "What is the difference between requests and limits?"
+    ],
+    "mistakes": [
+      "Setting Xmx equal to the container memory limit.",
+      "Assuming OOMKilled always means a Java heap leak."
+    ],
+    "interview": "I would never infer container safety from heap usage alone. Kubernetes limits apply to the whole process.",
+    "source": "V10.1",
+    "topic": "cloud",
+    "subtopic": "kubernetes",
+    "scenario": "A Java pod is stable under normal traffic but gets OOMKilled during peak load. The JVM heap appears below the configured heap maximum shortly before termination.",
+    "investigation": "Compare container memory limit with JVM heap plus metaspace, thread stacks, native memory, direct buffers and other process overhead. Inspect container memory metrics and JVM native-memory data.",
+    "resolution": "Size JVM memory within the container limit, leaving headroom for non-heap/native memory. Investigate allocation or leaks before simply increasing the container limit. Set realistic requests/limits and test peak load.",
+    "prevention": "Monitor container RSS and JVM heap separately, alert before the limit and include container limits in JVM sizing decisions."
+  },
+  {
+    "id": "v10.1-047",
+    "title": "A rolling deployment causes capacity to drop below the SLO",
+    "level": "L3",
+    "tags": [
+      "kubernetes",
+      "rolling deployment",
+      "availability",
+      "Production Scenario",
+      "V10.1"
+    ],
+    "short": "Zero-downtime deployment depends on capacity, readiness and rollout policy together.",
+    "answer": "I would ensure the rollout maintains enough ready capacity, usually with maxUnavailable set appropriately and maxSurge supported by cluster capacity. Readiness must prevent traffic from reaching unready pods.",
+    "code": "Use readiness probes that reflect serving capability and configure rollout capacity so enough replicas remain available. For critical services, use maxUnavailable=0 where capacity permits and ensure cluster resources can support surge pods.",
+    "followups": [
+      "What is maxSurge?",
+      "Why can maxUnavailable=0 still fail?",
+      "How do readiness probes interact with deployments?"
+    ],
+    "mistakes": [
+      "Assuming rolling updates are automatically zero downtime.",
+      "Ignoring cluster capacity for surge pods."
+    ],
+    "interview": "I would test deployments as production traffic events, not just application tests.",
+    "source": "V10.1",
+    "topic": "cloud",
+    "subtopic": "kubernetes",
+    "scenario": "A service runs four pods. During rolling deployment, one old pod is terminated before a new pod becomes ready, leaving only three serving instances and causing latency spikes.",
+    "investigation": "Inspect deployment strategy, maxUnavailable, maxSurge and readiness behavior. Compare available replicas with traffic and per-pod capacity.",
+    "resolution": "Use readiness probes that reflect serving capability and configure rollout capacity so enough replicas remain available. For critical services, use maxUnavailable=0 where capacity permits and ensure cluster resources can support surge pods.",
+    "prevention": "Load-test rollouts, monitor available replicas and latency during deployments and ensure the cluster has spare capacity for surge."
+  },
+  {
+    "id": "v10.1-048",
+    "title": "A Kubernetes HPA scales too late during traffic spikes",
+    "level": "L3",
+    "tags": [
+      "hpa",
+      "autoscaling",
+      "latency",
+      "Production Scenario",
+      "V10.1"
+    ],
+    "short": "Autoscaling is constrained by detection time plus pod startup time; the metric must predict saturation early enough.",
+    "answer": "I would measure the complete scaling loop. If CPU is delayed, I would consider request concurrency or queue depth, increase baseline capacity for known peaks and optimize pod startup time.",
+    "code": "Use a metric that correlates earlier with saturation, such as request rate, concurrency or queue depth, and tune target utilization and startup capacity. Keep a minimum replica buffer for predictable peaks.",
+    "followups": [
+      "When is queue depth a better metric?",
+      "How does cluster autoscaler interact with HPA?",
+      "What is scale-to-zero trade-off?"
+    ],
+    "mistakes": [
+      "Choosing CPU because it is easy to measure.",
+      "Ignoring pod startup latency."
+    ],
+    "interview": "I would tune autoscaling from the service’s actual bottleneck and response time, not blindly use CPU at 70 percent.",
+    "source": "V10.1",
+    "topic": "cloud",
+    "subtopic": "kubernetes",
+    "scenario": "Traffic doubles in 30 seconds, but CPU-based HPA takes several minutes to add enough pods. p95 latency breaches the SLO before scaling completes.",
+    "investigation": "Measure scale-up detection delay, pod startup time and whether CPU is a leading indicator for this workload. Check stabilization and metrics scrape intervals.",
+    "resolution": "Use a metric that correlates earlier with saturation, such as request rate, concurrency or queue depth, and tune target utilization and startup capacity. Keep a minimum replica buffer for predictable peaks.",
+    "prevention": "Load-test burst traffic, measure time-to-ready and set alerts on saturation before the SLO is breached."
+  },
+  {
+    "id": "v10.1-049",
+    "title": "Design an order system that remains correct during duplicate requests",
+    "level": "L3",
+    "tags": [
+      "order system",
+      "idempotency",
+      "system design",
+      "Production Scenario",
+      "V10.1"
+    ],
+    "short": "Correctness comes from durable idempotency and explicit state transitions, not from assuming requests arrive once.",
+    "answer": "I would design order creation around an idempotency key and durable order state. The payment flow would have its own idempotency and reconciliation because an external timeout does not prove failure.",
+    "code": "Create an idempotent order command keyed by a client-generated idempotency key. Persist the key and order result atomically. Use a payment provider idempotency key derived from the order attempt and model payment as a state machine with reconciliation.",
+    "followups": [
+      "How would you scale the order database?",
+      "How would you publish OrderCreated reliably?",
+      "What if payment remains pending for 30 minutes?"
+    ],
+    "mistakes": [
+      "Treating order creation and payment as one synchronous ACID transaction.",
+      "Ignoring duplicate client requests."
+    ],
+    "interview": "I would first define the business state machine and failure semantics, then design APIs and storage around those guarantees.",
+    "source": "V10.1",
+    "topic": "system-design",
+    "subtopic": "apis",
+    "scenario": "Customers can retry order creation because mobile networks are unreliable. The system must not create duplicate orders or double-charge customers.",
+    "investigation": "Identify the command boundary, idempotency key, order state machine and payment interaction. Separate order creation from payment outcome and model uncertain states.",
+    "resolution": "Create an idempotent order command keyed by a client-generated idempotency key. Persist the key and order result atomically. Use a payment provider idempotency key derived from the order attempt and model payment as a state machine with reconciliation.",
+    "prevention": "Test retries, concurrent duplicates, provider timeouts and partial failures. Store durable correlation IDs and expose safe status queries."
+  },
+  {
+    "id": "v10.1-050",
+    "title": "Design a notification service for millions of users",
+    "level": "L3",
+    "tags": [
+      "notification",
+      "queue",
+      "system design",
+      "Production Scenario",
+      "V10.1"
+    ],
+    "short": "The API should not synchronously wait for external notification providers at scale.",
+    "answer": "I would make notification submission asynchronous. The API writes a durable command, channel workers consume it, apply provider-specific rate limits and retries, and persist delivery status for observability and reconciliation.",
+    "code": "Accept notification commands into a durable queue, route by channel, use provider-specific workers and bounded retries with backoff. Track delivery state and use idempotency keys to prevent duplicate sends where the provider supports them.",
+    "followups": [
+      "How do you preserve ordering for notifications?",
+      "How do you handle provider rate limits?",
+      "How do you prevent duplicate SMS?"
+    ],
+    "mistakes": [
+      "Retrying without provider rate limits.",
+      "Using one shared worker pool for all channels."
+    ],
+    "interview": "I would separate acceptance from delivery so provider slowness does not directly make the public API unavailable.",
+    "source": "V10.1",
+    "topic": "system-design",
+    "subtopic": "distributed",
+    "scenario": "A platform sends email, SMS and push notifications. Traffic is bursty and a provider may become slow or unavailable.",
+    "investigation": "Estimate peak notification rate, provider quotas, queue capacity and retry volume. Separate request acceptance from delivery execution.",
+    "resolution": "Accept notification commands into a durable queue, route by channel, use provider-specific workers and bounded retries with backoff. Track delivery state and use idempotency keys to prevent duplicate sends where the provider supports them.",
+    "prevention": "Monitor queue age, provider latency, delivery success and retry rates. Apply per-provider rate limits and circuit breakers."
+  },
+  {
+    "id": "v10.1-051",
+    "title": "Design a distributed rate limiter for APIs",
+    "level": "L3",
+    "tags": [
+      "rate limiter",
+      "redis",
+      "system design",
+      "Production Scenario",
+      "V10.1"
+    ],
+    "short": "A distributed rate limiter is a consistency and availability trade-off, not just a counter.",
+    "answer": "I would use a token bucket or sliding-window approach with atomic state updates in a shared store. I would define the failure policy explicitly and expose rate-limit headers so clients can behave predictably.",
+    "code": "Use a centralized or distributed counter/token-bucket implementation with atomic operations. Return 429 with retry guidance. Decide whether fail-open or fail-closed is safer for the business operation.",
+    "followups": [
+      "Token bucket versus sliding window?",
+      "How do you avoid a Redis bottleneck?",
+      "What happens during a Redis outage?"
+    ],
+    "mistakes": [
+      "Using local counters when the limit must be global.",
+      "Ignoring burst behavior."
+    ],
+    "interview": "I would first clarify the accuracy requirement. Then I would choose token bucket or sliding window, atomic updates and an explicit fail-open/fail-closed policy.",
+    "source": "V10.1",
+    "topic": "system-design",
+    "subtopic": "distributed",
+    "scenario": "A public API must enforce 100 requests per minute per customer across many application instances.",
+    "investigation": "Define whether the limit is strict or approximate, the key dimensions and failure behavior. Estimate request volume and state size. Decide whether the limiter must be globally consistent.",
+    "resolution": "Use a centralized or distributed counter/token-bucket implementation with atomic operations. Return 429 with retry guidance. Decide whether fail-open or fail-closed is safer for the business operation.",
+    "prevention": "Monitor allowed/blocked rates and limiter latency, protect the limiter itself and load-test bursts at the boundary."
   }
 ]

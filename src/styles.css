@@ -32,3 +32,8 @@
 
 /* V8.1 coding study blocks */
 .example-block, .complexity-block { margin-top: 12px; }
+
+
+.scenario-block { margin-top: 14px; padding: 14px 16px; border: 1px solid var(--line, #ddd); border-radius: 12px; background: var(--surface-2, rgba(127,127,127,.06)); }
+.scenario-block b { display:block; margin-bottom:6px; }
+.scenario-block p { margin:0; }

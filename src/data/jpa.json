@@ -15,7 +15,8 @@
     ],
     "mistakes": [],
     "interview": "It is the EntityManager-managed set of tracked entities.",
-    "source": "V3"
+    "source": "V3",
+    "topic": "jpa"
   },
   {
     "id": "jpa-002",
@@ -33,7 +34,8 @@
     ],
     "mistakes": [],
     "interview": "Entities can be transient, managed, detached or removed.",
-    "source": "V3"
+    "source": "V3",
+    "topic": "jpa"
   },
   {
     "id": "jpa-003",
@@ -51,7 +53,8 @@
     ],
     "mistakes": [],
     "interview": "persist makes a new entity managed; merge copies state into a managed instance and returns it.",
-    "source": "V3"
+    "source": "V3",
+    "topic": "jpa"
   },
   {
     "id": "jpa-004",
@@ -69,7 +72,8 @@
     ],
     "mistakes": [],
     "interview": "Lazy defers association loading; eager asks for earlier loading.",
-    "source": "V3"
+    "source": "V3",
+    "topic": "jpa"
   },
   {
     "id": "jpa-005",
@@ -87,7 +91,8 @@
     ],
     "mistakes": [],
     "interview": "One parent query plus one query per accessed association.",
-    "source": "V3"
+    "source": "V3",
+    "topic": "jpa"
   },
   {
     "id": "jpa-006",
@@ -105,7 +110,8 @@
     ],
     "mistakes": [],
     "interview": "A version field detects concurrent updates.",
-    "source": "V3"
+    "source": "V3",
+    "topic": "jpa"
   },
   {
     "id": "jpa-007",
@@ -123,7 +129,8 @@
     ],
     "mistakes": [],
     "interview": "JPQL queries entities and mapped fields rather than database tables/columns.",
-    "source": "V3"
+    "source": "V3",
+    "topic": "jpa"
   },
   {
     "id": "jpa-008",
@@ -141,7 +148,8 @@
     ],
     "mistakes": [],
     "interview": "It defines a use-case-specific fetch plan.",
-    "source": "V3"
+    "source": "V3",
+    "topic": "jpa"
   },
   {
     "id": "jpa-009",
@@ -159,7 +167,8 @@
     ],
     "mistakes": [],
     "interview": "Hibernate detects changes to managed entities and synchronizes them during flush.",
-    "source": "V3"
+    "source": "V3",
+    "topic": "jpa"
   },
   {
     "id": "jpa-010",
@@ -177,7 +186,8 @@
     ],
     "mistakes": [],
     "interview": "save generally delegates to persist for new entities and merge for existing ones.",
-    "source": "V3"
+    "source": "V3",
+    "topic": "jpa"
   },
   {
     "id": "jpa-011",
@@ -195,7 +205,8 @@
     ],
     "mistakes": [],
     "interview": "Flush synchronizes pending changes with the DB; commit finalizes the transaction.",
-    "source": "V3"
+    "source": "V3",
+    "topic": "jpa"
   },
   {
     "id": "jpa-012",
@@ -213,7 +224,8 @@
     ],
     "mistakes": [],
     "interview": "Cascade propagates selected entity lifecycle operations.",
-    "source": "V3"
+    "source": "V3",
+    "topic": "jpa"
   },
   {
     "id": "jpa-013",
@@ -231,7 +243,8 @@
     ],
     "mistakes": [],
     "interview": "It can delete an owned child removed from a parent relationship.",
-    "source": "V3"
+    "source": "V3",
+    "topic": "jpa"
   },
   {
     "id": "jpa-014",
@@ -249,7 +262,8 @@
     ],
     "mistakes": [],
     "interview": "Measure SQL, remove N+1, paginate, use projections/fetch plans and indexes.",
-    "source": "V3"
+    "source": "V3",
+    "topic": "jpa"
   },
   {
     "id": "jpa-015",
@@ -267,25 +281,8 @@
     ],
     "mistakes": [],
     "interview": "A lazy association was accessed after the persistence context was unavailable.",
-    "source": "V3"
-  },
-  {
-    "id": "sql-019",
-    "title": "Optimistic vs pessimistic locking",
-    "level": "L3",
-    "tags": [
-      "Concurrency",
-      "JPA"
-    ],
-    "short": "Optimistic locking detects conflicts; pessimistic locking acquires database locks.",
-    "answer": "Version columns work well when conflicts are rare; pessimistic locking can increase contention.",
-    "code": "UPDATE account SET balance=?,version=version+1 WHERE id=? AND version=?;",
-    "followups": [
-      "When use pessimistic?"
-    ],
-    "mistakes": [],
-    "interview": "Optimistic locking detects conflicts; pessimistic locking acquires database locks.",
-    "source": "V3"
+    "source": "V3",
+    "topic": "jpa"
   },
   {
     "id": "iq-124",
@@ -301,7 +298,8 @@
     "followups": [],
     "mistakes": [],
     "interview": "Hibernate is a popular ORM (Object-Relational Mapping) framework for Java that maps Java objects to relational database tables, handling SQL generation, caching, and transaction management so developers work with objects instead of writing raw JDBC/SQL for most operations. It's the most common JPA implementation.",
-    "source": "IQ300"
+    "source": "IQ300",
+    "topic": "jpa"
   },
   {
     "id": "iq-125",
@@ -317,7 +315,8 @@
     "followups": [],
     "mistakes": [],
     "interview": "JPA (Jakarta/Java Persistence API) is a specification — a set of interfaces and annotations (\\@Entity\\, \\@Id\\, \\EntityManager\\) — defining a standard way to do ORM in Java, without dictating the implementation. Hibernate, EclipseLink, and OpenJPA are concrete implementations of this spec.",
-    "source": "IQ300"
+    "source": "IQ300",
+    "topic": "jpa"
   },
   {
     "id": "iq-126",
@@ -333,7 +332,76 @@
     "followups": [],
     "mistakes": [],
     "interview": "JPA is the specification/interface; Hibernate is one concrete implementation of it (predating JPA and later aligning with it). Coding against JPA interfaces keeps your persistence code portable across implementations, while using Hibernate-specific APIs/annotations ties you to that implementation but exposes extra feat",
-    "source": "IQ300"
+    "source": "IQ300",
+    "topic": "jpa"
+  },
+  {
+    "id": "iq-127",
+    "title": "What is an entity?",
+    "level": "L1",
+    "tags": [
+      "IQ300",
+      "java"
+    ],
+    "short": "A plain Java class annotated \\@Entity\\ representing a persistent domain object mapped to a database table — each instance corresponds to a row, and its fields (annotated e.g. \\@Id\\, \\@Column\\) map to columns. It requires a no-arg constructo",
+    "answer": "A plain Java class annotated \\<code>@Entity\\</code> representing a persistent domain object mapped to a database table — each instance corresponds to a row, and its fields (annotated e.g. \\<code>@Id\\</code>, \\<code>@Column\\</code>) map to columns. It requires a no-arg constructor and a primary key field.",
+    "code": "",
+    "followups": [],
+    "mistakes": [],
+    "interview": "A plain Java class annotated \\@Entity\\ representing a persistent domain object mapped to a database table — each instance corresponds to a row, and its fields (annotated e.g. \\@Id\\, \\@Column\\) map to columns. It requires a no-arg constructor and a primary key field.",
+    "source": "IQ300",
+    "topic": "jpa"
+  },
+  {
+    "id": "iq-128",
+    "title": "What is the persistence context?",
+    "level": "L1",
+    "tags": [
+      "IQ300",
+      "java"
+    ],
+    "short": "The persistence context (managed internally by an \\EntityManager\\/Hibernate \\Session\\) is a first-level cache of managed entity instances within the current unit of work (typically a transaction). Entities loaded or persisted within it are ",
+    "answer": "The persistence context (managed internally by an \\<code>EntityManager\\</code>/Hibernate \\<code>Session\\</code>) is a first-level cache of managed entity instances within the current unit of work (typically a transaction). Entities loaded or persisted within it are tracked, so repeated lookups by id return the same in-memory instance and changes are automatically detected via dirty checking.",
+    "code": "",
+    "followups": [],
+    "mistakes": [],
+    "interview": "The persistence context (managed internally by an \\EntityManager\\/Hibernate \\Session\\) is a first-level cache of managed entity instances within the current unit of work (typically a transaction). Entities loaded or persisted within it are tracked, so repeated lookups by id return the same in-memory instance and change",
+    "source": "IQ300",
+    "topic": "jpa"
+  },
+  {
+    "id": "iq-129",
+    "title": "What are entity states?",
+    "level": "L1",
+    "tags": [
+      "IQ300",
+      "java"
+    ],
+    "short": "Transient — a plain new object not yet associated with a persistence context or DB row. Managed (persistent) — attached to a persistence context, its changes are tracked and will be synced to the DB. Detached — was managed but the persisten",
+    "answer": "Transient — a plain new object not yet associated with a persistence context or DB row. Managed (persistent) — attached to a persistence context, its changes are tracked and will be synced to the DB. Detached — was managed but the persistence context has closed (e.g. after a transaction ends); changes aren't tracked anymore. Removed — marked for deletion within the current persistence context.",
+    "code": "",
+    "followups": [],
+    "mistakes": [],
+    "interview": "Transient — a plain new object not yet associated with a persistence context or DB row. Managed (persistent) — attached to a persistence context, its changes are tracked and will be synced to the DB. Detached — was managed but the persistence context has closed (e.g. after a transaction ends); changes aren't tracked an",
+    "source": "IQ300",
+    "topic": "jpa"
+  },
+  {
+    "id": "iq-130",
+    "title": "Difference between `save()` and `saveAndFlush()`.",
+    "level": "L1",
+    "tags": [
+      "IQ300",
+      "java"
+    ],
+    "short": "\\save()\\ persists/merges an entity but the actual SQL \\INSERT\\/\\UPDATE\\ may be deferred until the persistence context is flushed (e.g. at transaction commit or the next query). \\saveAndFlush()\\ immediately forces a flush, synchronizing the ",
+    "answer": "\\<code>save()\\</code> persists/merges an entity but the actual SQL \\<code>INSERT\\</code>/\\<code>UPDATE\\</code> may be deferred until the persistence context is flushed (e.g. at transaction commit or the next query). \\<code>saveAndFlush()\\</code> immediately forces a flush, synchronizing the change to the database right away — useful when you need the DB state (e.g. a generated id or a trigger's effect) visible immediately, at the cost of losing some batching optimization.",
+    "code": "",
+    "followups": [],
+    "mistakes": [],
+    "interview": "\\save()\\ persists/merges an entity but the actual SQL \\INSERT\\/\\UPDATE\\ may be deferred until the persistence context is flushed (e.g. at transaction commit or the next query). \\saveAndFlush()\\ immediately forces a flush, synchronizing the change to the database right away — useful when you need the DB state (e.g. a ge",
+    "source": "IQ300",
+    "topic": "jpa"
   },
   {
     "id": "iq-131",
@@ -349,7 +417,42 @@
     "followups": [],
     "mistakes": [],
     "interview": "An association (e.g. a \\@OneToMany\\ collection) is not fetched from the database when the parent entity is loaded — it's only queried when the association is actually accessed in code. This avoids loading data that may not be needed, but risks a \\LazyInitializationException\\ if accessed after the persistence context/se",
-    "source": "IQ300"
+    "source": "IQ300",
+    "topic": "jpa"
+  },
+  {
+    "id": "iq-132",
+    "title": "What is eager loading?",
+    "level": "L1",
+    "tags": [
+      "IQ300",
+      "java"
+    ],
+    "short": "The associated entity/collection is fetched immediately, in the same query (or an immediate follow-up query) as the parent, regardless of whether it's actually used — simpler to reason about but can pull in far more data than needed and is ",
+    "answer": "The associated entity/collection is fetched immediately, in the same query (or an immediate follow-up query) as the parent, regardless of whether it's actually used — simpler to reason about but can pull in far more data than needed and is a common source of the N+1 query problem or oversized result sets.",
+    "code": "",
+    "followups": [],
+    "mistakes": [],
+    "interview": "The associated entity/collection is fetched immediately, in the same query (or an immediate follow-up query) as the parent, regardless of whether it's actually used — simpler to reason about but can pull in far more data than needed and is a common source of the N+1 query problem or oversized result sets.",
+    "source": "IQ300",
+    "topic": "jpa"
+  },
+  {
+    "id": "iq-133",
+    "title": "Difference between lazy and eager fetching.",
+    "level": "L1",
+    "tags": [
+      "IQ300",
+      "java"
+    ],
+    "short": "Lazy fetching defers loading an association until it's accessed, minimizing unnecessary queries/data but requiring an open session when accessed. Eager fetching loads it immediately alongside the owning entity, which is simpler but can hurt",
+    "answer": "Lazy fetching defers loading an association until it's accessed, minimizing unnecessary queries/data but requiring an open session when accessed. Eager fetching loads it immediately alongside the owning entity, which is simpler but can hurt performance by fetching unused data. JPA defaults \\<code>@ManyToOne\\</code>/\\<code>@OneToOne\\</code> to eager and \\<code>@OneToMany\\</code>/\\<code>@ManyToMany\\</code> to lazy, though this is commonly overridden.",
+    "code": "",
+    "followups": [],
+    "mistakes": [],
+    "interview": "Lazy fetching defers loading an association until it's accessed, minimizing unnecessary queries/data but requiring an open session when accessed. Eager fetching loads it immediately alongside the owning entity, which is simpler but can hurt performance by fetching unused data. JPA defaults \\@ManyToOne\\/\\@OneToOne\\ to e",
+    "source": "IQ300",
+    "topic": "jpa"
   },
   {
     "id": "iq-134",
@@ -365,7 +468,8 @@
     "followups": [],
     "mistakes": [],
     "interview": "When fetching a list of N parent entities, and then lazily accessing an association on each one individually, Hibernate issues one query for the parents plus N additional queries (one per parent) to fetch each one's association — N+1 total queries instead of one efficient join, badly hurting performance as N grows.",
-    "source": "IQ300"
+    "source": "IQ300",
+    "topic": "jpa"
   },
   {
     "id": "iq-135",
@@ -381,6 +485,588 @@
     "followups": [],
     "mistakes": [],
     "interview": "Use a JOIN FETCH in JPQL/HQL to eagerly pull the association in the same query, use an \\@EntityGraph\\ to declare which associations to fetch eagerly for a specific query, batch-fetch with \\@BatchSize\\ (fetches associations in batches instead of one at a time), or use DTO projections that select exactly the needed colum",
-    "source": "IQ300"
+    "source": "IQ300",
+    "topic": "jpa"
+  },
+  {
+    "id": "iq-136",
+    "title": "What are first-level and second-level caches?",
+    "level": "L1",
+    "tags": [
+      "IQ300",
+      "java"
+    ],
+    "short": "The first-level cache is the persistence context itself — scoped to a single session/transaction, always on, not shareable across sessions. The second-level cache (optional, e.g. via Ehcache or Redis) is shared across sessions/transactions ",
+    "answer": "The first-level cache is the persistence context itself — scoped to a single session/transaction, always on, not shareable across sessions. The second-level cache (optional, e.g. via Ehcache or Redis) is shared across sessions/transactions at the \\<code>SessionFactory\\</code> level, caching entities and query results across multiple requests to reduce database hits for frequently read, rarely changed data.",
+    "code": "",
+    "followups": [],
+    "mistakes": [],
+    "interview": "The first-level cache is the persistence context itself — scoped to a single session/transaction, always on, not shareable across sessions. The second-level cache (optional, e.g. via Ehcache or Redis) is shared across sessions/transactions at the \\SessionFactory\\ level, caching entities and query results across multipl",
+    "source": "IQ300",
+    "topic": "jpa"
+  },
+  {
+    "id": "iq-137",
+    "title": "What is dirty checking?",
+    "level": "L1",
+    "tags": [
+      "IQ300",
+      "java"
+    ],
+    "short": "Hibernate's mechanism for automatically detecting changes to managed entities: at flush time, it compares each managed entity's current field values against a snapshot taken when it was loaded, and generates \\UPDATE\\ statements only for ent",
+    "answer": "Hibernate's mechanism for automatically detecting changes to managed entities: at flush time, it compares each managed entity's current field values against a snapshot taken when it was loaded, and generates \\<code>UPDATE\\</code> statements only for entities/fields that actually changed — without the developer explicitly calling an update method.",
+    "code": "",
+    "followups": [],
+    "mistakes": [],
+    "interview": "Hibernate's mechanism for automatically detecting changes to managed entities: at flush time, it compares each managed entity's current field values against a snapshot taken when it was loaded, and generates \\UPDATE\\ statements only for entities/fields that actually changed — without the developer explicitly calling an",
+    "source": "IQ300",
+    "topic": "jpa"
+  },
+  {
+    "id": "iq-138",
+    "title": "What is cascading?",
+    "level": "L1",
+    "tags": [
+      "IQ300",
+      "java"
+    ],
+    "short": "Cascading propagates an operation performed on a parent entity (persist, merge, remove, etc.) automatically to its associated child entities, so you don't have to manually save/delete each child, e.g. saving an \\Order\\ also saving its \\Orde",
+    "answer": "Cascading propagates an operation performed on a parent entity (persist, merge, remove, etc.) automatically to its associated child entities, so you don't have to manually save/delete each child, e.g. saving an \\<code>Order\\</code> also saving its \\<code>OrderItem\\</code>s via \\<code>cascade = CascadeType.PERSIST\\</code> on the association.",
+    "code": "",
+    "followups": [],
+    "mistakes": [],
+    "interview": "Cascading propagates an operation performed on a parent entity (persist, merge, remove, etc.) automatically to its associated child entities, so you don't have to manually save/delete each child, e.g. saving an \\Order\\ also saving its \\OrderItem\\s via \\cascade = CascadeType.PERSIST\\ on the association.",
+    "source": "IQ300",
+    "topic": "jpa"
+  },
+  {
+    "id": "iq-139",
+    "title": "Explain `CascadeType.ALL`.",
+    "level": "L1",
+    "tags": [
+      "IQ300",
+      "java"
+    ],
+    "short": "Applies every cascade operation (PERSIST, MERGE, REMOVE, REFRESH, DETACH) from parent to child — so persisting, updating, deleting, or detaching the parent automatically does the same for its associated children. Convenient for true parent-",
+    "answer": "Applies every cascade operation (PERSIST, MERGE, REMOVE, REFRESH, DETACH) from parent to child — so persisting, updating, deleting, or detaching the parent automatically does the same for its associated children. Convenient for true parent-owns-child relationships (e.g. Order/OrderItem), but risky for shared/independent entities where you don't want deletions cascading unintentionally.",
+    "code": "",
+    "followups": [],
+    "mistakes": [],
+    "interview": "Applies every cascade operation (PERSIST, MERGE, REMOVE, REFRESH, DETACH) from parent to child — so persisting, updating, deleting, or detaching the parent automatically does the same for its associated children. Convenient for true parent-owns-child relationships (e.g. Order/OrderItem), but risky for shared/independen",
+    "source": "IQ300",
+    "topic": "jpa"
+  },
+  {
+    "id": "iq-140",
+    "title": "What is orphan removal?",
+    "level": "L1",
+    "tags": [
+      "IQ300",
+      "java"
+    ],
+    "short": "When \\orphanRemoval = true\\ is set on a one-to-many/one-to-one association, if a child entity is removed from the parent's collection (or the parent-child link is broken) without being explicitly deleted, Hibernate automatically deletes tha",
+    "answer": "When \\<code>orphanRemoval = true\\</code> is set on a one-to-many/one-to-one association, if a child entity is removed from the parent's collection (or the parent-child link is broken) without being explicitly deleted, Hibernate automatically deletes that now-orphaned child from the database on flush.",
+    "code": "",
+    "followups": [],
+    "mistakes": [],
+    "interview": "When \\orphanRemoval = true\\ is set on a one-to-many/one-to-one association, if a child entity is removed from the parent's collection (or the parent-child link is broken) without being explicitly deleted, Hibernate automatically deletes that now-orphaned child from the database on flush.",
+    "source": "IQ300",
+    "topic": "jpa"
+  },
+  {
+    "id": "iq-141",
+    "title": "Difference between `@OneToOne`, `@OneToMany`, `@ManyToOne`, and `@ManyToMany`.",
+    "level": "L1",
+    "tags": [
+      "IQ300",
+      "java"
+    ],
+    "short": "\\@OneToOne\\ links one entity instance to exactly one of another (e.g. User–Profile). \\@OneToMany\\/\\@ManyToOne\\ are two sides of the same relationship — one parent has many children, each child belongs to one parent (e.g. Order–OrderItem), t",
+    "answer": "\\<code>@OneToOne\\</code> links one entity instance to exactly one of another (e.g. User–Profile). \\<code>@OneToMany\\</code>/\\<code>@ManyToOne\\</code> are two sides of the same relationship — one parent has many children, each child belongs to one parent (e.g. Order–OrderItem), typically implemented with a foreign key on the \"many\" side. \\<code>@ManyToMany\\</code> links many instances of one entity to many of another (e.g. Student–Course), usually requiring a join table.",
+    "code": "",
+    "followups": [],
+    "mistakes": [],
+    "interview": "\\@OneToOne\\ links one entity instance to exactly one of another (e.g. User–Profile). \\@OneToMany\\/\\@ManyToOne\\ are two sides of the same relationship — one parent has many children, each child belongs to one parent (e.g. Order–OrderItem), typically implemented with a foreign key on the \"many\" side. \\@ManyToMany\\ links ",
+    "source": "IQ300",
+    "topic": "jpa"
+  },
+  {
+    "id": "iq-142",
+    "title": "What is `mappedBy`?",
+    "level": "L1",
+    "tags": [
+      "IQ300",
+      "java"
+    ],
+    "short": "Used on the inverse (non-owning) side of a bidirectional association to indicate that the relationship is actually managed by a field on the other entity — it tells Hibernate not to create a separate join table/column for this side, avoidin",
+    "answer": "Used on the inverse (non-owning) side of a bidirectional association to indicate that the relationship is actually managed by a field on the other entity — it tells Hibernate not to create a separate join table/column for this side, avoiding duplicate/conflicting mapping of the same foreign key relationship.",
+    "code": "",
+    "followups": [],
+    "mistakes": [],
+    "interview": "Used on the inverse (non-owning) side of a bidirectional association to indicate that the relationship is actually managed by a field on the other entity — it tells Hibernate not to create a separate join table/column for this side, avoiding duplicate/conflicting mapping of the same foreign key relationship.",
+    "source": "IQ300",
+    "topic": "jpa"
+  },
+  {
+    "id": "iq-143",
+    "title": "What is `FetchType.LAZY`?",
+    "level": "L1",
+    "tags": [
+      "IQ300",
+      "java"
+    ],
+    "short": "A fetch strategy telling JPA/Hibernate not to load the associated entity or collection until it's explicitly accessed in code, deferring the query rather than loading it upfront with the owning entity — the recommended default for collectio",
+    "answer": "A fetch strategy telling JPA/Hibernate not to load the associated entity or collection until it's explicitly accessed in code, deferring the query rather than loading it upfront with the owning entity — the recommended default for collections and most associations to avoid over-fetching.",
+    "code": "",
+    "followups": [],
+    "mistakes": [],
+    "interview": "A fetch strategy telling JPA/Hibernate not to load the associated entity or collection until it's explicitly accessed in code, deferring the query rather than loading it upfront with the owning entity — the recommended default for collections and most associations to avoid over-fetching.",
+    "source": "IQ300",
+    "topic": "jpa"
+  },
+  {
+    "id": "iq-144",
+    "title": "What is JPQL?",
+    "level": "L1",
+    "tags": [
+      "IQ300",
+      "java"
+    ],
+    "short": "Java Persistence Query Language — an object-oriented query language similar to SQL but operating on entity objects and their fields/associations rather than tables and columns directly, e.g. \\SELECT o FROM Order o WHERE o.customer.id = \\:id",
+    "answer": "Java Persistence Query Language — an object-oriented query language similar to SQL but operating on entity objects and their fields/associations rather than tables and columns directly, e.g. \\<code>SELECT o FROM Order o WHERE o.customer.id = \\:id\\</code>. It's translated by the JPA provider into native SQL at execution time.",
+    "code": "",
+    "followups": [],
+    "mistakes": [],
+    "interview": "Java Persistence Query Language — an object-oriented query language similar to SQL but operating on entity objects and their fields/associations rather than tables and columns directly, e.g. \\SELECT o FROM Order o WHERE o.customer.id = \\:id\\. It's translated by the JPA provider into native SQL at execution time.",
+    "source": "IQ300",
+    "topic": "jpa"
+  },
+  {
+    "id": "iq-145",
+    "title": "Difference between JPQL and native SQL.",
+    "level": "L1",
+    "tags": [
+      "IQ300",
+      "sql"
+    ],
+    "short": "JPQL queries entities and their properties/associations in an object-oriented, database-agnostic way, and JPA translates it to the appropriate SQL dialect. Native SQL is written directly against actual database tables/columns, giving full a",
+    "answer": "JPQL queries entities and their properties/associations in an object-oriented, database-agnostic way, and JPA translates it to the appropriate SQL dialect. Native SQL is written directly against actual database tables/columns, giving full access to database-specific features (functions, hints) at the cost of portability, and typically returning raw results rather than automatically mapped entities unless explicitly configured.",
+    "code": "",
+    "followups": [],
+    "mistakes": [],
+    "interview": "JPQL queries entities and their properties/associations in an object-oriented, database-agnostic way, and JPA translates it to the appropriate SQL dialect. Native SQL is written directly against actual database tables/columns, giving full access to database-specific features (functions, hints) at the cost of portabilit",
+    "source": "IQ300",
+    "topic": "jpa"
+  },
+  {
+    "id": "iq-146",
+    "title": "What is `@Query`?",
+    "level": "L1",
+    "tags": [
+      "IQ300",
+      "sql"
+    ],
+    "short": "An annotation used on Spring Data JPA repository methods to supply a custom JPQL (or, with \\nativeQuery = true\\, native SQL) query explicitly, instead of relying on Spring Data's method-name-derived query generation — useful for complex que",
+    "answer": "An annotation used on Spring Data JPA repository methods to supply a custom JPQL (or, with \\<code>nativeQuery = true\\</code>, native SQL) query explicitly, instead of relying on Spring Data's method-name-derived query generation — useful for complex queries that don't map cleanly to a method name.",
+    "code": "",
+    "followups": [],
+    "mistakes": [],
+    "interview": "An annotation used on Spring Data JPA repository methods to supply a custom JPQL (or, with \\nativeQuery = true\\, native SQL) query explicitly, instead of relying on Spring Data's method-name-derived query generation — useful for complex queries that don't map cleanly to a method name.",
+    "source": "IQ300",
+    "topic": "jpa"
+  },
+  {
+    "id": "iq-147",
+    "title": "What is `@Transactional`?",
+    "level": "L2",
+    "tags": [
+      "IQ300",
+      "springboot"
+    ],
+    "short": "Marks a method or class as needing to run within a database transaction — Spring wraps the call with transaction begin/commit/rollback logic via a proxy. By default it rolls back on unchecked exceptions and commits otherwise, and its behavi",
+    "answer": "Marks a method or class as needing to run within a database transaction — Spring wraps the call with transaction begin/commit/rollback logic via a proxy. By default it rolls back on unchecked exceptions and commits otherwise, and its behavior (propagation, isolation, readOnly, rollback rules) is configurable via annotation attributes.",
+    "code": "",
+    "followups": [],
+    "mistakes": [],
+    "interview": "Marks a method or class as needing to run within a database transaction — Spring wraps the call with transaction begin/commit/rollback logic via a proxy. By default it rolls back on unchecked exceptions and commits otherwise, and its behavior (propagation, isolation, readOnly, rollback rules) is configurable via annota",
+    "source": "IQ300",
+    "topic": "jpa"
+  },
+  {
+    "id": "iq-148",
+    "title": "Propagation types in `@Transactional`.",
+    "level": "L2",
+    "tags": [
+      "IQ300",
+      "springboot"
+    ],
+    "short": "\\REQUIRED\\ (default) joins an existing transaction or creates one if none exists. \\REQUIRES\\_NEW\\ always suspends any existing transaction and starts a fresh one. \\SUPPORTS\\ joins one if present, else runs non-transactionally. \\MANDATORY\\ r",
+    "answer": "\\<code>REQUIRED\\</code> (default) joins an existing transaction or creates one if none exists. \\<code>REQUIRES\\_NEW\\</code> always suspends any existing transaction and starts a fresh one. \\<code>SUPPORTS\\</code> joins one if present, else runs non-transactionally. \\<code>MANDATORY\\</code> requires an existing transaction, throwing if none exists. \\<code>NEVER\\</code>/\\<code>NOT\\_SUPPORTED\\</code> run without a transaction, the former erroring if one exists. \\<code>NESTED\\</code> creates a savepoint within the current transaction that can be rolled back independently.",
+    "code": "",
+    "followups": [],
+    "mistakes": [],
+    "interview": "\\REQUIRED\\ (default) joins an existing transaction or creates one if none exists. \\REQUIRES\\_NEW\\ always suspends any existing transaction and starts a fresh one. \\SUPPORTS\\ joins one if present, else runs non-transactionally. \\MANDATORY\\ requires an existing transaction, throwing if none exists. \\NEVER\\/\\NOT\\_SUPPORTE",
+    "source": "IQ300",
+    "topic": "jpa"
+  },
+  {
+    "id": "iq-149",
+    "title": "Isolation levels in transactions.",
+    "level": "L2",
+    "tags": [
+      "IQ300",
+      "java"
+    ],
+    "short": "READ UNCOMMITTED (lowest — allows dirty reads), READ COMMITTED (blocks dirty reads, most common default), REPEATABLE READ (also prevents non-repeatable reads — rereading the same row gives the same result within the transaction), and SERIAL",
+    "answer": "READ UNCOMMITTED (lowest — allows dirty reads), READ COMMITTED (blocks dirty reads, most common default), REPEATABLE READ (also prevents non-repeatable reads — rereading the same row gives the same result within the transaction), and SERIALIZABLE (highest — fully isolates transactions as if run one at a time, also preventing phantom reads, at the cost of the most locking/contention).",
+    "code": "",
+    "followups": [],
+    "mistakes": [],
+    "interview": "READ UNCOMMITTED (lowest — allows dirty reads), READ COMMITTED (blocks dirty reads, most common default), REPEATABLE READ (also prevents non-repeatable reads — rereading the same row gives the same result within the transaction), and SERIALIZABLE (highest — fully isolates transactions as if run one at a time, also prev",
+    "source": "IQ300",
+    "topic": "jpa"
+  },
+  {
+    "id": "iq-150",
+    "title": "What happens if a transaction fails midway?",
+    "level": "L2",
+    "tags": [
+      "IQ300",
+      "java"
+    ],
+    "short": "Assuming default rollback rules, an unchecked exception (or a checked exception explicitly configured to trigger rollback) causes the entire transaction to roll back — all changes made within it are undone, restoring the database to its pre",
+    "answer": "Assuming default rollback rules, an unchecked exception (or a checked exception explicitly configured to trigger rollback) causes the entire transaction to roll back — all changes made within it are undone, restoring the database to its pre-transaction state, preserving atomicity. If the exception is caught and swallowed inside the transactional method, though, no rollback occurs, which is a common bug.",
+    "code": "",
+    "followups": [],
+    "mistakes": [],
+    "interview": "Assuming default rollback rules, an unchecked exception (or a checked exception explicitly configured to trigger rollback) causes the entire transaction to roll back — all changes made within it are undone, restoring the database to its pre-transaction state, preserving atomicity. If the exception is caught and swallow",
+    "source": "IQ300",
+    "topic": "jpa"
+  },
+  {
+    "id": "iq-151",
+    "title": "What is optimistic locking?",
+    "level": "L1",
+    "tags": [
+      "IQ300",
+      "java"
+    ],
+    "short": "A concurrency control strategy assuming conflicts are rare: each row carries a version column (\\@Version\\). On update, the query checks the version matches what was read; if another transaction updated it in between (version mismatch), an \\",
+    "answer": "A concurrency control strategy assuming conflicts are rare: each row carries a version column (\\<code>@Version\\</code>). On update, the query checks the version matches what was read; if another transaction updated it in between (version mismatch), an \\<code>OptimisticLockException\\</code> is thrown rather than silently overwriting. No database locks are held while reading, giving better throughput for low-contention scenarios.",
+    "code": "",
+    "followups": [],
+    "mistakes": [],
+    "interview": "A concurrency control strategy assuming conflicts are rare: each row carries a version column (\\@Version\\). On update, the query checks the version matches what was read; if another transaction updated it in between (version mismatch), an \\OptimisticLockException\\ is thrown rather than silently overwriting. No database",
+    "source": "IQ300",
+    "topic": "jpa"
+  },
+  {
+    "id": "iq-152",
+    "title": "What is pessimistic locking?",
+    "level": "L1",
+    "tags": [
+      "IQ300",
+      "java"
+    ],
+    "short": "A concurrency control strategy that assumes conflicts are likely: it acquires an actual database lock (e.g. \\SELECT ... FOR UPDATE\\) on the row when read, blocking other transactions from modifying (or sometimes reading) it until the lock i",
+    "answer": "A concurrency control strategy that assumes conflicts are likely: it acquires an actual database lock (e.g. \\<code>SELECT ... FOR UPDATE\\</code>) on the row when read, blocking other transactions from modifying (or sometimes reading) it until the lock is released at commit/rollback. Safer under high contention but reduces concurrency and risks deadlocks/timeouts if held too long.",
+    "code": "",
+    "followups": [],
+    "mistakes": [],
+    "interview": "A concurrency control strategy that assumes conflicts are likely: it acquires an actual database lock (e.g. \\SELECT ... FOR UPDATE\\) on the row when read, blocking other transactions from modifying (or sometimes reading) it until the lock is released at commit/rollback. Safer under high contention but reduces concurren",
+    "source": "IQ300",
+    "topic": "jpa"
+  },
+  {
+    "id": "iq-153",
+    "title": "What is the `@Version` annotation?",
+    "level": "L1",
+    "tags": [
+      "IQ300",
+      "java"
+    ],
+    "short": "Marks a field (usually an int/long or timestamp) used by JPA to implement optimistic locking — Hibernate increments it on every update and includes it in the WHERE clause of the update statement, so a stale write (based on an outdated versi",
+    "answer": "Marks a field (usually an int/long or timestamp) used by JPA to implement optimistic locking — Hibernate increments it on every update and includes it in the WHERE clause of the update statement, so a stale write (based on an outdated version) fails rather than silently clobbering a concurrent change.",
+    "code": "",
+    "followups": [],
+    "mistakes": [],
+    "interview": "Marks a field (usually an int/long or timestamp) used by JPA to implement optimistic locking — Hibernate increments it on every update and includes it in the WHERE clause of the update statement, so a stale write (based on an outdated version) fails rather than silently clobbering a concurrent change.",
+    "source": "IQ300",
+    "topic": "jpa"
+  },
+  {
+    "id": "iq-300",
+    "title": "Explain optimistic locking with a banking example.",
+    "level": "L1",
+    "tags": [
+      "IQ300",
+      "java"
+    ],
+    "short": "An account row has a \\@Version\\ column. Two concurrent withdrawal requests both read the account with version=5. The first to commit updates the balance and increments version to 6. The second, still holding version=5 in its update's WHERE ",
+    "answer": "An account row has a \\<code>@Version\\</code> column. Two concurrent withdrawal requests both read the account with version=5. The first to commit updates the balance and increments version to 6. The second, still holding version=5 in its update's WHERE clause, finds no row matches (version already moved to 6), so Hibernate throws an \\<code>OptimisticLockException\\</code> — the application catches this, re-reads the current balance, and retries the operation rather than silently applying a stale calculation.",
+    "code": "",
+    "followups": [],
+    "mistakes": [],
+    "interview": "An account row has a \\@Version\\ column. Two concurrent withdrawal requests both read the account with version=5. The first to commit updates the balance and increments version to 6. The second, still holding version=5 in its update's WHERE clause, finds no row matches (version already moved to 6), so Hibernate throws a",
+    "source": "IQ300",
+    "topic": "jpa"
+  },
+  {
+    "id": "iq-301",
+    "title": "Explain pessimistic locking with a banking example.",
+    "level": "L1",
+    "tags": [
+      "IQ300",
+      "java"
+    ],
+    "short": "When processing a withdrawal, the application issues a \\SELECT ... FOR UPDATE\\ on the account row, acquiring an exclusive database lock. Any other transaction trying to read (with locking) or update that same row must wait until the first t",
+    "answer": "When processing a withdrawal, the application issues a \\<code>SELECT ... FOR UPDATE\\</code> on the account row, acquiring an exclusive database lock. Any other transaction trying to read (with locking) or update that same row must wait until the first transaction commits or rolls back — guaranteeing no other process can concurrently modify the balance mid-calculation, at the cost of that second request being blocked/delayed.",
+    "code": "",
+    "followups": [],
+    "mistakes": [],
+    "interview": "When processing a withdrawal, the application issues a \\SELECT ... FOR UPDATE\\ on the account row, acquiring an exclusive database lock. Any other transaction trying to read (with locking) or update that same row must wait until the first transaction commits or rolls back — guaranteeing no other process can concurrentl",
+    "source": "IQ300",
+    "topic": "jpa"
+  },
+  {
+    "id": "iq-312",
+    "title": "Explain connection pooling.",
+    "level": "L1",
+    "tags": [
+      "IQ300",
+      "java"
+    ],
+    "short": "Rather than opening/closing a new database connection for every query (expensive — TCP handshake, auth), a connection pool maintains a set of pre-established, reusable connections. Application code borrows a connection from the pool, uses i",
+    "answer": "Rather than opening/closing a new database connection for every query (expensive — TCP handshake, auth), a connection pool maintains a set of pre-established, reusable connections. Application code borrows a connection from the pool, uses it, and returns it rather than closing it, dramatically reducing per-query overhead and controlling the maximum concurrent load placed on the database.",
+    "code": "",
+    "followups": [],
+    "mistakes": [],
+    "interview": "Rather than opening/closing a new database connection for every query (expensive — TCP handshake, auth), a connection pool maintains a set of pre-established, reusable connections. Application code borrows a connection from the pool, uses it, and returns it rather than closing it, dramatically reducing per-query overhe",
+    "source": "IQ300",
+    "topic": "jpa"
+  },
+  {
+    "id": "iq-313",
+    "title": "Explain HikariCP.",
+    "level": "L1",
+    "tags": [
+      "IQ300",
+      "java"
+    ],
+    "short": "HikariCP is the high-performance JDBC connection pool that's Spring Boot's default. It's known for very low overhead (lightweight bytecode, minimal locking) compared to older pools, with tunable settings like \\maximumPoolSize\\, \\connectionT",
+    "answer": "HikariCP is the high-performance JDBC connection pool that's Spring Boot's default. It's known for very low overhead (lightweight bytecode, minimal locking) compared to older pools, with tunable settings like \\<code>maximumPoolSize\\</code>, \\<code>connectionTimeout\\</code>, and \\<code>idleTimeout\\</code> that need to be sized carefully relative to expected concurrency and the database's own connection limits.",
+    "code": "",
+    "followups": [],
+    "mistakes": [],
+    "interview": "HikariCP is the high-performance JDBC connection pool that's Spring Boot's default. It's known for very low overhead (lightweight bytecode, minimal locking) compared to older pools, with tunable settings like \\maximumPoolSize\\, \\connectionTimeout\\, and \\idleTimeout\\ that need to be sized carefully relative to expected ",
+    "source": "IQ300",
+    "topic": "jpa"
+  },
+  {
+    "topic": "jpa",
+    "level": "L2",
+    "title": "What is the persistence context?",
+    "tags": [
+      "JPA",
+      "EntityManager"
+    ],
+    "short": "It is the set of managed entity instances associated with an EntityManager, providing identity, dirty checking and lifecycle management.",
+    "answer": "Within a persistence context, loading the same entity identity normally returns the same managed instance. Changes to managed entities can be detected during flush. The persistence context also coordinates writes and relationship handling.",
+    "code": "EntityManager em = ...;\nOrder a = em.find(Order.class, 1L);\nOrder b = em.find(Order.class, 1L);\nSystem.out.println(a == b); // true within the same persistence context",
+    "followups": [
+      "First-level cache vs second-level cache?",
+      "When is an entity detached?"
+    ],
+    "mistakes": [
+      "Calling the persistence context a database cache.",
+      "Assuming it is shared across all threads."
+    ],
+    "interview": "The persistence context is a transaction-scoped or extended unit of entity management. It provides identity, dirty checking and coordination of persistence operations.",
+    "source": "V9",
+    "id": "v9-023"
+  },
+  {
+    "topic": "jpa",
+    "level": "L2",
+    "title": "Explain entity states in JPA.",
+    "tags": [
+      "JPA",
+      "Lifecycle"
+    ],
+    "short": "An entity can be transient, managed, detached or removed.",
+    "answer": "A newly created object is transient. persist makes it managed. After the persistence context ends it can become detached. remove marks a managed entity for deletion. merge copies state into a managed instance; it does not reattach the same object in-place.",
+    "code": "Order order = new Order(); // transient\nem.persist(order); // managed\nem.detach(order); // detached\nem.remove(otherManagedOrder); // removed",
+    "followups": [
+      "What does merge return?",
+      "When does an entity become detached?"
+    ],
+    "mistakes": [
+      "Saying merge makes the passed object managed.",
+      "Treating removed as immediately deleted from the database."
+    ],
+    "interview": "I distinguish object state from database state: transient, managed, detached and removed describe how the persistence context tracks the entity.",
+    "source": "V9",
+    "id": "v9-024"
+  },
+  {
+    "topic": "jpa",
+    "level": "L2",
+    "title": "What is dirty checking?",
+    "tags": [
+      "Hibernate",
+      "Dirty Checking"
+    ],
+    "short": "Hibernate detects changes to managed entities and generates SQL during flush without requiring an explicit update call.",
+    "answer": "Hibernate keeps enough state for managed entities to determine changes. If a managed Order amount changes inside a transaction, flush can generate an UPDATE. This is why unnecessary entity mutation can create unexpected writes.",
+    "code": "Order order = em.find(Order.class, id);\norder.setStatus(Status.PAID);\n// flush/commit causes the UPDATE",
+    "followups": [
+      "When does flush happen?",
+      "How can read-only transactions help?"
+    ],
+    "mistakes": [
+      "Calling repository.save for every field change.",
+      "Assuming dirty checking runs continuously against the database."
+    ],
+    "interview": "Dirty checking compares managed entity state with its persistence-context snapshot and synchronizes changes during flush.",
+    "source": "V9",
+    "id": "v9-025"
+  },
+  {
+    "topic": "jpa",
+    "level": "L2",
+    "title": "What is orphanRemoval?",
+    "tags": [
+      "JPA",
+      "Relationships"
+    ],
+    "short": "orphanRemoval deletes a child entity when it is removed from the owning relationship collection or reference.",
+    "answer": "It is commonly used for dependent child records whose lifecycle belongs to the parent. It is different from cascade REMOVE: orphan removal reacts when the child is orphaned from the relationship, while cascade remove propagates parent deletion.",
+    "code": "@OneToMany(mappedBy=\"order\", cascade=CascadeType.ALL, orphanRemoval=true)\nprivate List<OrderLine> lines = new ArrayList<>();",
+    "followups": [
+      "orphanRemoval vs CascadeType.REMOVE?",
+      "Is it appropriate for shared child entities?"
+    ],
+    "mistakes": [
+      "Using orphanRemoval for entities shared by multiple parents.",
+      "Assuming it is just a database foreign-key option."
+    ],
+    "interview": "orphanRemoval expresses ownership: when a child is removed from the parent relationship, Hibernate can delete that child record.",
+    "source": "V9",
+    "id": "v9-026"
+  },
+  {
+    "topic": "jpa",
+    "level": "L3",
+    "title": "How does optimistic locking work in JPA?",
+    "tags": [
+      "JPA",
+      "Concurrency"
+    ],
+    "short": "A version column detects concurrent updates and prevents silent lost updates.",
+    "answer": "With @Version, Hibernate includes the version in the UPDATE condition and increments it on success. If another transaction has already changed the row, the update affects no row and Hibernate reports an optimistic locking failure.",
+    "code": "@Version\nprivate long version;",
+    "followups": [
+      "Optimistic vs pessimistic locking?",
+      "How should an API respond to an optimistic locking conflict?"
+    ],
+    "mistakes": [
+      "Saying @Version locks the row physically for the entire transaction.",
+      "Ignoring conflict handling and retry policy."
+    ],
+    "interview": "Optimistic locking assumes conflicts are relatively uncommon. A version check detects stale updates and lets the application return a conflict or apply a domain-specific retry strategy.",
+    "source": "V9",
+    "id": "v9-027"
+  },
+  {
+    "topic": "jpa",
+    "level": "L2",
+    "title": "What is the N+1 query problem?",
+    "tags": [
+      "JPA",
+      "Performance"
+    ],
+    "short": "One query loads a parent list and then one additional query executes for each parent to load related data.",
+    "answer": "For 100 orders, loading orders once and lazily accessing customer data can produce one query plus 100 additional queries. Fixes include fetch joins, entity graphs, batch fetching or purpose-built DTO queries, depending on the use case.",
+    "code": "@Query(\"select o from Order o join fetch o.customer\")\nList<Order> findOrdersWithCustomer();",
+    "followups": [
+      "Why can EAGER still produce poor SQL?",
+      "Fetch join vs EntityGraph?"
+    ],
+    "mistakes": [
+      "Assuming EAGER guarantees one SQL query.",
+      "Fixing N+1 by making every relationship EAGER."
+    ],
+    "interview": "N+1 is a query-pattern problem, not simply a lazy-loading problem. I choose fetching based on the use case and inspect generated SQL.",
+    "source": "V9",
+    "id": "v9-028"
+  },
+  {
+    "topic": "jpa",
+    "level": "L2",
+    "title": "What is the difference between save and saveAndFlush in Spring Data JPA?",
+    "tags": [
+      "Spring Data",
+      "JPA"
+    ],
+    "short": "save participates in normal persistence-context behavior; saveAndFlush additionally triggers a flush immediately.",
+    "answer": "save usually schedules the change in the persistence context and SQL may execute later at transaction flush/commit. saveAndFlush calls flush after saving, which can be useful when subsequent logic needs database synchronization, but it is not a commit.",
+    "code": "repository.save(order);\nrepository.saveAndFlush(order); // forces flush",
+    "followups": [
+      "Does flush commit the transaction?",
+      "When can early flushing hurt performance?"
+    ],
+    "mistakes": [
+      "Saying saveAndFlush commits immediately.",
+      "Using it after every save unnecessarily."
+    ],
+    "interview": "saveAndFlush forces synchronization of pending persistence changes with the database, but transaction commit semantics remain separate.",
+    "source": "V9",
+    "id": "v9-029"
+  },
+  {
+    "topic": "jpa",
+    "level": "L3",
+    "title": "How would you handle bulk updates in JPA?",
+    "tags": [
+      "JPA",
+      "Performance"
+    ],
+    "short": "Use bulk JPQL/SQL for large updates when appropriate, but understand that bulk operations bypass normal entity dirty checking and can leave the persistence context stale.",
+    "answer": "A bulk update can be much faster than loading thousands of entities. After it, clear or refresh the persistence context as appropriate, and ensure transaction boundaries are correct.",
+    "code": "@Modifying\n@Query(\"update Order o set o.status = :status where o.createdAt < :cutoff\")\nint archive(...);",
+    "followups": [
+      "Why can bulk updates cause stale entities?",
+      "When would JDBC batching be better?"
+    ],
+    "mistakes": [
+      "Expecting entity callbacks and dirty checking for bulk JPQL.",
+      "Forgetting to clear stale managed entities."
+    ],
+    "interview": "Bulk operations trade entity lifecycle behavior for throughput. I use them for large set-based changes and explicitly manage persistence-context consistency.",
+    "source": "V9",
+    "id": "v9-030"
+  },
+  {
+    "topic": "jpa",
+    "level": "L2",
+    "title": "What is the difference between lazy and eager fetching?",
+    "tags": [
+      "JPA",
+      "Fetching"
+    ],
+    "short": "Lazy fetching defers association loading; eager fetching indicates the association should be available immediately, but neither alone guarantees an optimal SQL query.",
+    "answer": "Lazy is usually safer for large relationships because data is loaded when needed. However, accessing lazy data outside a valid persistence context can cause LazyInitializationException, while eager mappings can over-fetch. Query-level fetch plans are often preferable.",
+    "code": "@ManyToOne(fetch = FetchType.LAZY)\nprivate Customer customer;",
+    "followups": [
+      "How do you avoid LazyInitializationException?",
+      "Why is query-specific fetching preferable?"
+    ],
+    "mistakes": [
+      "Making everything EAGER to hide LazyInitializationException.",
+      "Assuming LAZY means exactly one extra query every time."
+    ],
+    "interview": "Fetch strategy is about when associations become available, not a guarantee about query count. I prefer explicit fetch plans for important read paths.",
+    "source": "V9",
+    "id": "v9-031"
   }
 ]
