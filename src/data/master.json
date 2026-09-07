@@ -8,14 +8,16 @@
       "Objects"
     ],
     "short": "== compares primitive values or object references; equals() expresses logical equality.",
-    "answer": "For objects, == checks reference identity. equals() can be overridden for state equality. If equals is overridden, hashCode must follow the contract.",
+    "answer": "For objects, == compares reference identity while equals() is intended for logical equality. If a class overrides equals(), it must also override hashCode() so equal objects have the same hash. String is a common example: two separately created String objects can be different references but equal values.",
     "code": "String a=new String(\"java\"); String b=new String(\"java\");\na==b; // false\na.equals(b); // true",
     "followups": [
-      "Why override hashCode?",
-      "What about String?"
+      "Why must equals() and hashCode() agree?",
+      "What happens in HashSet if the contract is broken?"
     ],
-    "mistakes": [],
-    "interview": "== compares primitive values or object references; equals() expresses logical equality.",
+    "mistakes": [
+      "Do not say == always compares memory addresses; in Java it compares primitive values or reference identity."
+    ],
+    "interview": "In an interview, I distinguish identity from state equality. == is about whether two object references point to the same object; equals() is about whether the objects should be considered equal. For hash-based collections, the equals/hashCode contract is critical because HashMap and HashSet use both.",
     "source": "V3",
     "topic": "java"
   },
@@ -28,13 +30,13 @@
       "Contracts"
     ],
     "short": "Equal objects must have equal hash codes.",
-    "answer": "Hash-based collections use hashCode to locate a bucket and equals to confirm the key. Unequal objects may collide.",
+    "answer": "The contract requires that if a.equals(b) is true, a.hashCode() must equal b.hashCode(). The reverse is not required: two unequal objects may have the same hash. equals() should be reflexive, symmetric, transitive, consistent and false for null. Violating the contract can make HashMap or HashSet behave incorrectly.",
     "code": "@Override public int hashCode(){return Objects.hash(id);}",
     "followups": [
       "What breaks if hashCode is omitted?"
     ],
     "mistakes": [],
-    "interview": "Equal objects must have equal hash codes.",
+    "interview": "I would explain that equals defines logical equality and hashCode supports hash-based lookup. The key rule is equal objects must have equal hashes. If I override one, I normally override the other using the same fields.",
     "source": "V3",
     "topic": "java"
   },
@@ -47,14 +49,16 @@
       "Hashing"
     ],
     "short": "HashMap uses a key hash to select a bucket and equals() to identify the key.",
-    "answer": "HashMap spreads the hash, maps it to a bucket and handles collisions. Modern Java can treeify heavily-collided buckets under suitable conditions. Resize redistributes entries.",
+    "answer": "HashMap stores entries in buckets selected from the key hash. It spreads the hash, maps it to a bucket index, then compares keys using hash and equals(). Collisions are stored in the same bucket; in modern Java, heavily-collided buckets can be treeified under suitable conditions. Average lookup is O(1), but poor hashing or adversarial collisions can degrade performance.",
     "code": "Map<String,Integer> m=new HashMap<>();\nm.put(\"A\",10);",
     "followups": [
-      "What is a collision?",
-      "What happens during resize?"
+      "What happens during resize?",
+      "Why are mutable keys dangerous?"
     ],
-    "mistakes": [],
-    "interview": "HashMap uses a key hash to select a bucket and equals() to identify the key.",
+    "mistakes": [
+      "Do not claim HashMap is always O(1). Collisions, resizing and poor hash distribution matter."
+    ],
+    "interview": "I would walk through put and get: hash the key, calculate the bucket, compare existing keys, then insert or retrieve. I would also mention resize/load factor and why a mutable key is dangerous after insertion.",
     "source": "V3",
     "topic": "java"
   },
@@ -67,13 +71,13 @@
       "Data Structures"
     ],
     "short": "ArrayList gives fast indexed access; LinkedList is node-based.",
-    "answer": "ArrayList is usually the better default. LinkedList has O(n) indexed access and only helps for specific operations/access patterns.",
+    "answer": "ArrayList is backed by a resizable array, so indexed access is O(1) and appending is amortized O(1), but inserting or removing in the middle requires shifting elements. LinkedList uses linked nodes, so indexed access is O(n); insertion/removal is efficient only when the node position is already known. In most application code, ArrayList is the better default because of locality and lower per-element overhead.",
     "code": "List<Integer> list=new ArrayList<>();",
     "followups": [
       "Which is better for random access?"
     ],
     "mistakes": [],
-    "interview": "ArrayList gives fast indexed access; LinkedList is node-based.",
+    "interview": "I choose ArrayList by default for read-heavy or indexed collections. LinkedList only makes sense for specific insertion/removal patterns where node traversal is not the bottleneck.",
     "source": "V3",
     "topic": "java"
   },
@@ -86,13 +90,13 @@
       "Set"
     ],
     "short": "HashSet has no ordering guarantee, LinkedHashSet preserves insertion order, TreeSet maintains sorted order.",
-    "answer": "Hash-based sets usually provide expected O(1) basic operations. TreeSet is generally O(log n).",
+    "answer": "HashSet provides unique elements with no ordering guarantee. LinkedHashSet preserves insertion order while retaining hash-based lookup. TreeSet keeps elements sorted and uses a tree-based structure, giving O(log n) basic operations. TreeSet relies on natural ordering or a Comparator, and its ordering must be consistent with equality for predictable set behavior.",
     "code": "Set<Integer> s=new TreeSet<>(); s.add(30); s.add(10);",
     "followups": [
       "Comparable vs Comparator?"
     ],
     "mistakes": [],
-    "interview": "HashSet has no ordering guarantee, LinkedHashSet preserves insertion order, TreeSet maintains sorted order.",
+    "interview": "The decision is mainly about ordering: HashSet for uniqueness, LinkedHashSet for uniqueness plus insertion order, and TreeSet for uniqueness plus sorted order. I would not choose TreeSet merely because it is a Set; its ordering has a performance cost.",
     "source": "V3",
     "topic": "java"
   },
@@ -105,14 +109,16 @@
       "Design"
     ],
     "short": "Prevent observable state changes after construction.",
-    "answer": "Use private final fields, constructor initialization, no setters, defensive copies and final class where appropriate.",
+    "answer": "An immutable class prevents its observable state from changing after construction. Typical rules are: make the class final when subclass mutation is a concern, keep fields private and final, initialize everything in the constructor, expose no setters, and defensively copy mutable inputs and outputs. Immutability makes objects easier to reason about and naturally safer to share between threads.",
     "code": "public final class User { private final String name; public User(String n){name=n;} }",
     "followups": [
-      "Is final deep immutability?",
-      "What is defensive copying?"
+      "Why is the class often final?",
+      "Why do we defensively copy a List?"
     ],
-    "mistakes": [],
-    "interview": "Prevent observable state changes after construction.",
+    "mistakes": [
+      "Do not call an object immutable if it exposes mutable internal state."
+    ],
+    "interview": "For an immutable object, construction establishes all state and callers cannot obtain a mutable reference to internal state. Defensive copying is the detail interviewers often probe, especially for List, Date-like objects, arrays and maps.",
     "source": "V3",
     "topic": "java"
   },
@@ -125,13 +131,13 @@
       "Exceptions"
     ],
     "short": "final is a keyword, finally is exception cleanup flow, finalize is obsolete for resource management.",
-    "answer": "final restricts reassignment/overriding/inheritance. finally normally executes after try/catch. Do not rely on finalize for cleanup.",
+    "answer": "final is a language modifier: it can prevent reassignment, overriding or inheritance depending on where it is used. finally is a block associated with exception handling and normally executes after try/catch processing. finalize() was a legacy GC-related hook and should not be used for resource management; modern Java provides safer constructs such as try-with-resources and Cleaner for limited use cases.",
     "code": "final int MAX=10;\ntry{work();}finally{cleanup();}",
     "followups": [
       "How close resources?"
     ],
     "mistakes": [],
-    "interview": "final is a keyword, finally is exception cleanup flow, finalize is obsolete for resource management.",
+    "interview": "I separate the three by purpose: final is a compile-time restriction, finally is exception-flow cleanup syntax, and finalize was a legacy lifecycle hook that is not a reliable cleanup mechanism.",
     "source": "V3",
     "topic": "java"
   },
@@ -144,13 +150,13 @@
       "Error Handling"
     ],
     "short": "Checked exceptions must be handled/declared; unchecked exceptions extend RuntimeException.",
-    "answer": "Choose based on whether callers can reasonably recover and where errors are translated.",
+    "answer": "Checked exceptions must be caught or declared and are generally used for recoverable conditions that callers are expected to handle. Unchecked exceptions extend RuntimeException and do not require declaration; they commonly represent programming errors or invalid state/arguments. The choice should communicate the recovery contract rather than follow a blanket rule.",
     "code": "try(InputStream in=Files.newInputStream(path)){ /*read*/ }",
     "followups": [
       "When custom exception?"
     ],
     "mistakes": [],
-    "interview": "Checked exceptions must be handled/declared; unchecked exceptions extend RuntimeException.",
+    "interview": "I would avoid saying checked is always good and unchecked is always bad. The real design question is whether the caller can reasonably recover and whether forcing handling improves the API contract.",
     "source": "V3",
     "topic": "java"
   },
@@ -163,13 +169,13 @@
       "IO"
     ],
     "short": "It automatically closes AutoCloseable resources.",
-    "answer": "Resources close even when exceptions occur; close failures can be represented as suppressed exceptions.",
+    "answer": "Try-with-resources automatically closes objects that implement AutoCloseable, even when the try block throws. Resources are closed in reverse declaration order, and exceptions raised during close are retained as suppressed exceptions when another exception is already being propagated. This is safer than manual finally-based cleanup.",
     "code": "try(Connection c=ds.getConnection()){ /*use*/ }",
     "followups": [
       "What interface is required?"
     ],
     "mistakes": [],
-    "interview": "It automatically closes AutoCloseable resources.",
+    "interview": "The important interview point is that resource cleanup is guaranteed on normal exit and exceptional exit. I use it for JDBC resources, streams, files and other AutoCloseable objects.",
     "source": "V3",
     "topic": "java"
   },
@@ -182,13 +188,13 @@
       "Design"
     ],
     "short": "Abstract classes can share state/implementation; interfaces define contracts and support multiple inheritance of type.",
-    "answer": "Use abstract classes for genuine shared base behavior/state and interfaces for capabilities/contracts.",
+    "answer": "An abstract class can hold state, constructors, concrete methods and abstract methods, and a class can extend only one class. An interface defines a contract and can be implemented by multiple interfaces/classes; modern interfaces can also contain default and static methods. Use an abstract class when sharing state or implementation is central; use an interface for capability or contract-oriented design.",
     "code": "interface Auditable{void audit();}\nabstract class Base{Long id;}",
     "followups": [
       "Can interfaces have implementation?"
     ],
     "mistakes": [],
-    "interview": "Abstract classes can share state/implementation; interfaces define contracts and support multiple inheritance of type.",
+    "interview": "My decision rule is state and shared implementation versus contract. If unrelated classes need the same capability, an interface is usually the better abstraction.",
     "source": "V3",
     "topic": "java"
   },
@@ -486,13 +492,13 @@
       "Architecture"
     ],
     "short": "Microservices are independently deployable components aligned to business capabilities.",
-    "answer": "Good boundaries consider business ownership and deployment independence. They add distributed-system complexity.",
+    "answer": "A microservice is a relatively small, independently deployable service organized around a business capability or bounded context. It owns a focused responsibility and usually its data boundary, while communicating with other services through explicit APIs or messages. The architecture trades monolith simplicity for independent scaling and deployment at the cost of distributed-system complexity.",
     "code": "Order -> Payment -> Inventory",
     "followups": [
       "Microservices vs modular monolith?"
     ],
     "mistakes": [],
-    "interview": "Microservices are independently deployable components aligned to business capabilities.",
+    "interview": "I would define microservices in terms of independent deployability and business boundaries, not simply service size. The trade-off is operational and distributed-system complexity versus team and deployment independence.",
     "source": "V3",
     "topic": "microservices"
   },
@@ -505,13 +511,13 @@
       "Architecture"
     ],
     "short": "A load balancer distributes traffic; a gateway also applies API-level policies.",
-    "answer": "Gateways commonly handle auth, rate limits, routing and transformation.",
+    "answer": "An API Gateway is an application-aware edge layer that can route requests and enforce cross-cutting policies such as authentication integration, rate limiting and request shaping. A load balancer primarily distributes network traffic across healthy instances. They can coexist: the load balancer may distribute traffic to gateway instances, while the gateway routes to backend services.",
     "code": "Client -> LB -> Gateway -> Services",
     "followups": [
       "Can both coexist?"
     ],
     "mistakes": [],
-    "interview": "A load balancer distributes traffic; a gateway also applies API-level policies.",
+    "interview": "I distinguish the responsibilities instead of treating them as interchangeable. The load balancer answers 'which healthy instance?', while the gateway can answer 'which backend service and which edge policies?'",
     "source": "V3",
     "topic": "microservices"
   },
@@ -524,13 +530,13 @@
       "Microservices"
     ],
     "short": "It lets clients find healthy service instances without hardcoded addresses.",
-    "answer": "Discovery can be client/server-side. Kubernetes commonly provides service discovery via DNS/services.",
+    "answer": "Service discovery lets a service find the current network locations of another service instead of hard-coding instance addresses. In client-side discovery, the caller queries a registry and selects an instance; in server-side discovery, a load-balancing component performs that selection. Health status and registration lifecycle are central because stale endpoints can cause failures.",
     "code": "http://order-service/api/orders",
     "followups": [
       "Client vs server discovery?"
     ],
     "mistakes": [],
-    "interview": "It lets clients find healthy service instances without hardcoded addresses.",
+    "interview": "The reason service discovery exists is that instances are dynamic. Scaling, restarts and deployments change addresses, so callers need a reliable way to locate healthy instances.",
     "source": "V3",
     "topic": "microservices"
   },
@@ -543,13 +549,13 @@
       "Architecture"
     ],
     "short": "Synchronous calls wait for responses; async messaging decouples timing.",
-    "answer": "Async improves buffering/decoupling but introduces eventual consistency and duplicate handling.",
+    "answer": "Synchronous communication makes the caller wait for a response and is straightforward for request/response workflows, but couples availability and latency between services. Asynchronous messaging decouples the caller from immediate downstream availability and can absorb bursts, but introduces eventual consistency, retries, duplicate delivery and operational complexity. The choice depends on business latency and consistency requirements.",
     "code": "REST: Client->Order\nAsync: Order->Broker->Payment",
     "followups": [
       "When use Kafka?"
     ],
     "mistakes": [],
-    "interview": "Synchronous calls wait for responses; async messaging decouples timing.",
+    "interview": "I choose sync when the caller needs an immediate answer and the dependency is part of the request path. I choose async when the work can happen later or needs buffering and decoupling.",
     "source": "V3",
     "topic": "microservices"
   },
@@ -562,13 +568,13 @@
       "Resilience"
     ],
     "short": "A Saga coordinates local transactions with compensating business actions.",
-    "answer": "Each service commits locally. Compensation is a new business action, not a distributed DB rollback.",
+    "answer": "Saga coordinates a business transaction across services using a sequence of local transactions plus compensating actions. Choreography uses events so participants react without a central coordinator; orchestration uses a coordinator to direct steps. Sagas provide eventual consistency rather than a distributed ACID transaction, so compensation and idempotency must be designed explicitly.",
     "code": "Order -> Reserve -> Charge\nfailure -> compensate",
     "followups": [
       "Orchestration vs choreography?"
     ],
     "mistakes": [],
-    "interview": "A Saga coordinates local transactions with compensating business actions.",
+    "interview": "I would explain the failure path, not just the happy path: if step three fails, the system must know which completed steps need compensation and whether those compensations are safe to retry.",
     "source": "V3",
     "topic": "microservices"
   },
@@ -581,13 +587,16 @@
       "Reliability"
     ],
     "short": "Business state and an event record are committed in one local transaction.",
-    "answer": "A publisher sends outbox events later. Consumers still need idempotency.",
+    "answer": "The Outbox pattern writes the business change and an event record into the same local database transaction. A separate publisher then reads the outbox and sends the event to the broker. This avoids the dual-write problem where the database commits but event publication fails, or vice versa. Consumers still need idempotency because publication is commonly at-least-once.",
     "code": "UPDATE orders; INSERT outbox; COMMIT",
     "followups": [
-      "How handle duplicate publish?"
+      "How do you publish the outbox reliably?",
+      "Does Outbox guarantee exactly-once delivery?"
     ],
-    "mistakes": [],
-    "interview": "Business state and an event record are committed in one local transaction.",
+    "mistakes": [
+      "Do not claim Outbox eliminates duplicates; consumers still need idempotency."
+    ],
+    "interview": "The core idea is one atomic database transaction followed by asynchronous publication. It improves reliability but does not magically guarantee exactly-once end-to-end processing.",
     "source": "V3",
     "topic": "microservices"
   },
@@ -600,13 +609,16 @@
       "APIs"
     ],
     "short": "Repeating a request produces the same intended business result.",
-    "answer": "Idempotency keys are useful for payments/order creation; persist key and outcome.",
+    "answer": "Idempotency means repeating the same operation does not create additional unintended effects. For APIs, a client can send an idempotency key and the server can persist the key with the resulting state or response. A database unique constraint is an important concurrency safeguard because two requests can arrive before either one sees the other's record.",
     "code": "POST /payments\nIdempotency-Key: abc123",
     "followups": [
-      "Where store the key?"
+      "How do you handle concurrent requests with the same key?",
+      "Where should idempotency records be stored?"
     ],
-    "mistakes": [],
-    "interview": "Repeating a request produces the same intended business result.",
+    "mistakes": [
+      "Do not rely only on an in-memory or cache lookup for correctness."
+    ],
+    "interview": "I would combine an idempotency key, durable storage and a uniqueness constraint. A cache-only check is insufficient because concurrent requests or cache loss can still create duplicates.",
     "source": "V3",
     "topic": "microservices"
   },
@@ -619,13 +631,16 @@
       "Distributed Systems"
     ],
     "short": "Retry transient failures with bounded attempts.",
-    "answer": "Use timeouts, exponential backoff and jitter. Avoid retrying non-idempotent operations without safeguards.",
+    "answer": "Retries are useful for transient failures such as short network interruptions, but dangerous when the operation is slow, overloaded or non-idempotent. A good retry policy uses bounded attempts, exponential backoff and jitter, and only retries errors considered transient. Timeouts and circuit breakers should bound the total failure impact.",
     "code": "100ms -> 250ms -> 600ms",
     "followups": [
-      "When should you not retry?"
+      "When should you not retry?",
+      "Why use jitter?"
     ],
-    "mistakes": [],
-    "interview": "Retry transient failures with bounded attempts.",
+    "mistakes": [
+      "Do not retry every 5xx indefinitely; retries can amplify an outage."
+    ],
+    "interview": "Retry is not a substitute for resilience. I first define timeout and idempotency, then retry only transient failures with backoff and jitter; otherwise retries can amplify an outage.",
     "source": "V3",
     "topic": "microservices"
   },
@@ -638,13 +653,13 @@
       "Concurrency"
     ],
     "short": "Bulkheads isolate resource pools so one dependency cannot consume all capacity.",
-    "answer": "Separate executors, pools or concurrency limits reduce blast radius.",
+    "answer": "The bulkhead pattern isolates resources so failure in one workload does not consume everything. Examples include separate thread pools, connection pools, concurrency limits or queues for different downstream dependencies. When one dependency becomes slow, its resource pool can saturate without exhausting capacity needed by unrelated operations.",
     "code": "Payment max 20 concurrent\nSearch max 50",
     "followups": [
       "Bulkhead vs circuit breaker?"
     ],
     "mistakes": [],
-    "interview": "Bulkheads isolate resource pools so one dependency cannot consume all capacity.",
+    "interview": "The goal is containment. I would give each critical dependency a bounded concurrency or resource budget so one slow dependency cannot take down the entire service.",
     "source": "V3",
     "topic": "microservices"
   },
@@ -657,13 +672,13 @@
       "Data"
     ],
     "short": "Different services may temporarily see different state before convergence.",
-    "answer": "Define acceptable stale windows and user-visible intermediate states.",
+    "answer": "Eventual consistency means replicas or services may temporarily disagree after a change, but converge if updates are successfully propagated. It is common in event-driven architectures and distributed workflows. The design must identify the source of truth, acceptable staleness, reconciliation strategy and user-visible behavior during the inconsistent window.",
     "code": "Order PENDING -> PAID -> FULFILLED",
     "followups": [
       "How handle stale reads?"
     ],
     "mistakes": [],
-    "interview": "Different services may temporarily see different state before convergence.",
+    "interview": "I would never say eventual consistency means data is randomly inconsistent. It means there is a defined delay before all relevant views converge, and the system must be designed around that delay.",
     "source": "V3",
     "topic": "microservices"
   },
@@ -1246,14 +1261,16 @@
       "Security"
     ],
     "short": "JWT commonly has header, payload and signature.",
-    "answer": "Header has metadata, payload has claims, signature protects integrity/authenticity. Base64URL is not encryption.",
+    "answer": "A JWT commonly has three Base64URL-encoded parts: header, payload and signature. The payload contains claims such as subject, issuer, audience and expiry; it is not encrypted merely because it is a JWT. The server validates the signature and relevant claims before trusting the token. Sensitive data should not be placed in the payload just because it is encoded.",
     "code": "Authorization: Bearer <token>",
     "followups": [
-      "Claim?",
-      "HS256 vs RS256?"
+      "Is JWT encrypted?",
+      "Which claims should be validated?"
     ],
-    "mistakes": [],
-    "interview": "JWT commonly has header, payload and signature.",
+    "mistakes": [
+      "Do not treat Base64URL encoding as encryption or trust claims before signature validation."
+    ],
+    "interview": "I would emphasize that JWT is a token format, not an authentication protocol by itself. Validation includes signature, issuer, audience, expiry and appropriate algorithm/key checks; authorization still depends on the application's policies.",
     "source": "V3",
     "topic": "security"
   },
@@ -1266,13 +1283,13 @@
       "Concepts"
     ],
     "short": "Authentication establishes identity; authorization determines permitted actions.",
-    "answer": "Roles, scopes and policies are authorization mechanisms.",
+    "answer": "Authentication answers 'who are you?' while authorization answers 'what are you allowed to do?'. A valid JWT can authenticate a caller, but the application must still check roles, scopes, resource ownership or tenant permissions before allowing an operation.",
     "code": "hasRole(\"ADMIN\")",
     "followups": [
       "RBAC vs ABAC?"
     ],
     "mistakes": [],
-    "interview": "Authentication establishes identity; authorization determines permitted actions.",
+    "interview": "I separate identity from permission. For example, the token may prove the user is Alice, but authorization decides whether Alice can update this particular order.",
     "source": "V3",
     "topic": "security"
   },
@@ -1285,13 +1302,13 @@
       "Web"
     ],
     "short": "CSRF causes a browser to send an unwanted authenticated request.",
-    "answer": "It is especially relevant to cookie-based authentication. CORS is not a general CSRF defense.",
+    "answer": "CSRF targets applications where the browser automatically sends credentials, such as cookies. An attacker can trick the browser into sending an unwanted state-changing request to a trusted site. CSRF defenses include SameSite cookies, anti-CSRF tokens and appropriate request validation. Bearer tokens kept outside automatically attached browser credentials change the threat model but do not make every web security issue disappear.",
     "code": "Cookie auth + forged state-changing request",
     "followups": [
       "Does CORS solve CSRF?"
     ],
     "mistakes": [],
-    "interview": "CSRF causes a browser to send an unwanted authenticated request.",
+    "interview": "I first identify the credential transport. CSRF is mainly about ambient browser credentials being sent with a forged request, so the defense should match whether the API uses cookies, bearer tokens or another mechanism.",
     "source": "V3",
     "topic": "security"
   },
@@ -1304,14 +1321,14 @@
       "Authentication"
     ],
     "short": "Store passwords using adaptive one-way hashing with unique salts.",
-    "answer": "bcrypt, scrypt and Argon2 are typical choices. Never store plaintext or reversibly encrypted passwords.",
+    "answer": "Passwords should be stored as slow, adaptive password hashes such as Argon2id, bcrypt or scrypt, with a unique salt per password. Plaintext and reversible encryption are inappropriate for normal password storage. Work factors should be tuned to current hardware and increased over time, while login attempts and reset flows should be protected against abuse.",
     "code": "// bcrypt/Argon2 hash",
     "followups": [
       "Why salt?",
       "Why not SHA-256?"
     ],
     "mistakes": [],
-    "interview": "Store passwords using adaptive one-way hashing with unique salts.",
+    "interview": "The goal is that a database leak does not reveal usable passwords. A unique salt prevents identical passwords from producing the same stored value, and a deliberately expensive password hash slows offline guessing.",
     "source": "V3",
     "topic": "security"
   },
@@ -1324,13 +1341,16 @@
       "Security"
     ],
     "short": "OAuth 2.0 is an authorization framework for delegated access.",
-    "answer": "Authorization Code with PKCE is common for user-facing apps. OpenID Connect adds identity.",
+    "answer": "OAuth 2.0 is an authorization framework for delegated access. It separates the resource owner, client, authorization server and resource server and uses access tokens to call protected resources. For modern user-facing applications, authorization code with PKCE is a common flow; OAuth itself does not define user authentication in the same way OpenID Connect does.",
     "code": "Client -> Authorization Server -> Token -> Resource Server",
     "followups": [
-      "OAuth vs OIDC?"
+      "OAuth 2.0 vs OpenID Connect?",
+      "Why is PKCE important?"
     ],
-    "mistakes": [],
-    "interview": "OAuth 2.0 is an authorization framework for delegated access.",
+    "mistakes": [
+      "Do not describe OAuth 2.0 as simply a login protocol."
+    ],
+    "interview": "I describe OAuth as delegated authorization, not simply 'login'. If the requirement is user identity, I would mention OpenID Connect on top of OAuth 2.0.",
     "source": "V3",
     "topic": "security"
   },
@@ -1343,13 +1363,13 @@
       "Web"
     ],
     "short": "CORS controls whether browser JavaScript can read cross-origin responses.",
-    "answer": "It is browser-enforced; server-side authorization is still required.",
+    "answer": "CORS is a browser security mechanism controlling whether frontend JavaScript from one origin may read responses from another origin. The server communicates its policy through response headers such as Access-Control-Allow-Origin. CORS is not an authentication mechanism and does not protect non-browser clients from making requests.",
     "code": "Access-Control-Allow-Origin: https://example.com",
     "followups": [
       "What is preflight?"
     ],
     "mistakes": [],
-    "interview": "CORS controls whether browser JavaScript can read cross-origin responses.",
+    "interview": "I would explain that CORS is enforced by browsers. A backend still needs authentication and authorization because Postman, mobile apps and server-to-server clients are not constrained by browser CORS rules.",
     "source": "V3",
     "topic": "security"
   },
@@ -1362,13 +1382,13 @@
       "Tokens"
     ],
     "short": "A refresh token can obtain a new access token without re-authentication.",
-    "answer": "Refresh tokens need stronger protection, rotation and revocation strategies.",
+    "answer": "A short-lived access token limits the damage window if it is stolen, while a longer-lived refresh token can obtain new access tokens. Refresh tokens should be stored and transmitted carefully, rotated or otherwise protected against replay, and revocable when appropriate. The exact design depends on whether the client is a browser, mobile app or confidential server application.",
     "code": "grant_type=refresh_token",
     "followups": [
       "Rotation?"
     ],
     "mistakes": [],
-    "interview": "A refresh token can obtain a new access token without re-authentication.",
+    "interview": "I use short access-token lifetimes plus protected refresh tokens to balance usability and revocation. Rotation lets the server detect reuse patterns and invalidate the token family when a stolen refresh token is replayed.",
     "source": "V3",
     "topic": "security"
   },
@@ -1381,13 +1401,13 @@
       "RBAC"
     ],
     "short": "Role-based access control grants permissions through roles.",
-    "answer": "Roles map identities to authorities. Complex systems may need policies/permissions.",
+    "answer": "RBAC grants permissions through roles rather than assigning every permission directly to every user. For example, ADMIN may have create/delete privileges while SUPPORT may only read and update support cases. Roles should be mapped to business capabilities carefully; authorization must still verify the target resource and tenant where applicable.",
     "code": "@PreAuthorize(\"hasRole('ADMIN')\")",
     "followups": [
       "RBAC vs ABAC?"
     ],
     "mistakes": [],
-    "interview": "Role-based access control grants permissions through roles.",
+    "interview": "RBAC simplifies permission management, but role checks alone can be insufficient. I distinguish coarse role authorization from object-level checks such as 'can this user modify this specific order?'",
     "source": "V3",
     "topic": "security"
   },
@@ -2323,13 +2343,13 @@
       "Constraints"
     ],
     "short": "A primary key uniquely identifies rows and cannot be null.",
-    "answer": "A table has one primary-key constraint, possibly composite.",
+    "answer": "A primary key uniquely identifies each row and cannot contain NULL values. A table has one primary-key constraint, although it can be composite and contain multiple columns. Databases commonly create or require a unique index to enforce it, and foreign keys can reference it as a parent key.",
     "code": "CREATE TABLE student(id BIGINT PRIMARY KEY,name VARCHAR(100));",
     "followups": [
       "Composite key?"
     ],
     "mistakes": [],
-    "interview": "A primary key uniquely identifies rows and cannot be null.",
+    "interview": "The primary key is the table's identity boundary. I would distinguish it from a unique key: a table can have multiple unique constraints, but only one primary-key constraint.",
     "source": "V3",
     "topic": "sql"
   },
@@ -2342,13 +2362,13 @@
       "Constraints"
     ],
     "short": "Both enforce uniqueness; a table has one primary key and can have multiple unique constraints.",
-    "answer": "Primary key columns are non-null. NULL semantics for unique constraints vary by DB.",
+    "answer": "Both primary and unique keys enforce uniqueness, but a primary key is the table's main row identifier and cannot be NULL. A table can have multiple unique constraints. NULL handling for unique constraints is database-specific, so I avoid claiming identical behavior across Oracle, PostgreSQL and other engines without checking the target database.",
     "code": "ALTER TABLE student ADD CONSTRAINT uq_email UNIQUE(email);",
     "followups": [
       "Multiple unique constraints?"
     ],
     "mistakes": [],
-    "interview": "Both enforce uniqueness; a table has one primary key and can have multiple unique constraints.",
+    "interview": "I use the primary key for identity and unique constraints for alternate business keys such as email. I also mention that NULL semantics differ by database when discussing unique indexes.",
     "source": "V3",
     "topic": "sql"
   },
@@ -2361,13 +2381,13 @@
       "Relationships"
     ],
     "short": "A foreign key enforces referential integrity.",
-    "answer": "It ensures references point to valid parent keys subject to null and action semantics.",
+    "answer": "A foreign key enforces a referential relationship between child rows and a parent key. It prevents child values from referencing a missing parent unless NULL or another allowed rule applies. Delete/update behavior can be configured with actions such as RESTRICT, CASCADE or SET NULL depending on the database and schema requirements.",
     "code": "FOREIGN KEY(customer_id) REFERENCES customer(id)",
     "followups": [
       "Cascade vs restrict?"
     ],
     "mistakes": [],
-    "interview": "A foreign key enforces referential integrity.",
+    "interview": "Foreign keys protect data integrity at the database boundary. I would also discuss the operational consequence of cascading deletes because an innocent parent delete can affect many child rows.",
     "source": "V3",
     "topic": "sql"
   },
@@ -2380,13 +2400,13 @@
       "Data Modeling"
     ],
     "short": "Normalization reduces redundant facts and update anomalies.",
-    "answer": "Normal forms improve integrity; intentional denormalization can help performance.",
+    "answer": "Normalization organizes relational data to reduce unnecessary duplication and update anomalies. First normal form focuses on atomic values, second normal form removes partial dependency on part of a composite key, and third normal form removes transitive dependency on non-key attributes. Production systems sometimes deliberately denormalize when read performance or reporting requirements justify the trade-off.",
     "code": "Customer(id,name)\nOrder(id,customer_id,...)",
     "followups": [
       "Why denormalize?"
     ],
     "mistakes": [],
-    "interview": "Normalization reduces redundant facts and update anomalies.",
+    "interview": "Normalization is about data correctness and dependency structure, not simply 'more tables is better'. I normalize the transactional model first and denormalize deliberately with a measurable reason.",
     "source": "V3",
     "topic": "sql"
   },
@@ -2399,13 +2419,13 @@
       "Performance"
     ],
     "short": "Indexes accelerate reads but consume storage and add write maintenance.",
-    "answer": "INSERT/UPDATE/DELETE may update several indexes. Use actual query plans to justify them.",
+    "answer": "An index can make reads faster by avoiding full table scans, but it adds storage and must be maintained when rows are inserted, updated or deleted. Too many indexes increase write cost and can create maintenance overhead. Index choice should be driven by real query predicates, joins, ordering and selectivity rather than indexing every column.",
     "code": "CREATE INDEX idx_orders_customer ON orders(customer_id);",
     "followups": [
       "Composite index?"
     ],
     "mistakes": [],
-    "interview": "Indexes accelerate reads but consume storage and add write maintenance.",
+    "interview": "I explain the read/write trade-off. An index is another data structure the database must maintain, so it can reduce SELECT cost while increasing DML cost and storage.",
     "source": "V3",
     "topic": "sql"
   },
@@ -2418,13 +2438,16 @@
       "Indexes"
     ],
     "short": "A composite index contains multiple ordered columns; order matters.",
-    "answer": "Design it around common predicates and sorting. It is not equivalent to separate single-column indexes.",
+    "answer": "A composite index stores multiple columns in a defined order. The leading-column order matters because the database can generally use the leftmost prefix efficiently for predicates and ordering. An index on (A,B,C) is not equivalent to one on (B,A,C), and selectivity plus actual query patterns should drive the order.",
     "code": "CREATE INDEX idx ON orders(customer_id,status);",
     "followups": [
-      "Leftmost-prefix idea?"
+      "How does the leftmost-prefix rule affect this index?",
+      "How would you choose column order?"
     ],
-    "mistakes": [],
-    "interview": "A composite index contains multiple ordered columns; order matters.",
+    "mistakes": [
+      "Do not say the most selective column must always be first; workload and predicate types matter."
+    ],
+    "interview": "I would inspect the workload before choosing column order. Equality predicates, range predicates and ORDER BY requirements all affect whether an index is useful and where a range condition should appear.",
     "source": "V3",
     "topic": "sql"
   },
@@ -2437,13 +2460,13 @@
       "Aggregation"
     ],
     "short": "WHERE filters rows before grouping; HAVING filters grouped results.",
-    "answer": "Use WHERE to reduce input and HAVING for aggregate conditions.",
+    "answer": "WHERE filters rows before grouping and aggregation, while HAVING filters groups after GROUP BY has produced aggregate results. A predicate on a normal row column usually belongs in WHERE because it can reduce the rows processed by later operations. HAVING is appropriate for conditions such as COUNT(*) > 5.",
     "code": "SELECT dept,AVG(salary) FROM employee WHERE active=true GROUP BY dept HAVING AVG(salary)>70000;",
     "followups": [
       "HAVING without GROUP BY?"
     ],
     "mistakes": [],
-    "interview": "WHERE filters rows before grouping; HAVING filters grouped results.",
+    "interview": "The easy memory rule is WHERE before GROUP BY and HAVING after grouping. I also push eligible filters into WHERE because reducing input rows can improve performance.",
     "source": "V3",
     "topic": "sql"
   },
@@ -2456,13 +2479,16 @@
       "Joins"
     ],
     "short": "INNER keeps matches; LEFT keeps every left row.",
-    "answer": "A WHERE predicate on the right table can turn a LEFT JOIN into an effective inner join.",
+    "answer": "INNER JOIN returns rows with matching keys on both sides. LEFT JOIN keeps every row from the left table and fills unmatched right-side columns with NULL. A common bug is putting a right-table filter in WHERE after a LEFT JOIN, which can eliminate NULL rows and effectively turn the result into an inner join.",
     "code": "SELECT c.id,o.id FROM customer c LEFT JOIN orders o ON o.customer_id=c.id;",
     "followups": [
-      "Why does WHERE change results?"
+      "Why can WHERE turn LEFT JOIN into INNER JOIN?",
+      "When should a filter go in ON instead?"
     ],
-    "mistakes": [],
-    "interview": "INNER keeps matches; LEFT keeps every left row.",
+    "mistakes": [
+      "Do not ignore NULL-producing rows when explaining LEFT JOIN."
+    ],
+    "interview": "I explain joins using row preservation. INNER keeps matches only; LEFT preserves the left side. Then I mention the WHERE-versus-ON filter trap because it is a common interview and production issue.",
     "source": "V3",
     "topic": "sql"
   },
@@ -2475,13 +2501,16 @@
       "Analytics"
     ],
     "short": "They calculate across related rows without collapsing them.",
-    "answer": "ROW_NUMBER, RANK, DENSE_RANK, SUM OVER and LAG support analytics with row-level detail.",
+    "answer": "Window functions calculate values across a related set of rows without collapsing those rows like GROUP BY does. PARTITION BY defines the window and ORDER BY defines sequence for functions such as ROW_NUMBER, RANK and running totals. They are useful for top-N-per-group, deduplication and analytics while retaining row-level detail.",
     "code": "SELECT name,salary,DENSE_RANK() OVER(ORDER BY salary DESC) rnk FROM employee;",
     "followups": [
-      "RANK vs DENSE_RANK?"
+      "ROW_NUMBER vs RANK vs DENSE_RANK?",
+      "How do you find top 3 salaries per department?"
     ],
-    "mistakes": [],
-    "interview": "They calculate across related rows without collapsing them.",
+    "mistakes": [
+      "Do not use GROUP BY when you need to retain row-level details."
+    ],
+    "interview": "The key difference from GROUP BY is that window functions keep the individual rows. I commonly use ROW_NUMBER() OVER(PARTITION BY ... ORDER BY ...) for per-group ranking and deduplication.",
     "source": "V3",
     "topic": "sql"
   },
@@ -2494,13 +2523,13 @@
       "Interview"
     ],
     "short": "Group by both columns and filter count > 1.",
-    "answer": "SELECT email,contact_number,COUNT(*) cnt FROM student GROUP BY email,contact_number HAVING COUNT(*)>1;",
+    "answer": "To identify duplicate email/contact combinations, group by the business-key columns and use HAVING COUNT(*) > 1. If duplicates must be removed, first define which row should survive, then use ROW_NUMBER() or a database-specific deletion strategy. A unique constraint should be added afterward if duplicates are not allowed in future.",
     "code": [
       "How return full duplicate rows?"
     ],
     "followups": [],
     "mistakes": [],
-    "interview": "Group by both columns and filter count > 1.",
+    "interview": "I separate detection from cleanup. First I identify duplicate groups, then decide which record is canonical, clean dependent data safely, and finally enforce uniqueness at the database level.",
     "source": "V3",
     "topic": "sql"
   },
@@ -2836,13 +2865,13 @@
       "IoC"
     ],
     "short": "The Spring container creates and supplies collaborators.",
-    "answer": "Constructor injection makes dependencies explicit, supports final fields and improves tests.",
+    "answer": "Dependency Injection means an object receives its collaborators instead of constructing them itself. Spring's container creates and wires beans according to configuration and annotations. Constructor injection is generally preferred because dependencies are explicit, fields can be final, and required dependencies are enforced at construction time.",
     "code": "@Service class OrderService{private final PaymentClient c; OrderService(PaymentClient c){this.c=c;}}",
     "followups": [
       "Why constructor injection?"
     ],
     "mistakes": [],
-    "interview": "The Spring container creates and supplies collaborators.",
+    "interview": "I explain DI as a way to invert object creation responsibility. The service depends on an interface or collaborator, while the Spring container decides which implementation to provide.",
     "source": "V3",
     "topic": "springboot"
   },
@@ -2855,13 +2884,13 @@
       "Beans"
     ],
     "short": "Beans are instantiated, injected, initialized and eventually destroyed when applicable.",
-    "answer": "Startup includes post-processors and callbacks such as @PostConstruct. Lifecycle is container-managed.",
+    "answer": "A Spring singleton bean is created, dependencies are injected, initialization callbacks run, and the bean becomes available for use; destruction callbacks run when the application context closes. BeanPostProcessors can modify or wrap beans around initialization, which is important for features implemented through proxies such as AOP and transactions.",
     "code": "@PostConstruct void init(){validateConfig();}",
     "followups": [
       "BeanPostProcessor?"
     ],
     "mistakes": [],
-    "interview": "Beans are instantiated, injected, initialized and eventually destroyed when applicable.",
+    "interview": "The lifecycle matters because many Spring features are implemented during bean post-processing. I would mention construction, dependency injection, post-processing, initialization, usage and destruction.",
     "source": "V3",
     "topic": "springboot"
   },
@@ -2874,13 +2903,13 @@
       "Stereotypes"
     ],
     "short": "They are component stereotypes; @Repository also supports persistence exception translation.",
-    "answer": "All can be discovered by component scanning. The annotations communicate architectural roles.",
+    "answer": "@Component, @Service and @Repository are stereotype annotations that register classes as Spring beans. @Service communicates service-layer intent and @Repository communicates persistence intent; @Repository also participates in exception translation for supported persistence technologies. Functionally they are all component-scanning candidates.",
     "code": "@Service class OrderService {}\n@Repository class OrderDao {}",
     "followups": [
       "Does @Service add transactions?"
     ],
     "mistakes": [],
-    "interview": "They are component stereotypes; @Repository also supports persistence exception translation.",
+    "interview": "I would not claim @Service magically adds business logic. The important distinction is semantic role, with @Repository additionally providing persistence exception translation.",
     "source": "V3",
     "topic": "springboot"
   },
@@ -2893,13 +2922,13 @@
       "REST"
     ],
     "short": "It combines @Controller and @ResponseBody.",
-    "answer": "Return values are serialized through HTTP message converters, commonly JSON.",
+    "answer": "@RestController is effectively @Controller plus @ResponseBody. It tells Spring MVC that handler return values should normally be written directly to the HTTP response body, commonly as JSON through message converters. Request mapping annotations then connect HTTP methods and paths to handler methods.",
     "code": "@RestController\n@RequestMapping(\"/orders\")",
     "followups": [
       "Controller vs RestController?"
     ],
     "mistakes": [],
-    "interview": "It combines @Controller and @ResponseBody.",
+    "interview": "For a REST API, I use @RestController so the returned DTO becomes the response body. Content negotiation and HttpMessageConverters handle serialization rather than the controller manually building JSON.",
     "source": "V3",
     "topic": "springboot"
   },
@@ -2912,13 +2941,13 @@
       "Configuration"
     ],
     "short": "Boot conditionally configures infrastructure based on classpath, properties and existing beans.",
-    "answer": "Conditional configuration provides sensible defaults and backs off when appropriate user configuration exists.",
+    "answer": "Spring Boot auto-configuration conditionally creates beans based on the application's classpath, existing beans, configuration properties and other conditions. Starters provide dependency sets, while auto-configuration supplies conventional defaults. User-defined beans can often override or back off those defaults.",
     "code": "@SpringBootApplication",
     "followups": [
       "How debug auto-configuration?"
     ],
     "mistakes": [],
-    "interview": "Boot conditionally configures infrastructure based on classpath, properties and existing beans.",
+    "interview": "The key is conditional configuration, not magic. Boot examines what is present and applies configuration only when conditions match. I would inspect the condition evaluation report or auto-configuration report when troubleshooting.",
     "source": "V3",
     "topic": "springboot"
   },
@@ -2931,13 +2960,13 @@
       "Configuration"
     ],
     "short": "@Configuration groups bean definitions; @Bean registers the returned object.",
-    "answer": "@Bean is useful for third-party objects or customized construction.",
+    "answer": "@Configuration marks a class as a source of bean definitions, while @Bean marks a method whose return value should be managed by the Spring container. Configuration classes are used to declare infrastructure or third-party objects that cannot simply be annotated. Spring also handles bean lifecycle and dependency wiring for those returned objects.",
     "code": "@Configuration class Config{@Bean Clock clock(){return Clock.systemUTC();}}",
     "followups": [
       "proxyBeanMethods?"
     ],
     "mistakes": [],
-    "interview": "@Configuration groups bean definitions; @Bean registers the returned object.",
+    "interview": "I use @Component-style annotations for classes I own and @Bean when I need explicit construction or configuration, especially for third-party libraries and infrastructure objects.",
     "source": "V3",
     "topic": "springboot"
   },
@@ -2950,13 +2979,16 @@
       "Internals"
     ],
     "short": "Spring AOP commonly applies cross-cutting behavior through proxies.",
-    "answer": "Transactions, security and caching can be proxy-based. Self-invocation can bypass advice.",
+    "answer": "Spring AOP commonly works by creating a proxy around a target bean. Calls entering through the proxy can trigger advice such as transaction, security or logging behavior. A self-invocation through this inside the same class can bypass the proxy, which is why calling another transactional method internally may not start a new transaction as expected.",
     "code": "@Transactional void save(){}",
     "followups": [
-      "JDK proxy vs CGLIB?"
+      "Why can self-invocation bypass @Transactional?",
+      "How do Spring proxies implement AOP?"
     ],
-    "mistakes": [],
-    "interview": "Spring AOP commonly applies cross-cutting behavior through proxies.",
+    "mistakes": [
+      "Do not assume an annotation guarantees interception for every call path."
+    ],
+    "interview": "The proxy boundary is the important mental model. Annotations do not execute themselves; the proxy intercepts calls and applies advice. That also explains many self-invocation surprises.",
     "source": "V3",
     "topic": "springboot"
   },
@@ -2969,13 +3001,16 @@
       "Spring"
     ],
     "short": "Propagation controls participation in existing transactions.",
-    "answer": "REQUIRED joins/creates; REQUIRES_NEW suspends the current transaction and starts another.",
+    "answer": "Transaction propagation defines how a method participates in an existing transaction. REQUIRED joins the current transaction or creates one; REQUIRES_NEW suspends the existing transaction and starts a new one; SUPPORTS can run with or without one. Propagation affects rollback boundaries and must be considered together with proxying and exception behavior.",
     "code": "@Transactional(propagation=Propagation.REQUIRES_NEW)",
     "followups": [
-      "REQUIRED vs REQUIRES_NEW?"
+      "REQUIRED vs REQUIRES_NEW?",
+      "What happens to the outer transaction when the inner one rolls back?"
     ],
-    "mistakes": [],
-    "interview": "Propagation controls participation in existing transactions.",
+    "mistakes": [
+      "Do not describe propagation without discussing proxy boundaries and rollback behavior."
+    ],
+    "interview": "I start with REQUIRED as the default. I use REQUIRES_NEW only when an operation must commit or roll back independently, such as a carefully designed audit action, and I explicitly discuss the connection/resource cost.",
     "source": "V3",
     "topic": "springboot"
   },
@@ -2988,13 +3023,13 @@
       "Database"
     ],
     "short": "Isolation controls what concurrent transactions can observe.",
-    "answer": "Isolation levels trade consistency and concurrency. Exact behavior is database-specific.",
+    "answer": "Isolation controls which concurrent transaction effects are visible. Common levels are READ COMMITTED, REPEATABLE READ and SERIALIZABLE, with READ UNCOMMITTED allowing dirty reads in systems that support it. Stronger isolation reduces anomalies but can increase locking, contention or retries, so it is a business consistency decision rather than simply 'higher is better'.",
     "code": "@Transactional(isolation=Isolation.READ_COMMITTED)",
     "followups": [
       "Dirty read?"
     ],
     "mistakes": [],
-    "interview": "Isolation controls what concurrent transactions can observe.",
+    "interview": "I would name the anomalies—dirty read, non-repeatable read and phantom read—then explain that the exact behavior depends on the database implementation. I choose isolation based on consistency requirements and concurrency cost.",
     "source": "V3",
     "topic": "springboot"
   },

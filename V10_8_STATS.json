@@ -1,0 +1,9 @@
+{
+  "version": "V10.8",
+  "questions": 1000,
+  "type": "quality-and-depth-upgrade",
+  "changed_records": 47,
+  "focus": ["Java", "Spring Boot", "Microservices", "SQL", "Security"],
+  "unchanged_focus": ["JPA/Hibernate", "Cloud", "System Design"],
+  "new_questions": 0
+}
