@@ -8,14 +8,15 @@
       "Objects"
     ],
     "short": "== compares primitive values or object references; equals() expresses logical equality.",
-    "answer": "For objects, == checks reference identity. equals() can be overridden for state equality. If equals is overridden, hashCode must follow the contract.",
+    "answer": "For primitives, == compares values; for object references, == checks whether both references refer to the same object. equals() is intended for logical equality and can be overridden by a class. If equals() is overridden, hashCode() must obey the contract that equal objects have equal hash codes, which is essential for HashMap and HashSet.",
     "code": "String a=new String(\"java\"); String b=new String(\"java\");\na==b; // false\na.equals(b); // true",
     "followups": [
-      "Why override hashCode?",
-      "What about String?"
+      "Why must equals() and hashCode() agree?",
+      "What happens in HashSet if the contract is broken?",
+      "Why should equals() usually be symmetric and transitive?"
     ],
     "mistakes": [],
-    "interview": "== compares primitive values or object references; equals() expresses logical equality.",
+    "interview": "In an interview I distinguish identity from logical state. == answers “is it the same object?” while equals() answers “should these objects be considered equal?”. For hash-based collections, the equals/hashCode contract is critical.",
     "source": "V3",
     "topic": "java"
   },
@@ -411,13 +412,15 @@
       "Performance"
     ],
     "short": "String is immutable; StringBuilder is mutable and unsynchronized; StringBuffer is synchronized.",
-    "answer": "StringBuilder is normally preferred for iterative construction.",
+    "answer": "String is immutable, so repeated concatenation creates new String objects. StringBuilder is mutable and is the usual choice for single-threaded iterative construction. StringBuffer provides similar mutable operations but synchronizes its methods, so it is generally slower and is only useful when that legacy synchronization requirement matters. In modern concurrent code, explicit synchronization or other concurrency primitives are usually preferable.",
     "code": "StringBuilder sb=new StringBuilder(); sb.append(\"Java\");",
     "followups": [
-      "Why is String immutable?"
+      "Why is String immutable?",
+      "When would StringBuffer be preferred?",
+      "What is the time complexity of repeated String concatenation in a loop?"
     ],
     "mistakes": [],
-    "interview": "String is immutable; StringBuilder is mutable and unsynchronized; StringBuffer is synchronized.",
+    "interview": "For loops that build text repeatedly, I use StringBuilder because it avoids creating a new String for every append. I choose StringBuffer only when I specifically need its synchronized API; otherwise StringBuilder is the simpler and faster default.",
     "source": "V3",
     "topic": "java"
   },
@@ -430,13 +433,15 @@
       "Sorting"
     ],
     "short": "Comparable defines natural order; Comparator defines external ordering.",
-    "answer": "Comparator supports multiple contextual sorting strategies.",
+    "answer": "Comparable defines a class’s natural ordering through compareTo(). Comparator defines an external ordering through compare(), so the same class can have multiple sorting strategies without changing the domain class. Comparable is useful when one ordering is intrinsic; Comparator is better for contextual choices such as sorting employees by salary, name, or joining date.",
     "code": "users.sort(Comparator.comparing(User::name));",
     "followups": [
-      "How sort by two fields?"
+      "Can a class implement multiple Comparables?",
+      "How do you sort by salary and then name?",
+      "What happens when compareTo returns zero?"
     ],
     "mistakes": [],
-    "interview": "Comparable defines natural order; Comparator defines external ordering.",
+    "interview": "I use Comparable when the object has one obvious natural order. I use Comparator when sorting requirements vary or when I cannot modify the class. In Java streams and collections, Comparator also composes well with comparing(), thenComparing(), reversed(), and null handling.",
     "source": "V3",
     "topic": "java"
   },
@@ -449,13 +454,15 @@
       "Streams"
     ],
     "short": "map is one-to-one transformation; flatMap transforms and flattens nested streams.",
-    "answer": "flatMap is useful for one-to-many relationships.",
+    "answer": "map transforms each stream element into exactly one result, while flatMap transforms each element into a stream and then flattens all those streams into one stream. A common example is converting List<List<String>> into Stream<String>. flatMap is therefore useful for one-to-many relationships, nested collections, and optional/stream composition.",
     "code": "data.stream().flatMap(List::stream).toList();",
     "followups": [
-      "Optional.flatMap?"
+      "How would you flatten List<List<Integer>>?",
+      "What is the difference between Optional.map and Optional.flatMap?",
+      "Can flatMap change the number of elements?"
     ],
     "mistakes": [],
-    "interview": "map is one-to-one transformation; flatMap transforms and flattens nested streams.",
+    "interview": "The key question I ask is whether the transformation produces one value or multiple values. If it is one-to-one, I use map; if it produces a collection or stream that must be flattened, I use flatMap.",
     "source": "V3",
     "topic": "java"
   },

@@ -8,16 +8,17 @@
       "Objects"
     ],
     "short": "== compares primitive values or object references; equals() expresses logical equality.",
-    "answer": "For objects, == compares reference identity while equals() is intended for logical equality. If a class overrides equals(), it must also override hashCode() so equal objects have the same hash. String is a common example: two separately created String objects can be different references but equal values.",
+    "answer": "For primitives, == compares values; for object references, == checks whether both references refer to the same object. equals() is intended for logical equality and can be overridden by a class. If equals() is overridden, hashCode() must obey the contract that equal objects have equal hash codes, which is essential for HashMap and HashSet.",
     "code": "String a=new String(\"java\"); String b=new String(\"java\");\na==b; // false\na.equals(b); // true",
     "followups": [
       "Why must equals() and hashCode() agree?",
-      "What happens in HashSet if the contract is broken?"
+      "What happens in HashSet if the contract is broken?",
+      "Why should equals() usually be symmetric and transitive?"
     ],
     "mistakes": [
       "Do not say == always compares memory addresses; in Java it compares primitive values or reference identity."
     ],
-    "interview": "In an interview, I distinguish identity from state equality. == is about whether two object references point to the same object; equals() is about whether the objects should be considered equal. For hash-based collections, the equals/hashCode contract is critical because HashMap and HashSet use both.",
+    "interview": "In an interview I distinguish identity from logical state. == answers “is it the same object?” while equals() answers “should these objects be considered equal?”. For hash-based collections, the equals/hashCode contract is critical.",
     "source": "V3",
     "topic": "java"
   },
@@ -417,13 +418,15 @@
       "Performance"
     ],
     "short": "String is immutable; StringBuilder is mutable and unsynchronized; StringBuffer is synchronized.",
-    "answer": "StringBuilder is normally preferred for iterative construction.",
+    "answer": "String is immutable, so repeated concatenation creates new String objects. StringBuilder is mutable and is the usual choice for single-threaded iterative construction. StringBuffer provides similar mutable operations but synchronizes its methods, so it is generally slower and is only useful when that legacy synchronization requirement matters. In modern concurrent code, explicit synchronization or other concurrency primitives are usually preferable.",
     "code": "StringBuilder sb=new StringBuilder(); sb.append(\"Java\");",
     "followups": [
-      "Why is String immutable?"
+      "Why is String immutable?",
+      "When would StringBuffer be preferred?",
+      "What is the time complexity of repeated String concatenation in a loop?"
     ],
     "mistakes": [],
-    "interview": "String is immutable; StringBuilder is mutable and unsynchronized; StringBuffer is synchronized.",
+    "interview": "For loops that build text repeatedly, I use StringBuilder because it avoids creating a new String for every append. I choose StringBuffer only when I specifically need its synchronized API; otherwise StringBuilder is the simpler and faster default.",
     "source": "V3",
     "topic": "java"
   },
@@ -436,13 +439,15 @@
       "Sorting"
     ],
     "short": "Comparable defines natural order; Comparator defines external ordering.",
-    "answer": "Comparator supports multiple contextual sorting strategies.",
+    "answer": "Comparable defines a class’s natural ordering through compareTo(). Comparator defines an external ordering through compare(), so the same class can have multiple sorting strategies without changing the domain class. Comparable is useful when one ordering is intrinsic; Comparator is better for contextual choices such as sorting employees by salary, name, or joining date.",
     "code": "users.sort(Comparator.comparing(User::name));",
     "followups": [
-      "How sort by two fields?"
+      "Can a class implement multiple Comparables?",
+      "How do you sort by salary and then name?",
+      "What happens when compareTo returns zero?"
     ],
     "mistakes": [],
-    "interview": "Comparable defines natural order; Comparator defines external ordering.",
+    "interview": "I use Comparable when the object has one obvious natural order. I use Comparator when sorting requirements vary or when I cannot modify the class. In Java streams and collections, Comparator also composes well with comparing(), thenComparing(), reversed(), and null handling.",
     "source": "V3",
     "topic": "java"
   },
@@ -455,13 +460,15 @@
       "Streams"
     ],
     "short": "map is one-to-one transformation; flatMap transforms and flattens nested streams.",
-    "answer": "flatMap is useful for one-to-many relationships.",
+    "answer": "map transforms each stream element into exactly one result, while flatMap transforms each element into a stream and then flattens all those streams into one stream. A common example is converting List<List<String>> into Stream<String>. flatMap is therefore useful for one-to-many relationships, nested collections, and optional/stream composition.",
     "code": "data.stream().flatMap(List::stream).toList();",
     "followups": [
-      "Optional.flatMap?"
+      "How would you flatten List<List<Integer>>?",
+      "What is the difference between Optional.map and Optional.flatMap?",
+      "Can flatMap change the number of elements?"
     ],
     "mistakes": [],
-    "interview": "map is one-to-one transformation; flatMap transforms and flattens nested streams.",
+    "interview": "The key question I ask is whether the transformation produces one value or multiple values. If it is one-to-one, I use map; if it produces a collection or stream that must be flattened, I use flatMap.",
     "source": "V3",
     "topic": "java"
   },
@@ -2968,13 +2975,15 @@
       "REST"
     ],
     "short": "It combines @Controller and @ResponseBody.",
-    "answer": "@RestController is effectively @Controller plus @ResponseBody. It tells Spring MVC that handler return values should normally be written directly to the HTTP response body, commonly as JSON through message converters. Request mapping annotations then connect HTTP methods and paths to handler methods.",
+    "answer": " @RestController is a composed annotation equivalent to @Controller plus @ResponseBody. Handler methods return values that Spring writes to the HTTP response body through HttpMessageConverters, commonly serializing Java objects as JSON with Jackson when it is configured. It is intended for REST-style APIs rather than server-side view rendering.",
     "code": "@RestController\n@RequestMapping(\"/orders\")",
     "followups": [
-      "Controller vs RestController?"
+      "What is the difference between @Controller and @RestController?",
+      "How does Jackson get involved?",
+      "What determines the response Content-Type?"
     ],
     "mistakes": [],
-    "interview": "For a REST API, I use @RestController so the returned DTO becomes the response body. Content negotiation and HttpMessageConverters handle serialization rather than the controller manually building JSON.",
+    "interview": "I use @RestController for API controllers. Spring maps the request to a handler method, invokes it, and uses an HTTP message converter to serialize the returned object into the response body.",
     "source": "V3",
     "topic": "springboot"
   },
@@ -3006,13 +3015,15 @@
       "Configuration"
     ],
     "short": "@Configuration groups bean definitions; @Bean registers the returned object.",
-    "answer": "@Configuration marks a class as a source of bean definitions, while @Bean marks a method whose return value should be managed by the Spring container. Configuration classes are used to declare infrastructure or third-party objects that cannot simply be annotated. Spring also handles bean lifecycle and dependency wiring for those returned objects.",
+    "answer": "@Configuration marks a class as a source of bean definitions. @Bean marks a method whose return object should be registered in the Spring application context. A configuration class is useful for grouping configuration, while @Bean is particularly useful when constructing third-party classes, applying custom initialization, or when component scanning cannot be used.",
     "code": "@Configuration class Config{@Bean Clock clock(){return Clock.systemUTC();}}",
     "followups": [
-      "proxyBeanMethods?"
+      "How does Spring handle @Bean method calls inside @Configuration?",
+      "What changes with proxyBeanMethods=false?",
+      "@Component vs @Bean?"
     ],
     "mistakes": [],
-    "interview": "I use @Component-style annotations for classes I own and @Bean when I need explicit construction or configuration, especially for third-party libraries and infrastructure objects.",
+    "interview": "I use @Configuration to define application configuration and @Bean to explicitly construct objects managed by Spring. For example, a third-party client that cannot be annotated with @Component can be created through a @Bean method.",
     "source": "V3",
     "topic": "springboot"
   },
@@ -3088,13 +3099,15 @@
       "Exceptions"
     ],
     "short": "@RestControllerAdvice centralizes exception-to-response mapping.",
-    "answer": "It creates consistent HTTP error contracts across controllers.",
+    "answer": "Global exception handling centralizes controller error translation using mechanisms such as @RestControllerAdvice and @ExceptionHandler. It lets the API return consistent status codes and error bodies instead of duplicating try/catch logic in every controller. The handler should distinguish validation, client, domain, and unexpected server errors and avoid exposing internal details.",
     "code": "@RestControllerAdvice\nclass Errors{}",
     "followups": [
-      "How standardize errors?"
+      "How do you handle validation errors globally?",
+      "Should every exception return 500?",
+      "How do you prevent sensitive stack traces from reaching clients?"
     ],
     "mistakes": [],
-    "interview": "@RestControllerAdvice centralizes exception-to-response mapping.",
+    "interview": "I normally define a global advice with specific handlers for known exceptions and a safe fallback for unexpected failures. The response contains a stable error code/message and the appropriate HTTP status, while the detailed exception is logged internally.",
     "source": "V3",
     "topic": "springboot"
   },
@@ -3107,13 +3120,15 @@
       "REST"
     ],
     "short": "It triggers Bean Validation on a request object when constraints are present.",
-    "answer": "Validate DTOs at the API boundary and map validation errors consistently.",
+    "answer": "@Valid triggers Bean Validation on an object at the supported validation boundary, commonly a request DTO in a controller. Constraints such as @NotNull, @Size, and @Email are evaluated before the controller continues. Validation failures are normally translated into a 400 response through Spring’s exception handling infrastructure.",
     "code": "record UserRequest(@NotBlank String name){}\n@PostMapping void create(@Valid @RequestBody UserRequest r){}",
     "followups": [
-      "@Valid vs @Validated?"
+      "@Valid vs @Validated?",
+      "How do you validate nested objects?",
+      "How do you create a custom constraint?"
     ],
     "mistakes": [],
-    "interview": "It triggers Bean Validation on a request object when constraints are present.",
+    "interview": "I validate request DTOs at the API boundary so invalid input does not reach business logic. I then use global exception handling to convert validation failures into a consistent error response.",
     "source": "V3",
     "topic": "springboot"
   },
@@ -3145,13 +3160,15 @@
       "Operations"
     ],
     "short": "Actuator exposes operational endpoints such as health and metrics.",
-    "answer": "Expose only necessary endpoints and secure them.",
+    "answer": "Actuator exposes operational endpoints for monitoring and management, such as health, metrics, info, and mappings depending on configuration and dependencies. It is useful for production observability, but endpoints should be deliberately exposed and protected because some reveal application internals.",
     "code": "management.endpoints.web.exposure.include=health,metrics",
     "followups": [
-      "How secure actuator?"
+      "What is the difference between liveness and readiness?",
+      "How do you secure Actuator endpoints?",
+      "How can metrics be exported to Prometheus?"
     ],
     "mistakes": [],
-    "interview": "Actuator exposes operational endpoints such as health and metrics.",
+    "interview": "I use Actuator mainly for health checks and metrics integration. In production I expose only required endpoints, secure them, and avoid treating an unrestricted management endpoint as public application API.",
     "source": "V3",
     "topic": "springboot"
   },
@@ -3221,13 +3238,15 @@
       "Performance"
     ],
     "short": "Spring Cache abstracts method-result caching.",
-    "answer": "Cache keys, TTL, eviction and consistency must be designed.",
+    "answer": "Spring Cache provides an abstraction over cache providers using annotations such as @Cacheable, @CachePut, and @CacheEvict. @Cacheable can return a cached value instead of executing the method. The important production concerns are key design, TTL, invalidation, stale data, serialization, cache size, and behavior when the cache is unavailable.",
     "code": "@Cacheable(cacheNames=\"products\",key=\"#id\")",
     "followups": [
-      "How invalidate stale data?"
+      "What happens on a cache miss?",
+      "How do you invalidate related keys after an update?",
+      "What problems occur with distributed caches?"
     ],
     "mistakes": [],
-    "interview": "Spring Cache abstracts method-result caching.",
+    "interview": "I use caching for expensive or frequently repeated reads where a defined consistency trade-off is acceptable. I explicitly design the cache key and invalidation strategy rather than assuming that adding @Cacheable alone solves consistency.",
     "source": "V3",
     "topic": "springboot"
   },
@@ -3240,13 +3259,15 @@
       "Async"
     ],
     "short": "It runs intercepted methods through an asynchronous executor.",
-    "answer": "It is proxy-based and is not a durable job queue.",
+    "answer": "@Async executes a method asynchronously through a Spring-managed proxy and a configured TaskExecutor. The caller can return before the asynchronous work completes. It is not a durable messaging system: tasks can be lost on process failure unless the work is persisted elsewhere, and thread-pool capacity must be bounded and monitored.",
     "code": "@Async void sendEmail(Event e){}",
     "followups": [
-      "Which executor?"
+      "Why does self-invocation break @Async?",
+      "How do you configure the executor?",
+      "How do you handle exceptions from void @Async methods?"
     ],
     "mistakes": [],
-    "interview": "It runs intercepted methods through an asynchronous executor.",
+    "interview": "I use @Async for short-lived background work where losing the task is acceptable or separately handled. For durable business events, retries, and guaranteed processing, I prefer a message broker or persistent job mechanism.",
     "source": "V3",
     "topic": "springboot"
   },
@@ -3259,13 +3280,15 @@
       "Build"
     ],
     "short": "A starter groups dependencies for a capability.",
-    "answer": "It simplifies dependency setup and works with Boot dependency management.",
+    "answer": "A Spring Boot starter is a dependency descriptor that brings a coherent set of libraries for a capability, while Boot dependency management keeps compatible versions aligned. Starters reduce manual dependency selection and make common setups easier to reproduce. They work with auto-configuration to configure components when the application’s classpath and properties match the expected conditions.",
     "code": "<artifactId>spring-boot-starter-web</artifactId>",
     "followups": [
-      "Starter vs BOM?"
+      "What is auto-configuration?",
+      "How does Spring Boot dependency management work?",
+      "Can you create a custom starter?"
     ],
     "mistakes": [],
-    "interview": "A starter groups dependencies for a capability.",
+    "interview": "For example, adding a web starter gives the application the typical Spring MVC and embedded-server dependencies. The starter does not itself magically configure every application behavior; Boot’s auto-configuration evaluates conditions and creates beans.",
     "source": "V3",
     "topic": "springboot"
   },

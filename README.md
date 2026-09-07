@@ -51,3 +51,8 @@ Content expansion to 1,000 backend interview questions. Focused on Java, Spring 
 
 ## V10.9
 Targeted quality pass focused on shallow Microservices and SQL answers. No new questions were added; 33 existing records received deeper interview-ready explanations and stronger delivery guidance.
+
+
+## V11.0 — Java + Spring Boot Quality Pass
+- 1,000 questions retained.
+- Targeted Java and Spring Boot answers upgraded for L2/L3 depth, internals, production reasoning, follow-ups and interview traps.
