@@ -7,6 +7,7 @@
       "JWT",
       "Security"
     ],
+<<<<<<< HEAD
     "short": "JWT commonly has header, payload and signature.",
     "answer": "Header has metadata, payload has claims, signature protects integrity/authenticity. Base64URL is not encryption.",
     "code": "Authorization: Bearer <token>",
@@ -16,6 +17,21 @@
     ],
     "mistakes": [],
     "interview": "JWT commonly has header, payload and signature.",
+=======
+    "short": "A JWT is a signed token format commonly carrying header, payload and signature; encoding is not encryption.",
+    "answer": "A JWT normally contains a Base64URL-encoded header, payload claims, and a signature. The signature lets the resource server verify integrity and issuer-controlled signing, but the payload is readable by anyone holding the token, so secrets must never be placed there. In a typical API flow, the client sends the token as Bearer authentication, the resource server validates the signature and important claims such as issuer, audience, expiry and not-before before authorizing the request.",
+    "code": "Authorization: Bearer <token>",
+    "followups": [
+      "What is the difference between signing and encryption?",
+      "Why should the API validate the audience claim?",
+      "Where should sensitive data be stored instead of a JWT payload?"
+    ],
+    "mistakes": [
+      "Do not say JWT payload is encrypted by default.",
+      "Do not treat a valid signature as sufficient authorization."
+    ],
+    "interview": "A JWT is a compact signed token with header, payload and signature. I would stress that Base64URL encoding does not provide confidentiality. On the resource server I validate the signature and claims such as issuer, audience and expiry before using the token identity for authorization.",
+>>>>>>> 744d590 (V11.1 Security and Coding quality upgrade)
     "source": "V3",
     "topic": "security"
   },
@@ -27,6 +43,7 @@
       "Security",
       "Concepts"
     ],
+<<<<<<< HEAD
     "short": "Authentication establishes identity; authorization determines permitted actions.",
     "answer": "Roles, scopes and policies are authorization mechanisms.",
     "code": "hasRole(\"ADMIN\")",
@@ -35,6 +52,21 @@
     ],
     "mistakes": [],
     "interview": "Authentication establishes identity; authorization determines permitted actions.",
+=======
+    "short": "Authentication establishes who the caller is; authorization decides what that authenticated identity is allowed to do.",
+    "answer": "Authentication answers “who are you?” and produces an identity or principal. Authorization answers “what may this identity do?” and evaluates roles, scopes, permissions or resource ownership. In a microservice API, JWT validation can authenticate the caller, while a service still has to enforce authorization such as “this user can update only orders belonging to their tenant.” Mixing the two is a common source of broken access control.",
+    "code": "hasRole(\"ADMIN\")",
+    "followups": [
+      "Where should authorization be enforced in microservices?",
+      "RBAC vs ABAC?",
+      "How do you prevent IDOR or cross-tenant access?"
+    ],
+    "mistakes": [
+      "Do not equate authentication with authorization.",
+      "Do not rely only on API Gateway authorization for resource ownership checks."
+    ],
+    "interview": "Authentication establishes identity; authorization evaluates permissions. A valid JWT proves the token was accepted, but it does not automatically mean the caller can access every resource. I keep resource-level authorization inside the service that owns the business data.",
+>>>>>>> 744d590 (V11.1 Security and Coding quality upgrade)
     "source": "V3",
     "topic": "security"
   },
@@ -46,6 +78,7 @@
       "Security",
       "Web"
     ],
+<<<<<<< HEAD
     "short": "CSRF causes a browser to send an unwanted authenticated request.",
     "answer": "It is especially relevant to cookie-based authentication. CORS is not a general CSRF defense.",
     "code": "Cookie auth + forged state-changing request",
@@ -54,6 +87,21 @@
     ],
     "mistakes": [],
     "interview": "CSRF causes a browser to send an unwanted authenticated request.",
+=======
+    "short": "CSRF exploits ambient browser credentials; it mainly matters for cookie-based authentication rather than bearer tokens stored outside browser credentials.",
+    "answer": "CSRF tricks a browser into sending an authenticated request to a target site without the user intentionally initiating that action. It is especially relevant when authentication credentials are automatically attached by the browser, such as session cookies. Common defenses include SameSite cookies, CSRF tokens and origin checks. A typical Authorization: Bearer token kept outside automatically attached browser credentials is not exposed to the classic cookie-based CSRF mechanism, although browser architecture and storage choices still matter.",
+    "code": "Cookie auth + forged state-changing request",
+    "followups": [
+      "CSRF vs XSS?",
+      "Why is SameSite useful?",
+      "Does JWT automatically eliminate CSRF?"
+    ],
+    "mistakes": [
+      "Do not say CSRF and XSS are the same attack.",
+      "Do not claim every JWT application is automatically immune to CSRF; the browser credential mechanism matters."
+    ],
+    "interview": "CSRF is about unwanted state-changing requests made with credentials the browser automatically attaches. For cookie-based sessions I use SameSite and CSRF protection as appropriate. I distinguish this from XSS and from APIs where bearer credentials are not automatically attached by the browser.",
+>>>>>>> 744d590 (V11.1 Security and Coding quality upgrade)
     "source": "V3",
     "topic": "security"
   },
@@ -65,6 +113,7 @@
       "Security",
       "Authentication"
     ],
+<<<<<<< HEAD
     "short": "Store passwords using adaptive one-way hashing with unique salts.",
     "answer": "bcrypt, scrypt and Argon2 are typical choices. Never store plaintext or reversibly encrypted passwords.",
     "code": "// bcrypt/Argon2 hash",
@@ -74,6 +123,21 @@
     ],
     "mistakes": [],
     "interview": "Store passwords using adaptive one-way hashing with unique salts.",
+=======
+    "short": "Store passwords as slow, salted password hashes using a dedicated password-hashing algorithm, never reversible encryption or plaintext.",
+    "answer": "Passwords should be processed with a password-hashing function designed to resist offline guessing, such as Argon2id, bcrypt or scrypt, with a unique salt per password. The application stores the resulting hash and parameters, then verifies a login by running the submitted password through the same password-hashing scheme. A salt prevents identical passwords from producing identical stored hashes and makes precomputed rainbow tables less useful. Work factors should be tuned for the deployment rather than hard-coded blindly.",
+    "code": "// bcrypt/Argon2 hash",
+    "followups": [
+      "Why is SHA-256 alone unsuitable for passwords?",
+      "What is a salt?",
+      "How do you migrate to a stronger password hash?"
+    ],
+    "mistakes": [
+      "Do not say encryption is the preferred password-storage mechanism.",
+      "Do not assume a single global salt is equivalent to a per-password salt."
+    ],
+    "interview": "I never store plaintext or reversible password encryption. I use a dedicated password-hashing algorithm such as Argon2id or bcrypt with a unique salt and an appropriate work factor, then verify the supplied password against the stored hash during login.",
+>>>>>>> 744d590 (V11.1 Security and Coding quality upgrade)
     "source": "V3",
     "topic": "security"
   },
@@ -85,6 +149,7 @@
       "OAuth",
       "Security"
     ],
+<<<<<<< HEAD
     "short": "OAuth 2.0 is an authorization framework for delegated access.",
     "answer": "Authorization Code with PKCE is common for user-facing apps. OpenID Connect adds identity.",
     "code": "Client -> Authorization Server -> Token -> Resource Server",
@@ -93,6 +158,21 @@
     ],
     "mistakes": [],
     "interview": "OAuth 2.0 is an authorization framework for delegated access.",
+=======
+    "short": "OAuth 2.0 is an authorization framework for delegated access; it is not itself an authentication protocol.",
+    "answer": "OAuth 2.0 defines how a client obtains and uses access tokens to call protected resources on behalf of a resource owner or application. The authorization server issues tokens after an appropriate grant flow, and the resource server validates the access token and enforces scopes or other authorization rules. For user authentication, OpenID Connect adds an identity layer on top of OAuth 2.0.",
+    "code": "Client -> Authorization Server -> Token -> Resource Server",
+    "followups": [
+      "Authorization Code + PKCE flow?",
+      "OAuth2 vs OpenID Connect?",
+      "What is a resource server?"
+    ],
+    "mistakes": [
+      "Do not call OAuth 2.0 an authentication protocol by itself.",
+      "Do not confuse an access token with an ID token."
+    ],
+    "interview": "OAuth 2.0 is primarily about delegated authorization, not proving a human identity. The client obtains an access token from an authorization server and presents it to a resource server. If I need user identity, I look at OpenID Connect on top of OAuth 2.0.",
+>>>>>>> 744d590 (V11.1 Security and Coding quality upgrade)
     "source": "V3",
     "topic": "security"
   },
@@ -104,6 +184,7 @@
       "Security",
       "Web"
     ],
+<<<<<<< HEAD
     "short": "CORS controls whether browser JavaScript can read cross-origin responses.",
     "answer": "It is browser-enforced; server-side authorization is still required.",
     "code": "Access-Control-Allow-Origin: https://example.com",
@@ -112,6 +193,21 @@
     ],
     "mistakes": [],
     "interview": "CORS controls whether browser JavaScript can read cross-origin responses.",
+=======
+    "short": "CORS is a browser-enforced policy controlling which origins may read cross-origin responses; it is not a server-to-server security boundary.",
+    "answer": "CORS controls whether browser JavaScript from one origin can access responses from another origin. The server communicates its policy with headers such as Access-Control-Allow-Origin and may receive a preflight OPTIONS request for non-simple cross-origin requests. CORS does not stop a backend client from calling the endpoint directly, so authentication and authorization remain mandatory. Credentials such as cookies require additional CORS constraints and cannot be combined with a wildcard allowed origin.",
+    "code": "Access-Control-Allow-Origin: https://example.com",
+    "followups": [
+      "What triggers a preflight?",
+      "Why can’t credentials use wildcard origin?",
+      "CORS vs CSRF?"
+    ],
+    "mistakes": [
+      "Do not say CORS blocks Postman or backend clients.",
+      "Do not use a permissive wildcard origin with credentialed requests."
+    ],
+    "interview": "CORS is a browser security policy, not an API authentication mechanism. I configure the allowed origins, methods and headers deliberately, and I remember that server-to-server callers are not constrained by browser CORS checks.",
+>>>>>>> 744d590 (V11.1 Security and Coding quality upgrade)
     "source": "V3",
     "topic": "security"
   },
@@ -123,6 +219,7 @@
       "JWT",
       "Tokens"
     ],
+<<<<<<< HEAD
     "short": "A refresh token can obtain a new access token without re-authentication.",
     "answer": "Refresh tokens need stronger protection, rotation and revocation strategies.",
     "code": "grant_type=refresh_token",
@@ -131,6 +228,21 @@
     ],
     "mistakes": [],
     "interview": "A refresh token can obtain a new access token without re-authentication.",
+=======
+    "short": "Refresh tokens allow a client to obtain new short-lived access tokens without repeatedly re-authenticating the user.",
+    "answer": "A refresh token is typically longer-lived and exchanged with an authorization server for a new access token. This lets access tokens remain short-lived, reducing the impact of access-token theft. For stronger security, refresh tokens can be rotated on use and the server can detect reuse, revoke a token family, and bind the token to an appropriate client/session context. Refresh tokens should be stored and transmitted more carefully than ordinary API access tokens.",
+    "code": "grant_type=refresh_token",
+    "followups": [
+      "What happens when a refresh token is reused?",
+      "Where should browser refresh tokens be stored?",
+      "How do you revoke a token family?"
+    ],
+    "mistakes": [
+      "Do not make refresh tokens short-lived by definition; lifetime is a policy choice.",
+      "Do not assume rotation alone prevents all token theft."
+    ],
+    "interview": "I use short-lived access tokens for API calls and a refresh token to obtain new ones. Rotation is stronger because every refresh can invalidate the previous token and let the authorization server detect reuse of a stolen token.",
+>>>>>>> 744d590 (V11.1 Security and Coding quality upgrade)
     "source": "V3",
     "topic": "security"
   },
@@ -142,6 +254,7 @@
       "Authorization",
       "RBAC"
     ],
+<<<<<<< HEAD
     "short": "Role-based access control grants permissions through roles.",
     "answer": "Roles map identities to authorities. Complex systems may need policies/permissions.",
     "code": "@PreAuthorize(\"hasRole('ADMIN')\")",
@@ -150,6 +263,21 @@
     ],
     "mistakes": [],
     "interview": "Role-based access control grants permissions through roles.",
+=======
+    "short": "RBAC grants permissions through roles, making access decisions easier to manage than assigning every permission directly to every user.",
+    "answer": "Role-Based Access Control maps users or service identities to roles, and roles to permissions. A request is authorized by evaluating the caller’s effective roles against the required permission. RBAC is simple and useful for coarse-grained access such as ADMIN, SUPPORT or READ_ONLY, but resource ownership and tenant isolation often require additional attributes or explicit checks.",
+    "code": "@PreAuthorize(\"hasRole('ADMIN')\")",
+    "followups": [
+      "RBAC vs ABAC?",
+      "How do you implement tenant-level authorization?",
+      "Where should roles be checked?"
+    ],
+    "mistakes": [
+      "Do not put every business rule into roles.",
+      "Do not treat ADMIN as a substitute for validating resource ownership when the requirement forbids cross-tenant access."
+    ],
+    "interview": "RBAC centralizes coarse-grained permissions through roles. I would use it for permissions such as read or admin access, but I would not assume a role alone proves resource ownership or tenant access.",
+>>>>>>> 744d590 (V11.1 Security and Coding quality upgrade)
     "source": "V3",
     "topic": "security"
   },
@@ -161,6 +289,7 @@
       "Microservices",
       "Security"
     ],
+<<<<<<< HEAD
     "short": "Use encrypted transport, authenticated workload identity and least privilege.",
     "answer": "mTLS, OAuth2 client credentials or workload identity are common approaches.",
     "code": "Service A --mTLS/OAuth--> Service B",
@@ -169,6 +298,21 @@
     ],
     "mistakes": [],
     "interview": "Use encrypted transport, authenticated workload identity and least privilege.",
+=======
+    "short": "Service-to-service security authenticates workloads and authorizes specific operations, commonly using mTLS, OAuth2 client credentials or workload identity.",
+    "answer": "Internal traffic should not be trusted merely because it is inside a private network. A service should authenticate the calling workload and authorize the requested operation. Common approaches include mutual TLS for workload identity and transport security, OAuth2 client-credentials access tokens, or cloud/workload identity mechanisms. Secrets and certificates need rotation, and authorization should use least privilege rather than one shared “internal” credential.",
+    "code": "Service A --mTLS/OAuth--> Service B",
+    "followups": [
+      "mTLS vs OAuth2 client credentials?",
+      "How do you rotate service credentials?",
+      "How do you prevent a compromised service from calling everything?"
+    ],
+    "mistakes": [
+      "Do not say internal network means trusted.",
+      "Do not give every service a shared superuser credential."
+    ],
+    "interview": "I treat internal calls as untrusted network traffic. I authenticate the workload with mTLS, OAuth2 client credentials or workload identity, then authorize the required scope or operation. I also plan credential rotation and avoid a single shared secret across every service.",
+>>>>>>> 744d590 (V11.1 Security and Coding quality upgrade)
     "source": "V3",
     "topic": "security"
   },
@@ -180,6 +324,7 @@
       "REST",
       "Security"
     ],
+<<<<<<< HEAD
     "short": "Check authentication, authorization, validation, TLS, secrets, rate limits and safe logging.",
     "answer": "Review broken access control, injection, token handling, request limits and dependency vulnerabilities.",
     "code": "identity -> permission -> validation -> business rules",
@@ -188,6 +333,21 @@
     ],
     "mistakes": [],
     "interview": "Check authentication, authorization, validation, TLS, secrets, rate limits and safe logging.",
+=======
+    "short": "REST API security combines strong transport security, authentication, authorization, validation, abuse controls, safe logging and secure error handling.",
+    "answer": "A practical API security checklist includes TLS, strong authentication, resource-level authorization, strict input validation, output/data minimization, rate limiting where needed, safe CORS policy for browser clients, secure secret handling, replay/idempotency controls for sensitive operations, dependency patching and security-focused observability. Authentication should be followed by authorization, and sensitive tokens or personal data should not be written to logs. Security controls should be applied at the correct layer rather than assuming the gateway alone is sufficient.",
+    "code": "identity -> permission -> validation -> business rules",
+    "followups": [
+      "How would you secure a public payment API?",
+      "How do you prevent sensitive data in logs?",
+      "What security belongs in the API Gateway versus the service?"
+    ],
+    "mistakes": [
+      "Do not treat authentication as the complete security model.",
+      "Do not log access tokens, passwords or sensitive personal data."
+    ],
+    "interview": "For a REST API I start with TLS, authentication and authorization, then add validation, rate limiting, secure secret management, safe error handling and logging. I also consider replay protection and idempotency for sensitive operations, and I enforce business authorization inside the owning service.",
+>>>>>>> 744d590 (V11.1 Security and Coding quality upgrade)
     "source": "V3",
     "topic": "security"
   },
@@ -1029,4 +1189,8 @@
     "investigation": "Start with metrics and traces, identify the failing boundary, compare latency/error rates and inspect resource saturation before changing configuration.",
     "prevention": "Use explicit timeouts, bounded resources, automated tests and alerts around the failure mode so the same issue is detected early."
   }
+<<<<<<< HEAD
 ]
+=======
+]
+>>>>>>> 744d590 (V11.1 Security and Coding quality upgrade)
