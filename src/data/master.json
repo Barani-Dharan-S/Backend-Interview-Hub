@@ -1297,17 +1297,19 @@
       "JWT",
       "Security"
     ],
-    "short": "JWT commonly has header, payload and signature.",
-    "answer": "A JWT commonly has three Base64URL-encoded parts: header, payload and signature. The payload contains claims such as subject, issuer, audience and expiry; it is not encrypted merely because it is a JWT. The server validates the signature and relevant claims before trusting the token. Sensitive data should not be placed in the payload just because it is encoded.",
+    "short": "A JWT is a signed token format commonly carrying header, payload and signature; encoding is not encryption.",
+    "answer": "A JWT normally contains a Base64URL-encoded header, payload claims, and a signature. The signature lets the resource server verify integrity and issuer-controlled signing, but the payload is readable by anyone holding the token, so secrets must never be placed there. In a typical API flow, the client sends the token as Bearer authentication, the resource server validates the signature and important claims such as issuer, audience, expiry and not-before before authorizing the request.",
     "code": "Authorization: Bearer <token>",
     "followups": [
-      "Is JWT encrypted?",
-      "Which claims should be validated?"
+      "What is the difference between signing and encryption?",
+      "Why should the API validate the audience claim?",
+      "Where should sensitive data be stored instead of a JWT payload?"
     ],
     "mistakes": [
-      "Do not treat Base64URL encoding as encryption or trust claims before signature validation."
+      "Do not say JWT payload is encrypted by default.",
+      "Do not treat a valid signature as sufficient authorization."
     ],
-    "interview": "I would emphasize that JWT is a token format, not an authentication protocol by itself. Validation includes signature, issuer, audience, expiry and appropriate algorithm/key checks; authorization still depends on the application's policies.",
+    "interview": "A JWT is a compact signed token with header, payload and signature. I would stress that Base64URL encoding does not provide confidentiality. On the resource server I validate the signature and claims such as issuer, audience and expiry before using the token identity for authorization.",
     "source": "V3",
     "topic": "security"
   },
@@ -1319,14 +1321,19 @@
       "Security",
       "Concepts"
     ],
-    "short": "Authentication establishes identity; authorization determines permitted actions.",
-    "answer": "Authentication answers 'who are you?' while authorization answers 'what are you allowed to do?'. A valid JWT can authenticate a caller, but the application must still check roles, scopes, resource ownership or tenant permissions before allowing an operation.",
+    "short": "Authentication establishes who the caller is; authorization decides what that authenticated identity is allowed to do.",
+    "answer": "Authentication answers “who are you?” and produces an identity or principal. Authorization answers “what may this identity do?” and evaluates roles, scopes, permissions or resource ownership. In a microservice API, JWT validation can authenticate the caller, while a service still has to enforce authorization such as “this user can update only orders belonging to their tenant.” Mixing the two is a common source of broken access control.",
     "code": "hasRole(\"ADMIN\")",
     "followups": [
-      "RBAC vs ABAC?"
+      "Where should authorization be enforced in microservices?",
+      "RBAC vs ABAC?",
+      "How do you prevent IDOR or cross-tenant access?"
     ],
-    "mistakes": [],
-    "interview": "I separate identity from permission. For example, the token may prove the user is Alice, but authorization decides whether Alice can update this particular order.",
+    "mistakes": [
+      "Do not equate authentication with authorization.",
+      "Do not rely only on API Gateway authorization for resource ownership checks."
+    ],
+    "interview": "Authentication establishes identity; authorization evaluates permissions. A valid JWT proves the token was accepted, but it does not automatically mean the caller can access every resource. I keep resource-level authorization inside the service that owns the business data.",
     "source": "V3",
     "topic": "security"
   },
@@ -1338,14 +1345,19 @@
       "Security",
       "Web"
     ],
-    "short": "CSRF causes a browser to send an unwanted authenticated request.",
-    "answer": "CSRF targets applications where the browser automatically sends credentials, such as cookies. An attacker can trick the browser into sending an unwanted state-changing request to a trusted site. CSRF defenses include SameSite cookies, anti-CSRF tokens and appropriate request validation. Bearer tokens kept outside automatically attached browser credentials change the threat model but do not make every web security issue disappear.",
+    "short": "CSRF exploits ambient browser credentials; it mainly matters for cookie-based authentication rather than bearer tokens stored outside browser credentials.",
+    "answer": "CSRF tricks a browser into sending an authenticated request to a target site without the user intentionally initiating that action. It is especially relevant when authentication credentials are automatically attached by the browser, such as session cookies. Common defenses include SameSite cookies, CSRF tokens and origin checks. A typical Authorization: Bearer token kept outside automatically attached browser credentials is not exposed to the classic cookie-based CSRF mechanism, although browser architecture and storage choices still matter.",
     "code": "Cookie auth + forged state-changing request",
     "followups": [
-      "Does CORS solve CSRF?"
+      "CSRF vs XSS?",
+      "Why is SameSite useful?",
+      "Does JWT automatically eliminate CSRF?"
     ],
-    "mistakes": [],
-    "interview": "I first identify the credential transport. CSRF is mainly about ambient browser credentials being sent with a forged request, so the defense should match whether the API uses cookies, bearer tokens or another mechanism.",
+    "mistakes": [
+      "Do not say CSRF and XSS are the same attack.",
+      "Do not claim every JWT application is automatically immune to CSRF; the browser credential mechanism matters."
+    ],
+    "interview": "CSRF is about unwanted state-changing requests made with credentials the browser automatically attaches. For cookie-based sessions I use SameSite and CSRF protection as appropriate. I distinguish this from XSS and from APIs where bearer credentials are not automatically attached by the browser.",
     "source": "V3",
     "topic": "security"
   },
@@ -1357,15 +1369,19 @@
       "Security",
       "Authentication"
     ],
-    "short": "Store passwords using adaptive one-way hashing with unique salts.",
-    "answer": "Passwords should be stored as slow, adaptive password hashes such as Argon2id, bcrypt or scrypt, with a unique salt per password. Plaintext and reversible encryption are inappropriate for normal password storage. Work factors should be tuned to current hardware and increased over time, while login attempts and reset flows should be protected against abuse.",
+    "short": "Store passwords as slow, salted password hashes using a dedicated password-hashing algorithm, never reversible encryption or plaintext.",
+    "answer": "Passwords should be processed with a password-hashing function designed to resist offline guessing, such as Argon2id, bcrypt or scrypt, with a unique salt per password. The application stores the resulting hash and parameters, then verifies a login by running the submitted password through the same password-hashing scheme. A salt prevents identical passwords from producing identical stored hashes and makes precomputed rainbow tables less useful. Work factors should be tuned for the deployment rather than hard-coded blindly.",
     "code": "// bcrypt/Argon2 hash",
     "followups": [
-      "Why salt?",
-      "Why not SHA-256?"
+      "Why is SHA-256 alone unsuitable for passwords?",
+      "What is a salt?",
+      "How do you migrate to a stronger password hash?"
     ],
-    "mistakes": [],
-    "interview": "The goal is that a database leak does not reveal usable passwords. A unique salt prevents identical passwords from producing the same stored value, and a deliberately expensive password hash slows offline guessing.",
+    "mistakes": [
+      "Do not say encryption is the preferred password-storage mechanism.",
+      "Do not assume a single global salt is equivalent to a per-password salt."
+    ],
+    "interview": "I never store plaintext or reversible password encryption. I use a dedicated password-hashing algorithm such as Argon2id or bcrypt with a unique salt and an appropriate work factor, then verify the supplied password against the stored hash during login.",
     "source": "V3",
     "topic": "security"
   },
@@ -1377,17 +1393,19 @@
       "OAuth",
       "Security"
     ],
-    "short": "OAuth 2.0 is an authorization framework for delegated access.",
-    "answer": "OAuth 2.0 is an authorization framework for delegated access. It separates the resource owner, client, authorization server and resource server and uses access tokens to call protected resources. For modern user-facing applications, authorization code with PKCE is a common flow; OAuth itself does not define user authentication in the same way OpenID Connect does.",
+    "short": "OAuth 2.0 is an authorization framework for delegated access; it is not itself an authentication protocol.",
+    "answer": "OAuth 2.0 defines how a client obtains and uses access tokens to call protected resources on behalf of a resource owner or application. The authorization server issues tokens after an appropriate grant flow, and the resource server validates the access token and enforces scopes or other authorization rules. For user authentication, OpenID Connect adds an identity layer on top of OAuth 2.0.",
     "code": "Client -> Authorization Server -> Token -> Resource Server",
     "followups": [
-      "OAuth 2.0 vs OpenID Connect?",
-      "Why is PKCE important?"
+      "Authorization Code + PKCE flow?",
+      "OAuth2 vs OpenID Connect?",
+      "What is a resource server?"
     ],
     "mistakes": [
-      "Do not describe OAuth 2.0 as simply a login protocol."
+      "Do not call OAuth 2.0 an authentication protocol by itself.",
+      "Do not confuse an access token with an ID token."
     ],
-    "interview": "I describe OAuth as delegated authorization, not simply 'login'. If the requirement is user identity, I would mention OpenID Connect on top of OAuth 2.0.",
+    "interview": "OAuth 2.0 is primarily about delegated authorization, not proving a human identity. The client obtains an access token from an authorization server and presents it to a resource server. If I need user identity, I look at OpenID Connect on top of OAuth 2.0.",
     "source": "V3",
     "topic": "security"
   },
@@ -1399,14 +1417,19 @@
       "Security",
       "Web"
     ],
-    "short": "CORS controls whether browser JavaScript can read cross-origin responses.",
-    "answer": "CORS is a browser security mechanism controlling whether frontend JavaScript from one origin may read responses from another origin. The server communicates its policy through response headers such as Access-Control-Allow-Origin. CORS is not an authentication mechanism and does not protect non-browser clients from making requests.",
+    "short": "CORS is a browser-enforced policy controlling which origins may read cross-origin responses; it is not a server-to-server security boundary.",
+    "answer": "CORS controls whether browser JavaScript from one origin can access responses from another origin. The server communicates its policy with headers such as Access-Control-Allow-Origin and may receive a preflight OPTIONS request for non-simple cross-origin requests. CORS does not stop a backend client from calling the endpoint directly, so authentication and authorization remain mandatory. Credentials such as cookies require additional CORS constraints and cannot be combined with a wildcard allowed origin.",
     "code": "Access-Control-Allow-Origin: https://example.com",
     "followups": [
-      "What is preflight?"
+      "What triggers a preflight?",
+      "Why can’t credentials use wildcard origin?",
+      "CORS vs CSRF?"
     ],
-    "mistakes": [],
-    "interview": "I would explain that CORS is enforced by browsers. A backend still needs authentication and authorization because Postman, mobile apps and server-to-server clients are not constrained by browser CORS rules.",
+    "mistakes": [
+      "Do not say CORS blocks Postman or backend clients.",
+      "Do not use a permissive wildcard origin with credentialed requests."
+    ],
+    "interview": "CORS is a browser security policy, not an API authentication mechanism. I configure the allowed origins, methods and headers deliberately, and I remember that server-to-server callers are not constrained by browser CORS checks.",
     "source": "V3",
     "topic": "security"
   },
@@ -1418,14 +1441,19 @@
       "JWT",
       "Tokens"
     ],
-    "short": "A refresh token can obtain a new access token without re-authentication.",
-    "answer": "A short-lived access token limits the damage window if it is stolen, while a longer-lived refresh token can obtain new access tokens. Refresh tokens should be stored and transmitted carefully, rotated or otherwise protected against replay, and revocable when appropriate. The exact design depends on whether the client is a browser, mobile app or confidential server application.",
+    "short": "Refresh tokens allow a client to obtain new short-lived access tokens without repeatedly re-authenticating the user.",
+    "answer": "A refresh token is typically longer-lived and exchanged with an authorization server for a new access token. This lets access tokens remain short-lived, reducing the impact of access-token theft. For stronger security, refresh tokens can be rotated on use and the server can detect reuse, revoke a token family, and bind the token to an appropriate client/session context. Refresh tokens should be stored and transmitted more carefully than ordinary API access tokens.",
     "code": "grant_type=refresh_token",
     "followups": [
-      "Rotation?"
+      "What happens when a refresh token is reused?",
+      "Where should browser refresh tokens be stored?",
+      "How do you revoke a token family?"
     ],
-    "mistakes": [],
-    "interview": "I use short access-token lifetimes plus protected refresh tokens to balance usability and revocation. Rotation lets the server detect reuse patterns and invalidate the token family when a stolen refresh token is replayed.",
+    "mistakes": [
+      "Do not make refresh tokens short-lived by definition; lifetime is a policy choice.",
+      "Do not assume rotation alone prevents all token theft."
+    ],
+    "interview": "I use short-lived access tokens for API calls and a refresh token to obtain new ones. Rotation is stronger because every refresh can invalidate the previous token and let the authorization server detect reuse of a stolen token.",
     "source": "V3",
     "topic": "security"
   },
@@ -1437,14 +1465,19 @@
       "Authorization",
       "RBAC"
     ],
-    "short": "Role-based access control grants permissions through roles.",
-    "answer": "RBAC grants permissions through roles rather than assigning every permission directly to every user. For example, ADMIN may have create/delete privileges while SUPPORT may only read and update support cases. Roles should be mapped to business capabilities carefully; authorization must still verify the target resource and tenant where applicable.",
+    "short": "RBAC grants permissions through roles, making access decisions easier to manage than assigning every permission directly to every user.",
+    "answer": "Role-Based Access Control maps users or service identities to roles, and roles to permissions. A request is authorized by evaluating the caller’s effective roles against the required permission. RBAC is simple and useful for coarse-grained access such as ADMIN, SUPPORT or READ_ONLY, but resource ownership and tenant isolation often require additional attributes or explicit checks.",
     "code": "@PreAuthorize(\"hasRole('ADMIN')\")",
     "followups": [
-      "RBAC vs ABAC?"
+      "RBAC vs ABAC?",
+      "How do you implement tenant-level authorization?",
+      "Where should roles be checked?"
     ],
-    "mistakes": [],
-    "interview": "RBAC simplifies permission management, but role checks alone can be insufficient. I distinguish coarse role authorization from object-level checks such as 'can this user modify this specific order?'",
+    "mistakes": [
+      "Do not put every business rule into roles.",
+      "Do not treat ADMIN as a substitute for validating resource ownership when the requirement forbids cross-tenant access."
+    ],
+    "interview": "RBAC centralizes coarse-grained permissions through roles. I would use it for permissions such as read or admin access, but I would not assume a role alone proves resource ownership or tenant access.",
     "source": "V3",
     "topic": "security"
   },
@@ -1456,14 +1489,19 @@
       "Microservices",
       "Security"
     ],
-    "short": "Use encrypted transport, authenticated workload identity and least privilege.",
-    "answer": "mTLS, OAuth2 client credentials or workload identity are common approaches.",
+    "short": "Service-to-service security authenticates workloads and authorizes specific operations, commonly using mTLS, OAuth2 client credentials or workload identity.",
+    "answer": "Internal traffic should not be trusted merely because it is inside a private network. A service should authenticate the calling workload and authorize the requested operation. Common approaches include mutual TLS for workload identity and transport security, OAuth2 client-credentials access tokens, or cloud/workload identity mechanisms. Secrets and certificates need rotation, and authorization should use least privilege rather than one shared “internal” credential.",
     "code": "Service A --mTLS/OAuth--> Service B",
     "followups": [
-      "mTLS vs JWT?"
+      "mTLS vs OAuth2 client credentials?",
+      "How do you rotate service credentials?",
+      "How do you prevent a compromised service from calling everything?"
     ],
-    "mistakes": [],
-    "interview": "Use encrypted transport, authenticated workload identity and least privilege.",
+    "mistakes": [
+      "Do not say internal network means trusted.",
+      "Do not give every service a shared superuser credential."
+    ],
+    "interview": "I treat internal calls as untrusted network traffic. I authenticate the workload with mTLS, OAuth2 client credentials or workload identity, then authorize the required scope or operation. I also plan credential rotation and avoid a single shared secret across every service.",
     "source": "V3",
     "topic": "security"
   },
@@ -1475,14 +1513,19 @@
       "REST",
       "Security"
     ],
-    "short": "Check authentication, authorization, validation, TLS, secrets, rate limits and safe logging.",
-    "answer": "Review broken access control, injection, token handling, request limits and dependency vulnerabilities.",
+    "short": "REST API security combines strong transport security, authentication, authorization, validation, abuse controls, safe logging and secure error handling.",
+    "answer": "A practical API security checklist includes TLS, strong authentication, resource-level authorization, strict input validation, output/data minimization, rate limiting where needed, safe CORS policy for browser clients, secure secret handling, replay/idempotency controls for sensitive operations, dependency patching and security-focused observability. Authentication should be followed by authorization, and sensitive tokens or personal data should not be written to logs. Security controls should be applied at the correct layer rather than assuming the gateway alone is sufficient.",
     "code": "identity -> permission -> validation -> business rules",
     "followups": [
-      "How prevent IDOR?"
+      "How would you secure a public payment API?",
+      "How do you prevent sensitive data in logs?",
+      "What security belongs in the API Gateway versus the service?"
     ],
-    "mistakes": [],
-    "interview": "Check authentication, authorization, validation, TLS, secrets, rate limits and safe logging.",
+    "mistakes": [
+      "Do not treat authentication as the complete security model.",
+      "Do not log access tokens, passwords or sensitive personal data."
+    ],
+    "interview": "For a REST API I start with TLS, authentication and authorization, then add validation, rate limiting, secure secret management, safe error handling and logging. I also consider replay protection and idempotency for sensitive operations, and I enforce business authorization inside the owning service.",
     "source": "V3",
     "topic": "security"
   },
@@ -1497,22 +1540,21 @@
       "Interview Ready"
     ],
     "short": "Use StringBuilder.reverse() or a character loop.",
-    "answer": "The straightforward approach is O(n). The solution below is a complete, runnable Java program with imports, a main method, sample input, and the core implementation.",
+    "answer": "Handle null/empty input explicitly and use StringBuilder for the straightforward O(n) implementation. For an interview I would first clarify null/empty and Unicode expectations. For ordinary Java text, StringBuilder.reverse() is concise; if library methods are disallowed, convert to a char array and swap from both ends.",
     "code": "import java.util.*;\n\npublic class Main {\n    static String reverse(String input) {\n        return new StringBuilder(input).reverse().toString();\n    }\n\n    public static void main(String[] args) {\n        String input = \"hello\";\n        System.out.println(\"Input: \" + input);\n        System.out.println(\"Output: \" + reverse(input));\n    }\n}",
     "followups": [
-      "Without reverse()?"
+      "What changes if reverse() is disallowed?"
     ],
     "mistakes": [
-      "Do not use repeated string concatenation inside a loop because it can become O(n²).",
-      "Clarify whether spaces and Unicode characters need special handling."
+      "Do not claim repeated String concatenation in a loop is O(n) for immutable Strings."
     ],
-    "interview": "I can reverse a string using StringBuilder.reverse(), which is O(n). If the interviewer wants the algorithm without the library method, I convert the string to a char array and swap characters from both ends toward the middle.",
+    "interview": "For an interview I would first clarify null/empty and Unicode expectations. For ordinary Java text, StringBuilder.reverse() is concise; if library methods are disallowed, convert to a char array and swap from both ends.",
     "source": "V3",
     "topic": "coding",
     "subtopic": "Strings & Hashing",
     "problem": "Reverse the given string and return the reversed value.",
     "example": "Input: \"hello\"\nOutput: \"olleh\"",
-    "approach": "Use StringBuilder for the simplest solution. For an interviewer asking for manual logic, use two pointers on a character array.",
+    "approach": "Handle null/empty input explicitly and use StringBuilder for the straightforward O(n) implementation.",
     "complexity": "Time: O(n)\nSpace: O(n) for the returned character sequence.",
     "streams": null
   },
@@ -1527,22 +1569,21 @@
       "Interview Ready"
     ],
     "short": "Compare characters from both ends toward the center.",
-    "answer": "Two pointers give O(n) time and O(1) auxiliary space. The solution below is a complete, runnable Java program with imports, a main method, sample input, and the core implementation.",
+    "answer": "Compare characters from both ends, stopping at the middle. This is O(n) time and O(1) extra space when using indexed access. I would use two pointers from the left and right and compare until they cross. If the requirement says ignore case or non-alphanumeric characters, normalize those rules before comparing.",
     "code": "import java.util.*;\n\npublic class Main {\n    static boolean isPalindrome(String input) {\n        int left = 0, right = input.length() - 1;\n        while (left < right) {\n            if (input.charAt(left++) != input.charAt(right--)) return false;\n        }\n        return true;\n    }\n\n    public static void main(String[] args) {\n        String input = \"madam\";\n        System.out.println(\"Input: \" + input);\n        System.out.println(\"Palindrome: \" + isPalindrome(input));\n    }\n}",
     "followups": [
-      "Ignore case/spaces?"
+      "How would you make it case-insensitive?"
     ],
     "mistakes": [
-      "Do not compare only the first half incorrectly; use two pointers or a correct reverse comparison.",
-      "Clarify whether case and non-alphanumeric characters should be ignored."
+      "Clarify whether spaces, punctuation and case are part of the palindrome definition."
     ],
-    "interview": "I use two pointers, one at the beginning and one at the end. I compare the characters and move both pointers toward the center. Any mismatch means it is not a palindrome. This takes O(n) time and O(1) extra space.",
+    "interview": "I would use two pointers from the left and right and compare until they cross. If the requirement says ignore case or non-alphanumeric characters, normalize those rules before comparing.",
     "source": "V3",
     "topic": "coding",
     "subtopic": "Strings & Hashing",
     "problem": "Check whether a string reads the same from left to right and right to left.",
     "example": "Input: \"madam\"\nOutput: true",
-    "approach": "Compare characters from both ends with two pointers. Stop immediately when a mismatch is found.",
+    "approach": "Compare characters from both ends, stopping at the middle. This is O(n) time and O(1) extra space when using indexed access.",
     "complexity": "Time: O(n)\nSpace: O(1) excluding the input string.",
     "streams": "A Streams solution can be written by comparing the string with its reversed form, but the two-pointer solution is preferable when discussing algorithmic efficiency."
   },
@@ -1557,22 +1598,21 @@
       "Interview Ready"
     ],
     "short": "Count characters while preserving encounter order, then select count 1.",
-    "answer": "LinkedHashMap is important for first-occurrence order. The solution below is a complete, runnable Java program with imports, a main method, sample input, and the core implementation.",
+    "answer": "Count character frequencies first, then scan the original string in order and return the first character whose count is one. The important detail is preserving original order. A frequency map gives counts, then a second pass identifies the first unique character in O(n) time.",
     "code": "import java.util.*;\nimport java.util.function.Function;\nimport java.util.stream.Collectors;\n\npublic class Main {\n    static Optional<Character> firstNonRepeated(String input) {\n        Map<Character, Long> counts = input.chars()\n                .mapToObj(c -> (char) c)\n                .collect(Collectors.groupingBy(\n                        Function.identity(), LinkedHashMap::new, Collectors.counting()));\n\n        return counts.entrySet().stream()\n                .filter(e -> e.getValue() == 1)\n                .map(Map.Entry::getKey)\n                .findFirst();\n    }\n\n    public static void main(String[] args) {\n        String input = \"swiss\";\n        System.out.println(\"Input: \" + input);\n        System.out.println(\"First non-repeated: \" + firstNonRepeated(input).orElse(null));\n    }\n}",
     "followups": [
-      "Why LinkedHashMap?"
+      "Can this be done in one pass?"
     ],
     "mistakes": [
-      "Do not assume findFirst alone identifies a non-repeated character; count frequencies first.",
-      "Preserve the required encounter order when returning the first unique character."
+      "Do not return an arbitrary entry from the frequency map; the answer depends on original order."
     ],
-    "interview": "I preserve character order while counting frequencies. LinkedHashMap is important because HashMap does not guarantee encounter order. After counting, I find the first character whose frequency is one. The overall complexity is O(n).",
+    "interview": "The important detail is preserving original order. A frequency map gives counts, then a second pass identifies the first unique character in O(n) time.",
     "source": "V3",
     "topic": "coding",
     "subtopic": "Strings & Hashing",
     "problem": "Find the first character that occurs exactly once in a string.",
     "example": "Input: \"swiss\"\nOutput: \"w\"",
-    "approach": "Count each character while preserving encounter order, then select the first entry whose count is one. LinkedHashMap is useful because it preserves insertion order.",
+    "approach": "Count character frequencies first, then scan the original string in order and return the first character whose count is one.",
     "complexity": "Time: O(n)\nSpace: O(k), where k is the number of distinct characters.",
     "streams": "Use chars().mapToObj(...).collect(groupingBy(..., LinkedHashMap::new, counting())) and then stream the map entries to find the first count of one."
   },
@@ -1677,22 +1717,21 @@
       "Interview Ready"
     ],
     "short": "Map salaries, distinct, sort descending, skip one.",
-    "answer": "Distinct is required if 'second' means second distinct value. The solution below is a complete, runnable Java program with imports, a main method, sample input, and the core implementation.",
+    "answer": "Find the largest and second-largest distinct values in one pass, or sort distinct values when simplicity is preferred. For an interview I prefer a one-pass solution because it demonstrates edge-case handling. Track largest and second largest, ignoring duplicates, and define what happens when fewer than two distinct values exist.",
     "code": "import java.util.*;\n\npublic class Main {\n    static OptionalInt secondHighest(int[] salaries) {\n        return Arrays.stream(salaries)\n                .distinct()\n                .boxed()\n                .sorted(Comparator.reverseOrder())\n                .skip(1)\n                .mapToInt(Integer::intValue)\n                .findFirst();\n    }\n\n    public static void main(String[] args) {\n        int[] salaries = {70000, 90000, 90000, 80000};\n        System.out.println(\"Input: \" + Arrays.toString(salaries));\n        System.out.println(\"Second highest: \" + secondHighest(salaries).orElse(-1));\n    }\n}",
     "followups": [
-      "Without sorting?"
+      "How would Streams solve it?"
     ],
     "mistakes": [
-      "Do not return the highest salary twice when the requirement asks for distinct salaries.",
-      "Handle the case where fewer than two distinct salaries exist."
+      "Do not confuse second element after sorting with second highest distinct value."
     ],
-    "interview": "I first remove duplicate salaries because the requirement says distinct. Then I sort descending, skip the highest salary and take the next one. If there are fewer than two distinct salaries, I return an empty result or handle it explicitly.",
+    "interview": "For an interview I prefer a one-pass solution because it demonstrates edge-case handling. Track largest and second largest, ignoring duplicates, and define what happens when fewer than two distinct values exist.",
     "source": "V3",
     "topic": "coding",
     "subtopic": "Java Streams & Collections",
     "problem": "Find the second-highest distinct salary from a collection of employees.",
     "example": "Input: [70000, 90000, 90000, 80000]\nOutput: 80000",
-    "approach": "Remove duplicates, sort salaries in descending order and skip the first value. In production code, if performance matters, a TreeSet or a single-pass approach can avoid sorting.",
+    "approach": "Find the largest and second-largest distinct values in one pass, or sort distinct values when simplicity is preferred.",
     "complexity": "Time: O(n log n) due to sorting\nSpace: O(n) for the distinct values.",
     "streams": "map(Employee::getSalary).distinct().sorted(Comparator.reverseOrder()).skip(1).findFirst()."
   },
@@ -1737,22 +1776,21 @@
       "Interview Ready"
     ],
     "short": "Compare normalized character frequency maps or sorted characters.",
-    "answer": "Frequency counting is expected O(n). Define normalization assumptions. The solution below is a complete, runnable Java program with imports, a main method, sample input, and the core implementation.",
+    "answer": "Normalize the comparison if required, count character frequencies for both strings, and compare the resulting maps. I would clarify whether spaces and case matter. For general text, a frequency map is robust; for restricted lowercase ASCII, a fixed-size array is faster and uses constant auxiliary space.",
     "code": "import java.util.*;\n\npublic class Main {\n    static boolean isAnagram(String first, String second) {\n        if (first.length() != second.length()) return false;\n        Map<Character, Integer> counts = new HashMap<>();\n        for (char c : first.toCharArray()) counts.merge(c, 1, Integer::sum);\n        for (char c : second.toCharArray()) {\n            Integer count = counts.get(c);\n            if (count == null || count == 0) return false;\n            if (count == 1) counts.remove(c); else counts.put(c, count - 1);\n        }\n        return counts.isEmpty();\n    }\n\n    public static void main(String[] args) {\n        String first = \"listen\", second = \"silent\";\n        System.out.println(\"Are anagrams: \" + isAnagram(first, second));\n    }\n}",
     "followups": [
-      "Case insensitive?"
+      "How would you solve it without sorting?"
     ],
     "mistakes": [
-      "Do not sort without normalizing case when the requirement is case-insensitive.",
-      "Account for spaces or punctuation only if the problem explicitly says to ignore them."
+      "Do not silently remove spaces or change case unless the problem says to."
     ],
-    "interview": "For an efficient solution, I compare lengths and maintain character frequencies. Every character from the second string decrements the corresponding count. If a count becomes invalid, the strings are not anagrams. This is O(n) time.",
+    "interview": "I would clarify whether spaces and case matter. For general text, a frequency map is robust; for restricted lowercase ASCII, a fixed-size array is faster and uses constant auxiliary space.",
     "source": "V3",
     "topic": "coding",
     "subtopic": "Strings & Hashing",
     "problem": "Determine whether two strings contain the same characters with the same frequencies.",
     "example": "Input: \"listen\", \"silent\"\nOutput: true",
-    "approach": "Normalize the strings if required, compare their lengths, then count characters in one string and decrement counts while scanning the other.",
+    "approach": "Normalize the comparison if required, count character frequencies for both strings, and compare the resulting maps.",
     "complexity": "Time: O(n)\nSpace: O(k), where k is the number of distinct characters.",
     "streams": "A simple Streams approach is to sort both strings with chars().sorted() and compare arrays, but that changes complexity to O(n log n)."
   },
@@ -1767,22 +1805,21 @@
       "Interview Ready"
     ],
     "short": "Use a long sum or XOR.",
-    "answer": "The sum formula is simple; use long to avoid integer overflow under larger constraints. The solution below is a complete, runnable Java program with imports, a main method, sample input, and the core implementation.",
+    "answer": "Use the arithmetic sum formula or XOR to find the missing value, depending on the constraints and integer-overflow considerations. If the input contains exactly one missing value from 1..n, XOR is a clean O(n) solution without sum overflow concerns. I first confirm the range and whether duplicates are possible.",
     "code": "import java.util.*;\n\npublic class Main {\n    static long findMissing(int[] numbers, int n) {\n        long expected = (long) n * (n + 1) / 2;\n        long actual = 0;\n        for (int number : numbers) actual += number;\n        return expected - actual;\n    }\n\n    public static void main(String[] args) {\n        int n = 5;\n        int[] numbers = {1, 2, 4, 5};\n        System.out.println(\"Missing number: \" + findMissing(numbers, n));\n    }\n}",
     "followups": [
-      "Why XOR?"
+      "Why can XOR avoid overflow?"
     ],
     "mistakes": [
-      "Do not assume the missing value is always zero when the range is 1..n.",
-      "Check the expected range and whether duplicates are allowed."
+      "Do not use the sum formula blindly when the numeric range can overflow the chosen integer type."
     ],
-    "interview": "I calculate the expected sum from 1 to n and subtract the actual sum. The difference is the missing number. I use long if the range can be large. This is O(n) time and O(1) extra space.",
+    "interview": "If the input contains exactly one missing value from 1..n, XOR is a clean O(n) solution without sum overflow concerns. I first confirm the range and whether duplicates are possible.",
     "source": "V3",
     "topic": "coding",
     "subtopic": "Arrays & Searching",
     "problem": "Find the missing number from a sequence containing numbers from 1 through n with exactly one number missing.",
     "example": "Input: [1, 2, 4, 5]\nOutput: 3",
-    "approach": "Use the arithmetic sum n*(n+1)/2 and subtract the actual array sum. For very large n, use long to avoid integer overflow.",
+    "approach": "Use the arithmetic sum formula or XOR to find the missing value, depending on the constraints and integer-overflow considerations.",
     "complexity": "Time: O(n)\nSpace: O(1).",
     "streams": "IntStream.rangeClosed(1, n).sum() is readable, but it still requires iterating through the expected range; the arithmetic formula is simpler for this exact problem."
   },
@@ -1827,22 +1864,21 @@
       "Interview Ready"
     ],
     "short": "Use two pointers and take the smaller current value.",
-    "answer": "This is O(n+m) for new output. The solution below is a complete, runnable Java program with imports, a main method, sample input, and the core implementation.",
+    "answer": "Merge with two pointers by repeatedly selecting the smaller current value, then append the remaining tail. Because both inputs are already sorted, there is no need to sort again. Two pointers give O(m+n) time and the result requires O(m+n) output space.",
     "code": "import java.util.*;\n\npublic class Main {\n    static int[] merge(int[] a, int[] b) {\n        int[] result = new int[a.length + b.length];\n        int i = 0, j = 0, k = 0;\n        while (i < a.length && j < b.length) {\n            if (a[i] <= b[j]) result[k++] = a[i++];\n            else result[k++] = b[j++];\n        }\n        while (i < a.length) result[k++] = a[i++];\n        while (j < b.length) result[k++] = b[j++];\n        return result;\n    }\n\n    public static void main(String[] args) {\n        int[] a = {1, 3, 5}, b = {2, 4, 6};\n        System.out.println(Arrays.toString(merge(a, b)));\n    }\n}",
     "followups": [
-      "In-place?"
+      "How do you merge in place?"
     ],
     "mistakes": [
-      "Do not forget to advance the pointer after copying an element.",
-      "Handle arrays of different lengths and empty arrays."
+      "Do not add an unnecessary sort step, which changes the intended O(m+n) approach."
     ],
-    "interview": "Because both arrays are already sorted, I do not need to sort again. I compare the current elements from both arrays, copy the smaller one and advance that pointer. This gives linear time.",
+    "interview": "Because both inputs are already sorted, there is no need to sort again. Two pointers give O(m+n) time and the result requires O(m+n) output space.",
     "source": "V3",
     "topic": "coding",
     "subtopic": "Arrays & Searching",
     "problem": "Merge two already sorted arrays into one sorted array.",
     "example": "Input: [1,3,5] and [2,4,6]\nOutput: [1,2,3,4,5,6]",
-    "approach": "Use two pointers, one for each input array, and repeatedly copy the smaller value. Then append the remaining values.",
+    "approach": "Merge with two pointers by repeatedly selecting the smaller current value, then append the remaining tail.",
     "complexity": "Time: O(m+n)\nSpace: O(m+n) for the merged array.",
     "streams": "Streams can concatenate and sort both arrays, but that costs O((m+n) log(m+n)); the two-pointer merge is the expected interview solution."
   },
@@ -1977,22 +2013,21 @@
       "Interview Ready"
     ],
     "short": "Count frequencies and maintain a min-heap of size K.",
-    "answer": "This gives O(n log k) after counting. The solution below is a complete, runnable Java program with imports, a main method, sample input, and the core implementation.",
+    "answer": "Maintain a frequency map and a min-heap of size K, or use bucket sorting when the value-frequency range makes it useful. I would count frequencies first, then keep only the best K entries in a min-heap to achieve O(n log k) after counting. I would clarify tie-breaking if equal frequencies exist.",
     "code": "import java.util.*;\n\npublic class Main {\n    static List<Integer> topKFrequent(int[] numbers, int k) {\n        Map<Integer, Integer> frequency = new HashMap<>();\n        for (int n : numbers) frequency.merge(n, 1, Integer::sum);\n\n        PriorityQueue<Map.Entry<Integer, Integer>> heap =\n                new PriorityQueue<>(Comparator.comparingInt(Map.Entry::getValue));\n        for (Map.Entry<Integer, Integer> entry : frequency.entrySet()) {\n            heap.offer(entry);\n            if (heap.size() > k) heap.poll();\n        }\n\n        List<Integer> result = new ArrayList<>();\n        while (!heap.isEmpty()) result.add(heap.poll().getKey());\n        Collections.reverse(result);\n        return result;\n    }\n\n    public static void main(String[] args) {\n        int[] numbers = {1, 1, 1, 2, 2, 3};\n        System.out.println(\"Top 2: \" + topKFrequent(numbers, 2));\n    }\n}",
     "followups": [
-      "Bucket sort?"
+      "Can you solve it in O(n)?"
     ],
     "mistakes": [
-      "Do not use a full sort when a bounded heap can reduce work for large inputs.",
-      "Define tie-breaking behavior when frequencies are equal."
+      "Do not claim a heap solution is O(n) when K is not treated as a constant."
     ],
-    "interview": "I first count frequencies. Then I maintain a min-heap containing only the best k elements. When the heap exceeds k, I remove the smallest frequency. This gives O(n log k) after frequency counting.",
+    "interview": "I would count frequencies first, then keep only the best K entries in a min-heap to achieve O(n log k) after counting. I would clarify tie-breaking if equal frequencies exist.",
     "source": "V3",
     "topic": "coding",
     "subtopic": "Coding Problems",
     "problem": "Return the k elements with the highest frequencies.",
     "example": "Input: [1,1,1,2,2,3], k=2\nOutput: [1,2]",
-    "approach": "Count frequencies with a HashMap, then use a min-heap of size k so the least frequent selected element is removed when the heap grows beyond k.",
+    "approach": "Maintain a frequency map and a min-heap of size K, or use bucket sorting when the value-frequency range makes it useful.",
     "complexity": "Time: O(n log k) after counting\nSpace: O(n) for the frequency map and O(k) for the heap.",
     "streams": "A Streams solution can group and count, then sort entries by frequency, but the heap approach is preferable when k is much smaller than n."
   },
@@ -2007,22 +2042,21 @@
       "Interview Ready"
     ],
     "short": "Use Floyd slow/fast pointers.",
-    "answer": "O(n) time and O(1) auxiliary space. The solution below is a complete, runnable Java program with imports, a main method, sample input, and the core implementation.",
+    "answer": "Use Floyd’s tortoise-and-hare algorithm: slow moves one step and fast two; a meeting proves a cycle, then reset one pointer to find the cycle entry. Floyd’s algorithm gives O(n) time and O(1) extra space. The key reasoning is that once pointers meet inside the cycle, moving one pointer to the head and advancing both one step makes them meet at the cycle entry.",
     "code": "import java.util.*;\n\npublic class Main {\n    static class Node {\n        int value; Node next;\n        Node(int value) { this.value = value; }\n    }\n\n    static boolean hasCycle(Node head) {\n        Node slow = head, fast = head;\n        while (fast != null && fast.next != null) {\n            slow = slow.next;\n            fast = fast.next.next;\n            if (slow == fast) return true;\n        }\n        return false;\n    }\n\n    public static void main(String[] args) {\n        Node one = new Node(1), two = new Node(2), three = new Node(3);\n        one.next = two; two.next = three; three.next = two;\n        System.out.println(\"Cycle exists: \" + hasCycle(one));\n    }\n}",
     "followups": [
-      "Find cycle entry?"
+      "Why does resetting one pointer find the entry?"
     ],
     "mistakes": [
-      "Do not rely on node values to detect a cycle because values can repeat.",
-      "Remember that Floyd’s algorithm uses O(1) extra space."
+      "Do not use a visited Set if the interviewer explicitly asks for O(1) extra space."
     ],
-    "interview": "I use two pointers. Slow moves one node at a time and fast moves two. In an acyclic list fast reaches null. In a cyclic list, fast eventually catches slow, so their meeting proves a cycle exists.",
+    "interview": "Floyd’s algorithm gives O(n) time and O(1) extra space. The key reasoning is that once pointers meet inside the cycle, moving one pointer to the head and advancing both one step makes them meet at the cycle entry.",
     "source": "V3",
     "topic": "coding",
     "subtopic": "Data Structures",
     "problem": "Determine whether a singly linked list contains a cycle.",
     "example": "Input: 1 -> 2 -> 3 -> 2 ...\nOutput: true",
-    "approach": "Use Floyd’s tortoise-and-hare algorithm. Move slow one step and fast two steps; if they meet, a cycle exists.",
+    "approach": "Use Floyd’s tortoise-and-hare algorithm: slow moves one step and fast two; a meeting proves a cycle, then reset one pointer to find the cycle entry.",
     "complexity": "Time: O(n)\nSpace: O(1).",
     "streams": null
   },
@@ -2037,22 +2071,21 @@
       "Interview Ready"
     ],
     "short": "Repeatedly halve a sorted search interval.",
-    "answer": "Keep boundary conventions consistent and use overflow-safe midpoint calculation. The solution below is a complete, runnable Java program with imports, a main method, sample input, and the core implementation.",
+    "answer": "On a sorted array, repeatedly compare the target with the middle element and discard half the remaining range. Binary search requires sorted or otherwise appropriately ordered data. I use low, high and a midpoint computed without overflow, then narrow the interval until the target is found or the range is empty.",
     "code": "import java.util.*;\n\npublic class Main {\n    static int binarySearch(int[] numbers, int target) {\n        int left = 0, right = numbers.length - 1;\n        while (left <= right) {\n            int mid = left + (right - left) / 2;\n            if (numbers[mid] == target) return mid;\n            if (numbers[mid] < target) left = mid + 1;\n            else right = mid - 1;\n        }\n        return -1;\n    }\n\n    public static void main(String[] args) {\n        int[] numbers = {1, 3, 5, 7, 9};\n        int target = 7;\n        System.out.println(\"Index: \" + binarySearch(numbers, target));\n    }\n}",
     "followups": [
-      "First occurrence?"
+      "How do you find the first occurrence?"
     ],
     "mistakes": [
-      "Do not use binary search on an unsorted input.",
-      "Avoid integer overflow when calculating the midpoint in general implementations."
+      "Do not apply binary search to an unsorted array without first establishing an ordering."
     ],
-    "interview": "Because the array is sorted, I compare the target with the middle element. If the target is smaller I search the left half; otherwise the right half. Each step halves the search space, so the time complexity is O(log n).",
+    "interview": "Binary search requires sorted or otherwise appropriately ordered data. I use low, high and a midpoint computed without overflow, then narrow the interval until the target is found or the range is empty.",
     "source": "V3",
     "topic": "coding",
     "subtopic": "Arrays & Searching",
     "problem": "Find a target value in a sorted array using binary search.",
     "example": "Input: [1,3,5,7,9], target=7\nOutput: index 3",
-    "approach": "Maintain left and right boundaries, calculate the middle index safely, and discard half the search space after each comparison.",
+    "approach": "On a sorted array, repeatedly compare the target with the middle element and discard half the remaining range.",
     "complexity": "Time: O(log n)\nSpace: O(1) iterative.",
     "streams": null
   },
@@ -2067,22 +2100,21 @@
       "Interview Ready"
     ],
     "short": "Use a stack to match each closing delimiter with the latest opening delimiter.",
-    "answer": "The LIFO structure matches nesting naturally. The solution below is a complete, runnable Java program with imports, a main method, sample input, and the core implementation.",
+    "answer": "Use a stack for opening brackets and require each closing bracket to match the most recent opening bracket. The stack models nested structure: push opening brackets, and on a closing bracket verify the top matches. The string is valid only if every close matches and the stack is empty at the end.",
     "code": "import java.util.*;\n\npublic class Main {\n    static boolean isBalanced(String input) {\n        Deque<Character> stack = new ArrayDeque<>();\n        for (char c : input.toCharArray()) {\n            if (c == '(' || c == '{' || c == '[') stack.push(c);\n            else if (c == ')' || c == '}' || c == ']') {\n                if (stack.isEmpty() || !matches(stack.pop(), c)) return false;\n            }\n        }\n        return stack.isEmpty();\n    }\n\n    static boolean matches(char open, char close) {\n        return (open == '(' && close == ')') ||\n               (open == '{' && close == '}') ||\n               (open == '[' && close == ']');\n    }\n\n    public static void main(String[] args) {\n        String input = \"{[()]}\";\n        System.out.println(\"Input: \" + input);\n        System.out.println(\"Balanced: \" + isBalanced(input));\n    }\n}",
     "followups": [
-      "Multiple bracket types?"
+      "How would you support other bracket types?"
     ],
     "mistakes": [
-      "Do not only count opening and closing characters; nesting order matters.",
-      "Return false immediately when a closing bracket does not match the stack top."
+      "Do not only count opening and closing bracket totals; order and nesting matter."
     ],
-    "interview": "A stack is ideal because brackets must close in reverse order of opening. I push opening brackets and validate each closing bracket against the stack top. At the end, the stack must be empty.",
+    "interview": "The stack models nested structure: push opening brackets, and on a closing bracket verify the top matches. The string is valid only if every close matches and the stack is empty at the end.",
     "source": "V3",
     "topic": "coding",
     "subtopic": "Data Structures",
     "problem": "Check whether an expression contains properly balanced (), {}, and [] brackets.",
     "example": "Input: \"{[()]}\"\nOutput: true",
-    "approach": "Push opening brackets onto a stack. For a closing bracket, check that the stack is non-empty and its top is the matching opening bracket.",
+    "approach": "Use a stack for opening brackets and require each closing bracket to match the most recent opening bracket.",
     "complexity": "Time: O(n)\nSpace: O(n) in the worst case.",
     "streams": null
   },
@@ -10917,20 +10949,20 @@
       "Basics"
     ],
     "short": "Reverse characters with a two-pointer swap.",
-    "answer": "Convert to a char array and swap from both ends.",
+    "answer": "Use a character array and two pointers when StringBuilder.reverse() is prohibited. I would explain the invariant: characters before left and after right are already in their final positions. Swap them and move inward, giving O(n) time.",
     "code": "import java.util.*;\npublic class Main {\n    static String reverse(String input) {\n        char[] chars = input.toCharArray();\n        int left = 0, right = chars.length - 1;\n        while (left < right) { char t = chars[left]; chars[left] = chars[right]; chars[right] = t; left++; right--; }\n        return new String(chars);\n    }\n    public static void main(String[] args) { String input = \"backend\"; System.out.println(reverse(input)); }\n}",
     "followups": [
-      "How would you reverse words instead?"
+      "How would you reverse by Unicode code points?"
     ],
     "mistakes": [
-      "Using repeated concatenation in a loop."
+      "Do not assume char-based reversal is sufficient for every Unicode grapheme requirement."
     ],
-    "interview": "I use two pointers on a char array. Time is O(n). Space is O(n) for the array.",
+    "interview": "I would explain the invariant: characters before left and after right are already in their final positions. Swap them and move inward, giving O(n) time.",
     "source": "V9",
     "id": "v9-080",
     "problem": "Reverse a string without using StringBuilder.reverse()",
     "example": "Input: \"hello\"\nOutput: \"olleh\"",
-    "approach": "Convert to a char array and swap from both ends.",
+    "approach": "Use a character array and two pointers when StringBuilder.reverse() is prohibited.",
     "complexity": "Analyze time and space complexity for the implementation shown.",
     "streams": ""
   },
@@ -11099,20 +11131,20 @@
       "Dynamic Programming"
     ],
     "short": "Find the largest sum of any contiguous subarray.",
-    "answer": "Kadane keeps the best subarray ending at the current position and the global best.",
+    "answer": "Use Kadane’s algorithm: maintain the best subarray ending at the current position and the best result seen globally. Kadane’s algorithm chooses between extending the current subarray and starting a new one at the current value. It runs in O(n) time and O(1) auxiliary space, including the all-negative case if initialized correctly.",
     "code": "import java.util.*;\npublic class Main {\n    static int maxSubArray(int[] nums) {\n        int current=nums[0], best=nums[0];\n        for(int i=1;i<nums.length;i++){ current=Math.max(nums[i],current+nums[i]); best=Math.max(best,current); }\n        return best;\n    }\n    public static void main(String[] args) { System.out.println(maxSubArray(new int[]{-2,1,-3,4,-1,2,1,-5,4})); }\n}",
     "followups": [
       "How do you return the subarray indices?"
     ],
     "mistakes": [
-      "Initializing best to zero fails for all-negative arrays."
+      "Do not initialize the running best to zero if all-negative input must return the maximum element."
     ],
-    "interview": "Kadane is O(n) time and O(1) space.",
+    "interview": "Kadane’s algorithm chooses between extending the current subarray and starting a new one at the current value. It runs in O(n) time and O(1) auxiliary space, including the all-negative case if initialized correctly.",
     "source": "V9",
     "id": "v9-087",
     "problem": "Find the maximum subarray sum",
     "example": "Input: [-2,1,-3,4,-1,2,1,-5,4]\nOutput: 6",
-    "approach": "Kadane keeps the best subarray ending at the current position and the global best.",
+    "approach": "Use Kadane’s algorithm: maintain the best subarray ending at the current position and the best result seen globally.",
     "complexity": "Analyze time and space complexity for the implementation shown.",
     "streams": ""
   },
@@ -17734,23 +17766,21 @@
       "hashmap"
     ],
     "short": "Given a string, find the length of the longest substring that contains no repeated characters.",
-    "answer": "Use a sliding window. Keep the last index of every character in a HashMap. When a repeated character is found inside the current window, move the left boundary to one position after its previous index.",
+    "answer": "Maintain a sliding window with a map from character to its latest index; move the left boundary past a repeated character. The window always contains unique characters. When a repeated character appears inside the window, jump left to max(left, lastIndex+1). This gives O(n) time with a hash map.",
     "code": "import java.util.*;\n\npublic class Main {\n    public static int longestUniqueSubstring(String s) {\n        Map<Character, Integer> lastSeen = new HashMap<>();\n        int left = 0, max = 0;\n\n        for (int right = 0; right < s.length(); right++) {\n            char ch = s.charAt(right);\n            if (lastSeen.containsKey(ch)) {\n                left = Math.max(left, lastSeen.get(ch) + 1);\n            }\n            lastSeen.put(ch, right);\n            max = Math.max(max, right - left + 1);\n        }\n        return max;\n    }\n\n    public static void main(String[] args) {\n        String input = \"abcabcbb\";\n        System.out.println(\"Input: \" + input);\n        System.out.println(\"Longest length: \" + longestUniqueSubstring(input));\n    }\n}",
     "followups": [
-      "What changes if the input is Unicode?",
-      "Can you return the substring instead of its length?"
+      "Can you solve it with an array instead of a HashMap?"
     ],
     "mistakes": [
-      "Do not move the left pointer backwards.",
-      "A Set-only solution can work, but the map gives a clean O(n) implementation."
+      "Do not move the left pointer backwards after finding a repeated character."
     ],
-    "interview": "I use a sliding window with a map of each character's latest index. When a duplicate appears, I move the left pointer past the previous occurrence. Each character is processed once, giving O(n) time.",
+    "interview": "The window always contains unique characters. When a repeated character appears inside the window, jump left to max(left, lastIndex+1). This gives O(n) time with a hash map.",
     "source": "V10.5",
     "topic": "coding",
     "subtopic": null,
     "problem": "Given a string, find the length of the longest substring that contains no repeated characters.",
     "example": "Input: \"abcabcbb\"\nOutput: 3\nExplanation: \"abc\" is the longest substring without repeating characters.",
-    "approach": "Use a sliding window. Keep the last index of every character in a HashMap. When a repeated character is found inside the current window, move the left boundary to one position after its previous index.",
+    "approach": "Maintain a sliding window with a map from character to its latest index; move the left boundary past a repeated character.",
     "complexity": "Time: O(n)\nSpace: O(min(n, character-set-size))",
     "streams": ""
   },
@@ -21203,21 +21233,19 @@
       "Interview Ready"
     ],
     "short": "Find a duplicate in an array of n+1 integers where values are in 1..n.",
-    "answer": "Treat values as next pointers. Floyd's tortoise and hare finds the cycle entry, which is the duplicate.",
+    "answer": "Treat the array as a linked structure where each value points to another index, then use Floyd’s cycle detection to find the duplicate. The constraints must guarantee values are in 1..n with n+1 elements and one duplicated value. Under those constraints, the duplicate creates a cycle, so Floyd finds it in O(n) time and O(1) extra space without modifying the array.",
     "code": "public class Main {\n    static int findDuplicate(int[] a) {\n        int slow = a[0], fast = a[0];\n        do { slow = a[slow]; fast = a[a[fast]]; } while (slow != fast);\n        slow = a[0];\n        while (slow != fast) { slow = a[slow]; fast = a[fast]; }\n        return slow;\n    }\n    public static void main(String[] args) {\n        int[] a = {1,3,4,2,2};\n        System.out.println(\"Duplicate: \" + findDuplicate(a));\n    }\n}",
     "followups": [
-      "Can you solve it with a different data structure?",
-      "What edge cases would you test?"
+      "Why does a duplicate create a cycle?"
     ],
     "mistakes": [
-      "Do not skip boundary conditions.",
-      "State why the chosen data structure gives the required complexity."
+      "Do not apply Floyd blindly when the input constraints do not form the required index/value mapping."
     ],
-    "interview": "I would start with the core invariant, explain why each operation is safe, then state the complexity and mention the main edge case.",
+    "interview": "The constraints must guarantee values are in 1..n with n+1 elements and one duplicated value. Under those constraints, the duplicate creates a cycle, so Floyd finds it in O(n) time and O(1) extra space without modifying the array.",
     "source": "V10.6",
     "problem": "Find a duplicate in an array of n+1 integers where values are in 1..n.",
     "example": "Input: [1,3,4,2,2]\nOutput: 2",
-    "approach": "Treat values as next pointers. Floyd's tortoise and hare finds the cycle entry, which is the duplicate.",
+    "approach": "Treat the array as a linked structure where each value points to another index, then use Floyd’s cycle detection to find the duplicate.",
     "complexity": "Time: O(n)\nSpace: O(1)",
     "streams": null,
     "subtopic": "hashing",
