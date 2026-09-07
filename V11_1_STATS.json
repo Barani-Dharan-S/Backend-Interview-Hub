@@ -1,0 +1,17 @@
+{
+  "version": "V11.1",
+  "total": 1000,
+  "security_upgraded": 10,
+  "coding_upgraded": 15,
+  "topics": {
+    "java": 156,
+    "microservices": 285,
+    "jpa": 58,
+    "security": 46,
+    "coding": 93,
+    "system-design": 56,
+    "sql": 134,
+    "springboot": 134,
+    "cloud": 38
+  }
+}
