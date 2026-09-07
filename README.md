@@ -47,3 +47,7 @@ All coding questions now include a consistent problem statement, example, approa
 ## V10.7
 
 Content expansion to 1,000 backend interview questions. Focused on Java, Spring Boot, Microservices, SQL, Security and Coding, with additional L2/L3 depth and 18 new fully runnable Java coding programs.
+
+
+## V10.9
+Targeted quality pass focused on shallow Microservices and SQL answers. No new questions were added; 33 existing records received deeper interview-ready explanations and stronger delivery guidance.

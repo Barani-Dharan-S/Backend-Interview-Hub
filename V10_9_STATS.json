@@ -1,0 +1,11 @@
+{
+  "version": "V10.9",
+  "questions": 1000,
+  "type": "targeted-quality-pass",
+  "changed_records": 30,
+  "focus": [
+    "Microservices",
+    "SQL"
+  ],
+  "new_questions": 0
+}

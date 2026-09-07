@@ -691,13 +691,15 @@
       "Reliability"
     ],
     "short": "Timeouts, retries, circuit breakers, bulkheads and graceful degradation control failures.",
-    "answer": "Each protects a different failure mode. Combining them requires careful limits to avoid retry storms.",
+    "answer": "Resilience patterns reduce the effect of dependency failures and overload. Common patterns include timeouts, retries with backoff, circuit breakers, bulkheads, rate limits, fallbacks and load shedding.",
     "code": "Service -> dependency: timeout + retry + circuit",
     "followups": [
       "How avoid retry storms?"
     ],
-    "mistakes": [],
-    "interview": "Timeouts, retries, circuit breakers, bulkheads and graceful degradation control failures.",
+    "mistakes": [
+      "Do not present Resilience patterns as a universal solution; explain when it is appropriate and its trade-offs."
+    ],
+    "interview": "I treat resilience as a combination rather than adding retries everywhere. A timeout limits waiting, a retry handles selected transient failures, a circuit breaker prevents repeated calls during an outage, and a bulkhead limits resource consumption. Each pattern must be bounded and observable because poorly configured retries can amplify an incident.",
     "source": "V3",
     "topic": "microservices"
   },
@@ -710,13 +712,15 @@
       "Production"
     ],
     "short": "Tracing follows requests across services using trace/span context.",
-    "answer": "Trace is end-to-end; spans represent operations. Propagation preserves correlation.",
+    "answer": "Distributed tracing follows a request across service boundaries by propagating trace context and recording spans for operations such as HTTP calls, database work and message processing.",
     "code": "Trace -> API -> Order -> Payment",
     "followups": [
       "Metrics vs logs vs traces?"
     ],
-    "mistakes": [],
-    "interview": "Tracing follows requests across services using trace/span context.",
+    "mistakes": [
+      "Do not present Distributed tracing as a universal solution; explain when it is appropriate and its trade-offs."
+    ],
+    "interview": "When a request enters the system, the trace context is propagated to downstream services and, where appropriate, across messaging boundaries. Each service creates spans that can be correlated into one trace. This lets me identify whether the delay is in the gateway, application code, database or downstream service instead of guessing from isolated logs.",
     "source": "V3",
     "topic": "microservices"
   },
@@ -729,13 +733,15 @@
       "Production"
     ],
     "short": "Use metrics, structured logs, traces and health signals tied to user impact.",
-    "answer": "Monitor rate, errors, latency, saturation, JVM, DB pools and broker lag.",
+    "answer": "Microservice monitoring combines infrastructure, application and business signals so teams can detect failures and understand their impact. The core signals are metrics, logs and traces, complemented by meaningful business KPIs.",
     "code": "RED: Rate Errors Duration",
     "followups": [
       "What is an SLO?"
     ],
-    "mistakes": [],
-    "interview": "Use metrics, structured logs, traces and health signals tied to user impact.",
+    "mistakes": [
+      "Do not present Microservice monitoring as a universal solution; explain when it is appropriate and its trade-offs."
+    ],
+    "interview": "For a production microservice I would monitor request rate, error rate, latency, saturation, dependency health and business failures. Metrics tell me that something is wrong, logs provide event detail, and distributed traces show where latency or failure travels across services. Alerts should be tied to user impact rather than every small metric fluctuation.",
     "source": "V3",
     "topic": "microservices"
   },
@@ -748,13 +754,15 @@
       "Compatibility"
     ],
     "short": "Prefer backward-compatible evolution and explicit versions for breaking changes.",
-    "answer": "Additive changes and deprecation reduce consumer disruption.",
+    "answer": "API versioning allows a service to evolve its contract without unexpectedly breaking existing consumers. Common approaches include URI, header or media-type versioning.",
     "code": "/api/v1/orders\n/api/v2/orders",
     "followups": [
       "How deprecate consumers?"
     ],
-    "mistakes": [],
-    "interview": "Prefer backward-compatible evolution and explicit versions for breaking changes.",
+    "mistakes": [
+      "Do not present API versioning as a universal solution; explain when it is appropriate and its trade-offs."
+    ],
+    "interview": "I prefer explicit compatibility rules over versioning everything by default. For a breaking REST contract, I can expose a new version while keeping the old contract during a migration window. I would document the deprecation date, monitor old-version traffic, and remove it only after consumers have migrated.",
     "source": "V3",
     "topic": "microservices"
   },
@@ -767,13 +775,15 @@
       "Resilience"
     ],
     "short": "Rate limiting controls traffic per identity/resource.",
-    "answer": "Token bucket, leaky bucket and sliding windows are common; distributed systems may need shared state.",
+    "answer": "Rate limiting controls how much traffic a client or identity can generate during a period. It protects shared resources and helps enforce fairness, abuse controls and capacity limits.",
     "code": "Token bucket capacity=100 refill=10/sec",
     "followups": [
       "Global vs per-user?"
     ],
-    "mistakes": [],
-    "interview": "Rate limiting controls traffic per identity/resource.",
+    "mistakes": [
+      "Do not present Rate limiting as a universal solution; explain when it is appropriate and its trade-offs."
+    ],
+    "interview": "I would choose the limit based on the protected resource, define the identity being limited, and decide whether the limit is local or distributed. Token bucket is useful when short bursts are allowed; a distributed limiter is needed when multiple application instances must share the same quota. The API should return a clear throttling response and clients should back off.",
     "source": "V3",
     "topic": "microservices"
   },
@@ -786,13 +796,15 @@
       "Kafka"
     ],
     "short": "A broker decouples producers and consumers and can buffer work.",
-    "answer": "Kafka, RabbitMQ and cloud messaging have different ordering/delivery models.",
+    "answer": "A message broker decouples producers from consumers by accepting messages, storing or routing them, and delivering them according to the broker's delivery model. It supports asynchronous communication and can absorb temporary traffic differences.",
     "code": "Producer -> Broker -> Consumer",
     "followups": [
       "Queue vs topic?"
     ],
-    "mistakes": [],
-    "interview": "A broker decouples producers and consumers and can buffer work.",
+    "mistakes": [
+      "Do not present Message broker as a universal solution; explain when it is appropriate and its trade-offs."
+    ],
+    "interview": "The broker gives producers and consumers temporal and operational decoupling: a producer does not have to wait for the consumer to finish. I still need to design for duplicates, ordering, retries, dead-letter handling and consumer lag because a broker does not automatically provide exactly-once business behavior.",
     "source": "V3",
     "topic": "microservices"
   },
@@ -805,13 +817,15 @@
       "Messaging"
     ],
     "short": "Topics hold records, partitions provide parallelism and per-partition ordering, groups divide consumption.",
-    "answer": "More consumers than partitions do not increase that group's partition parallelism.",
+    "answer": "Kafka topics are split into partitions for parallelism and ordering within a partition. Consumers in the same consumer group divide those partitions among themselves, so a partition is actively processed by only one consumer in a group at a time.",
     "code": "topic orders partitions=3\nconsumers=3",
     "followups": [
       "What determines ordering?"
     ],
-    "mistakes": [],
-    "interview": "Topics hold records, partitions provide parallelism and per-partition ordering, groups divide consumption.",
+    "mistakes": [
+      "Do not present Kafka topic/partition/group as a universal solution; explain when it is appropriate and its trade-offs."
+    ],
+    "interview": "The partition key determines which partition receives a record, so records with the same key normally stay ordered within that partition. Adding consumers increases parallelism only up to the number of partitions. If ordering matters for an entity, I choose a stable key such as orderId and accept the corresponding partitioning trade-off.",
     "source": "V3",
     "topic": "microservices"
   },
@@ -824,13 +838,15 @@
       "Reliability"
     ],
     "short": "At-least-once can duplicate; at-most-once can lose messages.",
-    "answer": "Exactly-once must be considered end-to-end. Idempotent processing is often the practical target.",
+    "answer": "At-most-once delivery may lose messages but avoids redelivery; at-least-once delivery retries until acknowledgement or failure handling succeeds, so duplicates are possible. The choice affects how consumers must be designed.",
     "code": "process -> ack\nretry can duplicate",
     "followups": [
       "How make consumer idempotent?"
     ],
-    "mistakes": [],
-    "interview": "At-least-once can duplicate; at-most-once can lose messages.",
+    "mistakes": [
+      "Do not present At-least-once vs at-most-once as a universal solution; explain when it is appropriate and its trade-offs."
+    ],
+    "interview": "For important business events I generally prefer at-least-once delivery with an idempotent consumer because losing a message can be worse than processing a duplicate. Idempotency can be enforced with a unique event or business key and a durable record of processed work. Exactly-once processing is usually a system-level business property, not something I assume merely from a broker setting.",
     "source": "V3",
     "topic": "microservices"
   },
@@ -843,13 +859,15 @@
       "Networking"
     ],
     "short": "A service mesh moves service-to-service networking policies into infrastructure proxies/nodes.",
-    "answer": "It can provide mTLS, routing and telemetry but adds platform complexity.",
+    "answer": "A service mesh is an infrastructure layer that manages service-to-service communication, commonly providing traffic control, mTLS, retries, timeouts, telemetry and policy through sidecars or node-level proxies.",
     "code": "A -> proxy -> proxy -> B",
     "followups": [
       "When avoid a mesh?"
     ],
-    "mistakes": [],
-    "interview": "A service mesh moves service-to-service networking policies into infrastructure proxies/nodes.",
+    "mistakes": [
+      "Do not present Service mesh as a universal solution; explain when it is appropriate and its trade-offs."
+    ],
+    "interview": "I would use a service mesh when many services need consistent communication policies and the operational cost of implementing them separately becomes significant. It can standardize mTLS, traffic shifting and telemetry, but it also adds proxies, configuration and another failure/diagnostic layer, so it should solve a real operational problem rather than be adopted automatically.",
     "source": "V3",
     "topic": "microservices"
   },
@@ -862,13 +880,15 @@
       "Troubleshooting"
     ],
     "short": "Preserve evidence and correlate the failure through logs, metrics and traces.",
-    "answer": "Check trace ID, stack trace, deployment/config changes, downstream and DB errors before restarting.",
+    "answer": "A production HTTP 500 is a symptom, not a diagnosis. I would correlate the failing request with logs, traces, metrics and recent deployments, then determine whether the failure is in application code, data access, configuration or a dependency.",
     "code": "500 -> traceId -> log -> downstream",
     "followups": [
       "What if logs are missing?"
     ],
-    "mistakes": [],
-    "interview": "Preserve evidence and correlate the failure through logs, metrics and traces.",
+    "mistakes": [
+      "Do not present Debug production 500 as a universal solution; explain when it is appropriate and its trade-offs."
+    ],
+    "interview": "I would first quantify scope and start time, then correlate a failing request ID with the trace and structured logs. Next I would inspect recent releases, dependency latency/error rates, database behavior, thread and connection pools, and exception types. If the issue is release-related, rollback can reduce impact while the root cause is investigated.",
     "source": "V3",
     "topic": "microservices"
   },
@@ -881,13 +901,15 @@
       "Production"
     ],
     "short": "Use timeouts, bounded concurrency, circuit breakers, bulkheads and load shedding.",
-    "answer": "Unlimited waiting exhausts threads/connections; isolation prevents blast radius.",
+    "answer": "Cascading failures occur when one unhealthy dependency causes callers to consume more resources, which then makes additional services unhealthy. Prevention combines bounded timeouts, controlled retries, circuit breakers, bulkheads and load shedding.",
     "code": "Gateway -> Service -> Slow dependency",
     "followups": [
       "Load shedding vs rate limiting?"
     ],
-    "mistakes": [],
-    "interview": "Use timeouts, bounded concurrency, circuit breakers, bulkheads and load shedding.",
+    "mistakes": [
+      "Do not present Prevent cascading failures as a universal solution; explain when it is appropriate and its trade-offs."
+    ],
+    "interview": "I would start with strict timeout budgets and avoid retrying every failure blindly. Retries should be bounded and use backoff with jitter. Circuit breakers stop repeatedly calling an unhealthy dependency, while bulkheads prevent one dependency from consuming all threads or connections. I would also expose dependency latency and failure metrics so the cascade is visible.",
     "source": "V3",
     "topic": "microservices"
   },
@@ -900,13 +922,15 @@
       "DevOps"
     ],
     "short": "Run old and new environments and switch traffic after validation.",
-    "answer": "Rollback is fast, but database migrations must remain compatible during transition.",
+    "answer": "Blue-green deployment maintains two environments: the current stable version and the candidate version. Traffic is switched between them after the candidate is validated, allowing a fast rollback by switching back.",
     "code": "Blue=v1\nGreen=v2",
     "followups": [
       "Blue-green vs canary?"
     ],
-    "mistakes": [],
-    "interview": "Run old and new environments and switch traffic after validation.",
+    "mistakes": [
+      "Do not present Blue-green deployment as a universal solution; explain when it is appropriate and its trade-offs."
+    ],
+    "interview": "I would deploy the new version into the inactive environment, run health and smoke checks, then move traffic through the load balancer or gateway. Rollback is operationally simple because the previous environment remains available. The trade-off is higher infrastructure cost and the need to handle database compatibility carefully.",
     "source": "V3",
     "topic": "microservices"
   },
@@ -919,13 +943,15 @@
       "DevOps"
     ],
     "short": "Send a small percentage of traffic to the new version before wider rollout.",
-    "answer": "Use health and business metrics as rollout gates.",
+    "answer": "A canary deployment releases a new version to a small subset of production traffic first, validates health and business metrics, and then increases traffic gradually. It reduces blast radius compared with an all-at-once rollout.",
     "code": "99% v1\n1% v2",
     "followups": [
       "What metrics gate rollout?"
     ],
-    "mistakes": [],
-    "interview": "Send a small percentage of traffic to the new version before wider rollout.",
+    "mistakes": [
+      "Do not present Canary deployment as a universal solution; explain when it is appropriate and its trade-offs."
+    ],
+    "interview": "I would route a small percentage of traffic to the new version, compare error rate, latency and key business metrics with the stable version, and increase exposure only when the signals remain healthy. I would also define an automatic rollback threshold before starting the rollout. Canary is useful when the cost of a bad release is high.",
     "source": "V3",
     "topic": "microservices"
   },
@@ -938,13 +964,15 @@
       "Distributed Systems"
     ],
     "short": "A distributed lock coordinates exclusive ownership across instances.",
-    "answer": "Leases/expiration and failure semantics are essential. Idempotency may be safer than locking.",
+    "answer": "A distributed lock coordinates access to a shared resource across multiple application instances. It should have an ownership model, lease/expiry behavior and safe handling for process crashes and delayed clients.",
     "code": "lock(key,lease) -> work -> unlock",
     "followups": [
       "What if holder crashes?"
     ],
-    "mistakes": [],
-    "interview": "A distributed lock coordinates exclusive ownership across instances.",
+    "mistakes": [
+      "Do not present Distributed lock as a universal solution; explain when it is appropriate and its trade-offs."
+    ],
+    "interview": "I would avoid a distributed lock unless the invariant truly requires serialized ownership. If I use one, I need an atomic acquisition mechanism, an expiry/lease, unique ownership and a safe release path. The critical section should be short, and the underlying data store should still enforce the final invariant when possible.",
     "source": "V3",
     "topic": "microservices"
   },
@@ -957,13 +985,15 @@
       "Architecture"
     ],
     "short": "Incrementally replace slices of a legacy system.",
-    "answer": "Route capabilities to new components, validate, then retire legacy paths.",
+    "answer": "The Strangler pattern migrates a monolith incrementally by placing a controlled boundary in front of it and gradually routing selected capabilities to new services until the old functionality can be retired.",
     "code": "Legacy -> Facade -> New/Legacy",
     "followups": [
       "When is it better than rewrite?"
     ],
-    "mistakes": [],
-    "interview": "Incrementally replace slices of a legacy system.",
+    "mistakes": [
+      "Do not present Strangler pattern as a universal solution; explain when it is appropriate and its trade-offs."
+    ],
+    "interview": "I would first identify a bounded capability with clear ownership and data boundaries, route that capability through an edge layer, implement the new service, migrate traffic and validate behavior. The pattern reduces migration risk because the monolith and new service can coexist during the transition.",
     "source": "V3",
     "topic": "microservices"
   },
@@ -2542,13 +2572,15 @@
       "ACID"
     ],
     "short": "A transaction groups database work with commit/rollback semantics.",
-    "answer": "Transactions protect atomicity and consistency while isolation controls concurrency.",
+    "answer": "A database transaction groups operations into a unit whose consistency rules are controlled by the database. Depending on isolation and engine behavior, other transactions may or may not see intermediate changes.",
     "code": "BEGIN; UPDATE account SET balance=balance-100 WHERE id=1; COMMIT;",
     "followups": [
       "ACID?"
     ],
-    "mistakes": [],
-    "interview": "A transaction groups database work with commit/rollback semantics.",
+    "mistakes": [
+      "Do not present Database transaction as a universal solution; explain when it is appropriate and its trade-offs."
+    ],
+    "interview": "I define the transaction boundary around one business operation that needs atomicity. Within it, successful work commits and a rollback removes changes according to the database's transaction semantics. I also choose isolation deliberately because stronger isolation can reduce anomalies but increase locking, contention or retry behavior.",
     "source": "V3",
     "topic": "sql"
   },
@@ -2580,13 +2612,15 @@
       "Concurrency"
     ],
     "short": "Transactions can wait cyclically for each other's locks.",
-    "answer": "Databases may abort one transaction. Keep transactions short and use safe bounded retries.",
+    "answer": "A deadlock occurs when transactions hold resources that the other transactions need and each waits for the other to release them. Databases typically detect the cycle and abort one transaction.",
     "code": "T1 locks A -> waits B\nT2 locks B -> waits A",
     "followups": [
       "How retry?"
     ],
-    "mistakes": [],
-    "interview": "Transactions can wait cyclically for each other's locks.",
+    "mistakes": [
+      "Do not present SQL deadlock as a universal solution; explain when it is appropriate and its trade-offs."
+    ],
+    "interview": "To troubleshoot a deadlock I need the database's deadlock report or lock information, then identify the statements, indexes and resource acquisition order involved. A common prevention technique is to make transactions acquire resources in a consistent order and keep them short. The application should also be prepared to retry a transaction that the database aborts when the operation is safe to retry.",
     "source": "V3",
     "topic": "sql"
   },
@@ -2599,13 +2633,15 @@
       "Performance"
     ],
     "short": "It shows how the database plans to execute a query.",
-    "answer": "Inspect scans, joins, indexes, row estimates and actual statistics where supported.",
+    "answer": "EXPLAIN shows the optimizer's planned execution strategy; many databases also provide an actual-execution form such as EXPLAIN ANALYZE that runs the query and reports observed timing and row counts.",
     "code": "EXPLAIN SELECT * FROM orders WHERE customer_id=42;",
     "followups": [
       "Full table scan?"
     ],
-    "mistakes": [],
-    "interview": "It shows how the database plans to execute a query.",
+    "mistakes": [
+      "Do not present EXPLAIN / execution plan as a universal solution; explain when it is appropriate and its trade-offs."
+    ],
+    "interview": "I use an execution plan to check access paths, join strategies, estimated versus actual rows, sorts, scans and expensive operators. A sequential scan is not automatically bad; it can be optimal for a large portion of a table. I compare the plan with data distribution and indexes before changing the query or schema.",
     "source": "V3",
     "topic": "sql"
   },
@@ -2618,13 +2654,15 @@
       "DDL"
     ],
     "short": "DELETE removes rows, TRUNCATE clears table contents as a bulk operation, DROP removes the table object.",
-    "answer": "DELETE supports WHERE. Exact TRUNCATE behavior varies by database.",
+    "answer": "DELETE removes selected rows and can be filtered; TRUNCATE removes all rows using a database-specific fast path and has different transactional, logging and identity semantics; DROP removes the table definition itself.",
     "code": "DELETE FROM employee WHERE id=10;\nTRUNCATE TABLE employee;\nDROP TABLE employee;",
     "followups": [
       "Can TRUNCATE roll back?"
     ],
-    "mistakes": [],
-    "interview": "DELETE removes rows, TRUNCATE clears table contents as a bulk operation, DROP removes the table object.",
+    "mistakes": [
+      "Do not present DELETE vs TRUNCATE vs DROP as a universal solution; explain when it is appropriate and its trade-offs."
+    ],
+    "interview": "I use DELETE when I need row-level filtering or delete triggers/semantics supported by the database. TRUNCATE is appropriate when I intentionally want to empty the whole table and the database's locking and transaction behavior are acceptable. DROP is a schema change because the table itself is removed. I would never choose between them solely on the word 'faster' without checking database-specific behavior.",
     "source": "V3",
     "topic": "sql"
   },
@@ -2637,13 +2675,15 @@
       "Database"
     ],
     "short": "A normal view stores a query definition; a materialized view stores results.",
-    "answer": "Materialized views trade freshness and refresh cost for faster reads.",
+    "answer": "A view stores a query definition and computes its result when queried, while a materialized view stores the result physically and must be refreshed to reflect source changes.",
     "code": "CREATE VIEW active_customers AS SELECT id,name FROM customer WHERE active=true;",
     "followups": [
       "When materialize?"
     ],
-    "mistakes": [],
-    "interview": "A normal view stores a query definition; a materialized view stores results.",
+    "mistakes": [
+      "Do not present View vs materialized view as a universal solution; explain when it is appropriate and its trade-offs."
+    ],
+    "interview": "A normal view is useful for abstraction, reuse and access control, but its underlying query still executes when accessed. A materialized view can make expensive reporting queries much faster because the result is precomputed, but it introduces refresh cost and staleness. I choose it when read performance is more important than continuously current results.",
     "source": "V3",
     "topic": "sql"
   },
@@ -2656,13 +2696,15 @@
       "Query Design"
     ],
     "short": "A CTE names a subquery for readable multi-step queries.",
-    "answer": "WITH can support recursive queries where the DB allows them. Materialization is optimizer-dependent.",
+    "answer": "A common table expression, or CTE, gives a named query expression that can make complex SQL easier to structure. It is especially useful for multi-step transformations and recursive queries.",
     "code": "WITH high_salary AS (SELECT * FROM employee WHERE salary>80000) SELECT * FROM high_salary;",
     "followups": [
       "Recursive CTE?"
     ],
-    "mistakes": [],
-    "interview": "A CTE names a subquery for readable multi-step queries.",
+    "mistakes": [
+      "Do not present CTE as a universal solution; explain when it is appropriate and its trade-offs."
+    ],
+    "interview": "I use a CTE to separate logical stages such as filtering, aggregation and ranking, which makes complex SQL easier to reason about. A CTE is not automatically a performance optimization; the optimizer's treatment is database-specific. For performance work I inspect the execution plan rather than assuming a CTE will materialize or disappear.",
     "source": "V3",
     "topic": "sql"
   },
@@ -2675,13 +2717,15 @@
       "JPA"
     ],
     "short": "Optimistic locking detects conflicts; pessimistic locking acquires database locks.",
-    "answer": "Version columns work well when conflicts are rare; pessimistic locking can increase contention.",
+    "answer": "Optimistic locking assumes conflicts are uncommon and detects a conflicting update, commonly with a version column. Pessimistic locking acquires database locks to prevent competing transactions from changing the protected data concurrently.",
     "code": "UPDATE account SET balance=?,version=version+1 WHERE id=? AND version=?;",
     "followups": [
       "When use pessimistic?"
     ],
-    "mistakes": [],
-    "interview": "Optimistic locking detects conflicts; pessimistic locking acquires database locks.",
+    "mistakes": [
+      "Do not present Optimistic vs pessimistic locking as a universal solution; explain when it is appropriate and its trade-offs."
+    ],
+    "interview": "Optimistic locking is often a good fit for web applications where contention is low because transactions do not hold locks while a user is thinking. Pessimistic locking can be appropriate when conflicts are expensive and the database can safely serialize the critical operation. The choice depends on contention, transaction duration and failure handling.",
     "source": "V3",
     "topic": "sql"
   },
@@ -2694,13 +2738,15 @@
       "Performance"
     ],
     "short": "Inspect actual query, plan, indexes, locks, row counts and recent changes.",
-    "answer": "Use EXPLAIN/EXPLAIN ANALYZE safely, inspect blocking and test targeted changes on realistic data.",
+    "answer": "Troubleshooting slow SQL means identifying where execution time is spent rather than immediately adding an index. I would inspect the execution plan, row estimates, indexes, joins, sorting, locking and database resource pressure.",
     "code": "slow query -> plan -> locks -> index -> re-test",
     "followups": [
       "Can an index hurt?"
     ],
-    "mistakes": [],
-    "interview": "Inspect actual query, plan, indexes, locks, row counts and recent changes.",
+    "mistakes": [
+      "Do not present Troubleshoot slow SQL as a universal solution; explain when it is appropriate and its trade-offs."
+    ],
+    "interview": "I would reproduce or capture the slow query, inspect its actual plan when possible, and compare estimated and actual cardinalities. Then I would check whether predicates are selective and sargable, whether joins have suitable indexes, whether sorting or aggregation spills, and whether the query is waiting on locks or I/O. Any index change should be validated against write cost and other query patterns.",
     "source": "V3",
     "topic": "sql"
   },
@@ -10270,7 +10316,7 @@
       "Window Functions"
     ],
     "short": "A window function computes a value across related rows without collapsing them into one row per group.",
-    "answer": "Functions such as ROW_NUMBER, RANK, SUM and LAG can calculate per-row analytics while retaining row detail.",
+    "answer": "A window function calculates a value over a set of rows related to the current row while preserving the individual rows in the result. PARTITION BY defines the group and ORDER BY defines the sequence within that group.",
     "code": "SELECT employee_id, department_id, salary,\n       ROW_NUMBER() OVER (PARTITION BY department_id ORDER BY salary DESC) AS rn\nFROM employee;",
     "followups": [
       "Window function vs GROUP BY?",
@@ -10280,7 +10326,7 @@
       "Using GROUP BY when row-level detail is required.",
       "Confusing RANK gaps with DENSE_RANK."
     ],
-    "interview": "Window functions let me calculate rankings, running totals and comparisons while preserving individual rows.",
+    "interview": "Window functions are useful for running totals, rankings, previous/next row comparisons and group-level statistics alongside detail rows. For example, SUM(amount) OVER (PARTITION BY customer_id ORDER BY order_date) can produce a customer's running total without grouping away individual orders.",
     "source": "V9",
     "id": "v9-055"
   },
@@ -13093,7 +13139,7 @@
       "Ranking"
     ],
     "short": "ROW_NUMBER assigns unique sequential numbers; RANK leaves gaps after ties; DENSE_RANK does not leave gaps.",
-    "answer": "For salaries 100, 100, 90, ROW_NUMBER gives 1,2,3; RANK gives 1,1,3; DENSE_RANK gives 1,1,2.",
+    "answer": "ROW_NUMBER assigns a unique sequence within a window, RANK gives tied rows the same rank and leaves gaps after ties, while DENSE_RANK also gives ties the same rank but does not leave gaps.",
     "code": "SELECT salary, ROW_NUMBER() OVER(ORDER BY salary DESC), RANK() OVER(ORDER BY salary DESC), DENSE_RANK() OVER(ORDER BY salary DESC) FROM employee;",
     "followups": [
       "Which should you use for top 3 distinct salaries?",
@@ -13102,7 +13148,7 @@
     "mistakes": [
       "Saying RANK and DENSE_RANK behave identically."
     ],
-    "interview": "ROW_NUMBER is unique per row, RANK preserves tie positions with gaps, and DENSE_RANK preserves ties without gaps.",
+    "interview": "For scores 100, 90, 90, 80, ROW_NUMBER produces 1,2,3,4; RANK produces 1,2,2,4; DENSE_RANK produces 1,2,2,3. I choose based on the business meaning of a tie, especially when selecting top N records per group.",
     "source": "V9.1"
   },
   {
@@ -13423,7 +13469,7 @@
       "Performance"
     ],
     "short": "A partial index stores entries only for rows matching a predicate, reducing index size and focusing on a common query subset.",
-    "answer": "For example, an index on active users can exclude inactive rows. Support and syntax depend on the database.",
+    "answer": "A partial or filtered index indexes only rows that satisfy a predicate, when the database supports that feature. It can reduce index size and maintenance cost when the indexed subset is much smaller than the table.",
     "code": "CREATE INDEX idx_active_users ON users(email) WHERE active = true;",
     "followups": [
       "When is a partial index useful?",
@@ -13432,7 +13478,7 @@
     "mistakes": [
       "Assuming all database engines implement filtered indexes identically."
     ],
-    "interview": "A partial index is valuable when queries repeatedly target a selective subset. The exact syntax and optimizer behavior are database-specific.",
+    "interview": "A partial index is useful when queries repeatedly target a stable subset such as active records. The query predicate must be compatible with the index condition for the optimizer to benefit. I would validate selectivity and actual plans because a partial index is not a universal replacement for a normal composite index.",
     "source": "V9.1"
   },
   {
@@ -13533,7 +13579,7 @@
       "Performance"
     ],
     "short": "SELECT * can fetch unnecessary columns, increase network and memory usage, and make contracts unstable when schemas evolve.",
-    "answer": "Selecting only required columns can reduce I/O and allow covering indexes. It also makes application dependencies explicit.",
+    "answer": "SELECT * asks the database to return every selected column. In production APIs this can increase network transfer, deserialization cost and coupling to schema changes, and it can prevent some covering-index opportunities.",
     "code": "SELECT id, status, total FROM orders WHERE customer_id=?;",
     "followups": [
       "Can SELECT * ever be acceptable?",
@@ -13542,7 +13588,7 @@
     "mistakes": [
       "Using SELECT * for large APIs or wide tables by default."
     ],
-    "interview": "I select only the columns needed by the use case, especially for large or frequently executed queries.",
+    "interview": "I prefer explicit columns so the query documents exactly what the caller needs. This reduces data transfer and makes schema evolution safer. For performance-sensitive queries, selecting only required columns can also allow an index-only or covering access path depending on the database.",
     "source": "V9.1"
   },
   {
@@ -15314,7 +15360,7 @@
       "Production"
     ],
     "short": "GROUP BY collapses rows; window functions calculate across related rows while retaining row detail.",
-    "answer": "Use ROW_NUMBER/RANK for ranking, LAG/LEAD for comparisons and SUM OVER for running totals.",
+    "answer": "GROUP BY collapses rows into groups and produces aggregate results per group, while window functions calculate values across related rows without collapsing the original row set.",
     "code": "RANK() OVER (PARTITION BY department_id ORDER BY salary DESC)",
     "followups": [
       "RANK vs DENSE_RANK?",
@@ -15323,7 +15369,7 @@
     "mistakes": [
       "Using GROUP BY and losing row-level detail."
     ],
-    "interview": "I use GROUP BY for one row per group and window functions when I need group calculations alongside each original row.",
+    "interview": "If I need one result row per department, GROUP BY is appropriate. If I need every employee row plus the department average, a window function is better because the employee rows remain visible. In interviews I explain this as 'GROUP BY changes the row shape; a window function enriches the existing rows.'",
     "source": "V10",
     "id": "v10-047"
   },
@@ -20507,14 +20553,16 @@
       "Security"
     ],
     "short": "Parameterized SQL separates SQL structure from user-supplied values.",
-    "answer": "Prepared statements prevent input from being interpreted as SQL syntax and can also improve plan reuse depending on the database.",
+    "answer": "Parameterized SQL separates the SQL statement structure from user-supplied values, allowing the database driver to bind values instead of concatenating them into the SQL text.",
     "code": null,
     "followups": [
       "Does escaping replace parameterization?",
       "What about dynamic table names?"
     ],
-    "mistakes": [],
-    "interview": "I always bind user values through prepared statements or framework parameters. String concatenation is both unsafe and harder to maintain.",
+    "mistakes": [
+      "Do not present What is parameterized SQL and why does it matter? as a universal solution; explain when it is appropriate and its trade-offs."
+    ],
+    "interview": "The main security benefit is protection against SQL injection, but parameterization also improves statement reuse in databases that cache or prepare execution plans. I would use prepared statements or framework parameter binding rather than building SQL with string concatenation from untrusted input.",
     "source": "V10.6",
     "subtopic": "fundamentals",
     "subtopicName": "Query Fundamentals"
@@ -20595,14 +20643,16 @@
       "SQL"
     ],
     "short": "A recursive CTE queries hierarchical or graph-like relationships such as employee-manager trees.",
-    "answer": "It has an anchor query and a recursive member and needs termination conditions. Large or cyclic graphs require safeguards.",
+    "answer": "A recursive CTE lets a query repeatedly reference its previous result, making it suitable for hierarchical or graph-like relationships such as employee reporting trees or category paths.",
     "code": null,
     "followups": [
       "How do you prevent cycles?",
       "When would you use application traversal?"
     ],
-    "mistakes": [],
-    "interview": "Recursive CTEs are useful for hierarchies when the database supports them. I define a clear termination condition and protect against cycles or excessive depth.",
+    "mistakes": [
+      "Do not present What is a recursive CTE useful for? as a universal solution; explain when it is appropriate and its trade-offs."
+    ],
+    "interview": "A recursive CTE normally has an anchor query and a recursive query joined with UNION ALL. The anchor produces the starting rows; each iteration finds the next level until no more rows are produced or a database-specific limit is reached. I must guard against cycles and uncontrolled recursion.",
     "source": "V10.6",
     "subtopic": "fundamentals",
     "subtopicName": "Query Fundamentals"
