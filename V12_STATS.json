@@ -1,0 +1,9 @@
+{
+  "version": "V12.0",
+  "focus": "Full Stack Expansion",
+  "backend_questions": 1000,
+  "react_lessons": 30,
+  "react_levels": {"L1": 8, "L2": 12, "L3": 10},
+  "react_subtopics": ["Foundations", "Components", "Hooks", "Rendering", "Forms", "Performance", "State Management", "Routing", "API Integration", "Practical Patterns", "Security", "Internals", "Reliability", "Architecture", "Testing", "Production", "Full Stack"],
+  "notes": "No backend questions were added or removed. V12 introduces the first frontend learning track."
+}

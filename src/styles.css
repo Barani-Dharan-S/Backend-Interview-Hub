@@ -1,7 +1,7 @@
 @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@500;600&display=swap');
 :root{font-family:"DM Sans",system-ui,sans-serif;color-scheme:dark}*{box-sizing:border-box}body{margin:0}button,input{font:inherit}button{cursor:pointer}
 .app{min-height:100vh;display:flex;background:#090c11;color:#e9edf5}.app.light{background:#f4f6f9;color:#17202d;color-scheme:light}
-.sidebar{width:265px;min-height:100vh;position:fixed;left:0;top:0;border-right:1px solid #1d2430;background:#0d1118;padding:24px 14px;display:flex;flex-direction:column;z-index:5}.light .sidebar{background:#fff;border-color:#e3e7ed}
+.sidebar{width:265px;height:100vh;min-height:100vh;position:fixed;left:0;top:0;border-right:1px solid #1d2430;background:#0d1118;padding:24px 14px;display:flex;flex-direction:column;z-index:5}.light .sidebar{background:#fff;border-color:#e3e7ed}
 .brand{display:flex;gap:11px;align-items:center;padding:4px 10px 27px}.brand-mark{width:38px;height:38px;border-radius:10px;display:grid;place-items:center;background:#d6f34b;color:#111;font-weight:800}.brand strong,.brand span{display:block;line-height:1.15}.brand strong{font-size:14px}.brand span{color:#7e8a9d;font-size:12px;margin-top:3px}
 .interview-btn{width:100%;border:1px solid #303a49;background:#141a23;color:#eaf0f8;padding:12px 14px;border-radius:9px;text-align:left;font-weight:600;margin-bottom:25px}.light .interview-btn{background:#f4f6f8;color:#17202d;border-color:#dfe4eb}.interview-btn:hover{border-color:#d6f34b}
 .side-label{font:11px "JetBrains Mono",monospace;letter-spacing:.12em;color:#667286;padding:0 10px 8px}.nav-item{width:100%;display:flex;align-items:center;gap:10px;padding:9px 10px;margin:2px 0;border:0;border-radius:7px;color:#8e9aac;background:transparent;text-align:left;font-size:13px}.nav-item small{margin-left:auto;color:#526073;font-size:10px}.nav-item:hover{background:#151b24;color:#e8edf4}.light .nav-item:hover{background:#f1f3f6;color:#18202b}.nav-item.active{background:#1a222d;color:#fff}.light .nav-item.active{background:#edf1f5;color:#111827}.nav-item.active small{color:#d6f34b}.sidebar-bottom{margin-top:auto}.theme-btn{width:100%;border:0;background:transparent;color:#778397;text-align:left;padding:10px}
@@ -37,3 +37,72 @@
 .scenario-block { margin-top: 14px; padding: 14px 16px; border: 1px solid var(--line, #ddd); border-radius: 12px; background: var(--surface-2, rgba(127,127,127,.06)); }
 .scenario-block b { display:block; margin-bottom:6px; }
 .scenario-block p { margin:0; }
+/* V12 full-stack React learning */
+.learning-page{padding-top:28px}.learning-hero{padding:30px;border:1px solid #222b38;border-radius:14px;background:radial-gradient(circle at 82% 20%,rgba(214,243,75,.1),transparent 34%),#10151d}.light .learning-hero{background:#fff;border-color:#dfe5ec}.learning-hero h2{font-size:31px;line-height:1.1;letter-spacing:-.045em;margin:13px 0 10px}.learning-hero h2 em{font-style:normal;color:#d6f34b}.learning-hero p{max-width:780px;color:#7f8b9e;font-size:13px;line-height:1.7;margin:0}.learning-flow{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-top:20px}.learning-flow span{padding:8px 11px;border:1px solid #303a49;border-radius:7px;background:#111720;color:#b7c1ce;font:10px "JetBrains Mono",monospace}.learning-flow b{color:#d6f34b;font-size:13px}.light .learning-flow span{background:#f7f9fa;border-color:#dfe4eb;color:#536174}.learning-toolbar{display:flex;gap:12px;margin-top:14px}.lesson-list{border-top:1px solid #1b222d}.light .lesson-list{border-color:#dfe4eb}.lesson-card{border-bottom:1px solid #1b222d}.light .lesson-card{border-color:#dfe4eb}.lesson-head{width:100%;border:0;background:transparent;color:inherit;padding:16px 4px;display:flex;align-items:center;text-align:left;gap:15px}.lesson-head:hover .lesson-title strong{color:#d6f34b}.lesson-title{flex:1;min-width:0}.lesson-title strong{display:block;font-size:14px;font-weight:600}.lesson-body{margin:-2px 40px 22px;padding:18px 20px 22px;border-left:2px solid #d6f34b;background:#10151d;border-radius:0 8px 8px 0}.light .lesson-body{background:#f5f7f9}.lesson-body pre{margin:10px 0 0;padding:15px;border-radius:7px;overflow:auto;background:#080b10;color:#b8c5d5;border:1px solid #222b36;font:12px/1.7 "JetBrains Mono",monospace}.light .lesson-body pre{background:#eef1f5;color:#344054;border-color:#dce2e9}.lesson-body .explain-section{margin-top:18px}.lesson-body .explain-section:first-child{margin-top:0}.lesson-body .interview-script{margin-top:20px}.lesson-body .mistake-section{margin-bottom:0}@media(max-width:600px){.learning-hero{padding:22px}.learning-hero h2{font-size:25px}.learning-toolbar{display:block}.learning-toolbar .filters{margin-top:8px}.lesson-body{margin-left:20px;margin-right:10px;padding:16px}.learning-flow{gap:5px}}
+
+/* V12.1 navigation refresh — clearer backend/frontend grouping and responsive drawer */
+.sidebar-top{display:flex;align-items:center;justify-content:space-between}.sidebar-close{display:none;border:0;background:transparent;color:#7f8b9d;font-size:27px;line-height:1;padding:2px 6px}.sidebar-close:hover{color:#fff}.light .sidebar-close:hover{color:#111827}
+.section-label{margin-top:18px}.topic-nav{min-height:0}.frontend-nav{margin-top:0;margin-bottom:0}.frontend-nav label{display:flex;flex-direction:column;gap:2px}.frontend-nav label small{font-size:9px;font-weight:400;color:#667286}.frontend-nav.active label small{color:#d6f34b}.frontend-nav strong{font-size:12px;font-weight:600}
+.theme-btn{display:flex;align-items:center;gap:10px;border:1px solid #242d39;background:#111720;border-radius:8px;color:#9aa6b7;padding:10px 11px}.theme-btn:hover{border-color:#465264;color:#eef2f7}.theme-btn span{width:18px;text-align:center}.theme-btn label{font-size:11px}.light .theme-btn{background:#f8fafb;border-color:#dfe4eb;color:#667387}.light .theme-btn:hover{border-color:#c8d0da;color:#17202d}
+.menu-toggle{display:none}.sidebar-overlay{display:none}
+
+@media(max-width:850px){
+  .sidebar{width:280px;height:100vh;min-height:100vh;max-width:86vw;padding:20px 14px;transform:translateX(-105%);transition:transform .2s ease;box-shadow:12px 0 30px rgba(0,0,0,.2);overflow-y:auto}
+  .sidebar.sidebar-open{transform:translateX(0)}
+  .sidebar-close{display:block}
+  .brand div:last-child{display:block}
+  .nav-item label,.nav-item small{display:block}
+  .nav-item{justify-content:flex-start}
+  .nav-item span{font-size:15px}
+  .side-label{display:block}
+  .main{margin-left:0;width:100%;padding:76px 22px 60px}
+  .menu-toggle{display:flex;position:fixed;left:14px;top:14px;z-index:4;align-items:center;gap:8px;border:1px solid #303a49;background:#111720;color:#dbe2eb;border-radius:8px;padding:8px 10px;font-size:15px;box-shadow:0 5px 18px rgba(0,0,0,.15)}
+  .menu-toggle span{font-size:11px;font-weight:600}
+  .light .menu-toggle{background:#fff;border-color:#dfe4eb;color:#263244}
+  .sidebar-overlay{display:block;position:fixed;inset:0;border:0;background:rgba(5,8,12,.5);z-index:4}
+}
+@media(min-width:851px){.sidebar{overflow-y:auto}.topic-nav{overflow:visible}}
+@media(max-width:600px){.main{padding:68px 14px 50px}.menu-toggle{left:10px;top:10px}.topbar{padding-bottom:18px}.prep-badge{margin-top:12px}.topbar h1{font-size:24px}.learning-page,.roadmap-page{padding-top:18px}}
+
+/* V12.2 navigation polish */
+.sidebar-scroll{flex:1;min-height:0;overflow-y:scroll;scrollbar-width:auto;scrollbar-color:#536176 #111720;padding-right:5px}
+.sidebar-scroll::-webkit-scrollbar{width:9px}
+.sidebar-scroll::-webkit-scrollbar-track{background:#111720;border-radius:8px}
+.sidebar-scroll::-webkit-scrollbar-thumb{background:#536176;border-radius:8px;border:2px solid #111720}
+.sidebar-scroll::-webkit-scrollbar-thumb:hover{background:#718096}
+.light .sidebar-scroll{scrollbar-color:#aab4c2 #f4f6f8}
+.light .sidebar-scroll::-webkit-scrollbar-track{background:#f4f6f8}
+.light .sidebar-scroll::-webkit-scrollbar-thumb{background:#aab4c2;border-color:#f4f6f8}
+.light .sidebar-scroll::-webkit-scrollbar-thumb:hover{background:#7f8b9d}
+.sidebar-bottom{flex:0 0 auto;margin-top:12px;padding-top:12px;border-top:1px solid #1d2430}
+.light .sidebar-bottom{border-color:#e3e7ed}
+
+/* V12.4 frontend navigation — use the same compact menu language as backend */
+.frontend-label,.fullstack-label{border-top:1px solid #1d2430;padding-top:18px}
+.light .frontend-label,.light .fullstack-label{border-color:#e3e7ed}
+.nav-item-disabled{cursor:default;opacity:.72}
+.nav-item-disabled:hover{background:transparent;color:#8e9aac}
+.nav-item-disabled small{font:9px "JetBrains Mono",monospace;color:#4f5c6e}
+.text-icon{font:9px "JetBrains Mono",monospace;font-weight:700;letter-spacing:-.05em}
+.js-icon{color:#d7c83f}.ts-icon{color:#62b8e8}
+.light .nav-item-disabled:hover{background:transparent;color:#687589}
+.light .nav-item-disabled small{color:#8995a5}
+
+@media(max-width:850px){.sidebar-scroll{overflow-y:auto}.sidebar-bottom{margin-top:10px}}
+
+/* V12.6 — always-visible custom sidebar scrollbar (Mac/Chrome overlay-scrollbar safe) */
+.sidebar-scroll-wrap{position:relative;flex:1;min-height:0;display:flex;overflow:hidden}
+.sidebar-scroll{flex:1;min-width:0;min-height:0;overflow-y:auto;overflow-x:hidden;padding-right:10px;scrollbar-width:none;-ms-overflow-style:none}
+.sidebar-scroll::-webkit-scrollbar{display:none;width:0;height:0}
+.sidebar-scrollbar{position:absolute;right:1px;top:2px;bottom:2px;width:8px;border-radius:999px;background:#151b24;cursor:pointer;touch-action:none}
+.sidebar-scrollbar-thumb{position:absolute;left:1px;right:1px;min-height:42px;border-radius:999px;background:#657286;border:0;cursor:grab}
+.sidebar-scrollbar-thumb:active{cursor:grabbing;background:#8290a5}
+.sidebar-scrollbar:hover .sidebar-scrollbar-thumb{background:#8190a5}
+.light .sidebar-scrollbar{background:#edf0f3}
+.light .sidebar-scrollbar-thumb{background:#a6b0bd}
+.light .sidebar-scrollbar:hover .sidebar-scrollbar-thumb{background:#8995a4}
+@media(max-width:850px){.sidebar-scrollbar{right:2px;width:8px}.sidebar-scroll{padding-right:11px}}
+
+/* V12.7 — sidebar scrollbar appears on hover/scroll, then hides when idle */
+.sidebar-scrollbar{opacity:0;visibility:hidden;transition:opacity .16s ease,visibility .16s ease}
+.sidebar-scroll-wrap:hover .sidebar-scrollbar{opacity:1;visibility:visible}

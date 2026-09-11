@@ -1,0 +1,9 @@
+{
+  "version": "12.7",
+  "backendQuestions": 1000,
+  "reactLessons": 30,
+  "javascriptLessons": 40,
+  "javascriptLevels": {"L1": 19, "L2": 15, "L3": 6},
+  "sidebar": "custom scrollbar hidden while idle; visible on hover and during scroll",
+  "focus": "JavaScript learning foundation"
+}

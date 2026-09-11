@@ -56,3 +56,7 @@ Targeted quality pass focused on shallow Microservices and SQL answers. No new q
 ## V11.0 — Java + Spring Boot Quality Pass
 - 1,000 questions retained.
 - Targeted Java and Spring Boot answers upgraded for L2/L3 depth, internals, production reasoning, follow-ups and interview traps.
+
+
+## V12 — Full Stack Expansion
+V12 keeps the 1,000-question backend foundation and adds a dedicated React learning track with 30 lessons covering fundamentals, hooks, API integration, security, performance, architecture, testing, and React + Spring Boot request flow.
