@@ -28,7 +28,7 @@ export default function App() {
       <button className="menu-toggle" aria-label="Open navigation" onClick={() => setSidebarOpen(true)}>☰<span>Menu</span></button>
       <main className="main">
         <Header view={view} />
-        {view === "roadmap" ? <Roadmap questions={questions} onTopic={openTopic} /> : view === "react" ? <ReactLearning /> : view === "javascript" ? <JavaScriptLearning /> : view === "fullstack" ? <FullStackLearning /> : <Questions questions={questions} topic={topic} subtopic={subtopic} setSubtopic={setSubtopic} />}
+        {view === "roadmap" ? <Roadmap questions={questions} onTopic={openTopic} setView={setView} /> : view === "react" ? <ReactLearning /> : view === "javascript" ? <JavaScriptLearning /> : view === "fullstack" ? <FullStackLearning /> : <Questions questions={questions} topic={topic} subtopic={subtopic} setSubtopic={setSubtopic} />}
       </main>
     </div>
   );
