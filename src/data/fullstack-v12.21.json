@@ -1,0 +1,952 @@
+[
+  {
+    "id": "fullstack-081",
+    "level": "L1",
+    "title": "Calling a Spring Boot GET API with fetch",
+    "subtopic": "Data Fetching",
+    "what": "A React component can call a Spring Boot GET endpoint with fetch and turn the JSON response into component state.",
+    "how": "Keep the request inside an event handler or an effect when it is tied to component lifecycle. Check response.ok before parsing success data, then update loading, data and error state deliberately.",
+    "code": "useEffect(() => {\n  setLoading(true);\n  fetch(`${API_BASE}/api/orders`)\n    .then(res => {\n      if (!res.ok) throw new Error(`HTTP ${res.status}`);\n      return res.json();\n    })\n    .then(setOrders)\n    .catch(setError)\n    .finally(() => setLoading(false));\n}, []);",
+    "delivery": "I treat fetch as a transport operation: check the HTTP status, parse the contract, update server state, and represent failure explicitly instead of assuming every response is successful.",
+    "followups": [
+      "Why does fetch not reject on HTTP 404?",
+      "Where should the API base URL come from?",
+      "How do you cancel an in-flight request?"
+    ],
+    "traps": [
+      "Do not assume fetch throws for 4xx/5xx.",
+      "Do not expose backend secrets through frontend environment variables."
+    ]
+  },
+  {
+    "id": "fullstack-082",
+    "level": "L1",
+    "title": "POSTing JSON from React to Spring Boot",
+    "subtopic": "Data Fetching",
+    "what": "A React form can send a JSON command to a Spring Boot POST endpoint using the Content-Type header and JSON.stringify.",
+    "how": "Serialize only the fields the API accepts, send the correct content type, validate the response, and use the server response to reconcile the created resource.",
+    "code": "const res = await fetch(`${API_BASE}/api/orders`, {\n  method: 'POST',\n  headers: { 'Content-Type': 'application/json' },\n  body: JSON.stringify({ productId, quantity })\n});\nif (!res.ok) throw new Error(`HTTP ${res.status}`);\nconst created = await res.json();",
+    "delivery": "I send a DTO-shaped JSON command, check the status code, and use the server-generated representation rather than inventing an ID or server-controlled fields in React.",
+    "followups": [
+      "Why use JSON.stringify?",
+      "What status should a successful create return?",
+      "How do you display validation errors from Spring Boot?"
+    ],
+    "traps": [
+      "Do not send a JavaScript object directly as if it were JSON.",
+      "Do not treat every non-2xx response as the same user-facing error."
+    ]
+  },
+  {
+    "id": "fullstack-083",
+    "level": "L1",
+    "title": "PUT vs PATCH from a React client",
+    "subtopic": "REST APIs",
+    "what": "PUT generally represents replacement of a resource representation, while PATCH represents a partial modification.",
+    "how": "Choose the method based on the API contract. A PATCH request should contain only fields the API permits changing; a PUT contract should define whether omitted fields are invalid or reset.",
+    "code": "await fetch(`${API_BASE}/api/orders/${id}`, {\n  method: 'PATCH',\n  headers: { 'Content-Type': 'application/json' },\n  body: JSON.stringify({ quantity: 3 })\n});",
+    "delivery": "I do not choose PUT or PATCH based on frontend convenience; I follow the server contract and make update semantics explicit, especially around omitted fields and idempotency.",
+    "followups": [
+      "Is PUT idempotent?",
+      "Is PATCH always non-idempotent?",
+      "What should React do after an update?"
+    ],
+    "traps": [
+      "Do not call every partial update PUT.",
+      "Do not claim every PATCH is non-idempotent."
+    ]
+  },
+  {
+    "id": "fullstack-084",
+    "level": "L1",
+    "title": "Centralizing the frontend API client",
+    "subtopic": "Architecture",
+    "what": "An API client is a small abstraction that centralizes base URLs, headers, serialization and common error handling instead of repeating fetch configuration across components.",
+    "how": "Create functions such as getOrders and createOrder that return domain data. Keep React components focused on UI state and user interaction.",
+    "code": "export async function getOrders() {\n  const res = await fetch(`${API_BASE}/api/orders`);\n  if (!res.ok) throw new Error(`GET /orders failed: ${res.status}`);\n  return res.json();\n}",
+    "delivery": "I centralize transport concerns so components do not duplicate URL construction, headers and status handling. The abstraction should remain small and testable.",
+    "followups": [
+      "Should the API client know React state?",
+      "How do you attach an access token?",
+      "How do you test the client?"
+    ],
+    "traps": [
+      "Do not put useState or component rendering into the transport module.",
+      "Do not silently swallow HTTP errors."
+    ]
+  },
+  {
+    "id": "fullstack-085",
+    "level": "L1",
+    "title": "Spring Boot request DTO validation for React forms",
+    "subtopic": "Validation",
+    "what": "Backend validation verifies that incoming data satisfies API constraints even when the caller is not the React application.",
+    "how": "Annotate request DTO fields with constraints such as @NotBlank, @Positive and @Size, enable validation on controller parameters, and translate failures into a stable 400 error response.",
+    "code": "public record CreateOrderRequest(\n  @NotBlank String productId,\n  @Positive int quantity\n) {}\n\n@PostMapping\nOrderResponse create(@Valid @RequestBody CreateOrderRequest request) { ... }",
+    "delivery": "I validate on the server because the browser is untrusted. React validation improves feedback speed, but Spring validation remains the enforcement boundary.",
+    "followups": [
+      "Why validate in both React and Spring Boot?",
+      "Where does @Valid apply here?",
+      "How should validation errors reach React?"
+    ],
+    "traps": [
+      "Do not rely only on frontend validation.",
+      "Do not return an HTML error page to a JSON API client."
+    ]
+  },
+  {
+    "id": "fullstack-086",
+    "level": "L2",
+    "title": "Mapping Spring service exceptions to frontend errors",
+    "subtopic": "Error Handling",
+    "what": "A full-stack application needs a deliberate mapping from backend failure types to HTTP responses and then to user-facing UI states.",
+    "how": "Use a global Spring exception handler to map known exceptions to stable status codes and error bodies. The React API layer parses the body and converts it into actionable UI errors.",
+    "code": "@RestControllerAdvice\nclass ApiExceptionHandler {\n  @ExceptionHandler(OrderNotFoundException.class)\n  ResponseEntity<ApiError> notFound(...) {\n    return ResponseEntity.status(404).body(new ApiError(\"ORDER_NOT_FOUND\", \"Order not found\"));\n  }\n}",
+    "delivery": "I separate internal exceptions from the public API error contract. React should receive stable codes and safe messages, not Java stack traces.",
+    "followups": [
+      "What should happen to an unexpected exception?",
+      "Why return an error code as well as a message?",
+      "Should React display the backend message directly?"
+    ],
+    "traps": [
+      "Do not expose stack traces.",
+      "Do not make frontend logic depend on fragile message text."
+    ]
+  },
+  {
+    "id": "fullstack-087",
+    "level": "L2",
+    "title": "Global API error handling in React",
+    "subtopic": "Error Handling",
+    "what": "Centralized error handling prevents every component from implementing slightly different HTTP failure logic.",
+    "how": "Let the API layer normalize response failures into an application error shape, then let each screen decide whether to show a toast, field errors, retry UI, or an empty state.",
+    "code": "try {\n  await createOrder(input);\n} catch (err) {\n  if (err.code === 'VALIDATION_ERROR') setFieldErrors(err.fields);\n  else setPageError('Unable to create the order.');\n}",
+    "delivery": "I centralize transport normalization but keep presentation decisions in the feature layer, because a 404 on a detail page and a 503 during checkout need different UX.",
+    "followups": [
+      "Should every error show a toast?",
+      "How do you handle 401 globally?",
+      "What about 429 responses?"
+    ],
+    "traps": [
+      "Do not globally turn every exception into a toast.",
+      "Do not automatically retry non-idempotent mutations."
+    ]
+  },
+  {
+    "id": "fullstack-088",
+    "level": "L2",
+    "title": "Handling 401 vs 403 in React",
+    "subtopic": "Security",
+    "what": "401 means the request lacks valid authentication credentials; 403 means the server understood the identity but refuses the requested operation.",
+    "how": "React can react to these statuses for UX, but Spring Security must remain authoritative. A 401 can trigger re-authentication; a 403 should normally show an access-denied state.",
+    "code": "if (res.status === 401) {\n  // re-authenticate / session-expired flow\n} else if (res.status === 403) {\n  // access denied UI\n}",
+    "delivery": "I distinguish authentication failure from authorization failure. The browser can guide the user, but it never decides that an operation is authorized.",
+    "followups": [
+      "Can a React route guard replace Spring Security?",
+      "What if the user changes the role in local storage?",
+      "Should 403 redirect to login?"
+    ],
+    "traps": [
+      "Never trust client-side roles.",
+      "Do not treat 403 as proof that authentication is invalid."
+    ]
+  },
+  {
+    "id": "fullstack-089",
+    "level": "L2",
+    "title": "CORS preflight with Spring Boot",
+    "subtopic": "Security",
+    "what": "Browsers may send an OPTIONS preflight before a cross-origin request when the request is not considered a simple CORS request.",
+    "how": "Spring must allow the browser origin, requested method and headers. Security configuration also needs to allow the preflight path to be processed correctly.",
+    "code": "OPTIONS /api/orders\nOrigin: https://app.example.com\nAccess-Control-Request-Method: POST\nAccess-Control-Request-Headers: authorization,content-type",
+    "delivery": "I debug CORS by looking at the browser Network tab and the OPTIONS response. The key question is whether the server returned the required CORS headers for the requesting origin and method.",
+    "followups": [
+      "Why is OPTIONS called before POST?",
+      "Why can curl work while the browser fails?",
+      "How does Spring Security interact with CORS?"
+    ],
+    "traps": [
+      "Do not fix CORS by disabling browser security.",
+      "Do not allow every origin in production without understanding credential requirements."
+    ]
+  },
+  {
+    "id": "fullstack-090",
+    "level": "L2",
+    "title": "Credentials and cookies across React and Spring Boot",
+    "subtopic": "Authentication",
+    "what": "Cookie-based authentication requires the browser to be explicitly allowed to include credentials on cross-origin requests and the server to permit that origin.",
+    "how": "For cross-origin fetch, use credentials: include when the architecture requires cookies. The server must return a specific allowed origin and Access-Control-Allow-Credentials: true; cookie SameSite/Secure settings also matter.",
+    "code": "fetch(`${API_BASE}/api/me`, {\n  credentials: 'include'\n});",
+    "delivery": "I treat browser cookies, CORS and CSRF as one security design. Enabling credentials is not enough; cookie attributes and server-side protections must agree.",
+    "followups": [
+      "Why can allow-origin * fail with credentials?",
+      "What does SameSite control?",
+      "Why is CSRF relevant to cookie authentication?"
+    ],
+    "traps": [
+      "Do not combine wildcard origins with credentialed requests.",
+      "Do not assume CORS itself prevents CSRF."
+    ]
+  },
+  {
+    "id": "fullstack-091",
+    "level": "L2",
+    "title": "JWT claims and Spring Security authorities",
+    "subtopic": "Authentication",
+    "what": "JWT claims carry authenticated context such as subject and roles/scopes, but the backend must validate the token before trusting those claims.",
+    "how": "Spring Security verifies signature, issuer, audience and time constraints as configured, then maps trusted claims to authorities used by authorization rules.",
+    "code": "Authorization: Bearer <jwt>\n\nsub: 42\nroles: [ADMIN]\nexp: 1780000000",
+    "delivery": "I distinguish token parsing from token validation. A decoded claim is not trustworthy until the token passes cryptographic and policy validation.",
+    "followups": [
+      "Can React decode a JWT and decide authorization?",
+      "What is the difference between roles and scopes?",
+      "What if the JWT is expired?"
+    ],
+    "traps": [
+      "Do not trust decoded JWT contents in the browser.",
+      "Do not put secrets into JWT payloads assuming they are encrypted."
+    ]
+  },
+  {
+    "id": "fullstack-092",
+    "level": "L2",
+    "title": "Refresh token flow for a React application",
+    "subtopic": "Authentication",
+    "what": "A refresh token flow lets a short-lived access token be replaced without forcing the user to log in for every expiration.",
+    "how": "The client uses the refresh mechanism defined by the identity architecture. The backend validates the refresh credential and issues a new access token, often with rotation and revocation controls.",
+    "code": "Access token expires\n       ↓\nPOST /oauth/token or refresh endpoint\n       ↓\nnew short-lived access token",
+    "delivery": "I prefer short-lived access credentials and a controlled refresh mechanism. The exact storage and transport depend on the threat model; I never treat refresh tokens as ordinary frontend data.",
+    "followups": [
+      "Why keep access tokens short-lived?",
+      "What is refresh token rotation?",
+      "What should happen after refresh fails?"
+    ],
+    "traps": [
+      "Do not create an infinite refresh loop.",
+      "Do not store long-lived secrets casually in browser-accessible storage."
+    ]
+  },
+  {
+    "id": "fullstack-093",
+    "level": "L2",
+    "title": "Spring Security method authorization for React actions",
+    "subtopic": "Authorization",
+    "what": "Method-level authorization protects business operations at the service boundary, even if a caller bypasses the React UI.",
+    "how": "Use Spring Security authorization annotations where appropriate and verify that the authenticated principal has the required authority before performing the sensitive operation.",
+    "code": "@PreAuthorize(\"hasRole('ADMIN')\")\npublic void approveOrder(Long orderId) { ... }",
+    "delivery": "I protect the operation where the business action executes. Hiding an Approve button is UX; method authorization is enforcement.",
+    "followups": [
+      "Why use method security if URL security already exists?",
+      "What if a user calls the endpoint manually?",
+      "Where should resource ownership be checked?"
+    ],
+    "traps": [
+      "Do not rely only on URL patterns for complex business authorization.",
+      "Do not trust hidden form fields for ownership."
+    ]
+  },
+  {
+    "id": "fullstack-094",
+    "level": "L2",
+    "title": "Pagination from Spring Data to React",
+    "subtopic": "Performance",
+    "what": "Pagination limits the amount of data transferred and rendered for large result sets.",
+    "how": "Spring Data can accept page/size parameters and return content plus metadata such as total elements. React keeps page state and requests only the required slice.",
+    "code": "GET /api/orders?page=2&size=20\n\n{\n  \"content\": [...],\n  \"totalElements\": 245,\n  \"totalPages\": 13,\n  \"number\": 2\n}",
+    "delivery": "I make pagination part of the API contract rather than fetching thousands of rows and slicing them in the browser.",
+    "followups": [
+      "Offset vs cursor pagination?",
+      "What should happen when page size is too large?",
+      "How do you preserve filters while changing pages?"
+    ],
+    "traps": [
+      "Do not allow arbitrary unbounded page sizes.",
+      "Do not assume offset pagination is ideal for high-volume feeds."
+    ]
+  },
+  {
+    "id": "fullstack-095",
+    "level": "L2",
+    "title": "Sorting and filtering contracts",
+    "subtopic": "REST APIs",
+    "what": "Sorting and filtering let React request a targeted dataset without embedding business logic or database queries in the browser.",
+    "how": "Expose an allowlisted set of filter and sort fields, validate values server-side, and map them to repository queries. Never concatenate arbitrary client strings into SQL.",
+    "code": "GET /api/orders?status=OPEN&sort=createdAt,desc&page=0&size=20",
+    "delivery": "I treat query parameters as untrusted input. The backend defines which fields and sort directions are supported and translates them into safe query operations.",
+    "followups": [
+      "How do you prevent arbitrary sort fields?",
+      "Where should search normalization happen?",
+      "How do indexes affect filtering?"
+    ],
+    "traps": [
+      "Do not pass raw column names from the browser into SQL.",
+      "Do not add indexes without examining query patterns."
+    ]
+  },
+  {
+    "id": "fullstack-096",
+    "level": "L2",
+    "title": "Debounced search from React to Spring Boot",
+    "subtopic": "Performance",
+    "what": "Debouncing waits briefly after typing before sending a search request, reducing request volume for text search.",
+    "how": "React keeps the input immediately responsive, while a debounce schedules the API call. The backend still validates and limits the query.",
+    "code": "User types: o -> or -> ord -> orde\n\nOnly after the pause:\nGET /api/orders?q=orde",
+    "delivery": "I separate immediate input state from server-search timing. Debounce improves request volume but does not replace backend pagination, indexing or rate controls.",
+    "followups": [
+      "Why can stale search responses appear?",
+      "How do you cancel old searches?",
+      "What debounce delay would you choose?"
+    ],
+    "traps": [
+      "Do not assume requests finish in typing order.",
+      "Do not use huge debounce delays that make the UI feel broken."
+    ]
+  },
+  {
+    "id": "fullstack-097",
+    "level": "L2",
+    "title": "Optimistic UI with a Spring Boot mutation",
+    "subtopic": "State Management",
+    "what": "Optimistic UI updates the React view before the server confirms a mutation, making interactions feel immediate.",
+    "how": "Save the previous state, apply the optimistic change, send the request, then keep the result only on success or roll back/reconcile on failure.",
+    "code": "setOrders(prev => prev.map(o =>\n  o.id === id ? { ...o, status: 'APPROVED' } : o\n));\n\ntry { await approveOrder(id); }\ncatch { /* rollback/refetch */ }",
+    "delivery": "I use optimistic updates only when the operation can be safely reconciled. For business-critical transitions I still trust the server response and have a rollback or refetch path.",
+    "followups": [
+      "When should you avoid optimistic UI?",
+      "What if two users update the same order?",
+      "How do you rollback correctly?"
+    ],
+    "traps": [
+      "Do not let optimistic state become permanent truth.",
+      "Do not bypass backend concurrency controls."
+    ]
+  },
+  {
+    "id": "fullstack-098",
+    "level": "L2",
+    "title": "File upload from React to Spring Boot",
+    "subtopic": "File Upload",
+    "what": "A browser can upload multipart form data to a Spring Boot endpoint using FormData and a MultipartFile parameter.",
+    "how": "Append the file and metadata to FormData, let the browser set the multipart boundary, and validate size/type/content on the backend before storing or processing the file.",
+    "code": "const form = new FormData();\nform.append('file', file);\nform.append('description', description);\nawait fetch(`${API_BASE}/api/files`, {\n  method: 'POST', body: form\n});",
+    "delivery": "I treat file upload as untrusted input. React handles selection and progress UX; Spring validates limits and content before storage.",
+    "followups": [
+      "Why not set Content-Type manually?",
+      "How do you limit upload size?",
+      "Where should uploaded files be stored?"
+    ],
+    "traps": [
+      "Do not trust the browser-provided MIME type alone.",
+      "Do not allow unlimited uploads."
+    ]
+  },
+  {
+    "id": "fullstack-099",
+    "level": "L2",
+    "title": "Streaming large downloads",
+    "subtopic": "Performance",
+    "what": "Large files should often be streamed instead of loading the entire content into application memory.",
+    "how": "Spring can return a streaming resource or response body while the client consumes the response as a stream/download. Storage systems can often provide efficient object streaming directly.",
+    "code": "GET /api/reports/2026.csv\n\nSpring Boot -> stream -> browser\nnot: read entire file into byte[]",
+    "delivery": "I avoid byte-array buffering for large objects. I consider memory usage, transfer time, range requests, authorization and storage architecture.",
+    "followups": [
+      "Why is byte[] risky for large files?",
+      "What about HTTP range requests?",
+      "How do you authorize a download?"
+    ],
+    "traps": [
+      "Do not load unbounded files into heap memory.",
+      "Do not expose predictable storage paths as authorization."
+    ]
+  },
+  {
+    "id": "fullstack-100",
+    "level": "L2",
+    "title": "Environment-specific API URLs in Vite",
+    "subtopic": "Deployment",
+    "what": "React development and production environments commonly call different API origins, so the frontend should read the configured public API base URL at build/runtime according to the deployment design.",
+    "how": "Use Vite environment configuration for values intentionally exposed to browser code, rebuild for environment-specific static values, or use a reverse proxy/same-origin setup when appropriate.",
+    "code": "const API_BASE = import.meta.env.VITE_API_BASE_URL;\n\nfetch(`${API_BASE}/api/orders`);",
+    "delivery": "I never hard-code a developer laptop address into production code. I distinguish browser-public configuration from secrets and decide whether build-time configuration or a same-origin proxy is the better deployment model.",
+    "followups": [
+      "Are Vite environment variables secret?",
+      "Why does changing .env sometimes require a rebuild?",
+      "What is a reverse proxy approach?"
+    ],
+    "traps": [
+      "Never put passwords or private keys in VITE_* variables.",
+      "Do not assume a .env file changes an already-built bundle."
+    ]
+  },
+  {
+    "id": "fullstack-101",
+    "level": "L2",
+    "title": "Same-origin deployment for React and Spring Boot",
+    "subtopic": "Deployment",
+    "what": "A reverse proxy can serve the React SPA and route /api requests to Spring Boot under one public origin.",
+    "how": "The browser requests / and /api/... from the same host. The proxy serves static assets for frontend routes and forwards API requests to the backend service.",
+    "code": "Browser\n  |-- /orders --> React static app\n  |-- /api/orders --> reverse proxy --> Spring Boot",
+    "delivery": "A same-origin deployment can simplify CORS and browser configuration. I still secure the backend and configure proxy timeouts, headers and routing correctly.",
+    "followups": [
+      "Does same-origin remove authentication concerns?",
+      "What does the proxy do with /api?",
+      "How do SPA refreshes work?"
+    ],
+    "traps": [
+      "Do not treat reverse proxying as a security boundary by itself.",
+      "Do not forget SPA history fallback."
+    ]
+  },
+  {
+    "id": "fullstack-102",
+    "level": "L2",
+    "title": "React Router route vs Spring Boot endpoint",
+    "subtopic": "Routing",
+    "what": "Client-side routes and server-side API routes are different routing systems that can coexist in one application.",
+    "how": "React Router maps browser paths such as /orders/42 to components. Spring Boot maps API paths such as /api/orders/42 to controllers. A deployment proxy can route them differently.",
+    "code": "Browser URL: /orders/42\nReact Router -> OrderPage\n\nAPI call: /api/orders/42\nSpring MVC -> OrderController",
+    "delivery": "I keep UI navigation and API resource routing conceptually separate. That makes deployment, authorization and debugging clearer.",
+    "followups": [
+      "Why can refreshing /orders/42 return 404?",
+      "Should React call /orders/42 for data?",
+      "How does the proxy distinguish them?"
+    ],
+    "traps": [
+      "Do not mix UI and API path namespaces casually.",
+      "Do not forget server-side fallback for client routes."
+    ]
+  },
+  {
+    "id": "fullstack-103",
+    "level": "L2",
+    "title": "Database transaction boundary for a React command",
+    "subtopic": "Transactions",
+    "what": "A React request should map to a well-defined server-side business transaction, not attempt to coordinate database operations from the browser.",
+    "how": "The controller accepts a command, the service method defines the transaction boundary, and repository operations participate in that transaction. React receives success only after the server commits successfully.",
+    "code": "POST /api/orders\n  -> @Transactional service\n     -> save order\n     -> reserve record\n     -> commit\n  <- 201 Created",
+    "delivery": "I keep transactional consistency inside Spring. The browser sees an API result after the server has completed the transaction, not intermediate database steps.",
+    "followups": [
+      "What if an exception occurs halfway?",
+      "Should the controller be @Transactional?",
+      "What if a remote payment call is inside the transaction?"
+    ],
+    "traps": [
+      "Do not make the browser coordinate database consistency.",
+      "Do not hold DB transactions open during slow external calls without strong justification."
+    ]
+  },
+  {
+    "id": "fullstack-104",
+    "level": "L2",
+    "title": "Optimistic locking in a React edit form",
+    "subtopic": "Concurrency",
+    "what": "Optimistic locking prevents a stale frontend copy from silently overwriting a newer server version.",
+    "how": "The backend stores a version field and checks it during update. React sends the version it edited, and the server rejects the update if the version has changed.",
+    "code": "GET -> order { id: 10, quantity: 2, version: 7 }\nPATCH { quantity: 3, version: 7 }\n\nserver version is 8 -> conflict",
+    "delivery": "I use the server version as a concurrency guard. A conflict should be represented explicitly so the UI can reload and let the user reconcile changes.",
+    "followups": [
+      "What HTTP status can represent a conflict?",
+      "Why not trust the timestamp from React?",
+      "How do you resolve the conflict?"
+    ],
+    "traps": [
+      "Do not silently overwrite concurrent changes.",
+      "Do not use client clocks as the sole concurrency mechanism."
+    ]
+  },
+  {
+    "id": "fullstack-105",
+    "level": "L2",
+    "title": "Idempotency keys for React POST requests",
+    "subtopic": "Reliability",
+    "what": "An idempotency key lets a backend recognize repeated submissions of the same logical command, which is useful when a client retries after an uncertain network result.",
+    "how": "React generates or receives a unique key per intended operation and sends it in a header. Spring stores the key with the resulting operation and returns the same logical result for safe retries.",
+    "code": "POST /api/payments\nIdempotency-Key: 7f3c...\n\nnetwork timeout -> retry same key\nserver recognizes prior request",
+    "delivery": "I use idempotency when duplicate execution would be harmful, especially payments or order creation. The key must represent one logical operation, not every HTTP attempt.",
+    "followups": [
+      "Why is a timeout dangerous after POST?",
+      "Where should idempotency keys be stored?",
+      "What if the same key is reused with different payloads?"
+    ],
+    "traps": [
+      "Do not generate a new key for each retry.",
+      "Do not make the idempotency store purely in one application instance."
+    ]
+  },
+  {
+    "id": "fullstack-106",
+    "level": "L2",
+    "title": "API response envelope design",
+    "subtopic": "REST APIs",
+    "what": "A consistent response shape can make frontend integration easier, especially for metadata, errors and paginated data.",
+    "how": "Define the contract based on actual needs. Avoid wrapping every response in unnecessary layers; use explicit DTOs and standardized error structures where they add value.",
+    "code": "{\n  \"data\": { \"id\": 42, \"status\": \"OPEN\" },\n  \"meta\": { \"traceId\": \"abc\" }\n}",
+    "delivery": "I prefer predictable contracts over a universal envelope. The important part is that clients know which fields are stable and how errors and pagination are represented.",
+    "followups": [
+      "Should every API use {data: ...}?",
+      "Where should pagination metadata live?",
+      "How do you evolve the envelope?"
+    ],
+    "traps": [
+      "Do not create an envelope just for convention.",
+      "Do not change response fields without considering deployed clients."
+    ]
+  },
+  {
+    "id": "fullstack-107",
+    "level": "L2",
+    "title": "API versioning with React clients",
+    "subtopic": "API Versioning",
+    "what": "Versioning lets independently deployed frontend and backend clients coexist when a contract-breaking change is unavoidable.",
+    "how": "Prefer backward-compatible evolution first. If semantics must break, choose a documented strategy such as /api/v2 or a header/media-type version and maintain a migration window.",
+    "code": "GET /api/v1/orders\nGET /api/v2/orders",
+    "delivery": "I first ask whether the contract can evolve compatibly. Versioning is a compatibility tool, not a substitute for disciplined API design.",
+    "followups": [
+      "Why can a frontend deploy lag behind the backend?",
+      "When should you create v2?",
+      "How do you retire v1?"
+    ],
+    "traps": [
+      "Do not version every tiny additive field.",
+      "Do not remove an API still used by deployed clients without a migration plan."
+    ]
+  },
+  {
+    "id": "fullstack-108",
+    "level": "L2",
+    "title": "Contract testing between React and Spring Boot",
+    "subtopic": "Testing",
+    "what": "Contract testing verifies that the API producer and consumer agree on request and response shapes.",
+    "how": "Define executable expectations for status codes, fields, types and required behavior. Backend tests verify the provider contract; frontend tests verify the consumer expectations.",
+    "code": "React expectation:\nGET /api/orders -> 200\ncontent[].id -> number\ncontent[].status -> string",
+    "delivery": "I use contract tests to catch integration drift before deployment. They complement unit tests and end-to-end tests rather than replacing them.",
+    "followups": [
+      "Contract vs end-to-end test?",
+      "What breaks if a field is renamed?",
+      "Who owns the contract?"
+    ],
+    "traps": [
+      "Do not assume compilation catches JSON contract drift.",
+      "Do not rely only on a small number of browser E2E tests."
+    ]
+  },
+  {
+    "id": "fullstack-109",
+    "level": "L2",
+    "title": "Testing React against a Spring Boot mock",
+    "subtopic": "Testing",
+    "what": "A frontend can test API-dependent behavior without running a real backend by mocking the HTTP boundary with deterministic responses.",
+    "how": "Mock successful, validation, unauthorized, forbidden, not-found and server-error responses, then verify the React UI transitions correctly.",
+    "code": "GET /api/orders -> mock 200\nPOST /api/orders -> mock 400\nPOST /api/orders -> mock 500",
+    "delivery": "I test the React state machine at the HTTP boundary. This gives fast feedback while separate integration and E2E tests validate the real backend connection.",
+    "followups": [
+      "Why not call a real backend in every unit test?",
+      "What should an E2E test cover?",
+      "How do you avoid stale mocks?"
+    ],
+    "traps": [
+      "Do not make mocks so unrealistic that integration bugs are hidden.",
+      "Do not test only the happy path."
+    ]
+  },
+  {
+    "id": "fullstack-110",
+    "level": "L2",
+    "title": "Spring Boot integration test for a React-facing endpoint",
+    "subtopic": "Testing",
+    "what": "An integration test can verify controller, validation, service and persistence behavior for an API endpoint instead of testing only one class in isolation.",
+    "how": "Use the appropriate Spring test setup and assert HTTP status, JSON response, validation behavior and persistence side effects.",
+    "code": "POST /api/orders\n-> validation\n-> service\n-> repository\n-> 201 + JSON\n\nTest also verifies invalid quantity -> 400",
+    "delivery": "I test the API boundary with realistic Spring infrastructure because that is where React depends on the backend contract.",
+    "followups": [
+      "MockMvc vs full server test?",
+      "What should not be asserted too tightly?",
+      "How do you test authorization?"
+    ],
+    "traps": [
+      "Do not assert internal repository calls when the API contract is the goal.",
+      "Do not test authorization only through React."
+    ]
+  },
+  {
+    "id": "fullstack-111",
+    "level": "L2",
+    "title": "Handling slow APIs in React",
+    "subtopic": "Performance",
+    "what": "A slow Spring Boot endpoint can make a React screen appear broken unless the UI explicitly represents latency.",
+    "how": "Show loading state, disable duplicate submission where appropriate, set server-side/client-side timeouts according to the architecture, and provide retry or recovery when failures are transient.",
+    "code": "Loading -> request\n\n> 400ms: progress indicator\n> timeout: recoverable error + retry",
+    "delivery": "I measure latency instead of hiding it. The frontend needs a clear state model, while the backend needs profiling and appropriate timeouts.",
+    "followups": [
+      "Should fetch have a timeout by default?",
+      "How do you prevent duplicate clicks?",
+      "What backend metrics would you inspect?"
+    ],
+    "traps": [
+      "Do not let users wait forever with no feedback.",
+      "Do not rely on disabling a button as duplicate protection."
+    ]
+  },
+  {
+    "id": "fullstack-112",
+    "level": "L2",
+    "title": "Avoiding N+1 API calls from React",
+    "subtopic": "Performance",
+    "what": "N+1 calls happen when a list loads once and then React makes another request for each item, creating unnecessary network and backend load.",
+    "how": "Prefer a backend response that includes the data needed for the screen, or provide a batch endpoint/query designed for the use case. Keep resource boundaries intentional.",
+    "code": "Bad:\nGET /orders\nGET /customers/1\nGET /customers/2\n...\n\nBetter:\nGET /orders?include=customerSummary",
+    "delivery": "I first inspect the browser Network waterfall. If a screen needs related data for every row, I consider a purpose-built DTO or batch query instead of multiplying round trips.",
+    "followups": [
+      "Is N+1 only a frontend problem?",
+      "Would GraphQL automatically solve it?",
+      "What about database N+1 inside Spring?"
+    ],
+    "traps": [
+      "Do not optimize based only on JavaScript code; inspect SQL too.",
+      "Do not return massive nested payloads just to avoid calls."
+    ]
+  },
+  {
+    "id": "fullstack-113",
+    "level": "L2",
+    "title": "Caching GET responses across React and Spring Boot",
+    "subtopic": "Caching",
+    "what": "Caching can reduce latency and backend load for data that does not change on every request.",
+    "how": "Use HTTP caching headers where suitable and/or server-side caching for expensive reads. Define invalidation or freshness rules instead of caching everything blindly.",
+    "code": "Cache-Control: max-age=60\nETag: \"order-list-v42\"\n\nGET -> 304 Not Modified",
+    "delivery": "I decide what is safe to cache based on freshness and authorization semantics. A cache without a clear invalidation strategy can serve incorrect business data.",
+    "followups": [
+      "ETag vs max-age?",
+      "Can authenticated responses be cached?",
+      "What happens after a POST changes data?"
+    ],
+    "traps": [
+      "Do not cache sensitive responses publicly.",
+      "Do not ignore invalidation."
+    ]
+  },
+  {
+    "id": "fullstack-114",
+    "level": "L2",
+    "title": "ETag and conditional updates",
+    "subtopic": "Concurrency",
+    "what": "ETag can represent a resource version and be used with If-Match to prevent updates against a stale representation.",
+    "how": "Spring returns an ETag for GET. React includes If-Match on update. The server rejects the update when the current representation no longer matches.",
+    "code": "GET /api/orders/42\nETag: \"v7\"\n\nPATCH /api/orders/42\nIf-Match: \"v7\"",
+    "delivery": "I use ETag as an HTTP-level concurrency signal when it fits the API. It is especially useful when clients edit resources that can change concurrently.",
+    "followups": [
+      "What if If-Match fails?",
+      "ETag vs JPA @Version?",
+      "Can ETag be used for caching too?"
+    ],
+    "traps": [
+      "Do not treat an ETag as authentication.",
+      "Do not silently overwrite a failed precondition."
+    ]
+  },
+  {
+    "id": "fullstack-115",
+    "level": "L2",
+    "title": "Database connection pooling under React traffic",
+    "subtopic": "Performance",
+    "what": "Every browser request should not create a new database connection. Spring Boot normally uses a connection pool to reuse a bounded set of DB connections.",
+    "how": "Requests borrow a connection, execute database work, then return it to the pool. Pool size must match database capacity and application concurrency.",
+    "code": "Browser requests: 200\n        ↓\nSpring threads\n        ↓\nDB pool: 20 connections\n        ↓\nDatabase",
+    "delivery": "I tune the pool from measurements and database capacity, not from browser request count. A larger pool can actually overload the database.",
+    "followups": [
+      "What happens when the pool is exhausted?",
+      "Why not set pool size to 500?",
+      "What metrics matter?"
+    ],
+    "traps": [
+      "Do not tune only from application CPU.",
+      "Do not assume more DB connections always improve throughput."
+    ]
+  },
+  {
+    "id": "fullstack-116",
+    "level": "L2",
+    "title": "Lazy loading and JSON serialization in a React-facing API",
+    "subtopic": "JPA / Serialization",
+    "what": "Lazy JPA relationships can cause additional queries or fail outside a persistence context when an entity is serialized directly into a JSON response.",
+    "how": "Prefer DTO projections or explicit fetching for the API use case. Keep transaction boundaries and data required by the response explicit.",
+    "code": "Order entity\n  customer -> LAZY\n\nAPI DTO:\nOrderResponse(id, customerName)\n\nquery explicitly fetches required data",
+    "delivery": "I do not let Jackson accidentally traverse a large entity graph. The API response should be backed by an explicit query shape designed for the screen.",
+    "followups": [
+      "What is LazyInitializationException?",
+      "Why not just make every relationship EAGER?",
+      "How do DTOs help?"
+    ],
+    "traps": [
+      "Do not expose JPA entities blindly.",
+      "Do not solve every lazy-loading problem with EAGER."
+    ]
+  },
+  {
+    "id": "fullstack-117",
+    "level": "L2",
+    "title": "Transactional outbox for a React command",
+    "subtopic": "Messaging",
+    "what": "When a React command must both change database state and publish an event, the transactional outbox pattern stores the event in the same database transaction as the business change.",
+    "how": "Spring commits the order change and an outbox row atomically. A separate publisher reads outbox rows and sends them to the broker, with retry/idempotency handling.",
+    "code": "POST /api/orders\n -> DB transaction\n    order INSERT\n    outbox INSERT\n -> commit\n -> publisher -> Kafka",
+    "delivery": "I use the outbox when database state and event publication must not diverge. React gets the synchronous command result while downstream processing happens asynchronously.",
+    "followups": [
+      "Why not publish Kafka directly inside the transaction?",
+      "What if the publisher crashes after sending?",
+      "Does outbox give exactly-once delivery?"
+    ],
+    "traps": [
+      "Do not claim outbox means exactly once end-to-end.",
+      "Do not delete outbox rows before durable processing state is established."
+    ]
+  },
+  {
+    "id": "fullstack-118",
+    "level": "L2",
+    "title": "Asynchronous processing after a React request",
+    "subtopic": "Messaging",
+    "what": "A Spring Boot API can accept a command and enqueue work for asynchronous processing when the user does not need the final result immediately.",
+    "how": "Persist the accepted state, publish a message, return an appropriate status, and let a worker process the task. React can poll or use push updates if the result matters.",
+    "code": "POST /api/reports -> 202 Accepted\n                 -> queue\n                 -> worker\n                 -> COMPLETED\n\nReact polls /api/reports/{id}",
+    "delivery": "I use async processing when the work is long-running or naturally event-driven. The API contract must tell React whether the operation is complete, accepted, or failed.",
+    "followups": [
+      "Why 202 instead of 200?",
+      "How does React know completion?",
+      "What if the worker fails?"
+    ],
+    "traps": [
+      "Do not keep an HTTP request open for minutes for ordinary background work.",
+      "Do not return 202 without a way to observe the operation."
+    ]
+  },
+  {
+    "id": "fullstack-119",
+    "level": "L2",
+    "title": "WebSocket vs polling for React updates",
+    "subtopic": "Real-time",
+    "what": "Polling repeatedly asks the server for changes; WebSockets maintain a bidirectional connection for low-latency event delivery.",
+    "how": "Choose based on update frequency, infrastructure, scale and consistency requirements. Spring can expose WebSocket endpoints while React subscribes to updates.",
+    "code": "Polling:\nGET /api/orders/42/status every 5s\n\nWebSocket:\nserver -> ORDER_UPDATED event",
+    "delivery": "I choose the simplest mechanism that meets latency needs. Polling is easier and often sufficient; WebSockets make sense when frequent near-real-time updates justify the operational complexity.",
+    "followups": [
+      "When is polling better?",
+      "How do you handle reconnects?",
+      "Does WebSocket replace REST?"
+    ],
+    "traps": [
+      "Do not choose WebSockets just because they sound faster.",
+      "Do not assume a reconnecting client received every event."
+    ]
+  },
+  {
+    "id": "fullstack-120",
+    "level": "L2",
+    "title": "Correlation IDs from React to Spring Boot",
+    "subtopic": "Observability",
+    "what": "A correlation or trace ID connects a user-visible frontend failure to backend logs and downstream activity.",
+    "how": "The frontend can generate or propagate a request identifier where appropriate. Spring logs it and propagates tracing context to downstream calls using the observability stack.",
+    "code": "X-Request-Id: 8b31...\n\nBrowser -> Gateway -> Spring -> DB/service\n                 logs include 8b31...",
+    "delivery": "When debugging production issues, I want one identifier that lets me move from browser Network data to gateway and Spring logs. I avoid putting sensitive data into the identifier.",
+    "followups": [
+      "Should the client be allowed to choose the trace ID?",
+      "Where do you log it?",
+      "How do traces differ from logs?"
+    ],
+    "traps": [
+      "Do not use correlation IDs as credentials.",
+      "Do not log sensitive payloads just to improve correlation."
+    ]
+  },
+  {
+    "id": "fullstack-121",
+    "level": "L2",
+    "title": "Structured logging for full-stack failures",
+    "subtopic": "Observability",
+    "what": "Structured logs store fields such as timestamp, level, endpoint, status, trace ID and error code so systems can query failures reliably.",
+    "how": "Spring should log server-side context in structured form. React can report client errors with sanitized metadata. Avoid logging credentials and personal data unnecessarily.",
+    "code": "{\n  \"level\":\"ERROR\",\n  \"traceId\":\"abc\",\n  \"path\":\"/api/orders\",\n  \"status\":500,\n  \"code\":\"DB_TIMEOUT\"\n}",
+    "delivery": "I log facts that help diagnose the failure: operation, outcome, latency, trace ID and safe identifiers. I avoid turning logs into a copy of the request payload.",
+    "followups": [
+      "Why JSON logs?",
+      "What should never be logged?",
+      "How do logs help with React errors?"
+    ],
+    "traps": [
+      "Do not log Authorization headers.",
+      "Do not dump entire request bodies in production."
+    ]
+  },
+  {
+    "id": "fullstack-122",
+    "level": "L2",
+    "title": "Rate limiting a Spring Boot API used by React",
+    "subtopic": "Security",
+    "what": "Rate limiting restricts request volume to protect resources and maintain fair usage.",
+    "how": "Apply limits at an appropriate boundary such as gateway or service, identify clients/users safely, return 429 when exceeded, and make the limit appropriate for the operation.",
+    "code": "POST /api/login\n-> rate limit\n-> 429 Too Many Requests\nRetry-After: 30",
+    "delivery": "I rate-limit expensive and abuse-prone endpoints, especially authentication and public APIs. I also make the client respect server signals rather than hammering retries.",
+    "followups": [
+      "Why rate limit login differently?",
+      "Where should rate limiting live?",
+      "How should React react to 429?"
+    ],
+    "traps": [
+      "Do not use one global limit for every endpoint.",
+      "Do not make the frontend retry 429 immediately."
+    ]
+  },
+  {
+    "id": "fullstack-123",
+    "level": "L2",
+    "title": "CSRF protection in a React + Spring Security application",
+    "subtopic": "Security",
+    "what": "CSRF protects cookie-authenticated state-changing requests from being triggered by another site.",
+    "how": "For session/cookie authentication, use an appropriate Spring Security CSRF strategy and send the required token with unsafe requests. If authentication is purely bearer-header based, the CSRF threat model differs because browsers do not automatically attach arbitrary Authorization headers.",
+    "code": "POST /api/orders\nX-CSRF-TOKEN: <token>\nCookie: SESSION=...",
+    "delivery": "I decide CSRF protection from how credentials are transported. I do not say “CORS solves CSRF”; they address different browser security problems.",
+    "followups": [
+      "Why is a bearer header different?",
+      "Where can the CSRF token come from?",
+      "Which methods need protection?"
+    ],
+    "traps": [
+      "Do not disable CSRF blindly.",
+      "Do not claim bearer authentication makes every CSRF concern impossible in every architecture."
+    ]
+  },
+  {
+    "id": "fullstack-124",
+    "level": "L2",
+    "title": "XSS-safe rendering with backend data",
+    "subtopic": "Security",
+    "what": "Data returned by Spring Boot can contain attacker-controlled content, so React must render it using safe text/attribute handling rather than injecting raw HTML unnecessarily.",
+    "how": "React escapes text by default. Avoid dangerouslySetInnerHTML unless content is intentionally sanitized with a trusted strategy and the use case requires HTML.",
+    "code": "<p>{order.customerNote}</p>\n\n// Avoid raw HTML injection unless sanitized deliberately\n// dangerouslySetInnerHTML={{ __html: ... }}",
+    "delivery": "I assume API data can be untrusted. React’s default escaping is a useful defense, but security also depends on safe URLs, HTML sanitization where needed, CSP and backend validation.",
+    "followups": [
+      "Does backend validation prevent XSS?",
+      "When is dangerouslySetInnerHTML acceptable?",
+      "What about malicious URLs?"
+    ],
+    "traps": [
+      "Do not assume all strings are safe because they came from your database.",
+      "Avoid raw HTML injection."
+    ]
+  },
+  {
+    "id": "fullstack-125",
+    "level": "L3",
+    "title": "End-to-end order creation flow",
+    "subtopic": "Case Study",
+    "what": "An order flow connects React form state, API validation, authorization, transactionality, persistence and asynchronous downstream processing.",
+    "how": "React sends a validated command with an idempotency key. Spring authenticates and authorizes, validates the DTO, writes the order and outbox event transactionally, then returns the accepted/created representation. A worker handles downstream fulfillment.",
+    "code": "React form\n -> POST /api/orders + Idempotency-Key\n -> Spring Security\n -> DTO validation\n -> @Transactional order + outbox\n -> 201/202\n -> worker -> fulfillment",
+    "delivery": "I explain the flow by ownership: React owns interaction, Spring owns trust and business rules, the database owns transactional state, and messaging handles work that does not need to block the request.",
+    "followups": [
+      "Where do you prevent duplicate orders?",
+      "What if the browser times out?",
+      "What if fulfillment fails?"
+    ],
+    "traps": [
+      "Do not rely on button disabling for duplicate prevention.",
+      "Do not put all fulfillment work inside the request transaction."
+    ]
+  },
+  {
+    "id": "fullstack-126",
+    "level": "L3",
+    "title": "Authentication architecture for React + Spring Boot",
+    "subtopic": "Case Study",
+    "what": "Authentication establishes identity; authorization decides whether that identity can perform an operation. The browser is a client, not a trust boundary.",
+    "how": "An identity provider or Spring Security authentication mechanism issues/validates credentials. Spring Security establishes the principal and authorization rules protect APIs. React reflects authentication state for UX.",
+    "code": "React -> login/IdP\n       -> credential/token\n       -> Spring Security filter chain\n       -> authenticated principal\n       -> authorization\n       -> controller/service",
+    "delivery": "I explain security as a server-enforced chain: authenticate, validate the credential, establish identity, authorize the operation, then execute business logic.",
+    "followups": [
+      "Where should roles be checked?",
+      "What happens when a token expires?",
+      "Why is React auth state not authoritative?"
+    ],
+    "traps": [
+      "Do not treat UI route protection as security.",
+      "Do not trust role values from local storage."
+    ]
+  },
+  {
+    "id": "fullstack-127",
+    "level": "L3",
+    "title": "Role-based vs resource-based authorization",
+    "subtopic": "Authorization",
+    "what": "Role-based authorization asks whether a user has a role/authority; resource-based authorization also checks whether the user is allowed to access a particular resource instance.",
+    "how": "Spring Security can handle coarse role checks, while service/domain logic can compare the authenticated principal with resource ownership or policy data.",
+    "code": "GET /api/accounts/42\n\nROLE_USER alone is not enough\ncheck: principal can access account 42?",
+    "delivery": "I distinguish “can perform this kind of operation” from “can perform it on this specific record.” Real applications often need both.",
+    "followups": [
+      "Can roles alone protect customer data?",
+      "Where should ownership be checked?",
+      "What if an admin bypasses ownership?"
+    ],
+    "traps": [
+      "Do not authorize solely from a URL userId.",
+      "Do not assume one role check covers object-level access."
+    ]
+  },
+  {
+    "id": "fullstack-128",
+    "level": "L3",
+    "title": "Multi-tenant React + Spring Boot APIs",
+    "subtopic": "Architecture",
+    "what": "In a multi-tenant system, every request must be evaluated in the context of the tenant to prevent cross-tenant data access.",
+    "how": "Establish tenant context from a trusted authenticated identity/claim or validated routing context, then enforce tenant scoping in service/repository operations and database design.",
+    "code": "JWT -> tenantId\nSpring Security -> tenant context\nRepository -> WHERE tenant_id = ?",
+    "delivery": "I treat tenant isolation as a security invariant. The frontend may display a tenant selector, but it cannot grant itself access to another tenant.",
+    "followups": [
+      "Can tenantId come from the React request body?",
+      "Where should tenant filtering happen?",
+      "How do you test tenant isolation?"
+    ],
+    "traps": [
+      "Do not trust tenantId hidden in forms.",
+      "Do not rely only on frontend tenant filtering."
+    ]
+  },
+  {
+    "id": "fullstack-129",
+    "level": "L3",
+    "title": "Distributed transaction vs Saga in full-stack workflows",
+    "subtopic": "Architecture",
+    "what": "A Saga coordinates a business workflow across independent services without requiring one distributed database transaction.",
+    "how": "The workflow uses local transactions and compensating actions or state transitions. React typically observes the workflow state rather than coordinating each service transaction.",
+    "code": "Order -> Payment -> Inventory -> Shipping\n\nlocal commits + events\ncompensation if needed",
+    "delivery": "I use a Saga when a business operation spans independently owned services. I model states and compensation explicitly instead of pretending the services share one transaction.",
+    "followups": [
+      "What is a compensating action?",
+      "Why not use one DB transaction?",
+      "What should React display during a Saga?"
+    ],
+    "traps": [
+      "Do not call compensation a perfect rollback; external effects may not be reversible.",
+      "Do not make React orchestrate service-to-service consistency."
+    ]
+  },
+  {
+    "id": "fullstack-130",
+    "level": "L3",
+    "title": "Deployment pipeline for React + Spring Boot",
+    "subtopic": "Deployment",
+    "what": "A full-stack deployment pipeline builds, tests, packages and releases frontend and backend artifacts with controlled configuration.",
+    "how": "Run lint/unit/integration tests, build the React static artifact and Spring Boot artifact/container, scan dependencies, deploy to an environment, run smoke checks, then progressively release.",
+    "code": "Commit\n -> CI tests\n -> React build + Spring build\n -> artifact/image\n -> deploy\n -> smoke test\n -> rollout",
+    "delivery": "I want immutable artifacts and repeatable deployment. Configuration is injected per environment, while secrets come from a secret-management mechanism rather than source control.",
+    "followups": [
+      "Can frontend and backend deploy independently?",
+      "What is a smoke test?",
+      "How do you rollback DB changes?"
+    ],
+    "traps": [
+      "Do not deploy untested database-breaking changes.",
+      "Do not store production secrets in Git."
+    ]
+  }
+]
