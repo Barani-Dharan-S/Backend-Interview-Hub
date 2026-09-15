@@ -1,0 +1,11 @@
+<!doctype html>
+<html lang="en">
+  <head><meta charset="UTF-8"><title>Loading Full Stack Interview Hub…</title></head>
+  <body>
+    <script>
+      const base = '/Backend-Interview-Hub/';
+      const route = window.location.pathname + window.location.search + window.location.hash;
+      window.location.replace(base + '?__route=' + encodeURIComponent(route));
+    </script>
+  </body>
+</html>
