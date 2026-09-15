@@ -1,0 +1,2742 @@
+[
+  {
+    "id": "adv-006",
+    "title": "Transactional method calling another transactional method",
+    "level": "L3",
+    "tags": [
+      "Spring",
+      "Transactions"
+    ],
+    "short": "Propagation applies when the call crosses the Spring proxy boundary.",
+    "answer": "REQUIRED usually shares; REQUIRES_NEW suspends the outer transaction. Self-invocation can bypass interception.",
+    "code": "serviceA.outer()->serviceB.inner()",
+    "followups": [
+      "What if inner marks rollback-only?"
+    ],
+    "mistakes": [],
+    "interview": "Propagation applies when the call crosses the Spring proxy boundary.",
+    "source": "V3",
+    "topic": "springboot"
+  },
+  {
+    "id": "adv-007",
+    "title": "Transactional exception vs global handler",
+    "level": "L3",
+    "tags": [
+      "Spring",
+      "REST"
+    ],
+    "short": "The transaction interceptor decides rollback; controller advice formats the HTTP response.",
+    "answer": "A RuntimeException propagating through the transactional proxy can trigger rollback. Advice is not the rollback mechanism.",
+    "code": "Service -> transaction -> exception -> advice",
+    "followups": [
+      "What if service catches it?"
+    ],
+    "mistakes": [],
+    "interview": "The transaction interceptor decides rollback; controller advice formats the HTTP response.",
+    "source": "V3",
+    "topic": "springboot"
+  },
+  {
+    "id": "adv-008",
+    "title": "Spring Boot startup",
+    "level": "L2",
+    "tags": [
+      "Spring Boot",
+      "Internals"
+    ],
+    "short": "SpringApplication bootstraps the application context and infrastructure.",
+    "answer": "Configuration loads, beans are discovered/created and the web server starts for web applications.",
+    "code": "SpringApplication.run(App.class,args);",
+    "followups": [
+      "What is ApplicationContext?"
+    ],
+    "mistakes": [],
+    "interview": "SpringApplication bootstraps the application context and infrastructure.",
+    "source": "V3",
+    "topic": "springboot"
+  },
+  {
+    "id": "spring-001",
+    "title": "Dependency Injection",
+    "level": "L2",
+    "tags": [
+      "Spring Core",
+      "IoC"
+    ],
+    "short": "The Spring container creates and supplies collaborators.",
+    "answer": "Constructor injection makes dependencies explicit, supports final fields and improves tests.",
+    "code": "@Service class OrderService{private final PaymentClient c; OrderService(PaymentClient c){this.c=c;}}",
+    "followups": [
+      "Why constructor injection?"
+    ],
+    "mistakes": [],
+    "interview": "The Spring container creates and supplies collaborators.",
+    "source": "V3",
+    "topic": "springboot"
+  },
+  {
+    "id": "spring-002",
+    "title": "Spring bean lifecycle",
+    "level": "L2",
+    "tags": [
+      "Spring Core",
+      "Beans"
+    ],
+    "short": "Beans are instantiated, injected, initialized and eventually destroyed when applicable.",
+    "answer": "Startup includes post-processors and callbacks such as @PostConstruct. Lifecycle is container-managed.",
+    "code": "@PostConstruct void init(){validateConfig();}",
+    "followups": [
+      "BeanPostProcessor?"
+    ],
+    "mistakes": [],
+    "interview": "Beans are instantiated, injected, initialized and eventually destroyed when applicable.",
+    "source": "V3",
+    "topic": "springboot"
+  },
+  {
+    "id": "spring-003",
+    "title": "@Component vs @Service vs @Repository",
+    "level": "L2",
+    "tags": [
+      "Spring Core",
+      "Stereotypes"
+    ],
+    "short": "They are component stereotypes; @Repository also supports persistence exception translation.",
+    "answer": "All can be discovered by component scanning. The annotations communicate architectural roles.",
+    "code": "@Service class OrderService {}\n@Repository class OrderDao {}",
+    "followups": [
+      "Does @Service add transactions?"
+    ],
+    "mistakes": [],
+    "interview": "They are component stereotypes; @Repository also supports persistence exception translation.",
+    "source": "V3",
+    "topic": "springboot"
+  },
+  {
+    "id": "spring-004",
+    "title": "@RestController",
+    "level": "L2",
+    "tags": [
+      "Spring MVC",
+      "REST"
+    ],
+    "short": "It combines @Controller and @ResponseBody.",
+    "answer": " @RestController is a composed annotation equivalent to @Controller plus @ResponseBody. Handler methods return values that Spring writes to the HTTP response body through HttpMessageConverters, commonly serializing Java objects as JSON with Jackson when it is configured. It is intended for REST-style APIs rather than server-side view rendering.",
+    "code": "@RestController\n@RequestMapping(\"/orders\")",
+    "followups": [
+      "What is the difference between @Controller and @RestController?",
+      "How does Jackson get involved?",
+      "What determines the response Content-Type?"
+    ],
+    "mistakes": [],
+    "interview": "I use @RestController for API controllers. Spring maps the request to a handler method, invokes it, and uses an HTTP message converter to serialize the returned object into the response body.",
+    "source": "V3",
+    "topic": "springboot"
+  },
+  {
+    "id": "spring-005",
+    "title": "Spring Boot auto-configuration",
+    "level": "L2",
+    "tags": [
+      "Spring Boot",
+      "Configuration"
+    ],
+    "short": "Boot conditionally configures infrastructure based on classpath, properties and existing beans.",
+    "answer": "Conditional configuration provides sensible defaults and backs off when appropriate user configuration exists.",
+    "code": "@SpringBootApplication",
+    "followups": [
+      "How debug auto-configuration?"
+    ],
+    "mistakes": [],
+    "interview": "Boot conditionally configures infrastructure based on classpath, properties and existing beans.",
+    "source": "V3",
+    "topic": "springboot"
+  },
+  {
+    "id": "spring-006",
+    "title": "@Configuration vs @Bean",
+    "level": "L2",
+    "tags": [
+      "Spring Core",
+      "Configuration"
+    ],
+    "short": "@Configuration groups bean definitions; @Bean registers the returned object.",
+    "answer": "@Configuration marks a class as a source of bean definitions. @Bean marks a method whose return object should be registered in the Spring application context. A configuration class is useful for grouping configuration, while @Bean is particularly useful when constructing third-party classes, applying custom initialization, or when component scanning cannot be used.",
+    "code": "@Configuration class Config{@Bean Clock clock(){return Clock.systemUTC();}}",
+    "followups": [
+      "How does Spring handle @Bean method calls inside @Configuration?",
+      "What changes with proxyBeanMethods=false?",
+      "@Component vs @Bean?"
+    ],
+    "mistakes": [],
+    "interview": "I use @Configuration to define application configuration and @Bean to explicitly construct objects managed by Spring. For example, a third-party client that cannot be annotated with @Component can be created through a @Bean method.",
+    "source": "V3",
+    "topic": "springboot"
+  },
+  {
+    "id": "spring-007",
+    "title": "Spring AOP and proxies",
+    "level": "L3",
+    "tags": [
+      "AOP",
+      "Internals"
+    ],
+    "short": "Spring AOP commonly applies cross-cutting behavior through proxies.",
+    "answer": "Transactions, security and caching can be proxy-based. Self-invocation can bypass advice.",
+    "code": "@Transactional void save(){}",
+    "followups": [
+      "JDK proxy vs CGLIB?"
+    ],
+    "mistakes": [],
+    "interview": "Spring AOP commonly applies cross-cutting behavior through proxies.",
+    "source": "V3",
+    "topic": "springboot"
+  },
+  {
+    "id": "spring-008",
+    "title": "@Transactional propagation",
+    "level": "L2",
+    "tags": [
+      "Transactions",
+      "Spring"
+    ],
+    "short": "Propagation controls participation in existing transactions.",
+    "answer": "REQUIRED joins/creates; REQUIRES_NEW suspends the current transaction and starts another.",
+    "code": "@Transactional(propagation=Propagation.REQUIRES_NEW)",
+    "followups": [
+      "REQUIRED vs REQUIRES_NEW?"
+    ],
+    "mistakes": [],
+    "interview": "Propagation controls participation in existing transactions.",
+    "source": "V3",
+    "topic": "springboot"
+  },
+  {
+    "id": "spring-009",
+    "title": "Transaction isolation",
+    "level": "L2",
+    "tags": [
+      "Transactions",
+      "Database"
+    ],
+    "short": "Isolation controls what concurrent transactions can observe.",
+    "answer": "Isolation levels trade consistency and concurrency. Exact behavior is database-specific.",
+    "code": "@Transactional(isolation=Isolation.READ_COMMITTED)",
+    "followups": [
+      "Dirty read?"
+    ],
+    "mistakes": [],
+    "interview": "Isolation controls what concurrent transactions can observe.",
+    "source": "V3",
+    "topic": "springboot"
+  },
+  {
+    "id": "spring-010",
+    "title": "Global exception handling",
+    "level": "L2",
+    "tags": [
+      "REST",
+      "Exceptions"
+    ],
+    "short": "@RestControllerAdvice centralizes exception-to-response mapping.",
+    "answer": "Global exception handling centralizes controller error translation using mechanisms such as @RestControllerAdvice and @ExceptionHandler. It lets the API return consistent status codes and error bodies instead of duplicating try/catch logic in every controller. The handler should distinguish validation, client, domain, and unexpected server errors and avoid exposing internal details.",
+    "code": "@RestControllerAdvice\nclass Errors{}",
+    "followups": [
+      "How do you handle validation errors globally?",
+      "Should every exception return 500?",
+      "How do you prevent sensitive stack traces from reaching clients?"
+    ],
+    "mistakes": [],
+    "interview": "I normally define a global advice with specific handlers for known exceptions and a safe fallback for unexpected failures. The response contains a stable error code/message and the appropriate HTTP status, while the detailed exception is logged internally.",
+    "source": "V3",
+    "topic": "springboot"
+  },
+  {
+    "id": "spring-011",
+    "title": "@Valid",
+    "level": "L2",
+    "tags": [
+      "Validation",
+      "REST"
+    ],
+    "short": "It triggers Bean Validation on a request object when constraints are present.",
+    "answer": "@Valid triggers Bean Validation on an object at the supported validation boundary, commonly a request DTO in a controller. Constraints such as @NotNull, @Size, and @Email are evaluated before the controller continues. Validation failures are normally translated into a 400 response through Spring’s exception handling infrastructure.",
+    "code": "record UserRequest(@NotBlank String name){}\n@PostMapping void create(@Valid @RequestBody UserRequest r){}",
+    "followups": [
+      "@Valid vs @Validated?",
+      "How do you validate nested objects?",
+      "How do you create a custom constraint?"
+    ],
+    "mistakes": [],
+    "interview": "I validate request DTOs at the API boundary so invalid input does not reach business logic. I then use global exception handling to convert validation failures into a consistent error response.",
+    "source": "V3",
+    "topic": "springboot"
+  },
+  {
+    "id": "spring-012",
+    "title": "Validation without @Valid",
+    "level": "L2",
+    "tags": [
+      "Validation",
+      "Spring"
+    ],
+    "short": "Yes; Bean Validation can be invoked programmatically or through method validation.",
+    "answer": "Inject Validator for manual validation or use @Validated with method constraints.",
+    "code": "validator.validate(request);",
+    "followups": [
+      "When manual validation?"
+    ],
+    "mistakes": [],
+    "interview": "Yes; Bean Validation can be invoked programmatically or through method validation.",
+    "source": "V3",
+    "topic": "springboot"
+  },
+  {
+    "id": "spring-013",
+    "title": "Spring Boot Actuator",
+    "level": "L2",
+    "tags": [
+      "Observability",
+      "Operations"
+    ],
+    "short": "Actuator exposes operational endpoints such as health and metrics.",
+    "answer": "Actuator exposes operational endpoints for monitoring and management, such as health, metrics, info, and mappings depending on configuration and dependencies. It is useful for production observability, but endpoints should be deliberately exposed and protected because some reveal application internals.",
+    "code": "management.endpoints.web.exposure.include=health,metrics",
+    "followups": [
+      "What is the difference between liveness and readiness?",
+      "How do you secure Actuator endpoints?",
+      "How can metrics be exported to Prometheus?"
+    ],
+    "mistakes": [],
+    "interview": "I use Actuator mainly for health checks and metrics integration. In production I expose only required endpoints, secure them, and avoid treating an unrestricted management endpoint as public application API.",
+    "source": "V3",
+    "topic": "springboot"
+  },
+  {
+    "id": "spring-014",
+    "title": "Externalized configuration",
+    "level": "L2",
+    "tags": [
+      "Configuration",
+      "Deployment"
+    ],
+    "short": "Configuration is supplied outside code so one artifact can run across environments.",
+    "answer": "Properties, YAML, environment variables and other sources can provide values. Secrets belong in secret management.",
+    "code": "spring.datasource.url=${DB_URL}",
+    "followups": [
+      "Property precedence?"
+    ],
+    "mistakes": [],
+    "interview": "Configuration is supplied outside code so one artifact can run across environments.",
+    "source": "V3",
+    "topic": "springboot"
+  },
+  {
+    "id": "spring-015",
+    "title": "Spring profiles",
+    "level": "L2",
+    "tags": [
+      "Configuration",
+      "Deployment"
+    ],
+    "short": "Profiles activate environment-specific configuration/beans.",
+    "answer": "Useful for environment differences, not as a replacement for runtime feature flags.",
+    "code": "@Profile(\"dev\")",
+    "followups": [
+      "Profiles vs feature flags?"
+    ],
+    "mistakes": [],
+    "interview": "Profiles activate environment-specific configuration/beans.",
+    "source": "V3",
+    "topic": "springboot"
+  },
+  {
+    "id": "spring-016",
+    "title": "Filter vs interceptor vs controller advice",
+    "level": "L3",
+    "tags": [
+      "Spring MVC",
+      "HTTP"
+    ],
+    "short": "Filters are servlet-level, interceptors are MVC lifecycle hooks, advice handles MVC-wide concerns.",
+    "answer": "Choose based on lifecycle boundary: filters for low-level request concerns, interceptors for handlers, advice for errors/binding.",
+    "code": "Filter -> DispatcherServlet -> Interceptor -> Controller",
+    "followups": [
+      "Where extract JWT?"
+    ],
+    "mistakes": [],
+    "interview": "Filters are servlet-level, interceptors are MVC lifecycle hooks, advice handles MVC-wide concerns.",
+    "source": "V3",
+    "topic": "springboot"
+  },
+  {
+    "id": "spring-017",
+    "title": "Spring Cache",
+    "level": "L2",
+    "tags": [
+      "Caching",
+      "Performance"
+    ],
+    "short": "Spring Cache abstracts method-result caching.",
+    "answer": "Spring Cache provides an abstraction over cache providers using annotations such as @Cacheable, @CachePut, and @CacheEvict. @Cacheable can return a cached value instead of executing the method. The important production concerns are key design, TTL, invalidation, stale data, serialization, cache size, and behavior when the cache is unavailable.",
+    "code": "@Cacheable(cacheNames=\"products\",key=\"#id\")",
+    "followups": [
+      "What happens on a cache miss?",
+      "How do you invalidate related keys after an update?",
+      "What problems occur with distributed caches?"
+    ],
+    "mistakes": [],
+    "interview": "I use caching for expensive or frequently repeated reads where a defined consistency trade-off is acceptable. I explicitly design the cache key and invalidation strategy rather than assuming that adding @Cacheable alone solves consistency.",
+    "source": "V3",
+    "topic": "springboot"
+  },
+  {
+    "id": "spring-018",
+    "title": "@Async",
+    "level": "L2",
+    "tags": [
+      "Concurrency",
+      "Async"
+    ],
+    "short": "It runs intercepted methods through an asynchronous executor.",
+    "answer": "@Async executes a method asynchronously through a Spring-managed proxy and a configured TaskExecutor. The caller can return before the asynchronous work completes. It is not a durable messaging system: tasks can be lost on process failure unless the work is persisted elsewhere, and thread-pool capacity must be bounded and monitored.",
+    "code": "@Async void sendEmail(Event e){}",
+    "followups": [
+      "Why does self-invocation break @Async?",
+      "How do you configure the executor?",
+      "How do you handle exceptions from void @Async methods?"
+    ],
+    "mistakes": [],
+    "interview": "I use @Async for short-lived background work where losing the task is acceptable or separately handled. For durable business events, retries, and guaranteed processing, I prefer a message broker or persistent job mechanism.",
+    "source": "V3",
+    "topic": "springboot"
+  },
+  {
+    "id": "spring-019",
+    "title": "Spring Boot starter",
+    "level": "L2",
+    "tags": [
+      "Spring Boot",
+      "Build"
+    ],
+    "short": "A starter groups dependencies for a capability.",
+    "answer": "A Spring Boot starter is a dependency descriptor that brings a coherent set of libraries for a capability, while Boot dependency management keeps compatible versions aligned. Starters reduce manual dependency selection and make common setups easier to reproduce. They work with auto-configuration to configure components when the application’s classpath and properties match the expected conditions.",
+    "code": "<artifactId>spring-boot-starter-web</artifactId>",
+    "followups": [
+      "What is auto-configuration?",
+      "How does Spring Boot dependency management work?",
+      "Can you create a custom starter?"
+    ],
+    "mistakes": [],
+    "interview": "For example, adding a web starter gives the application the typical Spring MVC and embedded-server dependencies. The starter does not itself magically configure every application behavior; Boot’s auto-configuration evaluates conditions and creates beans.",
+    "source": "V3",
+    "topic": "springboot"
+  },
+  {
+    "id": "spring-020",
+    "title": "Troubleshoot slow endpoint",
+    "level": "L3",
+    "tags": [
+      "Production",
+      "Performance"
+    ],
+    "short": "Measure latency, traces, SQL, downstream calls, pools and JVM behavior before changing anything.",
+    "answer": "Use p95/p99, traces, SQL plans, pool metrics and deployment timelines to isolate the bottleneck.",
+    "code": "API 900ms -> DB 700ms -> downstream 120ms",
+    "followups": [
+      "How detect N+1?"
+    ],
+    "mistakes": [],
+    "interview": "Measure latency, traces, SQL, downstream calls, pools and JVM behavior before changing anything.",
+    "source": "V3",
+    "topic": "springboot"
+  },
+  {
+    "id": "iq-069",
+    "title": "What is Spring Boot?",
+    "level": "L1",
+    "tags": [
+      "IQ300",
+      "springboot"
+    ],
+    "short": "Spring Boot is an opinionated framework built on top of the Spring Framework that simplifies building production-ready applications by providing auto-configuration, embedded servers (Tomcat/Jetty/Netty), starter dependencies that bundle com",
+    "answer": "Spring Boot is an opinionated framework built on top of the Spring Framework that simplifies building production-ready applications by providing auto-configuration, embedded servers (Tomcat/Jetty/Netty), starter dependencies that bundle common libraries, and sensible defaults — drastically cutting the boilerplate XML/config that plain Spring required.",
+    "code": "",
+    "followups": [],
+    "mistakes": [],
+    "interview": "Spring Boot is an opinionated framework built on top of the Spring Framework that simplifies building production-ready applications by providing auto-configuration, embedded servers (Tomcat/Jetty/Netty), starter dependencies that bundle common libraries, and sensible defaults — drastically cutting the boilerplate XML/c",
+    "source": "IQ300",
+    "topic": "springboot"
+  },
+  {
+    "id": "iq-070",
+    "title": "Difference between Spring and Spring Boot.",
+    "level": "L1",
+    "tags": [
+      "IQ300",
+      "springboot"
+    ],
+    "short": "Spring is a comprehensive framework offering dependency injection, AOP, and modules for web, data, security, etc., but historically required extensive manual configuration (XML or Java config). Spring Boot builds on Spring, adding auto-conf",
+    "answer": "Spring is a comprehensive framework offering dependency injection, AOP, and modules for web, data, security, etc., but historically required extensive manual configuration (XML or Java config). Spring Boot builds on Spring, adding auto-configuration, embedded servers, starter POMs, and Actuator, so you can get a working application running with minimal setup rather than wiring everything by hand.",
+    "code": "",
+    "followups": [],
+    "mistakes": [],
+    "interview": "Spring is a comprehensive framework offering dependency injection, AOP, and modules for web, data, security, etc., but historically required extensive manual configuration (XML or Java config). Spring Boot builds on Spring, adding auto-configuration, embedded servers, starter POMs, and Actuator, so you can get a workin",
+    "source": "IQ300",
+    "topic": "springboot"
+  },
+  {
+    "id": "iq-071",
+    "title": "What is dependency injection?",
+    "level": "L1",
+    "tags": [
+      "IQ300",
+      "java"
+    ],
+    "short": "A design pattern where an object's dependencies are supplied (\"injected\") from outside — typically by a framework/container — rather than the object creating them itself. This decouples classes from concrete implementations of their collabo",
+    "answer": "A design pattern where an object's dependencies are supplied (\"injected\") from outside — typically by a framework/container — rather than the object creating them itself. This decouples classes from concrete implementations of their collaborators, making code easier to test (swap in mocks) and maintain.",
+    "code": "",
+    "followups": [],
+    "mistakes": [],
+    "interview": "A design pattern where an object's dependencies are supplied (\"injected\") from outside — typically by a framework/container — rather than the object creating them itself. This decouples classes from concrete implementations of their collaborators, making code easier to test (swap in mocks) and maintain.",
+    "source": "IQ300",
+    "topic": "springboot"
+  },
+  {
+    "id": "iq-072",
+    "title": "Explain inversion of control.",
+    "level": "L1",
+    "tags": [
+      "IQ300",
+      "java"
+    ],
+    "short": "IoC is the broader principle behind DI: control over object creation and wiring is inverted from the application code to a container/framework. Instead of a class calling \\new\\ to get its dependencies, the Spring IoC container instantiates,",
+    "answer": "IoC is the broader principle behind DI: control over object creation and wiring is inverted from the application code to a container/framework. Instead of a class calling \\<code>new\\</code> to get its dependencies, the Spring IoC container instantiates, configures, and injects them, and also manages the object lifecycle.",
+    "code": "",
+    "followups": [],
+    "mistakes": [],
+    "interview": "IoC is the broader principle behind DI: control over object creation and wiring is inverted from the application code to a container/framework. Instead of a class calling \\new\\ to get its dependencies, the Spring IoC container instantiates, configures, and injects them, and also manages the object lifecycle.",
+    "source": "IQ300",
+    "topic": "springboot"
+  },
+  {
+    "id": "iq-073",
+    "title": "What are Spring beans?",
+    "level": "L1",
+    "tags": [
+      "IQ300",
+      "java"
+    ],
+    "short": "Beans are objects that are instantiated, assembled, and managed by the Spring IoC container. They're defined via annotations (\\@Component\\, \\@Service\\, \\@Bean\\ methods) or XML, and the container handles their creation, dependency injection,",
+    "answer": "Beans are objects that are instantiated, assembled, and managed by the Spring IoC container. They're defined via annotations (\\<code>@Component\\</code>, \\<code>@Service\\</code>, \\<code>@Bean\\</code> methods) or XML, and the container handles their creation, dependency injection, and lifecycle (init/destroy callbacks).",
+    "code": "",
+    "followups": [],
+    "mistakes": [],
+    "interview": "Beans are objects that are instantiated, assembled, and managed by the Spring IoC container. They're defined via annotations (\\@Component\\, \\@Service\\, \\@Bean\\ methods) or XML, and the container handles their creation, dependency injection, and lifecycle (init/destroy callbacks).",
+    "source": "IQ300",
+    "topic": "springboot"
+  },
+  {
+    "id": "iq-074",
+    "title": "Bean lifecycle in Spring.",
+    "level": "L1",
+    "tags": [
+      "IQ300",
+      "java"
+    ],
+    "short": "Roughly: the container instantiates the bean, populates properties (dependency injection), calls \\Aware\\ interface callbacks if implemented (e.g. \\BeanNameAware\\), invokes \\BeanPostProcessor.postProcessBeforeInitialization\\, calls \\@PostCon",
+    "answer": "Roughly: the container instantiates the bean, populates properties (dependency injection), calls \\<code>Aware\\</code> interface callbacks if implemented (e.g. \\<code>BeanNameAware\\</code>), invokes \\<code>BeanPostProcessor.postProcessBeforeInitialization\\</code>, calls \\<code>@PostConstruct\\</code>/\\<code>InitializingBean.afterPropertiesSet()\\</code>/custom init-method, then \\<code>postProcessAfterInitialization\\</code> — after which the bean is ready for use. On shutdown, \\<code>@PreDestroy\\</code>/\\<code>DisposableBean.destroy()\\</code>/custom destroy-method run.",
+    "code": "",
+    "followups": [],
+    "mistakes": [],
+    "interview": "Roughly: the container instantiates the bean, populates properties (dependency injection), calls \\Aware\\ interface callbacks if implemented (e.g. \\BeanNameAware\\), invokes \\BeanPostProcessor.postProcessBeforeInitialization\\, calls \\@PostConstruct\\/\\InitializingBean.afterPropertiesSet()\\/custom init-method, then \\postPr",
+    "source": "IQ300",
+    "topic": "springboot"
+  },
+  {
+    "id": "iq-075",
+    "title": "Difference between `@Component`, `@Service`, `@Repository`, and `@Controller`.",
+    "level": "L1",
+    "tags": [
+      "IQ300",
+      "java"
+    ],
+    "short": "All four are stereotypes of \\@Component\\, meaning they're all auto-detected and registered as beans via component scanning. They differ in semantic intent and added behavior: \\@Service\\ marks business/service-layer logic; \\@Repository\\ mark",
+    "answer": "All four are stereotypes of \\<code>@Component\\</code>, meaning they're all auto-detected and registered as beans via component scanning. They differ in semantic intent and added behavior: \\<code>@Service\\</code> marks business/service-layer logic; \\<code>@Repository\\</code> marks data-access classes and additionally enables automatic translation of persistence exceptions into Spring's \\<code>DataAccessException\\</code> hierarchy; \\<code>@Controller\\</code> marks a Spring MVC web controller whose methods typically return view names.",
+    "code": "",
+    "followups": [],
+    "mistakes": [],
+    "interview": "All four are stereotypes of \\@Component\\, meaning they're all auto-detected and registered as beans via component scanning. They differ in semantic intent and added behavior: \\@Service\\ marks business/service-layer logic; \\@Repository\\ marks data-access classes and additionally enables automatic translation of persiste",
+    "source": "IQ300",
+    "topic": "springboot"
+  },
+  {
+    "id": "iq-076",
+    "title": "What is `@RestController`?",
+    "level": "L1",
+    "tags": [
+      "IQ300",
+      "springboot"
+    ],
+    "short": "A convenience annotation combining \\@Controller\\ and \\@ResponseBody\\ — every handler method's return value is automatically serialized (usually to JSON) directly into the HTTP response body, rather than being resolved as a view name, making",
+    "answer": "A convenience annotation combining \\<code>@Controller\\</code> and \\<code>@ResponseBody\\</code> — every handler method's return value is automatically serialized (usually to JSON) directly into the HTTP response body, rather than being resolved as a view name, making it the standard annotation for building REST APIs.",
+    "code": "",
+    "followups": [],
+    "mistakes": [],
+    "interview": "A convenience annotation combining \\@Controller\\ and \\@ResponseBody\\ — every handler method's return value is automatically serialized (usually to JSON) directly into the HTTP response body, rather than being resolved as a view name, making it the standard annotation for building REST APIs.",
+    "source": "IQ300",
+    "topic": "springboot"
+  },
+  {
+    "id": "iq-077",
+    "title": "Difference between `@Controller` and `@RestController`.",
+    "level": "L1",
+    "tags": [
+      "IQ300",
+      "springboot"
+    ],
+    "short": "\\@Controller\\ is used for traditional MVC where methods typically return a view name to be resolved and rendered (e.g. a Thymeleaf template), unless individually annotated with \\@ResponseBody\\. \\@RestController\\ applies \\@ResponseBody\\ to e",
+    "answer": "\\<code>@Controller\\</code> is used for traditional MVC where methods typically return a view name to be resolved and rendered (e.g. a Thymeleaf template), unless individually annotated with \\<code>@ResponseBody\\</code>. \\<code>@RestController\\</code> applies \\<code>@ResponseBody\\</code> to every method by default, so return values go straight into the HTTP response body as data (JSON/XML) — the standard choice for REST APIs.",
+    "code": "",
+    "followups": [],
+    "mistakes": [],
+    "interview": "\\@Controller\\ is used for traditional MVC where methods typically return a view name to be resolved and rendered (e.g. a Thymeleaf template), unless individually annotated with \\@ResponseBody\\. \\@RestController\\ applies \\@ResponseBody\\ to every method by default, so return values go straight into the HTTP response body",
+    "source": "IQ300",
+    "topic": "springboot"
+  },
+  {
+    "id": "iq-078",
+    "title": "Explain `@Autowired`.",
+    "level": "L1",
+    "tags": [
+      "IQ300",
+      "java"
+    ],
+    "short": "\\@Autowired\\ tells Spring to automatically resolve and inject a matching bean into a field, constructor, or setter. Resolution happens by type first; if multiple beans of that type exist, Spring uses the field/parameter name or an accompany",
+    "answer": "\\<code>@Autowired\\</code> tells Spring to automatically resolve and inject a matching bean into a field, constructor, or setter. Resolution happens by type first; if multiple beans of that type exist, Spring uses the field/parameter name or an accompanying \\<code>@Qualifier\\</code> to disambiguate. If no matching bean is found and it's required, Spring throws a \\<code>NoSuchBeanDefinitionException\\</code> at startup.",
+    "code": "",
+    "followups": [],
+    "mistakes": [],
+    "interview": "\\@Autowired\\ tells Spring to automatically resolve and inject a matching bean into a field, constructor, or setter. Resolution happens by type first; if multiple beans of that type exist, Spring uses the field/parameter name or an accompanying \\@Qualifier\\ to disambiguate. If no matching bean is found and it's required",
+    "source": "IQ300",
+    "topic": "springboot"
+  },
+  {
+    "id": "iq-079",
+    "title": "Constructor injection vs field injection.",
+    "level": "L1",
+    "tags": [
+      "IQ300",
+      "java"
+    ],
+    "short": "Constructor injection passes dependencies via the constructor, making them final and impossible to construct in an invalid state — it also makes circular dependencies fail fast at startup and is easiest to unit test without a Spring context",
+    "answer": "Constructor injection passes dependencies via the constructor, making them final and impossible to construct in an invalid state — it also makes circular dependencies fail fast at startup and is easiest to unit test without a Spring context. Field injection (\\<code>@Autowired\\</code> directly on a field) is more concise but hides dependencies, prevents immutability, and makes plain unit testing harder. Constructor injection is the generally recommended, more robust approach.",
+    "code": "",
+    "followups": [],
+    "mistakes": [],
+    "interview": "Constructor injection passes dependencies via the constructor, making them final and impossible to construct in an invalid state — it also makes circular dependencies fail fast at startup and is easiest to unit test without a Spring context. Field injection (\\@Autowired\\ directly on a field) is more concise but hides d",
+    "source": "IQ300",
+    "topic": "springboot"
+  },
+  {
+    "id": "iq-080",
+    "title": "What is `@Qualifier`?",
+    "level": "L1",
+    "tags": [
+      "IQ300",
+      "java"
+    ],
+    "short": "Used alongside \\@Autowired\\ to disambiguate when multiple beans of the same type exist, by specifying the exact bean name to inject, e.g. \\@Qualifier(\"primaryDataSource\")\\.",
+    "answer": "Used alongside \\<code>@Autowired\\</code> to disambiguate when multiple beans of the same type exist, by specifying the exact bean name to inject, e.g. \\<code>@Qualifier(\"primaryDataSource\")\\</code>.",
+    "code": "",
+    "followups": [],
+    "mistakes": [],
+    "interview": "Used alongside \\@Autowired\\ to disambiguate when multiple beans of the same type exist, by specifying the exact bean name to inject, e.g. \\@Qualifier(\"primaryDataSource\")\\.",
+    "source": "IQ300",
+    "topic": "springboot"
+  },
+  {
+    "id": "iq-081",
+    "title": "What is `@Primary`?",
+    "level": "L1",
+    "tags": [
+      "IQ300",
+      "java"
+    ],
+    "short": "Marks one bean as the default choice among multiple candidates of the same type, so plain \\@Autowired\\ (without a qualifier) resolves to it automatically. If a specific \\@Qualifier\\ is used elsewhere, it still overrides \\@Primary\\ for that ",
+    "answer": "Marks one bean as the default choice among multiple candidates of the same type, so plain \\<code>@Autowired\\</code> (without a qualifier) resolves to it automatically. If a specific \\<code>@Qualifier\\</code> is used elsewhere, it still overrides \\<code>@Primary\\</code> for that particular injection point.",
+    "code": "",
+    "followups": [],
+    "mistakes": [],
+    "interview": "Marks one bean as the default choice among multiple candidates of the same type, so plain \\@Autowired\\ (without a qualifier) resolves to it automatically. If a specific \\@Qualifier\\ is used elsewhere, it still overrides \\@Primary\\ for that particular injection point.",
+    "source": "IQ300",
+    "topic": "springboot"
+  },
+  {
+    "id": "iq-082",
+    "title": "What is `@Configuration`?",
+    "level": "L1",
+    "tags": [
+      "IQ300",
+      "java"
+    ],
+    "short": "Marks a class as a source of bean definitions for the Spring container, typically containing \\@Bean\\-annotated methods. Spring proxies \\@Configuration\\ classes (CGLIB) so that calling one \\@Bean\\ method from another within the class returns",
+    "answer": "Marks a class as a source of bean definitions for the Spring container, typically containing \\<code>@Bean\\</code>-annotated methods. Spring proxies \\<code>@Configuration\\</code> classes (CGLIB) so that calling one \\<code>@Bean\\</code> method from another within the class returns the same singleton instance rather than creating a new object each call.",
+    "code": "",
+    "followups": [],
+    "mistakes": [],
+    "interview": "Marks a class as a source of bean definitions for the Spring container, typically containing \\@Bean\\-annotated methods. Spring proxies \\@Configuration\\ classes (CGLIB) so that calling one \\@Bean\\ method from another within the class returns the same singleton instance rather than creating a new object each call.",
+    "source": "IQ300",
+    "topic": "springboot"
+  },
+  {
+    "id": "iq-083",
+    "title": "What is `@Bean`?",
+    "level": "L1",
+    "tags": [
+      "IQ300",
+      "java"
+    ],
+    "short": "Used on a method inside a \\@Configuration\\ class to explicitly declare and configure a bean, useful for third-party classes you can't annotate directly, or when construction logic needs custom code rather than simple component scanning.",
+    "answer": "Used on a method inside a \\<code>@Configuration\\</code> class to explicitly declare and configure a bean, useful for third-party classes you can't annotate directly, or when construction logic needs custom code rather than simple component scanning.",
+    "code": "",
+    "followups": [],
+    "mistakes": [],
+    "interview": "Used on a method inside a \\@Configuration\\ class to explicitly declare and configure a bean, useful for third-party classes you can't annotate directly, or when construction logic needs custom code rather than simple component scanning.",
+    "source": "IQ300",
+    "topic": "springboot"
+  },
+  {
+    "id": "iq-084",
+    "title": "Explain component scanning.",
+    "level": "L1",
+    "tags": [
+      "IQ300",
+      "java"
+    ],
+    "short": "Component scanning is Spring's mechanism for automatically discovering classes annotated with stereotypes like \\@Component\\, \\@Service\\, \\@Repository\\, \\@Controller\\ within specified base packages and registering them as beans, avoiding the",
+    "answer": "Component scanning is Spring's mechanism for automatically discovering classes annotated with stereotypes like \\<code>@Component\\</code>, \\<code>@Service\\</code>, \\<code>@Repository\\</code>, \\<code>@Controller\\</code> within specified base packages and registering them as beans, avoiding the need to manually declare each one. It's enabled via \\<code>@ComponentScan\\</code> (implicitly included by \\<code>@SpringBootApplication\\</code>, which scans the package of the main class and its sub-packages).",
+    "code": "",
+    "followups": [],
+    "mistakes": [],
+    "interview": "Component scanning is Spring's mechanism for automatically discovering classes annotated with stereotypes like \\@Component\\, \\@Service\\, \\@Repository\\, \\@Controller\\ within specified base packages and registering them as beans, avoiding the need to manually declare each one. It's enabled via \\@ComponentScan\\ (implicitl",
+    "source": "IQ300",
+    "topic": "springboot"
+  },
+  {
+    "id": "iq-085",
+    "title": "What is auto-configuration?",
+    "level": "L1",
+    "tags": [
+      "IQ300",
+      "java"
+    ],
+    "short": "Spring Boot's mechanism of automatically configuring beans based on what's on the classpath and existing configuration — e.g. if \\spring-boot-starter-data-jpa\\ and a JDBC driver are present, it auto-configures a \\DataSource\\, \\EntityManager",
+    "answer": "Spring Boot's mechanism of automatically configuring beans based on what's on the classpath and existing configuration — e.g. if \\<code>spring-boot-starter-data-jpa\\</code> and a JDBC driver are present, it auto-configures a \\<code>DataSource\\</code>, \\<code>EntityManagerFactory\\</code>, and transaction manager, unless the developer has already defined their own. Enabled via \\<code>@EnableAutoConfiguration\\</code>, included in \\<code>@SpringBootApplication\\</code>.",
+    "code": "",
+    "followups": [],
+    "mistakes": [],
+    "interview": "Spring Boot's mechanism of automatically configuring beans based on what's on the classpath and existing configuration — e.g. if \\spring-boot-starter-data-jpa\\ and a JDBC driver are present, it auto-configures a \\DataSource\\, \\EntityManagerFactory\\, and transaction manager, unless the developer has already defined thei",
+    "source": "IQ300",
+    "topic": "springboot"
+  },
+  {
+    "id": "iq-086",
+    "title": "How does Spring Boot auto-configuration work?",
+    "level": "L1",
+    "tags": [
+      "IQ300",
+      "springboot"
+    ],
+    "short": "It relies on conditional configuration classes registered in \\META-INF/spring/org.springframework.boot.autoconfigure.AutoConfiguration.imports\\ (previously \\spring.factories\\). Each auto-configuration class is annotated with conditions like",
+    "answer": "It relies on conditional configuration classes registered in \\<code>META-INF/spring/org.springframework.boot.autoconfigure.AutoConfiguration.imports\\</code> (previously \\<code>spring.factories\\</code>). Each auto-configuration class is annotated with conditions like \\<code>@ConditionalOnClass\\</code>, \\<code>@ConditionalOnMissingBean\\</code>, or \\<code>@ConditionalOnProperty\\</code>, so it only activates if certain classes are on the classpath and the developer hasn't already supplied their own bean — giving convention-over-configuration behavior that's still fully overridable.",
+    "code": "",
+    "followups": [],
+    "mistakes": [],
+    "interview": "It relies on conditional configuration classes registered in \\META-INF/spring/org.springframework.boot.autoconfigure.AutoConfiguration.imports\\ (previously \\spring.factories\\). Each auto-configuration class is annotated with conditions like \\@ConditionalOnClass\\, \\@ConditionalOnMissingBean\\, or \\@ConditionalOnProperty\\",
+    "source": "IQ300",
+    "topic": "springboot"
+  },
+  {
+    "id": "iq-087",
+    "title": "What is Spring Boot Starter?",
+    "level": "L1",
+    "tags": [
+      "IQ300",
+      "springboot"
+    ],
+    "short": "Starters are curated dependency descriptors (e.g. \\spring-boot-starter-web\\, \\spring-boot-starter-data-jpa\\) that pull in a coherent, version-compatible set of libraries for a particular purpose, so you don't have to hunt down and align ind",
+    "answer": "Starters are curated dependency descriptors (e.g. \\<code>spring-boot-starter-web\\</code>, \\<code>spring-boot-starter-data-jpa\\</code>) that pull in a coherent, version-compatible set of libraries for a particular purpose, so you don't have to hunt down and align individual dependency versions manually.",
+    "code": "",
+    "followups": [],
+    "mistakes": [],
+    "interview": "Starters are curated dependency descriptors (e.g. \\spring-boot-starter-web\\, \\spring-boot-starter-data-jpa\\) that pull in a coherent, version-compatible set of libraries for a particular purpose, so you don't have to hunt down and align individual dependency versions manually.",
+    "source": "IQ300",
+    "topic": "springboot"
+  },
+  {
+    "id": "iq-088",
+    "title": "What is `application.properties` vs `application.yml`?",
+    "level": "L1",
+    "tags": [
+      "IQ300",
+      "java"
+    ],
+    "short": "Both configure a Spring Boot application externally (server port, datasource URL, logging levels, custom properties). \\.properties\\ uses flat key=value pairs; \\.yml\\ uses YAML's nested, indentation-based structure, which is more readable fo",
+    "answer": "Both configure a Spring Boot application externally (server port, datasource URL, logging levels, custom properties). \\<code>.properties\\</code> uses flat key=value pairs; \\<code>.yml\\</code> uses YAML's nested, indentation-based structure, which is more readable for deeply nested or list-based configuration, though it's whitespace-sensitive and less forgiving of syntax mistakes.",
+    "code": "",
+    "followups": [],
+    "mistakes": [],
+    "interview": "Both configure a Spring Boot application externally (server port, datasource URL, logging levels, custom properties). \\.properties\\ uses flat key=value pairs; \\.yml\\ uses YAML's nested, indentation-based structure, which is more readable for deeply nested or list-based configuration, though it's whitespace-sensitive an",
+    "source": "IQ300",
+    "topic": "springboot"
+  },
+  {
+    "id": "iq-089",
+    "title": "How do you manage multiple environments?",
+    "level": "L1",
+    "tags": [
+      "IQ300",
+      "java"
+    ],
+    "short": "Primarily via Spring Profiles — separate config files like \\application-dev.yml\\, \\application-prod.yml\\, activated with \\spring.profiles.active=dev\\ (via env var, command line, or config), combined with \\@Profile\\ on beans that should only",
+    "answer": "Primarily via Spring Profiles — separate config files like \\<code>application-dev.yml\\</code>, \\<code>application-prod.yml\\</code>, activated with \\<code>spring.profiles.active=dev\\</code> (via env var, command line, or config), combined with \\<code>@Profile\\</code> on beans that should only load for a specific environment.",
+    "code": "",
+    "followups": [],
+    "mistakes": [],
+    "interview": "Primarily via Spring Profiles — separate config files like \\application-dev.yml\\, \\application-prod.yml\\, activated with \\spring.profiles.active=dev\\ (via env var, command line, or config), combined with \\@Profile\\ on beans that should only load for a specific environment.",
+    "source": "IQ300",
+    "topic": "springboot"
+  },
+  {
+    "id": "iq-090",
+    "title": "What is `@Value`?",
+    "level": "L1",
+    "tags": [
+      "IQ300",
+      "java"
+    ],
+    "short": "Injects a single external property (or a SpEL expression) directly into a field or constructor parameter, e.g. \\@Value(\"\\\\${server.port}\")\\. Good for simple, individual values; for many related properties, \\@ConfigurationProperties\\ is usua",
+    "answer": "Injects a single external property (or a SpEL expression) directly into a field or constructor parameter, e.g. \\<code>@Value(\"\\\\${server.port}\")\\</code>. Good for simple, individual values; for many related properties, \\<code>@ConfigurationProperties\\</code> is usually cleaner.",
+    "code": "",
+    "followups": [],
+    "mistakes": [],
+    "interview": "Injects a single external property (or a SpEL expression) directly into a field or constructor parameter, e.g. \\@Value(\"\\\\${server.port}\")\\. Good for simple, individual values; for many related properties, \\@ConfigurationProperties\\ is usually cleaner.",
+    "source": "IQ300",
+    "topic": "springboot"
+  },
+  {
+    "id": "iq-091",
+    "title": "What is `@ConfigurationProperties`?",
+    "level": "L1",
+    "tags": [
+      "IQ300",
+      "java"
+    ],
+    "short": "Binds a group of related external properties (with a common prefix) onto a POJO's fields in a type-safe way, e.g. all \\app.mail.\\*\\ properties bound onto a \\MailProperties\\ class — cleaner and more maintainable than many individual \\@Value\\",
+    "answer": "Binds a group of related external properties (with a common prefix) onto a POJO's fields in a type-safe way, e.g. all \\<code>app.mail.\\*\\</code> properties bound onto a \\<code>MailProperties\\</code> class — cleaner and more maintainable than many individual \\<code>@Value\\</code> injections, and supports validation.",
+    "code": "",
+    "followups": [],
+    "mistakes": [],
+    "interview": "Binds a group of related external properties (with a common prefix) onto a POJO's fields in a type-safe way, e.g. all \\app.mail.\\*\\ properties bound onto a \\MailProperties\\ class — cleaner and more maintainable than many individual \\@Value\\ injections, and supports validation.",
+    "source": "IQ300",
+    "topic": "springboot"
+  },
+  {
+    "id": "iq-092",
+    "title": "Explain profiles in Spring Boot.",
+    "level": "L1",
+    "tags": [
+      "IQ300",
+      "springboot"
+    ],
+    "short": "Profiles let you define environment-specific beans and configuration that only activate under a named profile (e.g. \"dev\", \"test\", \"prod\"). Beans annotated \\@Profile(\"prod\")\\ are only registered when that profile is active, and profile-spec",
+    "answer": "Profiles let you define environment-specific beans and configuration that only activate under a named profile (e.g. \"dev\", \"test\", \"prod\"). Beans annotated \\<code>@Profile(\"prod\")\\</code> are only registered when that profile is active, and profile-specific property files override the base \\<code>application.properties\\</code>.",
+    "code": "",
+    "followups": [],
+    "mistakes": [],
+    "interview": "Profiles let you define environment-specific beans and configuration that only activate under a named profile (e.g. \"dev\", \"test\", \"prod\"). Beans annotated \\@Profile(\"prod\")\\ are only registered when that profile is active, and profile-specific property files override the base \\application.properties\\.",
+    "source": "IQ300",
+    "topic": "springboot"
+  },
+  {
+    "id": "iq-093",
+    "title": "What is the embedded server in Spring Boot?",
+    "level": "L1",
+    "tags": [
+      "IQ300",
+      "springboot"
+    ],
+    "short": "Spring Boot bundles an HTTP server (Tomcat by default, or Jetty/Undertow/Netty as alternatives) directly inside the application JAR, so the app is a self-contained, runnable artifact (\\java -jar app.jar\\) rather than needing a separately de",
+    "answer": "Spring Boot bundles an HTTP server (Tomcat by default, or Jetty/Undertow/Netty as alternatives) directly inside the application JAR, so the app is a self-contained, runnable artifact (\\<code>java -jar app.jar\\</code>) rather than needing a separately deployed WAR on an external servlet container.",
+    "code": "",
+    "followups": [],
+    "mistakes": [],
+    "interview": "Spring Boot bundles an HTTP server (Tomcat by default, or Jetty/Undertow/Netty as alternatives) directly inside the application JAR, so the app is a self-contained, runnable artifact (\\java -jar app.jar\\) rather than needing a separately deployed WAR on an external servlet container.",
+    "source": "IQ300",
+    "topic": "springboot"
+  },
+  {
+    "id": "iq-094",
+    "title": "How do you change the default server port?",
+    "level": "L1",
+    "tags": [
+      "IQ300",
+      "java"
+    ],
+    "short": "Set \\server.port=8081\\ in \\application.properties\\/\\.yml\\, pass it as a command-line argument (\\--server.port=8081\\), set the \\SERVER\\_PORT\\ environment variable, or configure it programmatically via a \\WebServerFactoryCustomizer\\ bean.",
+    "answer": "Set \\<code>server.port=8081\\</code> in \\<code>application.properties\\</code>/\\<code>.yml\\</code>, pass it as a command-line argument (\\<code>--server.port=8081\\</code>), set the \\<code>SERVER\\_PORT\\</code> environment variable, or configure it programmatically via a \\<code>WebServerFactoryCustomizer\\</code> bean.",
+    "code": "",
+    "followups": [],
+    "mistakes": [],
+    "interview": "Set \\server.port=8081\\ in \\application.properties\\/\\.yml\\, pass it as a command-line argument (\\--server.port=8081\\), set the \\SERVER\\_PORT\\ environment variable, or configure it programmatically via a \\WebServerFactoryCustomizer\\ bean.",
+    "source": "IQ300",
+    "topic": "springboot"
+  },
+  {
+    "id": "iq-095",
+    "title": "How do you create REST APIs?",
+    "level": "L1",
+    "tags": [
+      "IQ300",
+      "java"
+    ],
+    "short": "Annotate a class with \\@RestController\\, map endpoints with \\@RequestMapping\\/\\@GetMapping\\/\\@PostMapping\\ etc., bind request data with \\@RequestParam\\, \\@PathVariable\\, or \\@RequestBody\\, and return domain objects or a \\ResponseEntity\\ whi",
+    "answer": "Annotate a class with \\<code>@RestController\\</code>, map endpoints with \\<code>@RequestMapping\\</code>/\\<code>@GetMapping\\</code>/\\<code>@PostMapping\\</code> etc., bind request data with \\<code>@RequestParam\\</code>, \\<code>@PathVariable\\</code>, or \\<code>@RequestBody\\</code>, and return domain objects or a \\<code>ResponseEntity\\</code> which Spring automatically serializes (typically to JSON via Jackson).",
+    "code": "",
+    "followups": [],
+    "mistakes": [],
+    "interview": "Annotate a class with \\@RestController\\, map endpoints with \\@RequestMapping\\/\\@GetMapping\\/\\@PostMapping\\ etc., bind request data with \\@RequestParam\\, \\@PathVariable\\, or \\@RequestBody\\, and return domain objects or a \\ResponseEntity\\ which Spring automatically serializes (typically to JSON via Jackson).",
+    "source": "IQ300",
+    "topic": "springboot"
+  },
+  {
+    "id": "iq-096",
+    "title": "What are HTTP methods?",
+    "level": "L1",
+    "tags": [
+      "IQ300",
+      "java"
+    ],
+    "short": "GET retrieves a resource (safe, no side effects). POST creates a new resource or triggers processing. PUT replaces a resource entirely (idempotent). PATCH partially updates a resource. DELETE removes a resource (idempotent). Others include ",
+    "answer": "GET retrieves a resource (safe, no side effects). POST creates a new resource or triggers processing. PUT replaces a resource entirely (idempotent). PATCH partially updates a resource. DELETE removes a resource (idempotent). Others include HEAD, OPTIONS, and TRACE, used less often in typical REST APIs.",
+    "code": "",
+    "followups": [],
+    "mistakes": [],
+    "interview": "GET retrieves a resource (safe, no side effects). POST creates a new resource or triggers processing. PUT replaces a resource entirely (idempotent). PATCH partially updates a resource. DELETE removes a resource (idempotent). Others include HEAD, OPTIONS, and TRACE, used less often in typical REST APIs.",
+    "source": "IQ300",
+    "topic": "springboot"
+  },
+  {
+    "id": "iq-097",
+    "title": "Difference between PUT and PATCH.",
+    "level": "L1",
+    "tags": [
+      "IQ300",
+      "java"
+    ],
+    "short": "PUT replaces the entire resource with the payload provided — fields omitted are typically reset/removed — and is idempotent. PATCH applies a partial update, modifying only the specified fields, leaving the rest untouched; it may or may not ",
+    "answer": "PUT replaces the entire resource with the payload provided — fields omitted are typically reset/removed — and is idempotent. PATCH applies a partial update, modifying only the specified fields, leaving the rest untouched; it may or may not be idempotent depending on how the patch is expressed.",
+    "code": "",
+    "followups": [],
+    "mistakes": [],
+    "interview": "PUT replaces the entire resource with the payload provided — fields omitted are typically reset/removed — and is idempotent. PATCH applies a partial update, modifying only the specified fields, leaving the rest untouched; it may or may not be idempotent depending on how the patch is expressed.",
+    "source": "IQ300",
+    "topic": "springboot"
+  },
+  {
+    "id": "iq-098",
+    "title": "Difference between POST and PUT.",
+    "level": "L1",
+    "tags": [
+      "IQ300",
+      "java"
+    ],
+    "short": "POST is generally used to create a new resource (the server assigns the identity/URI) and is not idempotent — calling it twice can create two resources. PUT is used to create or fully replace a resource at a client-specified URI and is idem",
+    "answer": "POST is generally used to create a new resource (the server assigns the identity/URI) and is not idempotent — calling it twice can create two resources. PUT is used to create or fully replace a resource at a client-specified URI and is idempotent — repeating the same PUT produces the same end state.",
+    "code": "",
+    "followups": [],
+    "mistakes": [],
+    "interview": "POST is generally used to create a new resource (the server assigns the identity/URI) and is not idempotent — calling it twice can create two resources. PUT is used to create or fully replace a resource at a client-specified URI and is idempotent — repeating the same PUT produces the same end state.",
+    "source": "IQ300",
+    "topic": "springboot"
+  },
+  {
+    "id": "iq-099",
+    "title": "What is idempotency?",
+    "level": "L1",
+    "tags": [
+      "IQ300",
+      "java"
+    ],
+    "short": "An operation is idempotent if performing it multiple times has the same effect as performing it once — e.g. GET, PUT, DELETE. This matters heavily for retry-safe APIs (e.g. payments), where a client can safely resend a request after a timeo",
+    "answer": "An operation is idempotent if performing it multiple times has the same effect as performing it once — e.g. GET, PUT, DELETE. This matters heavily for retry-safe APIs (e.g. payments), where a client can safely resend a request after a timeout without risking duplicate side effects, often reinforced with idempotency keys.",
+    "code": "",
+    "followups": [],
+    "mistakes": [],
+    "interview": "An operation is idempotent if performing it multiple times has the same effect as performing it once — e.g. GET, PUT, DELETE. This matters heavily for retry-safe APIs (e.g. payments), where a client can safely resend a request after a timeout without risking duplicate side effects, often reinforced with idempotency key",
+    "source": "IQ300",
+    "topic": "springboot"
+  },
+  {
+    "id": "iq-100",
+    "title": "How do you validate request payloads?",
+    "level": "L1",
+    "tags": [
+      "IQ300",
+      "java"
+    ],
+    "short": "Annotate DTO fields with Bean Validation constraints (\\@NotNull\\, \\@Size\\, \\@Email\\, \\@Min\\/\\@Max\\, custom constraints), then annotate the controller method parameter with \\@Valid\\ or \\@Validated\\. Spring automatically validates the payload",
+    "answer": "Annotate DTO fields with Bean Validation constraints (\\<code>@NotNull\\</code>, \\<code>@Size\\</code>, \\<code>@Email\\</code>, \\<code>@Min\\</code>/\\<code>@Max\\</code>, custom constraints), then annotate the controller method parameter with \\<code>@Valid\\</code> or \\<code>@Validated\\</code>. Spring automatically validates the payload before the method body runs, and validation failures can be captured via \\<code>BindingResult\\</code> or turned into an error response by a global exception handler.",
+    "code": "",
+    "followups": [],
+    "mistakes": [],
+    "interview": "Annotate DTO fields with Bean Validation constraints (\\@NotNull\\, \\@Size\\, \\@Email\\, \\@Min\\/\\@Max\\, custom constraints), then annotate the controller method parameter with \\@Valid\\ or \\@Validated\\. Spring automatically validates the payload before the method body runs, and validation failures can be captured via \\Bindi",
+    "source": "IQ300",
+    "topic": "springboot"
+  },
+  {
+    "id": "iq-101",
+    "title": "What is `@Valid`?",
+    "level": "L1",
+    "tags": [
+      "IQ300",
+      "java"
+    ],
+    "short": "Triggers Bean Validation (JSR 380) on the annotated method parameter (typically a \\@RequestBody\\ DTO), checking all its constraint annotations. If validation fails and there's no adjacent \\BindingResult\\, Spring throws a \\MethodArgumentNotV",
+    "answer": "Triggers Bean Validation (JSR 380) on the annotated method parameter (typically a \\<code>@RequestBody\\</code> DTO), checking all its constraint annotations. If validation fails and there's no adjacent \\<code>BindingResult\\</code>, Spring throws a \\<code>MethodArgumentNotValidException\\</code>, which can be handled globally to return a structured 400 response.",
+    "code": "",
+    "followups": [],
+    "mistakes": [],
+    "interview": "Triggers Bean Validation (JSR 380) on the annotated method parameter (typically a \\@RequestBody\\ DTO), checking all its constraint annotations. If validation fails and there's no adjacent \\BindingResult\\, Spring throws a \\MethodArgumentNotValidException\\, which can be handled globally to return a structured 400 respons",
+    "source": "IQ300",
+    "topic": "springboot"
+  },
+  {
+    "id": "iq-102",
+    "title": "What is `BindingResult`?",
+    "level": "L1",
+    "tags": [
+      "IQ300",
+      "java"
+    ],
+    "short": "An object that, when declared immediately after a \\@Valid\\-annotated parameter in a controller method, captures validation errors instead of Spring throwing an exception — letting the method inspect \\bindingResult.hasErrors()\\ and handle th",
+    "answer": "An object that, when declared immediately after a \\<code>@Valid\\</code>-annotated parameter in a controller method, captures validation errors instead of Spring throwing an exception — letting the method inspect \\<code>bindingResult.hasErrors()\\</code> and handle them programmatically within that method rather than via a global handler.",
+    "code": "",
+    "followups": [],
+    "mistakes": [],
+    "interview": "An object that, when declared immediately after a \\@Valid\\-annotated parameter in a controller method, captures validation errors instead of Spring throwing an exception — letting the method inspect \\bindingResult.hasErrors()\\ and handle them programmatically within that method rather than via a global handler.",
+    "source": "IQ300",
+    "topic": "springboot"
+  },
+  {
+    "id": "iq-103",
+    "title": "How do you implement global exception handling?",
+    "level": "L1",
+    "tags": [
+      "IQ300",
+      "java"
+    ],
+    "short": "Create a class annotated \\@ControllerAdvice\\ (or \\@RestControllerAdvice\\) containing methods annotated \\@ExceptionHandler(SomeException.class)\\, each returning a consistent error response (often a \\ResponseEntity\\) for that exception type a",
+    "answer": "Create a class annotated \\<code>@ControllerAdvice\\</code> (or \\<code>@RestControllerAdvice\\</code>) containing methods annotated \\<code>@ExceptionHandler(SomeException.class)\\</code>, each returning a consistent error response (often a \\<code>ResponseEntity<ErrorResponse>\\</code>) for that exception type across the whole application, instead of duplicating try/catch in every controller.",
+    "code": "",
+    "followups": [],
+    "mistakes": [],
+    "interview": "Create a class annotated \\@ControllerAdvice\\ (or \\@RestControllerAdvice\\) containing methods annotated \\@ExceptionHandler(SomeException.class)\\, each returning a consistent error response (often a \\ResponseEntity\\) for that exception type across the whole application, instead of duplicating try/catch in every controlle",
+    "source": "IQ300",
+    "topic": "springboot"
+  },
+  {
+    "id": "iq-104",
+    "title": "What is `@ControllerAdvice`?",
+    "level": "L1",
+    "tags": [
+      "IQ300",
+      "springboot"
+    ],
+    "short": "A specialization of \\@Component\\ that lets a single class provide cross-cutting behavior — exception handling, model attributes, or data binding — applied globally across all (or a targeted subset of) controllers, keeping error-handling log",
+    "answer": "A specialization of \\<code>@Component\\</code> that lets a single class provide cross-cutting behavior — exception handling, model attributes, or data binding — applied globally across all (or a targeted subset of) controllers, keeping error-handling logic centralized rather than repeated.",
+    "code": "",
+    "followups": [],
+    "mistakes": [],
+    "interview": "A specialization of \\@Component\\ that lets a single class provide cross-cutting behavior — exception handling, model attributes, or data binding — applied globally across all (or a targeted subset of) controllers, keeping error-handling logic centralized rather than repeated.",
+    "source": "IQ300",
+    "topic": "springboot"
+  },
+  {
+    "id": "iq-105",
+    "title": "What is `@ExceptionHandler`?",
+    "level": "L1",
+    "tags": [
+      "IQ300",
+      "java"
+    ],
+    "short": "Marks a method (in a controller or a \\@ControllerAdvice\\ class) as the handler for a specific exception type thrown during request processing, letting you return a custom, structured response (status code, error body) instead of a default s",
+    "answer": "Marks a method (in a controller or a \\<code>@ControllerAdvice\\</code> class) as the handler for a specific exception type thrown during request processing, letting you return a custom, structured response (status code, error body) instead of a default stack-trace or generic 500 error.",
+    "code": "",
+    "followups": [],
+    "mistakes": [],
+    "interview": "Marks a method (in a controller or a \\@ControllerAdvice\\ class) as the handler for a specific exception type thrown during request processing, letting you return a custom, structured response (status code, error body) instead of a default stack-trace or generic 500 error.",
+    "source": "IQ300",
+    "topic": "springboot"
+  },
+  {
+    "id": "iq-106",
+    "title": "How do you return custom error responses?",
+    "level": "L1",
+    "tags": [
+      "IQ300",
+      "java"
+    ],
+    "short": "Define a consistent error DTO (e.g. containing timestamp, status, message, path), build it inside \\@ExceptionHandler\\ methods in a \\@ControllerAdvice\\, and return it wrapped in a \\ResponseEntity\\ with the appropriate HTTP status code, so al",
+    "answer": "Define a consistent error DTO (e.g. containing timestamp, status, message, path), build it inside \\<code>@ExceptionHandler\\</code> methods in a \\<code>@ControllerAdvice\\</code>, and return it wrapped in a \\<code>ResponseEntity\\</code> with the appropriate HTTP status code, so all API errors follow the same predictable shape for clients.",
+    "code": "",
+    "followups": [],
+    "mistakes": [],
+    "interview": "Define a consistent error DTO (e.g. containing timestamp, status, message, path), build it inside \\@ExceptionHandler\\ methods in a \\@ControllerAdvice\\, and return it wrapped in a \\ResponseEntity\\ with the appropriate HTTP status code, so all API errors follow the same predictable shape for clients.",
+    "source": "IQ300",
+    "topic": "springboot"
+  },
+  {
+    "id": "iq-107",
+    "title": "What is Spring Boot Actuator?",
+    "level": "L1",
+    "tags": [
+      "IQ300",
+      "springboot"
+    ],
+    "short": "A production-readiness module exposing operational endpoints over HTTP/JMX — health checks, metrics, environment info, thread dumps, and more — for monitoring and managing a running application without adding custom code for each concern. E",
+    "answer": "A production-readiness module exposing operational endpoints over HTTP/JMX — health checks, metrics, environment info, thread dumps, and more — for monitoring and managing a running application without adding custom code for each concern. Endpoints are added via \\<code>spring-boot-starter-actuator\\</code> and selectively exposed via configuration.",
+    "code": "",
+    "followups": [],
+    "mistakes": [],
+    "interview": "A production-readiness module exposing operational endpoints over HTTP/JMX — health checks, metrics, environment info, thread dumps, and more — for monitoring and managing a running application without adding custom code for each concern. Endpoints are added via \\spring-boot-starter-actuator\\ and selectively exposed vi",
+    "source": "IQ300",
+    "topic": "springboot"
+  },
+  {
+    "id": "iq-108",
+    "title": "What actuator endpoints have you used?",
+    "level": "L1",
+    "tags": [
+      "IQ300",
+      "java"
+    ],
+    "short": "Commonly: \\/actuator/health\\ (liveness/readiness for load balancers and orchestrators), \\/actuator/metrics\\ (JVM, HTTP, custom metrics, often scraped by Prometheus), \\/actuator/info\\ (build/version metadata), \\/actuator/env\\ (active configu",
+    "answer": "Commonly: \\<code>/actuator/health\\</code> (liveness/readiness for load balancers and orchestrators), \\<code>/actuator/metrics\\</code> (JVM, HTTP, custom metrics, often scraped by Prometheus), \\<code>/actuator/info\\</code> (build/version metadata), \\<code>/actuator/env\\</code> (active configuration), and \\<code>/actuator/loggers\\</code> (view/change log levels at runtime).",
+    "code": "",
+    "followups": [],
+    "mistakes": [],
+    "interview": "Commonly: \\/actuator/health\\ (liveness/readiness for load balancers and orchestrators), \\/actuator/metrics\\ (JVM, HTTP, custom metrics, often scraped by Prometheus), \\/actuator/info\\ (build/version metadata), \\/actuator/env\\ (active configuration), and \\/actuator/loggers\\ (view/change log levels at runtime).",
+    "source": "IQ300",
+    "topic": "springboot"
+  },
+  {
+    "id": "iq-109",
+    "title": "How do you enable health checks?",
+    "level": "L1",
+    "tags": [
+      "IQ300",
+      "java"
+    ],
+    "short": "Add \\spring-boot-starter-actuator\\, expose the health endpoint via \\management.endpoints.web.exposure.include=health\\, and optionally add detail with \\management.endpoint.health.show-details=always\\. Custom checks (e.g. a downstream depende",
+    "answer": "Add \\<code>spring-boot-starter-actuator\\</code>, expose the health endpoint via \\<code>management.endpoints.web.exposure.include=health\\</code>, and optionally add detail with \\<code>management.endpoint.health.show-details=always\\</code>. Custom checks (e.g. a downstream dependency) are added by implementing a \\<code>HealthIndicator\\</code> bean that contributes to the aggregate health status.",
+    "code": "",
+    "followups": [],
+    "mistakes": [],
+    "interview": "Add \\spring-boot-starter-actuator\\, expose the health endpoint via \\management.endpoints.web.exposure.include=health\\, and optionally add detail with \\management.endpoint.health.show-details=always\\. Custom checks (e.g. a downstream dependency) are added by implementing a \\HealthIndicator\\ bean that contributes to the ",
+    "source": "IQ300",
+    "topic": "springboot"
+  },
+  {
+    "id": "iq-110",
+    "title": "What is Spring Boot DevTools?",
+    "level": "L1",
+    "tags": [
+      "IQ300",
+      "springboot"
+    ],
+    "short": "A development-time dependency that improves the local dev loop: automatic application restart when classpath files change, live reload of browser resources, sensible dev-only default property overrides, and disabling of caching — none of it",
+    "answer": "A development-time dependency that improves the local dev loop: automatic application restart when classpath files change, live reload of browser resources, sensible dev-only default property overrides, and disabling of caching — none of it active in a production-packaged jar.",
+    "code": "",
+    "followups": [],
+    "mistakes": [],
+    "interview": "A development-time dependency that improves the local dev loop: automatic application restart when classpath files change, live reload of browser resources, sensible dev-only default property overrides, and disabling of caching — none of it active in a production-packaged jar.",
+    "source": "IQ300",
+    "topic": "springboot"
+  },
+  {
+    "id": "iq-111",
+    "title": "How do you externalize configuration?",
+    "level": "L1",
+    "tags": [
+      "IQ300",
+      "java"
+    ],
+    "short": "Keep environment-specific values out of code and in external sources: property files, environment variables, command-line args, profile-specific files, or a config server (Spring Cloud Config). Spring Boot resolves these in a defined preced",
+    "answer": "Keep environment-specific values out of code and in external sources: property files, environment variables, command-line args, profile-specific files, or a config server (Spring Cloud Config). Spring Boot resolves these in a defined precedence order, letting the same artifact run correctly across dev/test/prod with only its external config changing.",
+    "code": "",
+    "followups": [],
+    "mistakes": [],
+    "interview": "Keep environment-specific values out of code and in external sources: property files, environment variables, command-line args, profile-specific files, or a config server (Spring Cloud Config). Spring Boot resolves these in a defined precedence order, letting the same artifact run correctly across dev/test/prod with on",
+    "source": "IQ300",
+    "topic": "springboot"
+  },
+  {
+    "id": "iq-112",
+    "title": "How do you read environment variables?",
+    "level": "L1",
+    "tags": [
+      "IQ300",
+      "java"
+    ],
+    "short": "Spring Boot automatically exposes OS environment variables as properties (relaxed binding converts \\MY\\_VAR\\ to \\my.var\\), so they can be injected with \\@Value(\"\\\\${my.var}\")\\ or bound via \\@ConfigurationProperties\\, or read directly via \\S",
+    "answer": "Spring Boot automatically exposes OS environment variables as properties (relaxed binding converts \\<code>MY\\_VAR\\</code> to \\<code>my.var\\</code>), so they can be injected with \\<code>@Value(\"\\\\${my.var}\")\\</code> or bound via \\<code>@ConfigurationProperties\\</code>, or read directly via \\<code>System.getenv()\\</code>/the injected \\<code>Environment\\</code> bean.",
+    "code": "",
+    "followups": [],
+    "mistakes": [],
+    "interview": "Spring Boot automatically exposes OS environment variables as properties (relaxed binding converts \\MY\\_VAR\\ to \\my.var\\), so they can be injected with \\@Value(\"\\\\${my.var}\")\\ or bound via \\@ConfigurationProperties\\, or read directly via \\System.getenv()\\/the injected \\Environment\\ bean.",
+    "source": "IQ300",
+    "topic": "springboot"
+  },
+  {
+    "id": "iq-113",
+    "title": "How do you upload files in Spring Boot?",
+    "level": "L1",
+    "tags": [
+      "IQ300",
+      "springboot"
+    ],
+    "short": "Accept a \\MultipartFile\\ parameter in a controller method (with \\@RequestParam(\"file\")\\) for a \\multipart/form-data\\ request; Spring's \\MultipartResolver\\ handles the parsing. From there you read bytes/stream from the \\MultipartFile\\ and sa",
+    "answer": "Accept a \\<code>MultipartFile\\</code> parameter in a controller method (with \\<code>@RequestParam(\"file\")\\</code>) for a \\<code>multipart/form-data\\</code> request; Spring's \\<code>MultipartResolver\\</code> handles the parsing. From there you read bytes/stream from the \\<code>MultipartFile\\</code> and save to disk, a database, or object storage (e.g. S3).",
+    "code": "",
+    "followups": [],
+    "mistakes": [],
+    "interview": "Accept a \\MultipartFile\\ parameter in a controller method (with \\@RequestParam(\"file\")\\) for a \\multipart/form-data\\ request; Spring's \\MultipartResolver\\ handles the parsing. From there you read bytes/stream from the \\MultipartFile\\ and save to disk, a database, or object storage (e.g. S3).",
+    "source": "IQ300",
+    "topic": "springboot"
+  },
+  {
+    "id": "iq-114",
+    "title": "How do you consume REST APIs?",
+    "level": "L1",
+    "tags": [
+      "IQ300",
+      "java"
+    ],
+    "short": "Historically with \\RestTemplate\\ (synchronous, blocking, now in maintenance mode) or, in modern Spring, with \\WebClient\\ (reactive, non-blocking, part of Spring WebFlux but usable in any app) or the newer declarative \\HTTP Interface\\ client",
+    "answer": "Historically with \\<code>RestTemplate\\</code> (synchronous, blocking, now in maintenance mode) or, in modern Spring, with \\<code>WebClient\\</code> (reactive, non-blocking, part of Spring WebFlux but usable in any app) or the newer declarative \\<code>HTTP Interface\\</code> clients. You configure base URL, headers, and error handling, then call methods like \\<code>get()\\</code>/\\<code>post()\\</code> with request/response mapping.",
+    "code": "",
+    "followups": [],
+    "mistakes": [],
+    "interview": "Historically with \\RestTemplate\\ (synchronous, blocking, now in maintenance mode) or, in modern Spring, with \\WebClient\\ (reactive, non-blocking, part of Spring WebFlux but usable in any app) or the newer declarative \\HTTP Interface\\ clients. You configure base URL, headers, and error handling, then call methods like \\",
+    "source": "IQ300",
+    "topic": "springboot"
+  },
+  {
+    "id": "iq-115",
+    "title": "Difference between `RestTemplate` and `WebClient`.",
+    "level": "L1",
+    "tags": [
+      "IQ300",
+      "java"
+    ],
+    "short": "\\RestTemplate\\ is synchronous and blocking — each call ties up a thread until the response returns — and is now in maintenance mode with Spring recommending migration away from it. \\WebClient\\ is reactive and non-blocking, built on Project ",
+    "answer": "\\<code>RestTemplate\\</code> is synchronous and blocking — each call ties up a thread until the response returns — and is now in maintenance mode with Spring recommending migration away from it. \\<code>WebClient\\</code> is reactive and non-blocking, built on Project Reactor, supporting both blocking (\\<code>.block()\\</code>) and fully asynchronous/streaming usage, and scales much better under high concurrent load since threads aren't held waiting on I/O.",
+    "code": "",
+    "followups": [],
+    "mistakes": [],
+    "interview": "\\RestTemplate\\ is synchronous and blocking — each call ties up a thread until the response returns — and is now in maintenance mode with Spring recommending migration away from it. \\WebClient\\ is reactive and non-blocking, built on Project Reactor, supporting both blocking (\\.block()\\) and fully asynchronous/streaming ",
+    "source": "IQ300",
+    "topic": "springboot"
+  },
+  {
+    "id": "iq-116",
+    "title": "What is `ResponseEntity`?",
+    "level": "L1",
+    "tags": [
+      "IQ300",
+      "java"
+    ],
+    "short": "A wrapper representing a full HTTP response — status code, headers, and body — giving controller methods fine-grained control over what's returned (e.g. \\ResponseEntity.status(201).header(...).body(dto)\\) rather than just returning a plain ",
+    "answer": "A wrapper representing a full HTTP response — status code, headers, and body — giving controller methods fine-grained control over what's returned (e.g. \\<code>ResponseEntity.status(201).header(...).body(dto)\\</code>) rather than just returning a plain object that always maps to 200 OK.",
+    "code": "",
+    "followups": [],
+    "mistakes": [],
+    "interview": "A wrapper representing a full HTTP response — status code, headers, and body — giving controller methods fine-grained control over what's returned (e.g. \\ResponseEntity.status(201).header(...).body(dto)\\) rather than just returning a plain object that always maps to 200 OK.",
+    "source": "IQ300",
+    "topic": "springboot"
+  },
+  {
+    "id": "iq-117",
+    "title": "How do you implement pagination?",
+    "level": "L1",
+    "tags": [
+      "IQ300",
+      "java"
+    ],
+    "short": "With Spring Data JPA, extend \\PagingAndSortingRepository\\ or use a \\Pageable\\ parameter on repository/query methods; Spring translates it into \\LIMIT\\/\\OFFSET\\ SQL and returns a \\Page\\ containing content plus metadata (total elements, total",
+    "answer": "With Spring Data JPA, extend \\<code>PagingAndSortingRepository\\</code> or use a \\<code>Pageable\\</code> parameter on repository/query methods; Spring translates it into \\<code>LIMIT\\</code>/\\<code>OFFSET\\</code> SQL and returns a \\<code>Page<T>\\</code> containing content plus metadata (total elements, total pages, current page). Controllers typically accept page/size as request parameters bound automatically to a \\<code>Pageable\\</code>.",
+    "code": "",
+    "followups": [],
+    "mistakes": [],
+    "interview": "With Spring Data JPA, extend \\PagingAndSortingRepository\\ or use a \\Pageable\\ parameter on repository/query methods; Spring translates it into \\LIMIT\\/\\OFFSET\\ SQL and returns a \\Page\\ containing content plus metadata (total elements, total pages, current page). Controllers typically accept page/size as request paramet",
+    "source": "IQ300",
+    "topic": "springboot"
+  },
+  {
+    "id": "iq-118",
+    "title": "How do you implement sorting?",
+    "level": "L1",
+    "tags": [
+      "IQ300",
+      "java"
+    ],
+    "short": "Pass a \\Sort\\ object (or bundle it into a \\Pageable\\) specifying property names and direction, e.g. \\Sort.by(\"createdAt\").descending()\\; Spring Data JPA translates it into an \\ORDER BY\\ clause. For REST APIs, this is often exposed via a \\so",
+    "answer": "Pass a \\<code>Sort\\</code> object (or bundle it into a \\<code>Pageable\\</code>) specifying property names and direction, e.g. \\<code>Sort.by(\"createdAt\").descending()\\</code>; Spring Data JPA translates it into an \\<code>ORDER BY\\</code> clause. For REST APIs, this is often exposed via a \\<code>sort=field,direction\\</code> query parameter.",
+    "code": "",
+    "followups": [],
+    "mistakes": [],
+    "interview": "Pass a \\Sort\\ object (or bundle it into a \\Pageable\\) specifying property names and direction, e.g. \\Sort.by(\"createdAt\").descending()\\; Spring Data JPA translates it into an \\ORDER BY\\ clause. For REST APIs, this is often exposed via a \\sort=field,direction\\ query parameter.",
+    "source": "IQ300",
+    "topic": "springboot"
+  },
+  {
+    "id": "iq-121",
+    "title": "How does JWT authentication work?",
+    "level": "L1",
+    "tags": [
+      "IQ300",
+      "security"
+    ],
+    "short": "On login, the server validates credentials and issues a signed JSON Web Token containing claims (user id, roles, expiry) and a signature. The client sends this token in the \\Authorization: Bearer \\ header on subsequent requests; the server ",
+    "answer": "On login, the server validates credentials and issues a signed JSON Web Token containing claims (user id, roles, expiry) and a signature. The client sends this token in the \\<code>Authorization: Bearer <token>\\</code> header on subsequent requests; the server verifies the signature and expiry (no database/session lookup needed) to authenticate the request, making JWT auth stateless and easy to scale horizontally.",
+    "code": "",
+    "followups": [],
+    "mistakes": [],
+    "interview": "On login, the server validates credentials and issues a signed JSON Web Token containing claims (user id, roles, expiry) and a signature. The client sends this token in the \\Authorization: Bearer \\ header on subsequent requests; the server verifies the signature and expiry (no database/session lookup needed) to authent",
+    "source": "IQ300",
+    "topic": "springboot"
+  },
+  {
+    "id": "iq-122",
+    "title": "What is OAuth2?",
+    "level": "L1",
+    "tags": [
+      "IQ300",
+      "security"
+    ],
+    "short": "An authorization framework that lets a client obtain limited access to a resource on behalf of a user without handling the user's credentials directly, via an authorization server issuing access tokens. It defines several grant types (autho",
+    "answer": "An authorization framework that lets a client obtain limited access to a resource on behalf of a user without handling the user's credentials directly, via an authorization server issuing access tokens. It defines several grant types (authorization code, client credentials, etc.) for different scenarios like web apps, mobile apps, and service-to-service calls.",
+    "code": "",
+    "followups": [],
+    "mistakes": [],
+    "interview": "An authorization framework that lets a client obtain limited access to a resource on behalf of a user without handling the user's credentials directly, via an authorization server issuing access tokens. It defines several grant types (authorization code, client credentials, etc.) for different scenarios like web apps, ",
+    "source": "IQ300",
+    "topic": "springboot"
+  },
+  {
+    "id": "iq-123",
+    "title": "Difference between authentication and authorization.",
+    "level": "L1",
+    "tags": [
+      "IQ300",
+      "security"
+    ],
+    "short": "Authentication verifies who you are (validating credentials — login). Authorization determines what you're allowed to do once identified (checking permissions/roles against a requested resource or action). Authentication always happens firs",
+    "answer": "Authentication verifies who you are (validating credentials — login). Authorization determines what you're allowed to do once identified (checking permissions/roles against a requested resource or action). Authentication always happens first; authorization decisions depend on its outcome.",
+    "code": "",
+    "followups": [],
+    "mistakes": [],
+    "interview": "Authentication verifies who you are (validating credentials — login). Authorization determines what you're allowed to do once identified (checking permissions/roles against a requested resource or action). Authentication always happens first; authorization decisions depend on its outcome.",
+    "source": "IQ300",
+    "topic": "springboot"
+  },
+  {
+    "id": "iq-276",
+    "title": "Explain a REST API you built at TCS.",
+    "level": "L1",
+    "tags": [
+      "IQ300",
+      "java"
+    ],
+    "short": "Frame this around a specific project: describe the business purpose, the resource(s) exposed (e.g. trade or payment records), the HTTP methods and endpoints designed, how requests were validated and errors handled consistently, how the API ",
+    "answer": "Frame this around a specific project: describe the business purpose, the resource(s) exposed (e.g. trade or payment records), the HTTP methods and endpoints designed, how requests were validated and errors handled consistently, how the API was secured, and how it was tested and documented — tailor the specifics to your actual TCS project.",
+    "code": "",
+    "followups": [],
+    "mistakes": [],
+    "interview": "Frame this around a specific project: describe the business purpose, the resource(s) exposed (e.g. trade or payment records), the HTTP methods and endpoints designed, how requests were validated and errors handled consistently, how the API was secured, and how it was tested and documented — tailor the specifics to your",
+    "source": "IQ300",
+    "topic": "springboot"
+  },
+  {
+    "id": "iq-296",
+    "title": "What happens internally when a Spring Boot application starts?",
+    "level": "L2",
+    "tags": [
+      "IQ300",
+      "springboot"
+    ],
+    "short": "The \\main()\\ method calls \\SpringApplication.run()\\, which creates an \\ApplicationContext\\, determines the application type (servlet/reactive/none), loads and processes auto-configuration classes and \\@ComponentScan\\-discovered beans, appli",
+    "answer": "The \\<code>main()\\</code> method calls \\<code>SpringApplication.run()\\</code>, which creates an \\<code>ApplicationContext\\</code>, determines the application type (servlet/reactive/none), loads and processes auto-configuration classes and \\<code>@ComponentScan\\</code>-discovered beans, applies \\<code>BeanFactoryPostProcessor\\</code>s and \\<code>BeanPostProcessor\\</code>s, instantiates and wires all singleton beans (resolving dependency injection), starts the embedded web server if applicable, and finally publishes an \\<code>ApplicationReadyEvent\\</code>.",
+    "code": "",
+    "followups": [],
+    "mistakes": [],
+    "interview": "The \\main()\\ method calls \\SpringApplication.run()\\, which creates an \\ApplicationContext\\, determines the application type (servlet/reactive/none), loads and processes auto-configuration classes and \\@ComponentScan\\-discovered beans, applies \\BeanFactoryPostProcessor\\s and \\BeanPostProcessor\\s, instantiates and wires ",
+    "source": "IQ300",
+    "topic": "springboot"
+  },
+  {
+    "id": "iq-297",
+    "title": "What happens internally when a REST request reaches your service?",
+    "level": "L2",
+    "tags": [
+      "IQ300",
+      "java"
+    ],
+    "short": "The embedded server (Tomcat) accepts the TCP connection and hands the request to the servlet container, which routes it through Spring's \\DispatcherServlet\\ — the central front controller. It consults \\HandlerMapping\\ to find the matching c",
+    "answer": "The embedded server (Tomcat) accepts the TCP connection and hands the request to the servlet container, which routes it through Spring's \\<code>DispatcherServlet\\</code> — the central front controller. It consults \\<code>HandlerMapping\\</code> to find the matching controller method, runs any configured filters/interceptors (auth, logging), invokes the handler after resolving arguments (\\<code>@RequestBody\\</code>, \\<code>@PathVariable\\</code>), and then a \\<code>HttpMessageConverter\\</code> serializes the return value (e.g. to JSON) into the response.",
+    "code": "",
+    "followups": [],
+    "mistakes": [],
+    "interview": "The embedded server (Tomcat) accepts the TCP connection and hands the request to the servlet container, which routes it through Spring's \\DispatcherServlet\\ — the central front controller. It consults \\HandlerMapping\\ to find the matching controller method, runs any configured filters/interceptors (auth, logging), invo",
+    "source": "IQ300",
+    "topic": "springboot"
+  },
+  {
+    "id": "iq-298",
+    "title": "Explain the complete request lifecycle in Spring Boot.",
+    "level": "L1",
+    "tags": [
+      "IQ300",
+      "springboot"
+    ],
+    "short": "Request arrives at the embedded server → passes through the servlet filter chain (e.g. Spring Security filters, CORS, logging) → \\DispatcherServlet\\ resolves the matching handler via \\HandlerMapping\\ → any \\HandlerInterceptor\\s run pre-hand",
+    "answer": "Request arrives at the embedded server → passes through the servlet filter chain (e.g. Spring Security filters, CORS, logging) → \\<code>DispatcherServlet\\</code> resolves the matching handler via \\<code>HandlerMapping\\</code> → any \\<code>HandlerInterceptor\\</code>s run pre-handle → the controller method executes (with argument resolution and validation) → the return value is converted to the response body via message converters → interceptors run post-handle → the response is sent, with any exceptions along the way routed to an \\<code>@ExceptionHandler\\</code>.",
+    "code": "",
+    "followups": [],
+    "mistakes": [],
+    "interview": "Request arrives at the embedded server → passes through the servlet filter chain (e.g. Spring Security filters, CORS, logging) → \\DispatcherServlet\\ resolves the matching handler via \\HandlerMapping\\ → any \\HandlerInterceptor\\s run pre-handle → the controller method executes (with argument resolution and validation) → ",
+    "source": "IQ300",
+    "topic": "springboot"
+  },
+  {
+    "topic": "springboot",
+    "level": "L2",
+    "title": "How does Spring Boot auto-configuration work?",
+    "tags": [
+      "Spring Boot",
+      "Auto Configuration"
+    ],
+    "short": "Boot configures beans based on the classpath, properties and existing beans, using conditional configuration.",
+    "answer": "Auto-configuration classes are discovered by Boot and use conditions such as @ConditionalOnClass, @ConditionalOnMissingBean and property conditions. User-defined beans can override many defaults because conditions back off when an application already provides a bean.",
+    "code": "@Bean\n@ConditionalOnMissingBean\nMyService myService() { return new MyService(); }",
+    "followups": [
+      "How can you see why an auto-configuration matched?",
+      "How do starters relate to auto-configuration?"
+    ],
+    "mistakes": [
+      "Saying Spring Boot scans every possible library and creates every bean.",
+      "Assuming auto-configuration cannot be overridden."
+    ],
+    "interview": "Spring Boot auto-configuration uses conditional bean definitions to provide sensible defaults based on the application environment and classpath.",
+    "source": "V9",
+    "id": "v9-012"
+  },
+  {
+    "topic": "springboot",
+    "level": "L2",
+    "title": "Explain the Spring bean lifecycle.",
+    "tags": [
+      "Spring",
+      "Beans"
+    ],
+    "short": "A bean is instantiated, dependencies are injected, lifecycle callbacks run, and later destruction callbacks execute when the context closes.",
+    "answer": "The lifecycle includes instantiation, dependency population, aware callbacks where applicable, BeanPostProcessor hooks, initialization callbacks such as @PostConstruct, and destruction callbacks such as @PreDestroy for managed singleton beans.",
+    "code": "@Component\nclass Client {\n    @PostConstruct\n    void init() { /* initialize */ }\n\n    @PreDestroy\n    void close() { /* cleanup */ }\n}",
+    "followups": [
+      "Where does BeanPostProcessor fit?",
+      "Does @PreDestroy run for prototype beans?"
+    ],
+    "mistakes": [
+      "Reducing the lifecycle to constructor plus @PostConstruct only.",
+      "Expecting every manually created object to receive Spring lifecycle callbacks."
+    ],
+    "interview": "Spring manages a bean through creation, dependency injection, post-processing, initialization and destruction. Lifecycle callbacks apply to objects managed by the container.",
+    "source": "V9",
+    "id": "v9-013"
+  },
+  {
+    "topic": "springboot",
+    "level": "L2",
+    "title": "What is the difference between @Value and @ConfigurationProperties?",
+    "tags": [
+      "Configuration",
+      "Properties"
+    ],
+    "short": "@Value is convenient for individual values; @ConfigurationProperties is better for grouped, type-safe configuration.",
+    "answer": "@Value injects individual property expressions. @ConfigurationProperties binds a related property namespace to a typed object, supports validation and is easier to maintain as configuration grows.",
+    "code": "@ConfigurationProperties(prefix = \"app.payment\")\npublic record PaymentProperties(String baseUrl, Duration timeout) {}",
+    "followups": [
+      "How do you validate configuration properties?",
+      "How are environment variables mapped to properties?"
+    ],
+    "mistakes": [
+      "Using dozens of @Value fields for a large configuration object.",
+      "Ignoring startup validation for required configuration."
+    ],
+    "interview": "For a few simple values @Value is fine. For structured application configuration I prefer @ConfigurationProperties because it is typed, grouped and easier to validate.",
+    "source": "V9",
+    "id": "v9-014"
+  },
+  {
+    "topic": "springboot",
+    "level": "L2",
+    "title": "What is Spring Boot Actuator used for?",
+    "tags": [
+      "Production",
+      "Actuator",
+      "Observability"
+    ],
+    "short": "Actuator exposes operational endpoints such as health, metrics and application information.",
+    "answer": "Actuator integrates operational information into the application. Endpoints can be exposed and secured selectively, and metrics can be connected to monitoring systems. Sensitive endpoints should never be exposed publicly without appropriate security.",
+    "code": "management.endpoints.web.exposure.include=health,info,metrics\nmanagement.endpoint.health.show-details=when_authorized",
+    "followups": [
+      "Which actuator endpoints are useful in production?",
+      "How would you secure them?"
+    ],
+    "mistakes": [
+      "Exposing all endpoints to the public internet.",
+      "Treating health as proof that every dependency is healthy."
+    ],
+    "interview": "Actuator provides operational visibility. In production I expose only required endpoints and protect sensitive data and management operations.",
+    "source": "V9",
+    "id": "v9-015"
+  },
+  {
+    "topic": "springboot",
+    "level": "L2",
+    "title": "How do profiles work in Spring Boot?",
+    "tags": [
+      "Configuration",
+      "Profiles"
+    ],
+    "short": "Profiles allow environment-specific beans and configuration to be activated selectively.",
+    "answer": "You can define application-dev.yml and application-prod.yml and activate one profile at runtime. @Profile can also conditionally register beans. This keeps environment differences outside application code where possible.",
+    "code": "spring.profiles.active=dev\n\n@Profile(\"dev\")\n@Bean\nDataSource localDataSource() { return ...; }",
+    "followups": [
+      "How do you activate profiles in containers?",
+      "What is profile-specific configuration precedence?"
+    ],
+    "mistakes": [
+      "Hard-coding production credentials in profile files.",
+      "Assuming profiles are a security boundary."
+    ],
+    "interview": "Profiles select environment-specific configuration and beans. They help deployment configuration differ without changing business code, but secrets still belong in a proper secret-management system.",
+    "source": "V9",
+    "id": "v9-016"
+  },
+  {
+    "topic": "springboot",
+    "level": "L2",
+    "title": "How does @ControllerAdvice work?",
+    "tags": [
+      "REST",
+      "Exception Handling"
+    ],
+    "short": "It provides centralized controller exception handling across controllers.",
+    "answer": "@ControllerAdvice applies exception handlers globally, while @RestControllerAdvice combines it with response-body behavior. A handler can map domain or validation exceptions to consistent HTTP responses.",
+    "code": "@RestControllerAdvice\nclass ApiErrors {\n    @ExceptionHandler(NotFoundException.class)\n    ResponseEntity<ErrorResponse> handle(NotFoundException ex) {\n        return ResponseEntity.status(404).body(new ErrorResponse(ex.getMessage()));\n    }\n}",
+    "followups": [
+      "How do you handle validation errors?",
+      "What if two handlers can match the same exception?"
+    ],
+    "mistakes": [
+      "Returning stack traces to clients.",
+      "Putting business logic inside the exception handler."
+    ],
+    "interview": "Controller advice centralizes API error translation so controllers stay focused on request handling and clients receive consistent error responses.",
+    "source": "V9",
+    "id": "v9-017"
+  },
+  {
+    "topic": "springboot",
+    "level": "L2",
+    "title": "What is the difference between PUT and PATCH?",
+    "tags": [
+      "REST",
+      "HTTP"
+    ],
+    "short": "PUT generally replaces a resource representation; PATCH applies a partial modification.",
+    "answer": "PUT is commonly designed as an idempotent replacement operation, although exact semantics depend on the API. PATCH communicates partial changes. The API should define validation and null/omission semantics clearly.",
+    "code": "PUT /users/42\n{ \"name\": \"A\", \"email\": \"a@example.com\" }\n\nPATCH /users/42\n{ \"email\": \"new@example.com\" }",
+    "followups": [
+      "Is PATCH always non-idempotent?",
+      "How do you implement optimistic concurrency for updates?"
+    ],
+    "mistakes": [
+      "Saying PUT always means database update and PATCH always means one field.",
+      "Ignoring idempotency and concurrency semantics."
+    ],
+    "interview": "PUT represents replacement semantics, while PATCH represents partial modification. I also define idempotency and concurrency behavior explicitly in the API contract.",
+    "source": "V9",
+    "id": "v9-018"
+  },
+  {
+    "topic": "springboot",
+    "level": "L3",
+    "title": "How would you diagnose a slow Spring Boot endpoint?",
+    "tags": [
+      "Production",
+      "Performance"
+    ],
+    "short": "Start with measurements across request handling, database, downstream calls, thread pools and serialization.",
+    "answer": "I would correlate the request with logs and traces, inspect latency percentiles and identify whether time is spent in application code, SQL, remote calls, thread-pool queues or GC. Then I would reproduce the bottleneck and change one variable at a time.",
+    "code": "Timer.Sample sample = Timer.start(meterRegistry);\ntry {\n    return service.execute();\n} finally {\n    sample.stop(timer);\n}",
+    "followups": [
+      "Which metrics would you inspect first?",
+      "How would tracing help?",
+      "How do you distinguish CPU from I/O latency?"
+    ],
+    "mistakes": [
+      "Optimizing code before measuring.",
+      "Looking only at average latency instead of percentiles."
+    ],
+    "interview": "I first measure the endpoint end to end, then break latency down using metrics, logs, traces and SQL timings. The fix depends on the bottleneck rather than assumptions.",
+    "source": "V9",
+    "id": "v9-019"
+  },
+  {
+    "topic": "springboot",
+    "level": "L2",
+    "title": "What is Spring application event publishing?",
+    "tags": [
+      "Spring",
+      "Events"
+    ],
+    "short": "Spring events let components publish an application-level event and other beans react to it.",
+    "answer": "ApplicationEventPublisher sends an event to registered listeners. By default listeners execute synchronously in the publishing thread. @TransactionalEventListener can align handling with transaction phases such as AFTER_COMMIT.",
+    "code": "publisher.publishEvent(new OrderCreatedEvent(orderId));\n\n@TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)\nvoid sendNotification(OrderCreatedEvent event) { /* ... */ }",
+    "followups": [
+      "When would you use AFTER_COMMIT?",
+      "How do asynchronous listeners change failure handling?"
+    ],
+    "mistakes": [
+      "Assuming events are automatically durable like Kafka messages.",
+      "Publishing an event and expecting it to survive process failure."
+    ],
+    "interview": "Spring application events are in-process notifications, not a durable messaging system. For cross-service reliability I would use a broker and an appropriate delivery pattern.",
+    "source": "V9",
+    "id": "v9-020"
+  },
+  {
+    "topic": "springboot",
+    "level": "L2",
+    "title": "How does @Async work?",
+    "tags": [
+      "Concurrency",
+      "Spring"
+    ],
+    "short": "@Async runs eligible method calls on a task executor instead of the caller thread.",
+    "answer": "Spring intercepts calls to @Async methods and submits work to an executor. The caller can receive void, Future or CompletableFuture depending on the method signature. Proxy rules mean self-invocation does not trigger the interceptor.",
+    "code": "@Async\npublic CompletableFuture<String> fetch() {\n    return CompletableFuture.completedFuture(\"done\");\n}",
+    "followups": [
+      "How do you configure the executor?",
+      "Why can self-invocation fail?",
+      "What happens to exceptions?"
+    ],
+    "mistakes": [
+      "Using the common pool blindly for all workloads.",
+      "Assuming @Async works for calls within the same instance."
+    ],
+    "interview": "@Async moves work to a configured executor through Spring interception. I size and monitor the executor for the workload and handle errors explicitly.",
+    "source": "V9",
+    "id": "v9-021"
+  },
+  {
+    "topic": "springboot",
+    "level": "L3",
+    "title": "How would you design API versioning?",
+    "tags": [
+      "REST",
+      "API Design"
+    ],
+    "short": "Version APIs when breaking contract changes are unavoidable, while preferring backward-compatible evolution where possible.",
+    "answer": "Common approaches include URI versions, headers or media types. The important part is a compatibility policy, deprecation period, documentation and tests. I avoid creating versions for every additive field change.",
+    "code": "GET /api/v1/orders/123\nGET /api/v2/orders/123",
+    "followups": [
+      "URI vs header versioning?",
+      "How would you retire an old version?"
+    ],
+    "mistakes": [
+      "Versioning every minor change.",
+      "Keeping old versions indefinitely without ownership or telemetry."
+    ],
+    "interview": "I prefer backward-compatible evolution first. For breaking changes, I use an explicit versioning strategy, support overlap, measure usage and communicate deprecation before retirement.",
+    "source": "V9",
+    "id": "v9-022"
+  },
+  {
+    "topic": "springboot",
+    "subtopic": "core",
+    "level": "L3",
+    "title": "Explain Spring bean lifecycle at a production-debugging level",
+    "tags": [
+      "springboot",
+      "L3",
+      "Production"
+    ],
+    "short": "A bean is instantiated, dependencies injected, lifecycle callbacks run, and it becomes available from the container.",
+    "answer": "Creation includes constructor invocation, dependency population, post-processors and initialization callbacks. Destruction callbacks run when the context closes. Proxies may wrap the final bean, so initialization and interception details matter.",
+    "code": "@PostConstruct\nvoid init() { /* validate local state */ }",
+    "followups": [
+      "BeanPostProcessor vs BeanFactoryPostProcessor?",
+      "When does @PostConstruct run?"
+    ],
+    "mistakes": [
+      "Putting heavy external calls in constructors."
+    ],
+    "interview": "When debugging lifecycle problems I distinguish construction, dependency injection, post-processing and proxy creation. I avoid doing external network work in constructors.",
+    "source": "V10",
+    "id": "v10-012"
+  },
+  {
+    "topic": "springboot",
+    "subtopic": "core",
+    "level": "L3",
+    "title": "Explain the Spring three-level singleton cache",
+    "tags": [
+      "springboot",
+      "L3",
+      "Production"
+    ],
+    "short": "It allows Spring to expose early references while resolving some singleton circular dependencies.",
+    "answer": "The singleton caches distinguish fully initialized objects, early singleton references and singleton factories that can create an early reference, including proxy-aware references. Constructor cycles still cannot be resolved normally.",
+    "code": "// Conceptual: singletonObjects -> earlySingletonObjects -> singletonFactories",
+    "followups": [
+      "Why do constructor cycles fail?",
+      "What is an early proxy reference?"
+    ],
+    "mistakes": [
+      "Using circular dependencies as a normal design pattern."
+    ],
+    "interview": "I know the cache exists mainly to support certain setter/field circular references. I still prefer redesigning the dependency graph rather than depending on this mechanism.",
+    "source": "V10",
+    "id": "v10-013"
+  },
+  {
+    "topic": "springboot",
+    "subtopic": "core",
+    "level": "L3",
+    "title": "How does Spring AOP choose JDK vs class-based proxies?",
+    "tags": [
+      "springboot",
+      "L3",
+      "Production"
+    ],
+    "short": "Proxy strategy determines whether interception is based on interfaces or subclassing the target class.",
+    "answer": "JDK dynamic proxies target interfaces; class-based proxies create subclasses. Final classes/methods and self-invocation impose limitations. The important interview point is that advice is applied at a proxy boundary.",
+    "code": "// External call -> proxy -> target -> method",
+    "followups": [
+      "How does self-invocation bypass advice?",
+      "Where do final methods matter?"
+    ],
+    "mistakes": [
+      "Assuming every annotation intercepts internal calls."
+    ],
+    "interview": "I focus on proxy boundaries: the caller must cross the proxy for proxy-based advice to run.",
+    "source": "V10",
+    "id": "v10-014"
+  },
+  {
+    "topic": "springboot",
+    "subtopic": "core",
+    "level": "L3",
+    "title": "How do you prevent cache stampedes in Spring?",
+    "tags": [
+      "springboot",
+      "L3",
+      "Production"
+    ],
+    "short": "Coordinate cache misses so many requests do not simultaneously hit the database or downstream service.",
+    "answer": "Use request coalescing, short distributed locks, early refresh, jittered TTLs or stale-while-revalidate where the consistency model allows it. Bound the number of concurrent reloads.",
+    "code": "// one logical key -> one loader; other requests await the same load",
+    "followups": [
+      "Cache-aside vs write-through?",
+      "What if the cache is unavailable?"
+    ],
+    "mistakes": [
+      "Letting every request reload the same expired key."
+    ],
+    "interview": "I protect the database during a popular-key expiry by coalescing reloads and adding jitter or early refresh.",
+    "source": "V10",
+    "id": "v10-015"
+  },
+  {
+    "topic": "springboot",
+    "subtopic": "core",
+    "level": "L3",
+    "title": "How do you design Spring Boot health checks?",
+    "tags": [
+      "springboot",
+      "L3",
+      "Production"
+    ],
+    "short": "Separate process liveness from traffic readiness and expose meaningful dependency health without causing restart loops.",
+    "answer": "Liveness should detect unrecoverable application failure; readiness determines whether the instance should receive traffic. Startup probes protect slow initialization. Dependency checks should be used thoughtfully because a transient dependency outage should not necessarily restart every pod.",
+    "code": "/actuator/health/liveness\n/actuator/health/readiness",
+    "followups": [
+      "What should readiness include?",
+      "What is a startup probe?"
+    ],
+    "mistakes": [
+      "Using dependency failure as a liveness condition."
+    ],
+    "interview": "I keep liveness cheap and readiness traffic-oriented. I do not put fragile downstream checks into liveness because that can create restart storms.",
+    "source": "V10",
+    "id": "v10-016"
+  },
+  {
+    "topic": "springboot",
+    "subtopic": "core",
+    "level": "L3",
+    "title": "How do you design Spring async processing safely?",
+    "tags": [
+      "springboot",
+      "L3",
+      "Production"
+    ],
+    "short": "Use bounded executors, explicit error handling and durable state for work that must survive process failure.",
+    "answer": "@Async is thread-based and context such as transactions does not automatically move to another thread. Configure named executors, queue limits and rejection behavior. For durable business work, prefer a queue/outbox.",
+    "code": "@Async(\"orderExecutor\")\nvoid process(OrderCommand cmd) { ... }",
+    "followups": [
+      "How does @Transactional interact with @Async?",
+      "How do you propagate tracing context?"
+    ],
+    "mistakes": [
+      "Using the default executor for unbounded work."
+    ],
+    "interview": "For fire-and-forget business work I prefer durable messaging. If I use @Async, I bound the executor and make failure observable.",
+    "source": "V10",
+    "id": "v10-017"
+  },
+  {
+    "topic": "springboot",
+    "subtopic": "core",
+    "level": "L3",
+    "title": "How would you troubleshoot a slow Spring Boot endpoint?",
+    "tags": [
+      "springboot",
+      "L3",
+      "Production"
+    ],
+    "short": "Break total latency into application, database, serialization and downstream components using traces and metrics.",
+    "answer": "Inspect p50/p95/p99, DB timings, connection-pool wait, downstream spans, payload sizes and thread states. Look for N+1 queries, lock waits and pool saturation before changing code.",
+    "code": "// Trace: controller -> service -> DB -> downstream -> serialization",
+    "followups": [
+      "How do you detect pool exhaustion?",
+      "When should caching be added?"
+    ],
+    "mistakes": [
+      "Adding async just to hide latency."
+    ],
+    "interview": "I optimize the largest measured contributor. A slow endpoint is often a DB or downstream problem rather than a slow Java method.",
+    "source": "V10",
+    "id": "v10-018"
+  },
+  {
+    "topic": "springboot",
+    "subtopic": "data",
+    "level": "L3",
+    "title": "How do you perform zero-downtime Spring/database deployments?",
+    "tags": [
+      "springboot",
+      "L3",
+      "Production"
+    ],
+    "short": "Make application versions compatible with the database during rolling deployment.",
+    "answer": "Use expand-and-contract: add compatible schema, deploy code supporting both shapes, backfill, switch reads/writes, then remove the old shape after all old instances are gone.",
+    "code": "ALTER TABLE orders ADD COLUMN status_v2 VARCHAR(30);",
+    "followups": [
+      "How do you backfill millions of rows?",
+      "How do you roll back code after schema expansion?"
+    ],
+    "mistakes": [
+      "Deploying an incompatible column rename in one release."
+    ],
+    "interview": "Rolling deployment means old and new binaries coexist. Therefore database changes must be backward compatible during the whole rollout.",
+    "source": "V10",
+    "id": "v10-019"
+  },
+  {
+    "topic": "springboot",
+    "subtopic": "core",
+    "level": "L3",
+    "title": "How do you design a reliable scheduled job in Spring Boot?",
+    "tags": [
+      "springboot",
+      "L3",
+      "Production"
+    ],
+    "short": "Coordinate ownership across instances and make the job idempotent and recoverable.",
+    "answer": "@Scheduled runs independently in every JVM. Use a distributed scheduler/lease or durable job queue. Persist execution state and make retries safe.",
+    "code": "@Scheduled(fixedDelay = 60000)\nvoid reconcile() { ... }",
+    "followups": [
+      "What if a worker dies?",
+      "How do you prevent duplicate execution?"
+    ],
+    "mistakes": [
+      "Assuming @Scheduled executes once cluster-wide."
+    ],
+    "interview": "A scheduled annotation is local to a JVM. In a cluster I need distributed ownership and recovery semantics.",
+    "source": "V10",
+    "id": "v10-020"
+  },
+  {
+    "topic": "springboot",
+    "subtopic": "data",
+    "level": "L3",
+    "title": "How do you test transactional behavior in Spring?",
+    "tags": [
+      "springboot",
+      "L3",
+      "Production"
+    ],
+    "short": "Use integration tests with a production-like database for rollback, isolation, locking and lazy-loading behavior.",
+    "answer": "Mocks cannot prove database transaction semantics. A disposable real database lets tests verify commit/rollback and SQL constraints across transaction boundaries.",
+    "code": "// call service -> verify persisted state from a fresh transaction/context",
+    "followups": [
+      "Why can H2 hide issues?",
+      "How do you test deadlocks?"
+    ],
+    "mistakes": [
+      "Relying entirely on mocked repositories."
+    ],
+    "interview": "I use unit tests for business branching and integration tests for actual transaction behavior.",
+    "source": "V10",
+    "id": "v10-021"
+  },
+  {
+    "id": "v10.1-027",
+    "title": "@Async tasks overwhelm the application thread pool",
+    "level": "L3",
+    "tags": [
+      "async",
+      "thread pool",
+      "production",
+      "Production Scenario",
+      "V10.1"
+    ],
+    "short": "Asynchrony changes where work waits; it does not remove capacity limits.",
+    "answer": "I would use a dedicated bounded executor, measure task duration and choose a rejection or backpressure policy. For durable background work I would prefer a queue so work survives process restarts.",
+    "code": "Use a dedicated bounded executor with an explicit queue and rejection policy. Size it for the workload, isolate unrelated task types and move durable long-running work to a message broker when necessary.",
+    "followups": [
+      "How do you size a thread pool?",
+      "What happens when the executor queue is full?",
+      "When would Kafka be better than @Async?"
+    ],
+    "mistakes": [
+      "Using an unbounded queue.",
+      "Sharing one executor across unrelated workloads."
+    ],
+    "interview": "I would not solve this by simply increasing the thread count. I would bound the executor and choose whether excess work should be rejected, delayed or persisted to messaging.",
+    "source": "V10.1",
+    "topic": "springboot",
+    "subtopic": "config",
+    "scenario": "A new asynchronous feature submits thousands of tasks. The default executor queue grows, memory increases and request latency degrades.",
+    "investigation": "Inspect executor active threads, queue depth, task duration and rejection count. Check whether tasks are CPU-bound or I/O-bound and whether callers need the work synchronously.",
+    "resolution": "Use a dedicated bounded executor with an explicit queue and rejection policy. Size it for the workload, isolate unrelated task types and move durable long-running work to a message broker when necessary.",
+    "prevention": "Monitor executor saturation and load-test bursts. Do not use one unbounded executor for unrelated workloads."
+  },
+  {
+    "id": "v10.1-028",
+    "title": "A transactional method calls an @Async method and data is missing",
+    "level": "L3",
+    "tags": [
+      "transaction",
+      "async",
+      "spring",
+      "Production Scenario",
+      "V10.1"
+    ],
+    "short": "Spring transactions are thread-bound; asynchronous execution creates a different execution context.",
+    "answer": "I would not rely on the async method seeing uncommitted transaction state. If the task needs committed data, I would trigger it after commit or use a durable event/message so the ordering is explicit.",
+    "code": "Do not assume @Async inherits the transaction. Publish an event after commit or move the asynchronous work behind a durable queue. If direct async execution is acceptable, ensure the transaction has committed before the async work starts.",
+    "followups": [
+      "How does @Transactional interact with thread pools?",
+      "How would you publish an event after commit?",
+      "Can TransactionSynchronization be used?"
+    ],
+    "mistakes": [
+      "Assuming @Async inherits the transaction.",
+      "Starting background work before commit."
+    ],
+    "interview": "A transaction does not automatically flow into @Async. Crossing the thread boundary means I need an explicit post-commit or messaging design.",
+    "source": "V10.1",
+    "topic": "springboot",
+    "subtopic": "data",
+    "scenario": "A service saves an entity inside a transaction and then calls an asynchronous method that immediately queries the database. The async task sometimes cannot see the expected data.",
+    "investigation": "Check transaction commit timing and thread boundaries. @Async executes on another thread, so it does not share the caller thread-bound transaction.",
+    "resolution": "Do not assume @Async inherits the transaction. Publish an event after commit or move the asynchronous work behind a durable queue. If direct async execution is acceptable, ensure the transaction has committed before the async work starts.",
+    "prevention": "Test commit/async race conditions and define whether the background task requires committed state or can operate on an in-memory command."
+  },
+  {
+    "id": "v10.1-029",
+    "title": "A Spring Boot application starts slowly after a new release",
+    "level": "L3",
+    "tags": [
+      "startup",
+      "spring boot",
+      "production",
+      "Production Scenario",
+      "V10.1"
+    ],
+    "short": "Startup performance should be measured by phase; otherwise teams tend to guess which bean is responsible.",
+    "answer": "I would profile startup and compare bean initialization and external calls with the previous version. Then I would move non-critical work out of startup and reduce scanning or initialization only where measurements justify it.",
+    "code": "Remove unnecessary scanning, defer non-critical initialization and move expensive startup work out of the critical path. Use lazy initialization selectively, not as a blanket fix.",
+    "followups": [
+      "How does Spring Boot auto-configuration affect startup?",
+      "When is lazy initialization useful?",
+      "How would you debug a startup hang?"
+    ],
+    "mistakes": [
+      "Enabling lazy initialization everywhere without measuring.",
+      "Ignoring external calls during startup."
+    ],
+    "interview": "I would profile first, because startup can be slow due to bean creation, database migration, classpath scanning or remote configuration.",
+    "source": "V10.1",
+    "topic": "springboot",
+    "subtopic": "config",
+    "scenario": "Startup time increases from 15 seconds to 90 seconds after adding several dependencies and configuration classes.",
+    "investigation": "Compare startup profiles between releases. Inspect bean creation, classpath scanning, database initialization, remote configuration and slow post-construct/startup tasks.",
+    "resolution": "Remove unnecessary scanning, defer non-critical initialization and move expensive startup work out of the critical path. Use lazy initialization selectively, not as a blanket fix.",
+    "prevention": "Track startup time as a deployment metric and keep startup dependencies deterministic. Profile before optimizing."
+  },
+  {
+    "id": "v10.1-030",
+    "title": "A controller returns 200 but the business operation failed",
+    "level": "L3",
+    "tags": [
+      "exception handling",
+      "rest api",
+      "reliability",
+      "Production Scenario",
+      "V10.1"
+    ],
+    "short": "An HTTP success response is part of the business contract; swallowing failures can be worse than returning a 500.",
+    "answer": "I would avoid catching exceptions merely to log them. Unexpected failures should reach centralized exception handling, which returns a consistent status and error body. Known business errors should map explicitly to meaningful 4xx responses.",
+    "code": "Let unexpected exceptions propagate to a centralized exception handler and map them to appropriate status codes. Return a stable error contract with correlation information, not internal stack traces.",
+    "followups": [
+      "When should a business error be 409 versus 400?",
+      "How do you avoid leaking stack traces?",
+      "How do you correlate errors across services?"
+    ],
+    "mistakes": [
+      "Returning 200 with an error message.",
+      "Logging and swallowing exceptions."
+    ],
+    "interview": "I want HTTP status to reflect the actual outcome. Centralized exception handling gives consistent client behavior and keeps controllers focused on business flow.",
+    "source": "V10.1",
+    "topic": "springboot",
+    "subtopic": "exceptions",
+    "scenario": "An endpoint catches an exception, logs it and returns a default response, so clients believe the operation succeeded.",
+    "investigation": "Trace the exception path and inspect HTTP status mapping. Check whether global exception handling is bypassed by local catches.",
+    "resolution": "Let unexpected exceptions propagate to a centralized exception handler and map them to appropriate status codes. Return a stable error contract with correlation information, not internal stack traces.",
+    "prevention": "Define an error-response standard, test failure status codes and alert on unexpected 5xx rates rather than only application exceptions."
+  },
+  {
+    "id": "v10.1-031",
+    "title": "A memory leak appears after adding request caching",
+    "level": "L3",
+    "tags": [
+      "memory leak",
+      "cache",
+      "java",
+      "Production Scenario",
+      "V10.1"
+    ],
+    "short": "A cache without bounded cardinality is a memory leak from the application perspective even if every entry is technically reachable.",
+    "answer": "I would confirm the retaining path with a heap dump, then inspect cache cardinality and eviction. The fix is to bound the cache and avoid storing large request objects, not simply increase heap size.",
+    "code": "Bound the cache by size and TTL, store only the data required for reuse and avoid retaining request-scoped objects. If the data needs distributed durability, use an external cache with explicit eviction.",
+    "followups": [
+      "How do you take a heap dump safely?",
+      "How do you distinguish a leak from normal heap growth?",
+      "What GC metrics would you monitor?"
+    ],
+    "mistakes": [
+      "Increasing heap size without finding the retaining object.",
+      "Using an unbounded map as a cache."
+    ],
+    "interview": "I would use heap analysis to prove what is retaining memory, then bound the cache by size and lifetime.",
+    "source": "V10.1",
+    "topic": "springboot",
+    "subtopic": "config",
+    "scenario": "Heap usage grows continuously in production even after traffic returns to normal. A new in-memory cache stores request-derived objects.",
+    "investigation": "Use heap dumps and allocation profiling. Identify the retaining path and cache size, eviction policy and key cardinality. Check whether user/request objects are referenced longer than intended.",
+    "resolution": "Bound the cache by size and TTL, store only the data required for reuse and avoid retaining request-scoped objects. If the data needs distributed durability, use an external cache with explicit eviction.",
+    "prevention": "Monitor heap occupancy and cache cardinality, test long-running workloads and set memory alerts before the process reaches OOM."
+  },
+  {
+    "id": "v10.1-032",
+    "title": "Spring Security allows an endpoint that should be admin-only",
+    "level": "L3",
+    "tags": [
+      "spring security",
+      "authorization",
+      "rbac",
+      "Production Scenario",
+      "V10.1"
+    ],
+    "short": "Authentication proves identity; authorization decides whether that identity can perform the operation.",
+    "answer": "I would verify the filter-chain rule and method-security configuration, then test the endpoint with users having different authorities. Authorization should be enforced server-side and covered by integration tests.",
+    "code": "Define authorization at the correct layer and use explicit authorities/roles consistently. Add integration tests that assert both allowed and forbidden users receive the expected status.",
+    "followups": [
+      "Role versus authority in Spring Security?",
+      "How does @PreAuthorize work?",
+      "How do you test forbidden access?"
+    ],
+    "mistakes": [
+      "Checking permissions only in the frontend.",
+      "Mixing ROLE_ADMIN and ADMIN conventions."
+    ],
+    "interview": "I would debug authorization from the token claims through the filter chain to the method decision, not just inspect the annotation.",
+    "source": "V10.1",
+    "topic": "springboot",
+    "subtopic": "auth",
+    "scenario": "An endpoint is protected by authentication, but any logged-in user can call it because the method-level role check was not applied as expected.",
+    "investigation": "Inspect the filter chain, endpoint matchers, method-security configuration and exact authority names. Verify whether the call is going through a proxy and whether annotations are enabled.",
+    "resolution": "Define authorization at the correct layer and use explicit authorities/roles consistently. Add integration tests that assert both allowed and forbidden users receive the expected status.",
+    "prevention": "Treat authorization tests as security regression tests. Avoid relying on controller visibility or UI restrictions."
+  },
+  {
+    "id": "v10.5-scenario-08",
+    "title": "Database connection pool is exhausted under moderate traffic",
+    "level": "L3",
+    "tags": [
+      "database",
+      "connection-pool",
+      "spring-boot"
+    ],
+    "short": "A connection pool can be exhausted because connections are held too long, not because the database itself is at CPU capacity.",
+    "answer": "I would check pool acquisition latency and active connection age. Then I would look for slow SQL or transactions that include remote calls. Increasing the pool blindly may move the bottleneck to the database and increase contention.",
+    "code": "",
+    "followups": [
+      "How do you choose HikariCP pool size?",
+      "What is a connection leak?"
+    ],
+    "mistakes": [
+      "Do not increase pool size without measuring database capacity."
+    ],
+    "interview": "The important distinction is database capacity versus application-side connection occupancy.",
+    "source": "V10.5",
+    "topic": "springboot",
+    "subtopic": "data",
+    "scenario": "Requests start timing out waiting for database connections, even though database CPU is only 40%.",
+    "investigation": "Inspect active/idle pool counts, connection acquisition time, slow queries, long transactions and leaked connections. Compare application thread count with pool size.",
+    "prevention": "Fix slow queries and transaction scope first. Configure sensible pool limits and leak detection, avoid holding connections across remote calls, and monitor acquisition latency."
+  },
+  {
+    "id": "v10.5-scenario-09",
+    "title": "Spring @Async work never runs asynchronously",
+    "level": "L2",
+    "tags": [
+      "spring",
+      "async",
+      "aop"
+    ],
+    "short": "@Async is proxy-based. A direct self-invocation bypasses the proxy and therefore bypasses asynchronous interception.",
+    "answer": "I would first confirm the executor and proxy path. If the method is called from another method in the same class, I would move the async operation behind another bean or otherwise ensure the invocation crosses the Spring proxy. I would also configure a bounded executor rather than relying on an unbounded default.",
+    "code": "",
+    "followups": [
+      "How does @Async interact with transactions?",
+      "How would you propagate MDC or security context?"
+    ],
+    "mistakes": [
+      "Do not assume an annotation changes execution without proxy interception."
+    ],
+    "interview": "Async is not a magic annotation; proxy interception and executor capacity are both part of the design.",
+    "source": "V10.5",
+    "topic": "springboot",
+    "subtopic": "aop",
+    "scenario": "A method annotated with @Async executes on the caller thread in production.",
+    "investigation": "Check whether @EnableAsync is configured, whether the method is public, whether the call goes through a Spring proxy, and whether the executor is configured. Look for self-invocation.",
+    "prevention": "Call the async method through a Spring-managed proxy, configure a bounded executor, propagate required context explicitly, and monitor queue saturation."
+  },
+  {
+    "id": "v10.5-scenario-10",
+    "title": "Spring transaction does not roll back after an exception",
+    "level": "L2",
+    "tags": [
+      "spring",
+      "transactions",
+      "rollback"
+    ],
+    "short": "Spring rollback is based on transaction interception and rollback rules. Catching an exception without marking rollback can allow the transaction to commit.",
+    "answer": "I would verify the transaction boundary first. If the exception is caught inside the transaction and swallowed, I would either rethrow it or mark the transaction rollback-only. For checked exceptions I would explicitly configure rollback behavior when that matches the business requirement.",
+    "code": "",
+    "followups": [
+      "What is propagation?",
+      "What happens with self-invocation?"
+    ],
+    "mistakes": [
+      "Do not assume checked exceptions always trigger rollback."
+    ],
+    "interview": "The key is that @Transactional controls a transaction boundary; it does not automatically roll back every exception that ever occurred inside the method.",
+    "source": "V10.5",
+    "topic": "springboot",
+    "subtopic": "data",
+    "scenario": "A service method annotated with @Transactional catches an exception and returns normally, but the caller expects the database changes to roll back.",
+    "investigation": "Inspect whether the exception was caught inside the transactional method, whether the exception type matches Spring rollback rules, and whether the call entered through a transaction proxy.",
+    "prevention": "Let the intended exception propagate or explicitly mark the transaction rollback-only. Configure rollbackFor for checked exceptions when appropriate and avoid self-invocation of transactional methods."
+  },
+  {
+    "id": "v10.5-scenario-11",
+    "title": "Spring application startup becomes much slower after adding a module",
+    "level": "L2",
+    "tags": [
+      "spring-boot",
+      "startup",
+      "beans"
+    ],
+    "short": "Slow startup often comes from expensive bean initialization or unnecessary scanning rather than Spring Boot itself.",
+    "answer": "I would measure startup phases and identify the slow bean or auto-configuration. I would then remove external calls from constructors or initialization paths and reduce unnecessary scanning. I would not optimize startup blindly without a measurement.",
+    "code": "",
+    "followups": [
+      "How does auto-configuration work?",
+      "How would you troubleshoot a circular dependency?"
+    ],
+    "mistakes": [
+      "Do not disable broad auto-configurations without understanding what they provide."
+    ],
+    "interview": "Production startup matters for autoscaling and rolling deployments, so startup time is an operational metric.",
+    "source": "V10.5",
+    "topic": "springboot",
+    "subtopic": "config",
+    "scenario": "Startup time increases from 10 seconds to 45 seconds after a dependency and several configuration classes are added.",
+    "investigation": "Enable startup metrics or a startup actuator endpoint where appropriate, inspect bean initialization, auto-configuration reports, external calls during bean creation and classpath scanning.",
+    "prevention": "Avoid network calls during bean construction, reduce unnecessary component scanning, exclude irrelevant auto-configurations when justified, and move expensive work to controlled initialization or asynchronous workflows."
+  },
+  {
+    "id": "v10.5-scenario-21",
+    "title": "Spring REST endpoint returns 500 because validation exceptions bypass the global handler",
+    "level": "L2",
+    "tags": [
+      "spring-boot",
+      "validation",
+      "exceptions"
+    ],
+    "short": "Validation failures should normally be translated into a consistent client-facing 4xx response rather than leaking as 500 errors.",
+    "answer": "I would inspect the actual exception type first. Then I would add a targeted global handler for validation and binding failures and return a stable error format with field-level messages. I would add integration tests so every controller follows the same contract.",
+    "code": "",
+    "followups": [
+      "How do you validate path variables?",
+      "How do you avoid exposing internal exception messages?"
+    ],
+    "mistakes": [
+      "Do not return stack traces to clients."
+    ],
+    "interview": "Do not assume every validation failure arrives as MethodArgumentNotValidException; the exact exception depends on how validation is triggered.",
+    "source": "V10.5",
+    "topic": "springboot",
+    "subtopic": "exceptions",
+    "scenario": "Invalid request payloads sometimes produce inconsistent 400/500 responses depending on the controller.",
+    "investigation": "Inspect exception types thrown by request binding/validation and compare them with the @ControllerAdvice handlers. Verify whether handler methods cover the actual framework exception types.",
+    "prevention": "Define a consistent error contract, handle validation/binding exceptions centrally, and test malformed payloads across controllers."
+  },
+  {
+    "id": "v10.5-scenario-22",
+    "title": "Spring cache serves stale data after an update",
+    "level": "L2",
+    "tags": [
+      "spring-boot",
+      "cache",
+      "consistency"
+    ],
+    "short": "Caching introduces a second copy of data, so the application must define how and when that copy becomes stale.",
+    "answer": "I would first verify whether the write invalidates the exact cache key after the database transaction succeeds. In a multi-instance system I would prefer a shared cache or an invalidation mechanism rather than assuming local caches are consistent.",
+    "code": "",
+    "followups": [
+      "How do you prevent cache stampede?",
+      "What happens if the cache is unavailable?"
+    ],
+    "mistakes": [
+      "Do not invalidate the cache before a failed database write unless the policy is deliberate."
+    ],
+    "interview": "Cache consistency is a business trade-off. The interview answer should state the acceptable staleness requirement.",
+    "source": "V10.5",
+    "topic": "springboot",
+    "subtopic": "config",
+    "scenario": "An update succeeds in the database, but subsequent GET requests still return the old value from the cache.",
+    "investigation": "Check cache eviction/update semantics, transaction timing, cache key consistency and whether multiple application instances maintain independent local caches.",
+    "prevention": "Use a clear cache-aside policy, evict or update the cache after a successful write, and use a shared cache when cross-instance consistency is required. Define an acceptable staleness window."
+  },
+  {
+    "id": "v10.6-springboot-01",
+    "topic": "springboot",
+    "level": "L3",
+    "title": "How does Spring resolve bean dependencies?",
+    "tags": [
+      "Spring Core",
+      "IoC"
+    ],
+    "short": "Spring resolves required beans from the ApplicationContext using type, qualifiers, primary candidates and other metadata.",
+    "answer": "Dependency resolution considers type and qualifiers and can fail on ambiguity or missing beans. Constructor injection makes required dependencies explicit and supports immutable components.",
+    "code": null,
+    "followups": [
+      "What happens with two beans of the same type?",
+      "How does @Primary work?"
+    ],
+    "mistakes": [],
+    "interview": "I prefer constructor injection because dependencies are explicit and the object cannot be created without them. Qualifier or primary resolves intentional ambiguity.",
+    "source": "V10.6",
+    "subtopic": "core",
+    "subtopicName": "Spring Core & IoC"
+  },
+  {
+    "id": "v10.6-springboot-02",
+    "topic": "springboot",
+    "level": "L2",
+    "title": "Why is constructor injection preferred over field injection?",
+    "tags": [
+      "Spring Core",
+      "DI"
+    ],
+    "short": "Constructor injection makes required dependencies explicit and supports immutability and easier testing.",
+    "answer": "The object can be instantiated with all required collaborators, fields can be final, and missing dependencies fail early. Field injection hides dependencies and complicates plain unit tests.",
+    "code": null,
+    "followups": [
+      "Can Spring inject optional dependencies?",
+      "What about circular dependencies?"
+    ],
+    "mistakes": [],
+    "interview": "For required dependencies I use constructors. It improves design and makes the class valid immediately after construction.",
+    "source": "V10.6",
+    "subtopic": "core",
+    "subtopicName": "Spring Core & IoC"
+  },
+  {
+    "id": "v10.6-springboot-03",
+    "topic": "springboot",
+    "level": "L3",
+    "title": "How does Spring handle circular dependencies?",
+    "tags": [
+      "Spring Core",
+      "Beans"
+    ],
+    "short": "A circular dependency occurs when bean A requires B while B requires A.",
+    "answer": "Some setter/field injection cases can be resolved through early references, but constructor cycles cannot be satisfied normally. The best fix is usually redesigning responsibilities rather than relying on lazy workarounds.",
+    "code": null,
+    "followups": [
+      "Can @Lazy break a cycle?",
+      "Why are constructor cycles harder?"
+    ],
+    "mistakes": [],
+    "interview": "I treat circular dependencies as a design smell. I first split responsibilities or introduce a domain service rather than hiding the cycle with @Lazy.",
+    "source": "V10.6",
+    "subtopic": "core",
+    "subtopicName": "Spring Core & IoC"
+  },
+  {
+    "id": "v10.6-springboot-04",
+    "topic": "springboot",
+    "level": "L3",
+    "title": "What is BeanPostProcessor?",
+    "tags": [
+      "Spring Core",
+      "Internals"
+    ],
+    "short": "BeanPostProcessor hooks into bean creation before and after initialization.",
+    "answer": "Spring uses post-processors for concerns such as dependency injection, annotation processing and proxy creation. This is a major extension point in the container lifecycle.",
+    "code": null,
+    "followups": [
+      "Where does AOP proxying happen?",
+      "What is BeanFactoryPostProcessor?"
+    ],
+    "mistakes": [],
+    "interview": "BeanPostProcessor lets Spring inspect or wrap beans during creation. Many framework features are implemented through these lifecycle extension points.",
+    "source": "V10.6",
+    "subtopic": "config",
+    "subtopicName": "Configuration & Production",
+    "scenario": "BeanPostProcessor hooks into bean creation before and after initialization.",
+    "investigation": "Start with metrics and traces, identify the failing boundary, compare latency/error rates and inspect resource saturation before changing configuration.",
+    "prevention": "Use explicit timeouts, bounded resources, automated tests and alerts around the failure mode so the same issue is detected early."
+  },
+  {
+    "id": "v10.6-springboot-05",
+    "topic": "springboot",
+    "level": "L3",
+    "title": "What is BeanFactoryPostProcessor?",
+    "tags": [
+      "Spring Core",
+      "Internals"
+    ],
+    "short": "It can modify bean definitions before regular beans are instantiated.",
+    "answer": "It operates on metadata rather than bean instances. This distinction is important when understanding configuration processing and how Spring prepares the container.",
+    "code": null,
+    "followups": [
+      "Give an example.",
+      "Why must it run early?"
+    ],
+    "mistakes": [],
+    "interview": "BeanFactoryPostProcessor changes bean definitions before bean instantiation; BeanPostProcessor works with bean instances during lifecycle processing.",
+    "source": "V10.6",
+    "subtopic": "config",
+    "subtopicName": "Configuration & Production"
+  },
+  {
+    "id": "v10.6-springboot-06",
+    "topic": "springboot",
+    "level": "L2",
+    "title": "How does @Lazy affect Spring bean creation?",
+    "tags": [
+      "Spring Core",
+      "Performance"
+    ],
+    "short": "@Lazy defers bean creation until it is first needed.",
+    "answer": "It can reduce startup cost but moves initialization latency to first use and can hide configuration errors until runtime. It should not be used to paper over dependency design problems.",
+    "code": null,
+    "followups": [
+      "Can @Lazy solve circular dependencies?",
+      "When is it a bad idea?"
+    ],
+    "mistakes": [],
+    "interview": "Lazy initialization can improve startup, but it trades startup work for first-use latency and delayed failures.",
+    "source": "V10.6",
+    "subtopic": "config",
+    "subtopicName": "Configuration & Production"
+  },
+  {
+    "id": "v10.6-springboot-07",
+    "topic": "springboot",
+    "level": "L3",
+    "title": "How does Spring's transaction interceptor decide commit or rollback?",
+    "tags": [
+      "Transactions",
+      "AOP"
+    ],
+    "short": "The transaction interceptor starts or joins a transaction, invokes the target, then commits or rolls back based on outcome and rollback rules.",
+    "answer": "By default, runtime exceptions and errors trigger rollback in typical declarative transaction handling, while checked exceptions may require explicit rollback configuration. The actual behavior depends on the transaction manager and rules.",
+    "code": null,
+    "followups": [
+      "How do you roll back for checked exceptions?",
+      "What if an exception is caught inside the method?"
+    ],
+    "mistakes": [],
+    "interview": "I explain that the proxy surrounds the method, begins or joins a transaction, and commits on successful completion or rolls back according to configured rollback rules.",
+    "source": "V10.6",
+    "subtopic": "aop",
+    "subtopicName": "AOP & Cross-cutting Concerns"
+  },
+  {
+    "id": "v10.6-springboot-08",
+    "topic": "springboot",
+    "level": "L2",
+    "title": "What is read-only transaction optimization?",
+    "tags": [
+      "Transactions",
+      "JPA"
+    ],
+    "short": "readOnly is a transaction hint indicating that the transaction is intended for reads.",
+    "answer": "It can influence ORM flush behavior or database handling depending on the stack, but it is not a universal enforcement that prevents writes. It should not replace authorization or application-level rules.",
+    "code": null,
+    "followups": [
+      "Does readOnly prevent INSERT?",
+      "How does Hibernate use it?"
+    ],
+    "mistakes": [],
+    "interview": "readOnly communicates intent and may reduce unnecessary flush work, but I don't treat it as a hard write prohibition.",
+    "source": "V10.6",
+    "subtopic": "data",
+    "subtopicName": "Transactions & Data"
+  },
+  {
+    "id": "v10.6-springboot-09",
+    "topic": "springboot",
+    "level": "L2",
+    "title": "How does Spring Retry differ from manual retries?",
+    "tags": [
+      "Resilience",
+      "Retry"
+    ],
+    "short": "Spring Retry centralizes retry policy through annotations or interceptors.",
+    "answer": "It can manage attempts, backoff and exception classification, but retrying still requires idempotency and timeout boundaries. A framework does not make unsafe operations safe to repeat.",
+    "code": null,
+    "followups": [
+      "How do you add backoff?",
+      "What should never be retried?"
+    ],
+    "mistakes": [],
+    "interview": "Retry policy should be explicit and bounded. Whether implemented with Spring Retry or manually, I need idempotency, backoff and a clear list of retryable failures.",
+    "source": "V10.6",
+    "subtopic": "data",
+    "subtopicName": "Transactions & Data"
+  },
+  {
+    "id": "v10.6-springboot-10",
+    "topic": "springboot",
+    "level": "L2",
+    "title": "How do you test a transactional service correctly?",
+    "tags": [
+      "Testing",
+      "Transactions"
+    ],
+    "short": "Transactional tests should verify both database state and transaction boundaries.",
+    "answer": "Use integration tests when behavior depends on real transaction semantics, rollback, isolation or JPA flush behavior. Unit tests can cover business branching without requiring a database.",
+    "code": null,
+    "followups": [
+      "Why can @Transactional test hide commits?",
+      "When do you use Testcontainers?"
+    ],
+    "mistakes": [],
+    "interview": "I use unit tests for business logic and integration tests for actual transaction behavior, especially rollback and persistence-context semantics.",
+    "source": "V10.6",
+    "subtopic": "data",
+    "subtopicName": "Transactions & Data"
+  },
+  {
+    "id": "v10.6-springboot-11",
+    "topic": "springboot",
+    "level": "L2",
+    "title": "What is Testcontainers useful for?",
+    "tags": [
+      "Testing",
+      "Integration"
+    ],
+    "short": "Testcontainers runs real infrastructure such as databases or brokers in disposable containers for tests.",
+    "answer": "It improves fidelity compared with mocks or embedded substitutes and is valuable for SQL dialect, migrations and integration behavior.",
+    "code": null,
+    "followups": [
+      "Testcontainers vs mocks?",
+      "How do you keep tests fast?"
+    ],
+    "mistakes": [],
+    "interview": "For persistence or messaging integration tests, Testcontainers gives me the real dependency and catches environment-specific behavior earlier.",
+    "source": "V10.6",
+    "subtopic": "core",
+    "subtopicName": "Spring Core & IoC"
+  },
+  {
+    "id": "v10.6-springboot-12",
+    "topic": "springboot",
+    "level": "L2",
+    "title": "How do you avoid leaking sensitive actuator information?",
+    "tags": [
+      "Actuator",
+      "Security"
+    ],
+    "short": "Operational endpoints can expose environment, mappings or metrics that may reveal sensitive details.",
+    "answer": "Expose only required endpoints, secure them with authentication/authorization, and avoid returning secrets in configuration or error payloads. Network restrictions can provide another layer.",
+    "code": null,
+    "followups": [
+      "Which endpoints are sensitive?",
+      "Should /env be public?"
+    ],
+    "mistakes": [],
+    "interview": "Actuator should be treated as an operational API. I expose the minimum surface and secure sensitive endpoints separately from public application endpoints.",
+    "source": "V10.6",
+    "subtopic": "config",
+    "subtopicName": "Configuration & Production"
+  },
+  {
+    "id": "v10.6-springboot-13",
+    "topic": "springboot",
+    "level": "L2",
+    "title": "How should correlation IDs be propagated in Spring services?",
+    "tags": [
+      "Observability",
+      "Logging"
+    ],
+    "short": "A correlation ID links logs and traces belonging to the same request flow.",
+    "answer": "Generate one at the edge if absent, validate/limit incoming values, put it into request context and propagate it to downstream calls and logs. Distributed tracing can provide richer context.",
+    "code": null,
+    "followups": [
+      "MDC vs tracing?",
+      "How do you propagate across async execution?"
+    ],
+    "mistakes": [],
+    "interview": "I establish correlation at the ingress boundary and propagate it consistently. I also ensure it cannot be used to inject arbitrary log control characters or sensitive data.",
+    "source": "V10.6",
+    "subtopic": "core",
+    "subtopicName": "Spring Core & IoC"
+  },
+  {
+    "id": "v10.6-springboot-14",
+    "topic": "springboot",
+    "level": "L2",
+    "title": "What is Spring's application event mechanism good for?",
+    "tags": [
+      "Events",
+      "Spring Core"
+    ],
+    "short": "Application events decouple in-process publishers from listeners.",
+    "answer": "They are useful for local domain notifications, but they are not a durable distributed message broker. If a business event must survive process failure, use durable messaging or an outbox.",
+    "code": null,
+    "followups": [
+      "Are events synchronous by default?",
+      "How do you make listeners async?"
+    ],
+    "mistakes": [],
+    "interview": "Spring events are in-process. I use them for local decoupling, not as a replacement for Kafka when durability and cross-service delivery matter.",
+    "source": "V10.6",
+    "subtopic": "core",
+    "subtopicName": "Spring Core & IoC"
+  },
+  {
+    "id": "v10.6-springboot-15",
+    "topic": "springboot",
+    "level": "L3",
+    "title": "How does @TransactionalEventListener work?",
+    "tags": [
+      "Transactions",
+      "Events"
+    ],
+    "short": "It can execute a listener at a transaction phase such as after commit.",
+    "answer": "This is useful when an in-process action should occur only after successful commit. It is still local to the application and can be lost if the process dies before the listener executes.",
+    "code": null,
+    "followups": [
+      "AFTER_COMMIT vs AFTER_ROLLBACK?",
+      "Can it replace the outbox?"
+    ],
+    "mistakes": [],
+    "interview": "For post-commit local work I can use @TransactionalEventListener, but for durable external events I prefer an outbox because application events are not a durable queue.",
+    "source": "V10.6",
+    "subtopic": "data",
+    "subtopicName": "Transactions & Data"
+  },
+  {
+    "id": "v10.6-springboot-16",
+    "topic": "springboot",
+    "level": "L2",
+    "title": "How do you handle large file uploads in Spring Boot?",
+    "tags": [
+      "REST",
+      "Files"
+    ],
+    "short": "Large uploads should avoid buffering entire files in application memory.",
+    "answer": "Use streaming or multipart handling with size limits, content validation, temporary storage and preferably object storage for large payloads. Scan or validate files before making them available.",
+    "code": null,
+    "followups": [
+      "How do you prevent disk exhaustion?",
+      "How do you secure uploaded files?"
+    ],
+    "mistakes": [],
+    "interview": "I enforce request-size limits, stream large content, validate type and size, and use object storage rather than keeping large files in JVM memory.",
+    "source": "V10.6",
+    "subtopic": "web",
+    "subtopicName": "REST, MVC & APIs"
+  },
+  {
+    "id": "v10.6-springboot-17",
+    "topic": "springboot",
+    "level": "L2",
+    "title": "How should pagination be implemented in a REST API?",
+    "tags": [
+      "REST",
+      "Pagination"
+    ],
+    "short": "Pagination limits response size and controls database work.",
+    "answer": "For large mutable datasets, stable ordering plus keyset pagination is often safer than deep offsets. The API should define limits and deterministic ordering.",
+    "code": null,
+    "followups": [
+      "Offset vs keyset?",
+      "How do you handle deleted rows?"
+    ],
+    "mistakes": [],
+    "interview": "I cap page size and use deterministic ordering. For large sequential datasets I prefer keyset pagination to avoid deep OFFSET costs.",
+    "source": "V10.6",
+    "subtopic": "web",
+    "subtopicName": "REST, MVC & APIs"
+  },
+  {
+    "id": "v10.6-springboot-18",
+    "topic": "springboot",
+    "level": "L3",
+    "title": "How do you design API idempotency in Spring Boot?",
+    "tags": [
+      "REST",
+      "Idempotency"
+    ],
+    "short": "Idempotency keys let clients safely retry operations without creating duplicate business effects.",
+    "answer": "Store a key scoped to the client and operation with a unique constraint and outcome. Handle concurrent duplicate requests atomically.",
+    "code": null,
+    "followups": [
+      "What if two requests arrive simultaneously?",
+      "How long should keys live?"
+    ],
+    "mistakes": [],
+    "interview": "I implement idempotency at the service boundary with a durable key and unique constraint, then return the original result for safe retries.",
+    "source": "V10.6",
+    "subtopic": "web",
+    "subtopicName": "REST, MVC & APIs"
+  },
+  {
+    "id": "v10.6-springboot-19",
+    "topic": "springboot",
+    "level": "L3",
+    "title": "How do you handle timeouts in WebClient?",
+    "tags": [
+      "REST",
+      "Resilience"
+    ],
+    "short": "HTTP client calls need bounded connection, response and overall operation timeouts.",
+    "answer": "A timeout should align with the end-to-end deadline and be observable. Retrying after a timeout is only safe when the operation is idempotent or otherwise protected.",
+    "code": null,
+    "followups": [
+      "Connect vs response timeout?",
+      "How do you prevent hanging connections?"
+    ],
+    "mistakes": [],
+    "interview": "I set bounded timeouts at the client and propagate the request deadline. I don't treat timeout as automatically retryable because the downstream may have already processed the request.",
+    "source": "V10.6",
+    "subtopic": "web",
+    "subtopicName": "REST, MVC & APIs"
+  },
+  {
+    "id": "v10.6-springboot-20",
+    "topic": "springboot",
+    "level": "L3",
+    "title": "How do you make scheduled Spring jobs safe in multiple instances?",
+    "tags": [
+      "Scheduling",
+      "Distributed Systems"
+    ],
+    "short": "A scheduled method runs in every application instance unless coordinated.",
+    "answer": "For cluster-wide singleton work, use a distributed lock, leader election or move the job to a dedicated scheduler/queue. The job itself should also be idempotent.",
+    "code": null,
+    "followups": [
+      "ShedLock vs Quartz?",
+      "What if the lock holder crashes?"
+    ],
+    "mistakes": [],
+    "interview": "In a horizontally scaled service I never assume @Scheduled runs once globally. I use a distributed coordination mechanism or a dedicated job runner.",
+    "source": "V10.6",
+    "subtopic": "config",
+    "subtopicName": "Configuration & Production",
+    "scenario": "A scheduled method runs in every application instance unless coordinated.",
+    "investigation": "Start with metrics and traces, identify the failing boundary, compare latency/error rates and inspect resource saturation before changing configuration.",
+    "prevention": "Use explicit timeouts, bounded resources, automated tests and alerts around the failure mode so the same issue is detected early."
+  },
+  {
+    "id": "v10.6-springboot-21",
+    "topic": "springboot",
+    "level": "L3",
+    "title": "How do you avoid blocking calls in a reactive Spring application?",
+    "tags": [
+      "WebFlux",
+      "Performance"
+    ],
+    "short": "Blocking work can occupy reactive event-loop threads and destroy throughput.",
+    "answer": "Reactive applications rely on a small number of event-loop threads. Blocking JDBC, file I/O or long CPU work on those threads can stall unrelated requests. Blocking work should use an appropriate scheduler or, preferably, a non-blocking client.",
+    "code": null,
+    "followups": [
+      "How do you detect blocking calls?",
+      "WebFlux vs MVC for JDBC?"
+    ],
+    "mistakes": [],
+    "interview": "In WebFlux I keep the event loop non-blocking. If a legacy blocking dependency cannot be replaced, I isolate it on a bounded scheduler and monitor its queue and latency rather than blocking event-loop threads.",
+    "source": "V10.6",
+    "subtopic": "core",
+    "subtopicName": "Spring Core & IoC"
+  }
+]
