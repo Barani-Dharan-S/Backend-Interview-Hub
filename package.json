@@ -1,7 +1,11 @@
 {
   "name": "backend-interview-hub",
   "private": true,
+<<<<<<< HEAD
   "version": "24.5.0",
+=======
+  "version": "24.4.0",
+>>>>>>> 99ebeded15102868f823eb73b9b8435cc4145317
   "type": "module",
   "scripts": {
     "dev": "vite",
