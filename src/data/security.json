@@ -1,0 +1,1080 @@
+[
+  {
+    "id": "security-001",
+    "title": "JWT structure",
+    "level": "L2",
+    "tags": [
+      "JWT",
+      "Security"
+    ],
+    "short": "A JWT is a signed token format commonly carrying header, payload and signature; encoding is not encryption.",
+    "answer": "A JWT normally contains a Base64URL-encoded header, payload claims, and a signature. The signature lets the resource server verify integrity and issuer-controlled signing, but the payload is readable by anyone holding the token, so secrets must never be placed there. In a typical API flow, the client sends the token as Bearer authentication, the resource server validates the signature and important claims such as issuer, audience, expiry and not-before before authorizing the request.",
+    "code": "Authorization: Bearer <token>",
+    "followups": [
+      "What is the difference between signing and encryption?",
+      "Why should the API validate the audience claim?",
+      "Where should sensitive data be stored instead of a JWT payload?"
+    ],
+    "mistakes": [
+      "Do not say JWT payload is encrypted by default.",
+      "Do not treat a valid signature as sufficient authorization."
+    ],
+    "interview": "A JWT is a compact signed token with header, payload and signature. I would stress that Base64URL encoding does not provide confidentiality. On the resource server I validate the signature and claims such as issuer, audience and expiry before using the token identity for authorization.",
+    "source": "V3",
+    "topic": "security"
+  },
+  {
+    "id": "security-002",
+    "title": "Authentication vs authorization",
+    "level": "L2",
+    "tags": [
+      "Security",
+      "Concepts"
+    ],
+    "short": "Authentication establishes who the caller is; authorization decides what that authenticated identity is allowed to do.",
+    "answer": "Authentication answers “who are you?” and produces an identity or principal. Authorization answers “what may this identity do?” and evaluates roles, scopes, permissions or resource ownership. In a microservice API, JWT validation can authenticate the caller, while a service still has to enforce authorization such as “this user can update only orders belonging to their tenant.” Mixing the two is a common source of broken access control.",
+    "code": "hasRole(\"ADMIN\")",
+    "followups": [
+      "Where should authorization be enforced in microservices?",
+      "RBAC vs ABAC?",
+      "How do you prevent IDOR or cross-tenant access?"
+    ],
+    "mistakes": [
+      "Do not equate authentication with authorization.",
+      "Do not rely only on API Gateway authorization for resource ownership checks."
+    ],
+    "interview": "Authentication establishes identity; authorization evaluates permissions. A valid JWT proves the token was accepted, but it does not automatically mean the caller can access every resource. I keep resource-level authorization inside the service that owns the business data.",
+    "source": "V3",
+    "topic": "security"
+  },
+  {
+    "id": "security-003",
+    "title": "CSRF",
+    "level": "L2",
+    "tags": [
+      "Security",
+      "Web"
+    ],
+    "short": "CSRF exploits ambient browser credentials; it mainly matters for cookie-based authentication rather than bearer tokens stored outside browser credentials.",
+    "answer": "CSRF tricks a browser into sending an authenticated request to a target site without the user intentionally initiating that action. It is especially relevant when authentication credentials are automatically attached by the browser, such as session cookies. Common defenses include SameSite cookies, CSRF tokens and origin checks. A typical Authorization: Bearer token kept outside automatically attached browser credentials is not exposed to the classic cookie-based CSRF mechanism, although browser architecture and storage choices still matter.",
+    "code": "Cookie auth + forged state-changing request",
+    "followups": [
+      "CSRF vs XSS?",
+      "Why is SameSite useful?",
+      "Does JWT automatically eliminate CSRF?"
+    ],
+    "mistakes": [
+      "Do not say CSRF and XSS are the same attack.",
+      "Do not claim every JWT application is automatically immune to CSRF; the browser credential mechanism matters."
+    ],
+    "interview": "CSRF is about unwanted state-changing requests made with credentials the browser automatically attaches. For cookie-based sessions I use SameSite and CSRF protection as appropriate. I distinguish this from XSS and from APIs where bearer credentials are not automatically attached by the browser.",
+    "source": "V3",
+    "topic": "security"
+  },
+  {
+    "id": "security-004",
+    "title": "Password storage",
+    "level": "L2",
+    "tags": [
+      "Security",
+      "Authentication"
+    ],
+    "short": "Store passwords as slow, salted password hashes using a dedicated password-hashing algorithm, never reversible encryption or plaintext.",
+    "answer": "Passwords should be processed with a password-hashing function designed to resist offline guessing, such as Argon2id, bcrypt or scrypt, with a unique salt per password. The application stores the resulting hash and parameters, then verifies a login by running the submitted password through the same password-hashing scheme. A salt prevents identical passwords from producing identical stored hashes and makes precomputed rainbow tables less useful. Work factors should be tuned for the deployment rather than hard-coded blindly.",
+    "code": "// bcrypt/Argon2 hash",
+    "followups": [
+      "Why is SHA-256 alone unsuitable for passwords?",
+      "What is a salt?",
+      "How do you migrate to a stronger password hash?"
+    ],
+    "mistakes": [
+      "Do not say encryption is the preferred password-storage mechanism.",
+      "Do not assume a single global salt is equivalent to a per-password salt."
+    ],
+    "interview": "I never store plaintext or reversible password encryption. I use a dedicated password-hashing algorithm such as Argon2id or bcrypt with a unique salt and an appropriate work factor, then verify the supplied password against the stored hash during login.",
+    "source": "V3",
+    "topic": "security"
+  },
+  {
+    "id": "security-005",
+    "title": "OAuth 2.0",
+    "level": "L2",
+    "tags": [
+      "OAuth",
+      "Security"
+    ],
+    "short": "OAuth 2.0 is an authorization framework for delegated access; it is not itself an authentication protocol.",
+    "answer": "OAuth 2.0 defines how a client obtains and uses access tokens to call protected resources on behalf of a resource owner or application. The authorization server issues tokens after an appropriate grant flow, and the resource server validates the access token and enforces scopes or other authorization rules. For user authentication, OpenID Connect adds an identity layer on top of OAuth 2.0.",
+    "code": "Client -> Authorization Server -> Token -> Resource Server",
+    "followups": [
+      "Authorization Code + PKCE flow?",
+      "OAuth2 vs OpenID Connect?",
+      "What is a resource server?"
+    ],
+    "mistakes": [
+      "Do not call OAuth 2.0 an authentication protocol by itself.",
+      "Do not confuse an access token with an ID token."
+    ],
+    "interview": "OAuth 2.0 is primarily about delegated authorization, not proving a human identity. The client obtains an access token from an authorization server and presents it to a resource server. If I need user identity, I look at OpenID Connect on top of OAuth 2.0.",
+    "source": "V3",
+    "topic": "security"
+  },
+  {
+    "id": "security-006",
+    "title": "CORS",
+    "level": "L2",
+    "tags": [
+      "Security",
+      "Web"
+    ],
+    "short": "CORS is a browser-enforced policy controlling which origins may read cross-origin responses; it is not a server-to-server security boundary.",
+    "answer": "CORS controls whether browser JavaScript from one origin can access responses from another origin. The server communicates its policy with headers such as Access-Control-Allow-Origin and may receive a preflight OPTIONS request for non-simple cross-origin requests. CORS does not stop a backend client from calling the endpoint directly, so authentication and authorization remain mandatory. Credentials such as cookies require additional CORS constraints and cannot be combined with a wildcard allowed origin.",
+    "code": "Access-Control-Allow-Origin: https://example.com",
+    "followups": [
+      "What triggers a preflight?",
+      "Why can’t credentials use wildcard origin?",
+      "CORS vs CSRF?"
+    ],
+    "mistakes": [
+      "Do not say CORS blocks Postman or backend clients.",
+      "Do not use a permissive wildcard origin with credentialed requests."
+    ],
+    "interview": "CORS is a browser security policy, not an API authentication mechanism. I configure the allowed origins, methods and headers deliberately, and I remember that server-to-server callers are not constrained by browser CORS checks.",
+    "source": "V3",
+    "topic": "security"
+  },
+  {
+    "id": "security-007",
+    "title": "Refresh token",
+    "level": "L2",
+    "tags": [
+      "JWT",
+      "Tokens"
+    ],
+    "short": "Refresh tokens allow a client to obtain new short-lived access tokens without repeatedly re-authenticating the user.",
+    "answer": "A refresh token is typically longer-lived and exchanged with an authorization server for a new access token. This lets access tokens remain short-lived, reducing the impact of access-token theft. For stronger security, refresh tokens can be rotated on use and the server can detect reuse, revoke a token family, and bind the token to an appropriate client/session context. Refresh tokens should be stored and transmitted more carefully than ordinary API access tokens.",
+    "code": "grant_type=refresh_token",
+    "followups": [
+      "What happens when a refresh token is reused?",
+      "Where should browser refresh tokens be stored?",
+      "How do you revoke a token family?"
+    ],
+    "mistakes": [
+      "Do not make refresh tokens short-lived by definition; lifetime is a policy choice.",
+      "Do not assume rotation alone prevents all token theft."
+    ],
+    "interview": "I use short-lived access tokens for API calls and a refresh token to obtain new ones. Rotation is stronger because every refresh can invalidate the previous token and let the authorization server detect reuse of a stolen token.",
+    "source": "V3",
+    "topic": "security"
+  },
+  {
+    "id": "security-008",
+    "title": "RBAC",
+    "level": "L2",
+    "tags": [
+      "Authorization",
+      "RBAC"
+    ],
+    "short": "RBAC grants permissions through roles, making access decisions easier to manage than assigning every permission directly to every user.",
+    "answer": "Role-Based Access Control maps users or service identities to roles, and roles to permissions. A request is authorized by evaluating the caller’s effective roles against the required permission. RBAC is simple and useful for coarse-grained access such as ADMIN, SUPPORT or READ_ONLY, but resource ownership and tenant isolation often require additional attributes or explicit checks.",
+    "code": "@PreAuthorize(\"hasRole('ADMIN')\")",
+    "followups": [
+      "RBAC vs ABAC?",
+      "How do you implement tenant-level authorization?",
+      "Where should roles be checked?"
+    ],
+    "mistakes": [
+      "Do not put every business rule into roles.",
+      "Do not treat ADMIN as a substitute for validating resource ownership when the requirement forbids cross-tenant access."
+    ],
+    "interview": "RBAC centralizes coarse-grained permissions through roles. I would use it for permissions such as read or admin access, but I would not assume a role alone proves resource ownership or tenant access.",
+    "source": "V3",
+    "topic": "security"
+  },
+  {
+    "id": "security-009",
+    "title": "Service-to-service security",
+    "level": "L3",
+    "tags": [
+      "Microservices",
+      "Security"
+    ],
+    "short": "Service-to-service security authenticates workloads and authorizes specific operations, commonly using mTLS, OAuth2 client credentials or workload identity.",
+    "answer": "Internal traffic should not be trusted merely because it is inside a private network. A service should authenticate the calling workload and authorize the requested operation. Common approaches include mutual TLS for workload identity and transport security, OAuth2 client-credentials access tokens, or cloud/workload identity mechanisms. Secrets and certificates need rotation, and authorization should use least privilege rather than one shared “internal” credential.",
+    "code": "Service A --mTLS/OAuth--> Service B",
+    "followups": [
+      "mTLS vs OAuth2 client credentials?",
+      "How do you rotate service credentials?",
+      "How do you prevent a compromised service from calling everything?"
+    ],
+    "mistakes": [
+      "Do not say internal network means trusted.",
+      "Do not give every service a shared superuser credential."
+    ],
+    "interview": "I treat internal calls as untrusted network traffic. I authenticate the workload with mTLS, OAuth2 client credentials or workload identity, then authorize the required scope or operation. I also plan credential rotation and avoid a single shared secret across every service.",
+    "source": "V3",
+    "topic": "security"
+  },
+  {
+    "id": "security-010",
+    "title": "REST API security checklist",
+    "level": "L3",
+    "tags": [
+      "REST",
+      "Security"
+    ],
+    "short": "REST API security combines strong transport security, authentication, authorization, validation, abuse controls, safe logging and secure error handling.",
+    "answer": "A practical API security checklist includes TLS, strong authentication, resource-level authorization, strict input validation, output/data minimization, rate limiting where needed, safe CORS policy for browser clients, secure secret handling, replay/idempotency controls for sensitive operations, dependency patching and security-focused observability. Authentication should be followed by authorization, and sensitive tokens or personal data should not be written to logs. Security controls should be applied at the correct layer rather than assuming the gateway alone is sufficient.",
+    "code": "identity -> permission -> validation -> business rules",
+    "followups": [
+      "How would you secure a public payment API?",
+      "How do you prevent sensitive data in logs?",
+      "What security belongs in the API Gateway versus the service?"
+    ],
+    "mistakes": [
+      "Do not treat authentication as the complete security model.",
+      "Do not log access tokens, passwords or sensitive personal data."
+    ],
+    "interview": "For a REST API I start with TLS, authentication and authorization, then add validation, rate limiting, secure secret management, safe error handling and logging. I also consider replay protection and idempotency for sensitive operations, and I enforce business authorization inside the owning service.",
+    "source": "V3",
+    "topic": "security"
+  },
+  {
+    "id": "iq-119",
+    "title": "How do you secure REST APIs?",
+    "level": "L1",
+    "tags": [
+      "IQ300",
+      "java"
+    ],
+    "short": "Use Spring Security to enforce authentication (verifying identity, e.g. via JWT bearer tokens or OAuth2) and authorization (checking permissions, via role/method-level security like \\@PreAuthorize\\), enforce HTTPS, validate/sanitize input, ",
+    "answer": "Use Spring Security to enforce authentication (verifying identity, e.g. via JWT bearer tokens or OAuth2) and authorization (checking permissions, via role/method-level security like \\<code>@PreAuthorize\\</code>), enforce HTTPS, validate/sanitize input, apply rate limiting, and configure CORS appropriately rather than allowing all origins.",
+    "code": "",
+    "followups": [],
+    "mistakes": [],
+    "interview": "Use Spring Security to enforce authentication (verifying identity, e.g. via JWT bearer tokens or OAuth2) and authorization (checking permissions, via role/method-level security like \\@PreAuthorize\\), enforce HTTPS, validate/sanitize input, apply rate limiting, and configure CORS appropriately rather than allowing all o",
+    "source": "IQ300",
+    "topic": "security"
+  },
+  {
+    "id": "iq-120",
+    "title": "What is Spring Security?",
+    "level": "L2",
+    "tags": [
+      "IQ300",
+      "java"
+    ],
+    "short": "A comprehensive framework for authentication and authorization in Spring applications, providing a filter-chain architecture that intercepts requests to enforce login mechanisms (form login, basic auth, OAuth2/JWT), method- and URL-level ac",
+    "answer": "A comprehensive framework for authentication and authorization in Spring applications, providing a filter-chain architecture that intercepts requests to enforce login mechanisms (form login, basic auth, OAuth2/JWT), method- and URL-level access control, CSRF protection, session management, and integration with identity providers.",
+    "code": "",
+    "followups": [],
+    "mistakes": [],
+    "interview": "A comprehensive framework for authentication and authorization in Spring applications, providing a filter-chain architecture that intercepts requests to enforce login mechanisms (form login, basic auth, OAuth2/JWT), method- and URL-level access control, CSRF protection, session management, and integration with identity",
+    "source": "IQ300",
+    "topic": "security"
+  },
+  {
+    "id": "iq-323",
+    "title": "Explain API Gateway authentication flow.",
+    "level": "L1",
+    "tags": [
+      "IQ300",
+      "security"
+    ],
+    "short": "The gateway sits in front of backend services and intercepts every incoming request, validating the presented credential (e.g. a JWT's signature and expiry, or introspecting an opaque token against an auth server) before forwarding the requ",
+    "answer": "The gateway sits in front of backend services and intercepts every incoming request, validating the presented credential (e.g. a JWT's signature and expiry, or introspecting an opaque token against an auth server) before forwarding the request — so individual downstream services can trust the request has already been authenticated, often just reading pre-validated identity/claims passed via headers rather than re-validating themselves.",
+    "code": "",
+    "followups": [],
+    "mistakes": [],
+    "interview": "The gateway sits in front of backend services and intercepts every incoming request, validating the presented credential (e.g. a JWT's signature and expiry, or introspecting an opaque token against an auth server) before forwarding the request — so individual downstream services can trust the request has already been a",
+    "source": "IQ300",
+    "topic": "security"
+  },
+  {
+    "id": "iq-324",
+    "title": "Explain JWT validation flow.",
+    "level": "L1",
+    "tags": [
+      "IQ300",
+      "security"
+    ],
+    "short": "The verifier decodes the token's header and payload, checks the signature against the issuer's public key (or shared secret) to confirm it hasn't been tampered with, checks standard claims like expiry (\\exp\\) and issuer (\\iss\\), and then tr",
+    "answer": "The verifier decodes the token's header and payload, checks the signature against the issuer's public key (or shared secret) to confirm it hasn't been tampered with, checks standard claims like expiry (\\<code>exp\\</code>) and issuer (\\<code>iss\\</code>), and then trusts the claims inside (user id, roles) for authorization decisions — all without needing to call back to the issuing server for typical stateless JWT validation.",
+    "code": "",
+    "followups": [],
+    "mistakes": [],
+    "interview": "The verifier decodes the token's header and payload, checks the signature against the issuer's public key (or shared secret) to confirm it hasn't been tampered with, checks standard claims like expiry (\\exp\\) and issuer (\\iss\\), and then trusts the claims inside (user id, roles) for authorization decisions — all withou",
+    "source": "IQ300",
+    "topic": "security"
+  },
+  {
+    "id": "iq-325",
+    "title": "Explain OAuth2 authorization code flow.",
+    "level": "L1",
+    "tags": [
+      "IQ300",
+      "security"
+    ],
+    "short": "The client redirects the user to the authorization server to log in and consent; the server redirects back to the client with a short-lived authorization code; the client's backend exchanges that code (plus its client secret) for an access ",
+    "answer": "The client redirects the user to the authorization server to log in and consent; the server redirects back to the client with a short-lived authorization code; the client's backend exchanges that code (plus its client secret) for an access token (and often a refresh token) via a direct server-to-server call — keeping the actual token exchange off the user's browser, which is why this flow is considered secure for server-side web apps.",
+    "code": "",
+    "followups": [],
+    "mistakes": [],
+    "interview": "The client redirects the user to the authorization server to log in and consent; the server redirects back to the client with a short-lived authorization code; the client's backend exchanges that code (plus its client secret) for an access token (and often a refresh token) via a direct server-to-server call — keeping t",
+    "source": "IQ300",
+    "topic": "security"
+  },
+  {
+    "topic": "security",
+    "level": "L2",
+    "title": "What is OAuth 2.0?",
+    "tags": [
+      "OAuth2",
+      "Security"
+    ],
+    "short": "OAuth 2.0 is an authorization framework for delegated access to protected resources.",
+    "answer": "OAuth separates the client, resource owner, authorization server and resource server roles. Access tokens represent granted scopes. OAuth itself is not an authentication protocol; OpenID Connect adds an identity layer.",
+    "code": "Authorization: Bearer <access-token>",
+    "followups": [
+      "OAuth vs OpenID Connect?",
+      "Authorization Code vs Client Credentials?"
+    ],
+    "mistakes": [
+      "Calling OAuth an authentication protocol by itself.",
+      "Putting sensitive data into access-token claims without need."
+    ],
+    "interview": "OAuth 2.0 is primarily about delegated authorization. For user authentication and identity claims, OpenID Connect builds on OAuth 2.0.",
+    "source": "V9",
+    "id": "v9-045"
+  },
+  {
+    "topic": "security",
+    "level": "L2",
+    "title": "Explain the Authorization Code flow with PKCE.",
+    "tags": [
+      "OAuth2",
+      "PKCE"
+    ],
+    "short": "PKCE binds the authorization request to the client that initiated it, reducing code interception risk.",
+    "answer": "The client creates a code verifier and challenge, sends the challenge to the authorization server, receives an authorization code, then exchanges it with the verifier. The server checks that the verifier matches the original challenge.",
+    "code": "code_verifier = random();\ncode_challenge = BASE64URL(SHA256(code_verifier));\n// authorize with challenge\n// token exchange with verifier",
+    "followups": [
+      "Why is PKCE important for public clients?",
+      "Does PKCE replace client authentication for confidential clients?"
+    ],
+    "mistakes": [
+      "Sending the code verifier in the initial authorization request.",
+      "Treating PKCE as encryption."
+    ],
+    "interview": "PKCE proves possession of a secret verifier during code exchange. It protects authorization codes from interception, especially for public clients.",
+    "source": "V9",
+    "id": "v9-046"
+  },
+  {
+    "topic": "security",
+    "level": "L2",
+    "title": "What is CSRF and when does it matter?",
+    "tags": [
+      "CSRF",
+      "Web Security"
+    ],
+    "short": "CSRF tricks a browser into sending an authenticated request to a site where the browser already has credentials.",
+    "answer": "It is mainly relevant when authentication is automatically attached by the browser, such as cookie-based sessions. A common mitigation is a CSRF token tied to the session plus appropriate SameSite cookie settings.",
+    "code": "POST /profile/email\nCookie: SESSION=...\nX-CSRF-TOKEN: abc123",
+    "followups": [
+      "Does a Bearer token in an Authorization header eliminate CSRF risk?",
+      "CSRF vs XSS?"
+    ],
+    "mistakes": [
+      "Saying CSRF is solved by CORS.",
+      "Assuming every API needs identical CSRF handling regardless of auth mechanism."
+    ],
+    "interview": "CSRF exploits automatically attached browser credentials. For cookie-based authentication I use CSRF protection; bearer tokens supplied explicitly by clients have different threat characteristics.",
+    "source": "V9",
+    "id": "v9-047"
+  },
+  {
+    "topic": "security",
+    "level": "L2",
+    "title": "What is CORS?",
+    "tags": [
+      "CORS",
+      "Web Security"
+    ],
+    "short": "CORS is a browser-enforced policy controlling which origins can make certain cross-origin requests and read responses.",
+    "answer": "The server returns headers such as Access-Control-Allow-Origin. Preflight requests use OPTIONS for requests that require permission negotiation. CORS does not protect a server from non-browser clients.",
+    "code": "Access-Control-Allow-Origin: https://app.example.com\nAccess-Control-Allow-Methods: GET,POST",
+    "followups": [
+      "Why is a preflight sent?",
+      "Why is allow-origin * problematic with credentials?"
+    ],
+    "mistakes": [
+      "Calling CORS a server-side firewall.",
+      "Allowing every origin with credentials."
+    ],
+    "interview": "CORS controls browser cross-origin access. It is not authentication and does not prevent direct calls from non-browser clients.",
+    "source": "V9",
+    "id": "v9-048"
+  },
+  {
+    "topic": "security",
+    "level": "L2",
+    "title": "How should passwords be stored?",
+    "tags": [
+      "Password Security",
+      "Hashing"
+    ],
+    "short": "Passwords should be stored using a slow password-hashing function with a unique salt, never reversible encryption or plaintext.",
+    "answer": "Use a password hashing algorithm designed for credentials, such as Argon2id, bcrypt or scrypt, with appropriate parameters. The application verifies the supplied password against the stored hash.",
+    "code": "String hash = passwordEncoder.encode(rawPassword);\nboolean ok = passwordEncoder.matches(rawPassword, hash);",
+    "followups": [
+      "Why use a salt?",
+      "Why is SHA-256 alone inappropriate for passwords?"
+    ],
+    "mistakes": [
+      "Encrypting passwords when a password hash is sufficient.",
+      "Using fast general-purpose hashes for password storage."
+    ],
+    "interview": "Passwords should be salted and hashed with a password-specific adaptive algorithm. The system stores the hash, not the original password.",
+    "source": "V9",
+    "id": "v9-049"
+  },
+  {
+    "topic": "security",
+    "level": "L3",
+    "title": "How would you secure service-to-service communication?",
+    "tags": [
+      "Microservices Security",
+      "mTLS"
+    ],
+    "short": "Use authenticated identities between services, encrypted transport and least-privilege authorization.",
+    "answer": "mTLS can authenticate both service endpoints and encrypt traffic. Alternatives include workload identity with signed tokens. Authorization should be based on service identity and required scopes or permissions, not simply network location.",
+    "code": "Service A --mTLS--> Service B\nAuthorization: Bearer <service-token>",
+    "followups": [
+      "mTLS vs JWT?",
+      "How do you rotate certificates?"
+    ],
+    "mistakes": [
+      "Trusting any internal network caller.",
+      "Using one shared credential for every service."
+    ],
+    "interview": "Internal traffic is still untrusted from an authorization perspective. I use workload identity, TLS or mTLS, short-lived credentials and least-privilege policies.",
+    "source": "V9",
+    "id": "v9-050"
+  },
+  {
+    "topic": "security",
+    "level": "L3",
+    "title": "How do refresh tokens improve access-token security?",
+    "tags": [
+      "JWT",
+      "Refresh Token"
+    ],
+    "short": "Short-lived access tokens reduce exposure while refresh tokens allow controlled issuance of new access tokens.",
+    "answer": "A refresh token is typically longer-lived and more carefully protected. Rotation and reuse detection can limit replay. Revocation and storage strategy depend on the client type and threat model.",
+    "code": "POST /oauth/token\ngrant_type=refresh_token\nrefresh_token=...",
+    "followups": [
+      "Where should refresh tokens be stored in browser applications?",
+      "What is refresh-token rotation?"
+    ],
+    "mistakes": [
+      "Making access tokens extremely long-lived.",
+      "Treating refresh tokens as ordinary API bearer tokens without additional controls."
+    ],
+    "interview": "Refresh tokens let access tokens remain short-lived. Because refresh tokens are powerful credentials, I protect them, rotate them where appropriate and detect reuse.",
+    "source": "V9",
+    "id": "v9-051"
+  },
+  {
+    "topic": "security",
+    "level": "L2",
+    "title": "What is RBAC?",
+    "tags": [
+      "Authorization",
+      "RBAC"
+    ],
+    "short": "Role-based access control grants permissions through roles rather than assigning every permission directly to every user.",
+    "answer": "A user may have roles such as ORDER_VIEWER or ORDER_ADMIN. The application maps roles to permissions and checks authorization at the appropriate resource boundary.",
+    "code": "@PreAuthorize(\"hasRole(ORDER_ADMIN)\")\npublic void cancelOrder(Long id) { ... }",
+    "followups": [
+      "RBAC vs ABAC?",
+      "Where should authorization checks live?"
+    ],
+    "mistakes": [
+      "Using roles as the only authorization concept for complex resource rules.",
+      "Checking authorization only in the UI."
+    ],
+    "interview": "RBAC simplifies permission management by grouping permissions into roles. The backend must enforce authorization regardless of client-side controls.",
+    "source": "V9",
+    "id": "v9-052"
+  },
+  {
+    "topic": "security",
+    "subtopic": "micro",
+    "level": "L3",
+    "title": "How would you design service-to-service authentication?",
+    "tags": [
+      "security",
+      "L3",
+      "Production"
+    ],
+    "short": "Authenticate workloads with short-lived identities and authorize the requested operation with least privilege.",
+    "answer": "mTLS provides workload authentication at transport level; OAuth2 client credentials or signed service tokens provide application identity. Validate issuer, audience, expiry and scopes.",
+    "code": "Authorization: Bearer <short-lived-token>",
+    "followups": [
+      "mTLS vs OAuth2?",
+      "How do you rotate credentials?"
+    ],
+    "mistakes": [
+      "Trusting any internal network caller."
+    ],
+    "interview": "I separate workload authentication from authorization and avoid broad shared secrets. Every service validates identity and permissions at its boundary.",
+    "source": "V10",
+    "id": "v10-052"
+  },
+  {
+    "topic": "security",
+    "subtopic": "micro",
+    "level": "L3",
+    "title": "How do you secure JWT APIs beyond signature validation?",
+    "tags": [
+      "security",
+      "L3",
+      "Production"
+    ],
+    "short": "Validate issuer, audience, expiry, not-before and authorization claims, then enforce resource permissions.",
+    "answer": "A valid signature proves origin, not that the token is intended for this API or action. Keep lifetimes short and rotate signing keys.",
+    "code": "validate(iss,aud,exp,nbf); authorize(scope,resource)",
+    "followups": [
+      "How do you rotate keys?",
+      "How do you revoke sessions?"
+    ],
+    "mistakes": [
+      "Checking only signature and expiry."
+    ],
+    "interview": "JWT validation is authentication; authorization still has to decide whether this caller may access this resource.",
+    "source": "V10",
+    "id": "v10-053"
+  },
+  {
+    "topic": "security",
+    "subtopic": "micro",
+    "level": "L3",
+    "title": "How do you design refresh-token rotation?",
+    "tags": [
+      "security",
+      "L3",
+      "Production"
+    ],
+    "short": "Rotate on every use and detect reuse to limit replay after token theft.",
+    "answer": "Store a token family identifier and server-side state. A reused old token can indicate compromise, so revoke the family.",
+    "code": "old -> refresh -> new; reuse old -> revoke family",
+    "followups": [
+      "Where should refresh tokens be stored?",
+      "How do you revoke all sessions?"
+    ],
+    "mistakes": [
+      "Using one long-lived non-rotating refresh token."
+    ],
+    "interview": "Rotation reduces the replay window and reuse detection gives a strong signal of token theft.",
+    "source": "V10",
+    "id": "v10-054"
+  },
+  {
+    "topic": "security",
+    "subtopic": "micro",
+    "level": "L3",
+    "title": "How do you defend a backend against SSRF?",
+    "tags": [
+      "security",
+      "L3",
+      "Production"
+    ],
+    "short": "Restrict outbound destinations and enforce network egress controls; do not allow arbitrary user URLs.",
+    "answer": "Prefer allowlists, restrict protocols/ports, validate resolved addresses, handle redirects carefully and block access to internal/metadata ranges. Network policy is a second layer.",
+    "code": "allowlistedHost -> outbound client; reject arbitrary schemes/addresses",
+    "followups": [
+      "Why are redirects dangerous?",
+      "Why is IP blocking alone insufficient?"
+    ],
+    "mistakes": [
+      "Validating only the hostname string."
+    ],
+    "interview": "SSRF defense must exist in both application validation and network egress policy because DNS and redirects can bypass naive URL checks.",
+    "source": "V10",
+    "id": "v10-055"
+  },
+  {
+    "topic": "security",
+    "subtopic": "micro",
+    "level": "L3",
+    "title": "How do you secure file uploads?",
+    "tags": [
+      "security",
+      "L3",
+      "Production"
+    ],
+    "short": "Validate size/content, generate server-side object names, isolate storage and authorize downloads independently.",
+    "answer": "Do not trust extension or MIME type. Prevent path traversal, scan where required, and keep uploaded content outside executable web roots.",
+    "code": "UUID objectKey = UUID.randomUUID();\n// store using server-generated key",
+    "followups": [
+      "How do you handle zip bombs?",
+      "How do you secure downloads?"
+    ],
+    "mistakes": [
+      "Saving files using the original client filename."
+    ],
+    "interview": "Uploads are untrusted data. I validate content and size, isolate storage and make access authorization explicit.",
+    "source": "V10",
+    "id": "v10-056"
+  },
+  {
+    "topic": "security",
+    "subtopic": "micro",
+    "level": "L3",
+    "title": "What is confused-deputy risk in microservices?",
+    "tags": [
+      "security",
+      "L3",
+      "Production"
+    ],
+    "short": "A service may use its own broad privileges to perform an action that the original caller was not allowed to perform.",
+    "answer": "Keep service identities least-privileged and propagate user/delegation context when downstream authorization depends on the caller. Audit delegated actions.",
+    "code": "user -> service A -> privileged service B\n// B must enforce intended caller permissions",
+    "followups": [
+      "User identity vs service identity?",
+      "How do you audit delegation?"
+    ],
+    "mistakes": [
+      "Giving every service admin credentials."
+    ],
+    "interview": "Internal identity does not automatically mean unlimited authorization. I define the authorization boundary explicitly.",
+    "source": "V10",
+    "id": "v10-057"
+  },
+  {
+    "topic": "security",
+    "subtopic": "micro",
+    "level": "L3",
+    "title": "How do you rotate secrets without downtime?",
+    "tags": [
+      "security",
+      "L3",
+      "Production"
+    ],
+    "short": "Overlap old and new credentials during rollout, verify the new credential, then revoke the old one.",
+    "answer": "Use a secret manager and versioned credentials. Consumers load the new version, establish successful connections, and only then should the old version be disabled.",
+    "code": "old valid -> deploy new -> verify -> revoke old",
+    "followups": [
+      "How do you rotate DB passwords with pools?",
+      "How do you detect stale instances?"
+    ],
+    "mistakes": [
+      "Revoking the old secret before all consumers switch."
+    ],
+    "interview": "Secret rotation is a rollout problem. Overlapping validity avoids requiring a synchronized fleet restart.",
+    "source": "V10",
+    "id": "v10-058"
+  },
+  {
+    "topic": "security",
+    "subtopic": "micro",
+    "level": "L3",
+    "title": "How do you prevent cross-tenant authorization bugs?",
+    "tags": [
+      "security",
+      "L3",
+      "Production"
+    ],
+    "short": "Derive tenant identity from trusted authentication and enforce it at the data boundary.",
+    "answer": "Never trust tenantId from the request as the authorization source. Include tenant predicates in data access and test horizontal access control explicitly.",
+    "code": "SELECT * FROM orders WHERE id=? AND tenant_id=?;",
+    "followups": [
+      "How do you test IDOR?",
+      "Can database row-level security help?"
+    ],
+    "mistakes": [
+      "Using client-supplied tenantId."
+    ],
+    "interview": "Tenant isolation should survive a new endpoint being added incorrectly because the data boundary enforces it too.",
+    "source": "V10",
+    "id": "v10-059"
+  },
+  {
+    "id": "v10.1-043",
+    "title": "JWT validation passes but a user accesses another user’s resource",
+    "level": "L3",
+    "tags": [
+      "jwt",
+      "authorization",
+      "object-level authorization",
+      "Production Scenario",
+      "V10.1"
+    ],
+    "short": "A valid JWT proves who the caller is; it does not automatically prove they may access every resource.",
+    "answer": "I would keep JWT validation and resource authorization separate. The service must compare the authenticated subject and tenant context with the resource owner or permission model before returning data.",
+    "code": "Separate authentication from authorization. Enforce object-level authorization using the authenticated subject, tenant and resource ownership/permissions. Never treat a valid token as permission to every resource.",
+    "followups": [
+      "What is IDOR?",
+      "How do you implement tenant-aware authorization?",
+      "Should authorization be checked at the gateway?"
+    ],
+    "mistakes": [
+      "Assuming authentication implies authorization.",
+      "Trusting user IDs from the URL without authorization checks."
+    ],
+    "interview": "The classic JWT mistake is treating authentication as authorization. I would explicitly authorize the requested object for the authenticated principal.",
+    "source": "V10.1",
+    "topic": "security",
+    "subtopic": "auth",
+    "scenario": "The API validates the JWT correctly, but a user can change /users/123 to /users/124 and retrieve another user’s data.",
+    "investigation": "Confirm token validation and then inspect the authorization decision for the requested resource. Check whether the resource owner is compared with token claims or server-side permissions.",
+    "resolution": "Separate authentication from authorization. Enforce object-level authorization using the authenticated subject, tenant and resource ownership/permissions. Never treat a valid token as permission to every resource.",
+    "prevention": "Add authorization tests for horizontal privilege escalation and audit access to sensitive resources."
+  },
+  {
+    "id": "v10.1-044",
+    "title": "Refresh-token rotation causes unexpected logouts",
+    "level": "L3",
+    "tags": [
+      "refresh token",
+      "rotation",
+      "security",
+      "Production Scenario",
+      "V10.1"
+    ],
+    "short": "Refresh-token rotation improves security, but token state must be modeled per session when multiple devices are supported.",
+    "answer": "I would model refresh tokens as session-specific token families. Each refresh rotates the token and invalidates the predecessor. Reuse of an old token can indicate theft and should revoke that token family.",
+    "code": "Track refresh-token families per device/session. Rotate the token on refresh, invalidate the old token, and detect reuse. Do not store one refresh token as the only session state for a multi-device account unless that behavior is intentional.",
+    "followups": [
+      "How do you revoke JWT access tokens?",
+      "What happens if two refresh requests race?",
+      "Where should refresh tokens be stored?"
+    ],
+    "mistakes": [
+      "Keeping one refresh token per user for all devices.",
+      "Rotating without handling concurrent refreshes."
+    ],
+    "interview": "I would first clarify whether sessions are per device. Then I would use token-family rotation and reuse detection rather than one global refresh token.",
+    "source": "V10.1",
+    "topic": "security",
+    "subtopic": "jwt",
+    "scenario": "A user signs in on two devices. Refresh-token rotation is enabled, but refreshing on one device invalidates the other device’s session unexpectedly.",
+    "investigation": "Inspect whether refresh tokens are rotated per session, globally per user, or stored as a single token. Check token-family tracking and reuse detection.",
+    "resolution": "Track refresh-token families per device/session. Rotate the token on refresh, invalidate the old token, and detect reuse. Do not store one refresh token as the only session state for a multi-device account unless that behavior is intentional.",
+    "prevention": "Define session semantics, expose device/session management and test concurrent refreshes and token theft scenarios."
+  },
+  {
+    "id": "v10.1-045",
+    "title": "An SSRF vulnerability lets the backend call internal services",
+    "level": "L3",
+    "tags": [
+      "ssrf",
+      "api security",
+      "networking",
+      "Production Scenario",
+      "V10.1"
+    ],
+    "short": "SSRF is a server-side trust-boundary problem: user-controlled URLs become server-controlled network requests.",
+    "answer": "I would avoid arbitrary outbound URLs where possible. If required, I would use an allowlist, validate DNS-resolved addresses against blocked ranges, restrict redirects and enforce network egress controls.",
+    "code": "Prefer allowlists for destinations. Validate resolved IP addresses, block private/link-local/loopback ranges, control redirects and use an egress proxy where appropriate. Do not rely only on string checks of the hostname.",
+    "followups": [
+      "Why is DNS rebinding relevant?",
+      "How can a proxy help?",
+      "Which cloud metadata endpoints are sensitive?"
+    ],
+    "mistakes": [
+      "Blocking only localhost strings.",
+      "Allowing redirects to bypass validation."
+    ],
+    "interview": "The strongest SSRF defense is reducing where the server is allowed to connect, not only validating the input string.",
+    "source": "V10.1",
+    "topic": "security",
+    "subtopic": "micro",
+    "scenario": "An image-import endpoint accepts a URL and fetches it from the server. An attacker supplies an internal metadata or service address.",
+    "investigation": "Trace outbound URL handling and inspect whether private IPs, loopback addresses, redirects and DNS rebinding are blocked. Identify whether the server follows redirects automatically.",
+    "resolution": "Prefer allowlists for destinations. Validate resolved IP addresses, block private/link-local/loopback ranges, control redirects and use an egress proxy where appropriate. Do not rely only on string checks of the hostname.",
+    "prevention": "Add SSRF tests, restrict outbound network access and monitor unusual outbound destinations."
+  },
+  {
+    "id": "v10.5-scenario-15",
+    "title": "JWT is valid but a user can access another customer’s resource",
+    "level": "L3",
+    "tags": [
+      "security",
+      "jwt",
+      "authorization",
+      "multi-tenant"
+    ],
+    "short": "A valid token proves identity or claims; it does not automatically prove permission to access every resource.",
+    "answer": "I would explain this as an authorization failure, not a JWT validation failure. The service must verify that the authenticated principal is allowed to access that specific resource, ideally enforcing tenant ownership in the data query as well.",
+    "code": "",
+    "followups": [
+      "Where should tenant checks happen?",
+      "How would you test for this vulnerability?"
+    ],
+    "mistakes": [
+      "Do not treat possession of a valid JWT as authorization for arbitrary resource IDs."
+    ],
+    "interview": "This is a common IDOR or broken object-level authorization pattern.",
+    "source": "V10.5",
+    "topic": "security",
+    "subtopic": "micro",
+    "scenario": "A user with a valid JWT changes an order ID in the URL and receives another customer’s order.",
+    "investigation": "Inspect authorization at the resource boundary. Verify whether the service checks tenant/user ownership after authentication or only checks that the JWT signature is valid.",
+    "prevention": "Separate authentication from authorization. Enforce tenant/resource ownership in service and data-access queries, and use defense-in-depth policies where appropriate."
+  },
+  {
+    "id": "v10.5-scenario-16",
+    "title": "Refresh token rotation detects token reuse",
+    "level": "L3",
+    "tags": [
+      "security",
+      "refresh-token",
+      "oauth"
+    ],
+    "short": "Refresh-token rotation reduces the window in which a stolen refresh token can be reused undetected.",
+    "answer": "I would rotate the refresh token on every successful refresh and keep enough server-side state to detect reuse. If an old token is presented after rotation, I would treat that as a possible theft signal and revoke the token family.",
+    "code": "",
+    "followups": [
+      "How do stateless JWTs get revoked?",
+      "Where should refresh tokens be stored?"
+    ],
+    "mistakes": [
+      "Do not log raw refresh tokens."
+    ],
+    "interview": "Short-lived access tokens limit immediate impact; refresh-token rotation adds detection and containment for longer-lived credentials.",
+    "source": "V10.5",
+    "topic": "security",
+    "subtopic": "jwt",
+    "scenario": "A refresh token is used twice from different locations. The security team wants the second use to invalidate the session.",
+    "investigation": "Track refresh-token family state or a server-side token identifier. Detect reuse after rotation and correlate the event with the user/session.",
+    "prevention": "Rotate refresh tokens on use, store a revocable token family identifier, invalidate the family on reuse, and require re-authentication when compromise is suspected."
+  },
+  {
+    "id": "v10.6-security-01",
+    "topic": "security",
+    "level": "L2",
+    "title": "What is OAuth2 PKCE and why is it important?",
+    "tags": [
+      "OAuth2",
+      "PKCE"
+    ],
+    "short": "PKCE binds an authorization code exchange to a client-generated verifier.",
+    "answer": "The client creates a verifier and sends its challenge to the authorization server. Later it must present the verifier to redeem the code, reducing the impact of an intercepted authorization code.",
+    "code": null,
+    "followups": [
+      "What is code_verifier?",
+      "Does PKCE replace TLS?"
+    ],
+    "mistakes": [],
+    "interview": "PKCE protects the authorization-code flow by proving that the party redeeming the code started the flow. It is especially important for public clients.",
+    "source": "V10.6",
+    "subtopic": "jwt",
+    "subtopicName": "JWT & Token Security"
+  },
+  {
+    "id": "v10.6-security-02",
+    "topic": "security",
+    "level": "L2",
+    "title": "What is OpenID Connect?",
+    "tags": [
+      "OIDC",
+      "Authentication"
+    ],
+    "short": "OpenID Connect adds an identity layer on top of OAuth2.",
+    "answer": "It defines an ID token and user identity claims so a client can authenticate a user, while OAuth2 itself primarily defines delegated authorization.",
+    "code": null,
+    "followups": [
+      "What is an ID token?",
+      "Access token vs ID token?"
+    ],
+    "mistakes": [],
+    "interview": "OAuth2 answers what access a client gets; OpenID Connect adds standardized user authentication and identity claims.",
+    "source": "V10.6",
+    "subtopic": "auth",
+    "subtopicName": "Authentication & Authorization"
+  },
+  {
+    "id": "v10.6-security-03",
+    "topic": "security",
+    "level": "L2",
+    "title": "How do you validate JWT claims beyond the signature?",
+    "tags": [
+      "JWT",
+      "Security"
+    ],
+    "short": "Signature validation proves integrity, but a service must also validate claims relevant to its trust model.",
+    "answer": "Check issuer, audience, expiry, not-before and required scopes/roles as appropriate. Algorithm and key selection must be constrained rather than blindly trusting token headers.",
+    "code": null,
+    "followups": [
+      "Why validate audience?",
+      "Can a valid token still be unauthorized?"
+    ],
+    "mistakes": [],
+    "interview": "I validate signature plus issuer, audience and time-based claims, then enforce scopes or roles for the requested operation.",
+    "source": "V10.6",
+    "subtopic": "jwt",
+    "subtopicName": "JWT & Token Security"
+  },
+  {
+    "id": "v10.6-security-04",
+    "topic": "security",
+    "level": "L2",
+    "title": "What is token audience and why does it matter?",
+    "tags": [
+      "JWT",
+      "Authorization"
+    ],
+    "short": "The audience identifies the intended recipient of a token.",
+    "answer": "A service should reject a token minted for a different service even if its signature is valid. This limits token replay across APIs.",
+    "code": null,
+    "followups": [
+      "Who sets aud?",
+      "What if aud is missing?"
+    ],
+    "mistakes": [],
+    "interview": "A valid JWT is not automatically valid for every service. I check aud so a token intended for one API cannot be reused against another.",
+    "source": "V10.6",
+    "subtopic": "jwt",
+    "subtopicName": "JWT & Token Security"
+  },
+  {
+    "id": "v10.6-security-05",
+    "topic": "security",
+    "level": "L3",
+    "title": "How should secrets be rotated without downtime?",
+    "tags": [
+      "Secrets",
+      "Operations"
+    ],
+    "short": "Secret rotation should allow old and new credentials to overlap briefly while clients switch.",
+    "answer": "Read new secrets from a managed store, reload them safely, and retire old credentials only after consumers have migrated. For signing keys, key IDs and overlapping public keys help.",
+    "code": null,
+    "followups": [
+      "How do you rotate DB passwords?",
+      "How do you rotate JWT keys?"
+    ],
+    "mistakes": [],
+    "interview": "I use versioned secrets and an overlap window. Rotation must be automated and observable so a credential change does not become an outage.",
+    "source": "V10.6",
+    "subtopic": "fundamentals",
+    "subtopicName": "Security Fundamentals"
+  },
+  {
+    "id": "v10.6-security-06",
+    "topic": "security",
+    "level": "L1",
+    "title": "What is least privilege in backend authorization?",
+    "tags": [
+      "Authorization",
+      "Security"
+    ],
+    "short": "Least privilege grants only the permissions required for a task.",
+    "answer": "Apply it to users, service identities, database roles and cloud IAM. Review permissions periodically and separate read, write and administrative actions.",
+    "code": null,
+    "followups": [
+      "Role vs permission?",
+      "How do you review service permissions?"
+    ],
+    "mistakes": [],
+    "interview": "I start with the minimum permissions required and grant broader access only when there is a documented need.",
+    "source": "V10.6",
+    "subtopic": "auth",
+    "subtopicName": "Authentication & Authorization"
+  },
+  {
+    "id": "v10.6-security-07",
+    "topic": "security",
+    "level": "L2",
+    "title": "How do you prevent sensitive data from leaking into logs?",
+    "tags": [
+      "Security",
+      "Logging"
+    ],
+    "short": "Sensitive fields should be excluded, masked or tokenized before logging.",
+    "answer": "Define structured logging policies, redact authorization headers, passwords, tokens and personal data, and review exception logging paths because stack traces and request dumps can expose data.",
+    "code": null,
+    "followups": [
+      "How do you redact nested objects?",
+      "What about debug logging in production?"
+    ],
+    "mistakes": [],
+    "interview": "I use structured logs with explicit redaction and never log credentials or full sensitive payloads. Logging policy should be tested, not assumed.",
+    "source": "V10.6",
+    "subtopic": "fundamentals",
+    "subtopicName": "Security Fundamentals"
+  },
+  {
+    "id": "v10.6-security-08",
+    "topic": "security",
+    "level": "L3",
+    "title": "What is SSRF DNS rebinding?",
+    "tags": [
+      "SSRF",
+      "Networking"
+    ],
+    "short": "DNS rebinding can make a hostname resolve to a benign address during validation and a private address during the actual request.",
+    "answer": "Mitigation requires validating the resolved address at connection time or using a trusted egress proxy/allowlist rather than trusting one DNS lookup.",
+    "code": null,
+    "followups": [
+      "Why is resolving once insufficient?",
+      "How can egress policy help?"
+    ],
+    "mistakes": [],
+    "interview": "A URL allowlist based only on the initial DNS result can be bypassed. The network control must validate the actual destination or route requests through a controlled proxy.",
+    "source": "V10.6",
+    "subtopic": "fundamentals",
+    "subtopicName": "Security Fundamentals"
+  },
+  {
+    "id": "v10.6-security-09",
+    "topic": "security",
+    "level": "L3",
+    "title": "What is replay attack protection for APIs?",
+    "tags": [
+      "API Security",
+      "Authentication"
+    ],
+    "short": "Replay protection prevents an attacker from reusing a previously valid request or credential.",
+    "answer": "Use short-lived tokens, nonce or timestamp validation for signed requests, idempotency keys for commands, TLS and server-side replay tracking where required.",
+    "code": null,
+    "followups": [
+      "How do nonces work?",
+      "Is JWT expiry enough?"
+    ],
+    "mistakes": [],
+    "interview": "For sensitive commands I combine TLS with short-lived credentials and idempotency or nonce mechanisms so captured requests cannot simply be repeated.",
+    "source": "V10.6",
+    "subtopic": "auth",
+    "subtopicName": "Authentication & Authorization",
+    "scenario": "Replay protection prevents an attacker from reusing a previously valid request or credential.",
+    "investigation": "Start with metrics and traces, identify the failing boundary, compare latency/error rates and inspect resource saturation before changing configuration.",
+    "prevention": "Use explicit timeouts, bounded resources, automated tests and alerts around the failure mode so the same issue is detected early."
+  },
+  {
+    "id": "v10.6-security-10",
+    "topic": "security",
+    "level": "L3",
+    "title": "How do you secure internal admin APIs?",
+    "tags": [
+      "Authorization",
+      "API Security"
+    ],
+    "short": "Internal location alone should not be treated as sufficient authorization.",
+    "answer": "Require strong identity, explicit authorization, network restrictions, audit logging and possibly step-up authentication for sensitive actions. Keep admin endpoints separate where practical.",
+    "code": null,
+    "followups": [
+      "Should internal APIs skip JWT?",
+      "How do you audit admin actions?"
+    ],
+    "mistakes": [],
+    "interview": "I protect admin APIs with strong authentication and fine-grained authorization even inside the network, then add network controls and audit trails as defense in depth.",
+    "source": "V10.6",
+    "subtopic": "auth",
+    "subtopicName": "Authentication & Authorization",
+    "scenario": "Internal location alone should not be treated as sufficient authorization.",
+    "investigation": "Start with metrics and traces, identify the failing boundary, compare latency/error rates and inspect resource saturation before changing configuration.",
+    "prevention": "Use explicit timeouts, bounded resources, automated tests and alerts around the failure mode so the same issue is detected early."
+  }
+]
