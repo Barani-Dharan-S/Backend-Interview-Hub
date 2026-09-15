@@ -1,0 +1,20 @@
+{
+  "version": "V11.0",
+  "total_questions": 1000,
+  "upgraded_questions": 12,
+  "focus": [
+    "Java",
+    "Spring Boot"
+  ],
+  "count_by_topic": {
+    "java": 156,
+    "microservices": 285,
+    "jpa": 58,
+    "security": 46,
+    "coding": 93,
+    "system-design": 56,
+    "sql": 134,
+    "springboot": 134,
+    "cloud": 38
+  }
+}

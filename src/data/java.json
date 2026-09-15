@@ -1,0 +1,3078 @@
+[
+  {
+    "id": "java-001",
+    "title": "== vs equals()",
+    "level": "L2",
+    "tags": [
+      "OOP",
+      "Objects"
+    ],
+    "short": "== compares primitive values or object references; equals() expresses logical equality.",
+    "answer": "For primitives, == compares values; for object references, == checks whether both references refer to the same object. equals() is intended for logical equality and can be overridden by a class. If equals() is overridden, hashCode() must obey the contract that equal objects have equal hash codes, which is essential for HashMap and HashSet.",
+    "code": "String a=new String(\"java\"); String b=new String(\"java\");\na==b; // false\na.equals(b); // true",
+    "followups": [
+      "Why must equals() and hashCode() agree?",
+      "What happens in HashSet if the contract is broken?",
+      "Why should equals() usually be symmetric and transitive?"
+    ],
+    "mistakes": [],
+    "interview": "In an interview I distinguish identity from logical state. == answers “is it the same object?” while equals() answers “should these objects be considered equal?”. For hash-based collections, the equals/hashCode contract is critical.",
+    "source": "V3",
+    "topic": "java"
+  },
+  {
+    "id": "java-002",
+    "title": "equals() and hashCode() contract",
+    "level": "L2",
+    "tags": [
+      "Collections",
+      "Contracts"
+    ],
+    "short": "Equal objects must have equal hash codes.",
+    "answer": "Hash-based collections use hashCode to locate a bucket and equals to confirm the key. Unequal objects may collide.",
+    "code": "@Override public int hashCode(){return Objects.hash(id);}",
+    "followups": [
+      "What breaks if hashCode is omitted?"
+    ],
+    "mistakes": [],
+    "interview": "Equal objects must have equal hash codes.",
+    "source": "V3",
+    "topic": "java"
+  },
+  {
+    "id": "java-003",
+    "title": "HashMap internal working",
+    "level": "L2",
+    "tags": [
+      "Collections",
+      "Hashing"
+    ],
+    "short": "HashMap uses a key hash to select a bucket and equals() to identify the key.",
+    "answer": "HashMap spreads the hash, maps it to a bucket and handles collisions. Modern Java can treeify heavily-collided buckets under suitable conditions. Resize redistributes entries.",
+    "code": "Map<String,Integer> m=new HashMap<>();\nm.put(\"A\",10);",
+    "followups": [
+      "What is a collision?",
+      "What happens during resize?"
+    ],
+    "mistakes": [],
+    "interview": "HashMap uses a key hash to select a bucket and equals() to identify the key.",
+    "source": "V3",
+    "topic": "java"
+  },
+  {
+    "id": "java-004",
+    "title": "ArrayList vs LinkedList",
+    "level": "L2",
+    "tags": [
+      "Collections",
+      "Data Structures"
+    ],
+    "short": "ArrayList gives fast indexed access; LinkedList is node-based.",
+    "answer": "ArrayList is usually the better default. LinkedList has O(n) indexed access and only helps for specific operations/access patterns.",
+    "code": "List<Integer> list=new ArrayList<>();",
+    "followups": [
+      "Which is better for random access?"
+    ],
+    "mistakes": [],
+    "interview": "ArrayList gives fast indexed access; LinkedList is node-based.",
+    "source": "V3",
+    "topic": "java"
+  },
+  {
+    "id": "java-005",
+    "title": "HashSet vs LinkedHashSet vs TreeSet",
+    "level": "L2",
+    "tags": [
+      "Collections",
+      "Set"
+    ],
+    "short": "HashSet has no ordering guarantee, LinkedHashSet preserves insertion order, TreeSet maintains sorted order.",
+    "answer": "Hash-based sets usually provide expected O(1) basic operations. TreeSet is generally O(log n).",
+    "code": "Set<Integer> s=new TreeSet<>(); s.add(30); s.add(10);",
+    "followups": [
+      "Comparable vs Comparator?"
+    ],
+    "mistakes": [],
+    "interview": "HashSet has no ordering guarantee, LinkedHashSet preserves insertion order, TreeSet maintains sorted order.",
+    "source": "V3",
+    "topic": "java"
+  },
+  {
+    "id": "java-006",
+    "title": "How to create an immutable class",
+    "level": "L2",
+    "tags": [
+      "OOP",
+      "Design"
+    ],
+    "short": "Prevent observable state changes after construction.",
+    "answer": "Use private final fields, constructor initialization, no setters, defensive copies and final class where appropriate.",
+    "code": "public final class User { private final String name; public User(String n){name=n;} }",
+    "followups": [
+      "Is final deep immutability?",
+      "What is defensive copying?"
+    ],
+    "mistakes": [],
+    "interview": "Prevent observable state changes after construction.",
+    "source": "V3",
+    "topic": "java"
+  },
+  {
+    "id": "java-007",
+    "title": "final vs finally vs finalize",
+    "level": "L2",
+    "tags": [
+      "Core Java",
+      "Exceptions"
+    ],
+    "short": "final is a keyword, finally is exception cleanup flow, finalize is obsolete for resource management.",
+    "answer": "final restricts reassignment/overriding/inheritance. finally normally executes after try/catch. Do not rely on finalize for cleanup.",
+    "code": "final int MAX=10;\ntry{work();}finally{cleanup();}",
+    "followups": [
+      "How close resources?"
+    ],
+    "mistakes": [],
+    "interview": "final is a keyword, finally is exception cleanup flow, finalize is obsolete for resource management.",
+    "source": "V3",
+    "topic": "java"
+  },
+  {
+    "id": "java-008",
+    "title": "Checked vs unchecked exceptions",
+    "level": "L2",
+    "tags": [
+      "Exceptions",
+      "Error Handling"
+    ],
+    "short": "Checked exceptions must be handled/declared; unchecked exceptions extend RuntimeException.",
+    "answer": "Choose based on whether callers can reasonably recover and where errors are translated.",
+    "code": "try(InputStream in=Files.newInputStream(path)){ /*read*/ }",
+    "followups": [
+      "When custom exception?"
+    ],
+    "mistakes": [],
+    "interview": "Checked exceptions must be handled/declared; unchecked exceptions extend RuntimeException.",
+    "source": "V3",
+    "topic": "java"
+  },
+  {
+    "id": "java-009",
+    "title": "Try-with-resources",
+    "level": "L2",
+    "tags": [
+      "Exceptions",
+      "IO"
+    ],
+    "short": "It automatically closes AutoCloseable resources.",
+    "answer": "Resources close even when exceptions occur; close failures can be represented as suppressed exceptions.",
+    "code": "try(Connection c=ds.getConnection()){ /*use*/ }",
+    "followups": [
+      "What interface is required?"
+    ],
+    "mistakes": [],
+    "interview": "It automatically closes AutoCloseable resources.",
+    "source": "V3",
+    "topic": "java"
+  },
+  {
+    "id": "java-010",
+    "title": "Abstract class vs interface",
+    "level": "L2",
+    "tags": [
+      "OOP",
+      "Design"
+    ],
+    "short": "Abstract classes can share state/implementation; interfaces define contracts and support multiple inheritance of type.",
+    "answer": "Use abstract classes for genuine shared base behavior/state and interfaces for capabilities/contracts.",
+    "code": "interface Auditable{void audit();}\nabstract class Base{Long id;}",
+    "followups": [
+      "Can interfaces have implementation?"
+    ],
+    "mistakes": [],
+    "interview": "Abstract classes can share state/implementation; interfaces define contracts and support multiple inheritance of type.",
+    "source": "V3",
+    "topic": "java"
+  },
+  {
+    "id": "java-011",
+    "title": "Default and static interface methods",
+    "level": "L2",
+    "tags": [
+      "Java 8",
+      "Interfaces"
+    ],
+    "short": "Default methods provide instance behavior; static methods belong to the interface.",
+    "answer": "Default methods help evolve interfaces. Static interface methods are called through the interface name and are not instance overrides.",
+    "code": "interface Loggable { default void log(){} static String level(){return \"INFO\";} }",
+    "followups": [
+      "What if two defaults conflict?"
+    ],
+    "mistakes": [],
+    "interview": "Default methods provide instance behavior; static methods belong to the interface.",
+    "source": "V3",
+    "topic": "java"
+  },
+  {
+    "id": "java-012",
+    "title": "Optional usage",
+    "level": "L2",
+    "tags": [
+      "Java 8",
+      "API Design"
+    ],
+    "short": "Optional models an expected possibly-absent return value.",
+    "answer": "It is particularly useful for return types. It should not automatically replace null in every field or parameter.",
+    "code": "return repo.findById(id).orElseThrow(NotFoundException::new);",
+    "followups": [
+      "orElse vs orElseGet?"
+    ],
+    "mistakes": [],
+    "interview": "Optional models an expected possibly-absent return value.",
+    "source": "V3",
+    "topic": "java"
+  },
+  {
+    "id": "java-013",
+    "title": "Functional interface",
+    "level": "L2",
+    "tags": [
+      "Java 8",
+      "Functional"
+    ],
+    "short": "A functional interface has exactly one abstract method.",
+    "answer": "It can be targeted by lambdas/method references. Default and static methods do not count.",
+    "code": "Predicate<Integer> even=n->n%2==0;",
+    "followups": [
+      "Predicate vs Function?"
+    ],
+    "mistakes": [],
+    "interview": "A functional interface has exactly one abstract method.",
+    "source": "V3",
+    "topic": "java"
+  },
+  {
+    "id": "java-014",
+    "title": "Lambda expression",
+    "level": "L2",
+    "tags": [
+      "Java 8",
+      "Functional"
+    ],
+    "short": "A lambda is a concise implementation of a functional interface.",
+    "answer": "Types are inferred from the target type. Captured local variables must be final or effectively final.",
+    "code": "names.forEach(n->System.out.println(n));",
+    "followups": [
+      "What is effectively final?"
+    ],
+    "mistakes": [],
+    "interview": "A lambda is a concise implementation of a functional interface.",
+    "source": "V3",
+    "topic": "java"
+  },
+  {
+    "id": "java-015",
+    "title": "Record",
+    "level": "L2",
+    "tags": [
+      "Java 16+",
+      "Data Modeling"
+    ],
+    "short": "A record is a concise data carrier with generated accessors and value methods.",
+    "answer": "Records are final with final component references, but referenced objects can still be mutable.",
+    "code": "public record UserResponse(Long id,String name) {}",
+    "followups": [
+      "Are records deeply immutable?"
+    ],
+    "mistakes": [],
+    "interview": "A record is a concise data carrier with generated accessors and value methods.",
+    "source": "V3",
+    "topic": "java"
+  },
+  {
+    "id": "java-016",
+    "title": "Virtual threads",
+    "level": "L3",
+    "tags": [
+      "Java 21",
+      "Concurrency"
+    ],
+    "short": "Virtual threads are lightweight JVM-managed threads suited to high-concurrency blocking workloads.",
+    "answer": "They make thread-per-task models practical at large concurrency. They do not make CPU work intrinsically faster.",
+    "code": "try(var e=Executors.newVirtualThreadPerTaskExecutor()){e.submit(()->remoteCall());}",
+    "followups": [
+      "Virtual vs platform thread?"
+    ],
+    "mistakes": [],
+    "interview": "Virtual threads are lightweight JVM-managed threads suited to high-concurrency blocking workloads.",
+    "source": "V3",
+    "topic": "java"
+  },
+  {
+    "id": "java-017",
+    "title": "synchronized",
+    "level": "L2",
+    "tags": [
+      "Concurrency",
+      "Threads"
+    ],
+    "short": "synchronized provides mutual exclusion and memory visibility around a monitor.",
+    "answer": "Only one thread holds a monitor at a time. Synchronization also establishes happens-before relationships.",
+    "code": "synchronized void increment(){count++;}",
+    "followups": [
+      "Block vs method synchronization?"
+    ],
+    "mistakes": [],
+    "interview": "synchronized provides mutual exclusion and memory visibility around a monitor.",
+    "source": "V3",
+    "topic": "java"
+  },
+  {
+    "id": "java-018",
+    "title": "volatile vs AtomicInteger",
+    "level": "L2",
+    "tags": [
+      "Concurrency",
+      "Memory Model"
+    ],
+    "short": "volatile provides visibility; AtomicInteger provides atomic operations too.",
+    "answer": "volatile does not make count++ atomic. AtomicInteger supports increment and compare-and-set style operations.",
+    "code": "AtomicInteger count=new AtomicInteger();\ncount.incrementAndGet();",
+    "followups": [
+      "When is volatile enough?"
+    ],
+    "mistakes": [],
+    "interview": "volatile provides visibility; AtomicInteger provides atomic operations too.",
+    "source": "V3",
+    "topic": "java"
+  },
+  {
+    "id": "java-019",
+    "title": "Deadlock and prevention",
+    "level": "L3",
+    "tags": [
+      "Concurrency",
+      "Production"
+    ],
+    "short": "Deadlock is cyclic waiting for locks.",
+    "answer": "Prevent with consistent lock ordering, small lock scopes, avoiding nested locks and timed acquisition where appropriate.",
+    "code": "// always acquire A before B",
+    "followups": [
+      "How diagnose in production?"
+    ],
+    "mistakes": [],
+    "interview": "Deadlock is cyclic waiting for locks.",
+    "source": "V3",
+    "topic": "java"
+  },
+  {
+    "id": "java-020",
+    "title": "Heap vs stack",
+    "level": "L2",
+    "tags": [
+      "JVM",
+      "Memory"
+    ],
+    "short": "Objects are generally managed on the heap; each thread has its own call stack.",
+    "answer": "Heap is shared and GC-managed. A stack holds method frames and local execution state.",
+    "code": "User u=new User();",
+    "followups": [
+      "StackOverflowError?",
+      "OutOfMemoryError?"
+    ],
+    "mistakes": [],
+    "interview": "Objects are generally managed on the heap; each thread has its own call stack.",
+    "source": "V3",
+    "topic": "java"
+  },
+  {
+    "id": "java-021",
+    "title": "Garbage collection",
+    "level": "L2",
+    "tags": [
+      "JVM",
+      "Performance"
+    ],
+    "short": "GC reclaims objects that are no longer reachable.",
+    "answer": "Collectors trade throughput, latency and memory footprint. Allocation rate and retention still matter.",
+    "code": "// inspect heap/GC metrics",
+    "followups": [
+      "How diagnose GC pressure?"
+    ],
+    "mistakes": [],
+    "interview": "GC reclaims objects that are no longer reachable.",
+    "source": "V3",
+    "topic": "java"
+  },
+  {
+    "id": "java-022",
+    "title": "String vs StringBuilder vs StringBuffer",
+    "level": "L2",
+    "tags": [
+      "Strings",
+      "Performance"
+    ],
+    "short": "String is immutable; StringBuilder is mutable and unsynchronized; StringBuffer is synchronized.",
+    "answer": "String is immutable, so repeated concatenation creates new String objects. StringBuilder is mutable and is the usual choice for single-threaded iterative construction. StringBuffer provides similar mutable operations but synchronizes its methods, so it is generally slower and is only useful when that legacy synchronization requirement matters. In modern concurrent code, explicit synchronization or other concurrency primitives are usually preferable.",
+    "code": "StringBuilder sb=new StringBuilder(); sb.append(\"Java\");",
+    "followups": [
+      "Why is String immutable?",
+      "When would StringBuffer be preferred?",
+      "What is the time complexity of repeated String concatenation in a loop?"
+    ],
+    "mistakes": [],
+    "interview": "For loops that build text repeatedly, I use StringBuilder because it avoids creating a new String for every append. I choose StringBuffer only when I specifically need its synchronized API; otherwise StringBuilder is the simpler and faster default.",
+    "source": "V3",
+    "topic": "java"
+  },
+  {
+    "id": "java-023",
+    "title": "Comparable vs Comparator",
+    "level": "L2",
+    "tags": [
+      "Collections",
+      "Sorting"
+    ],
+    "short": "Comparable defines natural order; Comparator defines external ordering.",
+    "answer": "Comparable defines a class’s natural ordering through compareTo(). Comparator defines an external ordering through compare(), so the same class can have multiple sorting strategies without changing the domain class. Comparable is useful when one ordering is intrinsic; Comparator is better for contextual choices such as sorting employees by salary, name, or joining date.",
+    "code": "users.sort(Comparator.comparing(User::name));",
+    "followups": [
+      "Can a class implement multiple Comparables?",
+      "How do you sort by salary and then name?",
+      "What happens when compareTo returns zero?"
+    ],
+    "mistakes": [],
+    "interview": "I use Comparable when the object has one obvious natural order. I use Comparator when sorting requirements vary or when I cannot modify the class. In Java streams and collections, Comparator also composes well with comparing(), thenComparing(), reversed(), and null handling.",
+    "source": "V3",
+    "topic": "java"
+  },
+  {
+    "id": "java-024",
+    "title": "map vs flatMap",
+    "level": "L2",
+    "tags": [
+      "Java 8",
+      "Streams"
+    ],
+    "short": "map is one-to-one transformation; flatMap transforms and flattens nested streams.",
+    "answer": "map transforms each stream element into exactly one result, while flatMap transforms each element into a stream and then flattens all those streams into one stream. A common example is converting List<List<String>> into Stream<String>. flatMap is therefore useful for one-to-many relationships, nested collections, and optional/stream composition.",
+    "code": "data.stream().flatMap(List::stream).toList();",
+    "followups": [
+      "How would you flatten List<List<Integer>>?",
+      "What is the difference between Optional.map and Optional.flatMap?",
+      "Can flatMap change the number of elements?"
+    ],
+    "mistakes": [],
+    "interview": "The key question I ask is whether the transformation produces one value or multiple values. If it is one-to-one, I use map; if it produces a collection or stream that must be flattened, I use flatMap.",
+    "source": "V3",
+    "topic": "java"
+  },
+  {
+    "id": "java-025",
+    "title": "parallelStream",
+    "level": "L3",
+    "tags": [
+      "Java 8",
+      "Performance"
+    ],
+    "short": "parallelStream is concurrent stream processing and is not automatically faster.",
+    "answer": "It can help sufficiently large CPU-bound independent work and hurt for blocking I/O/shared state/small data.",
+    "code": "values.parallelStream().mapToLong(Long::longValue).sum();",
+    "followups": [
+      "What pool does it use?"
+    ],
+    "mistakes": [],
+    "interview": "parallelStream is concurrent stream processing and is not automatically faster.",
+    "source": "V3",
+    "topic": "java"
+  },
+  {
+    "id": "adv-001",
+    "title": "Class loading in JVM",
+    "level": "L3",
+    "tags": [
+      "JVM",
+      "Internals"
+    ],
+    "short": "The JVM loads, links and initializes classes as needed.",
+    "answer": "Loading finds bytecode; linking verifies/prepares/resolves; initialization runs class initialization when required.",
+    "code": "Class.forName(\"com.example.User\");",
+    "followups": [
+      "Parent delegation?"
+    ],
+    "mistakes": [],
+    "interview": "The JVM loads, links and initializes classes as needed.",
+    "source": "V3",
+    "topic": "java"
+  },
+  {
+    "id": "adv-002",
+    "title": "Java memory leak",
+    "level": "L3",
+    "tags": [
+      "JVM",
+      "Production"
+    ],
+    "short": "Reachable objects that should have been released can still consume heap.",
+    "answer": "Common causes include static collections, unbounded caches, listeners and ThreadLocal misuse.",
+    "code": "static final Map<String,Object> CACHE=new HashMap<>();",
+    "followups": [
+      "How diagnose?"
+    ],
+    "mistakes": [],
+    "interview": "Reachable objects that should have been released can still consume heap.",
+    "source": "V3",
+    "topic": "java"
+  },
+  {
+    "id": "adv-003",
+    "title": "ThreadLocal risks",
+    "level": "L3",
+    "tags": [
+      "Concurrency",
+      "Production"
+    ],
+    "short": "ThreadLocal is thread-scoped, which can be risky in pooled threads.",
+    "answer": "Remove values in finally where appropriate. ThreadLocal does not automatically propagate across executor threads.",
+    "code": "try{ctx.set(v);work();}finally{ctx.remove();}",
+    "followups": [
+      "When useful?"
+    ],
+    "mistakes": [],
+    "interview": "ThreadLocal is thread-scoped, which can be risky in pooled threads.",
+    "source": "V3",
+    "topic": "java"
+  },
+  {
+    "id": "adv-004",
+    "title": "CompletableFuture",
+    "level": "L2",
+    "tags": [
+      "Concurrency",
+      "Async"
+    ],
+    "short": "It represents a future result and supports asynchronous composition.",
+    "answer": "thenApply transforms, thenCompose flattens dependent futures and allOf combines work.",
+    "code": "CompletableFuture.supplyAsync(this::load).thenApply(this::transform);",
+    "followups": [
+      "thenApply vs thenCompose?"
+    ],
+    "mistakes": [],
+    "interview": "It represents a future result and supports asynchronous composition.",
+    "source": "V3",
+    "topic": "java"
+  },
+  {
+    "id": "adv-005",
+    "title": "ExecutorService vs ForkJoinPool",
+    "level": "L2",
+    "tags": [
+      "Concurrency",
+      "Threads"
+    ],
+    "short": "ExecutorService is general; ForkJoinPool is optimized for work stealing.",
+    "answer": "Choose based on workload and isolation; blocking I/O should not casually share a CPU-oriented common pool.",
+    "code": "ExecutorService pool=Executors.newFixedThreadPool(10);",
+    "followups": [
+      "What is work stealing?"
+    ],
+    "mistakes": [],
+    "interview": "ExecutorService is general; ForkJoinPool is optimized for work stealing.",
+    "source": "V3",
+    "topic": "java"
+  },
+  {
+    "id": "iq-001",
+    "title": "What are the main features introduced in Java 8, 11, 17, and 21?",
+    "level": "L1",
+    "tags": [
+      "IQ300",
+      "java"
+    ],
+    "short": "Java 8 brought lambdas, the Stream API, the new Date/Time API (java.time), default/static interface methods, and Optional. Java 11 (first LTS after 8) added the var keyword for local type inference, a new HttpClient, and removed Java EE mod",
+    "answer": "Java 8 brought lambdas, the Stream API, the new Date/Time API (java.time), default/static interface methods, and Optional. Java 11 (first LTS after 8) added the var keyword for local type inference, a new HttpClient, and removed Java EE modules. Java 17 (LTS) added sealed classes, pattern matching for switch (preview), records becoming standard, and stronger encapsulation of internal JDK APIs. Java 21 (LTS) introduced virtual threads (Project Loom), structured concurrency (preview), record patterns, and pattern matching for switch as a finalized feature — a huge win for high-throughput I/O-bound services.",
+    "code": "",
+    "followups": [],
+    "mistakes": [],
+    "interview": "Java 8 brought lambdas, the Stream API, the new Date/Time API (java.time), default/static interface methods, and Optional. Java 11 (first LTS after 8) added the var keyword for local type inference, a new HttpClient, and removed Java EE modules. Java 17 (LTS) added sealed classes, pattern matching for switch (preview),",
+    "source": "IQ300",
+    "topic": "java"
+  },
+  {
+    "id": "iq-002",
+    "title": "Explain JVM, JDK, and JRE.",
+    "level": "L2",
+    "tags": [
+      "IQ300",
+      "java"
+    ],
+    "short": "The JDK (Java Development Kit) is the full toolkit for developers — compiler (javac), debugger, and other tools, plus the JRE. The JRE (Java Runtime Environment) is what's needed to run Java programs — the JVM plus core libraries, but no co",
+    "answer": "The JDK (Java Development Kit) is the full toolkit for developers — compiler (javac), debugger, and other tools, plus the JRE. The JRE (Java Runtime Environment) is what's needed to run Java programs — the JVM plus core libraries, but no compiler. The JVM (Java Virtual Machine) is the engine that actually executes bytecode, handling class loading, memory management, and JIT compilation to native code. In short: JDK ⊃ JRE ⊃ JVM.",
+    "code": "",
+    "followups": [],
+    "mistakes": [],
+    "interview": "The JDK (Java Development Kit) is the full toolkit for developers — compiler (javac), debugger, and other tools, plus the JRE. The JRE (Java Runtime Environment) is what's needed to run Java programs — the JVM plus core libraries, but no compiler. The JVM (Java Virtual Machine) is the engine that actually executes byte",
+    "source": "IQ300",
+    "topic": "java"
+  },
+  {
+    "id": "iq-003",
+    "title": "How does the JVM manage memory?",
+    "level": "L2",
+    "tags": [
+      "IQ300",
+      "java"
+    ],
+    "short": "The JVM divides memory into regions: heap (objects, shared across threads, garbage collected), stack (per-thread, holds method frames and local variables), metaspace (class metadata, replacing PermGen since Java 8), and PC registers plus na",
+    "answer": "The JVM divides memory into regions: heap (objects, shared across threads, garbage collected), stack (per-thread, holds method frames and local variables), metaspace (class metadata, replacing PermGen since Java 8), and PC registers plus native method stacks. Object allocation happens on the heap; the garbage collector reclaims memory from objects that are no longer reachable from GC roots (stack references, static fields, etc.), so developers don't manually free memory as in C/C++.",
+    "code": "",
+    "followups": [],
+    "mistakes": [],
+    "interview": "The JVM divides memory into regions: heap (objects, shared across threads, garbage collected), stack (per-thread, holds method frames and local variables), metaspace (class metadata, replacing PermGen since Java 8), and PC registers plus native method stacks. Object allocation happens on the heap; the garbage collector",
+    "source": "IQ300",
+    "topic": "java"
+  },
+  {
+    "id": "iq-004",
+    "title": "What are the different memory areas in the JVM?",
+    "level": "L2",
+    "tags": [
+      "IQ300",
+      "java"
+    ],
+    "short": "Heap (young generation — Eden + Survivor spaces, and old/tenured generation) holds objects. The stack holds per-thread frames with local variables and partial results. Metaspace holds class metadata (replacing PermGen). The Method Area (par",
+    "answer": "Heap (young generation — Eden + Survivor spaces, and old/tenured generation) holds objects. The stack holds per-thread frames with local variables and partial results. Metaspace holds class metadata (replacing PermGen). The Method Area (part of metaspace conceptually) holds runtime constant pools. PC Registers track the current executing instruction per thread. Native Method Stacks support native (JNI) method calls.",
+    "code": "",
+    "followups": [],
+    "mistakes": [],
+    "interview": "Heap (young generation — Eden + Survivor spaces, and old/tenured generation) holds objects. The stack holds per-thread frames with local variables and partial results. Metaspace holds class metadata (replacing PermGen). The Method Area (part of metaspace conceptually) holds runtime constant pools. PC Registers track th",
+    "source": "IQ300",
+    "topic": "java"
+  },
+  {
+    "id": "iq-005",
+    "title": "What causes a `StackOverflowError`?",
+    "level": "L1",
+    "tags": [
+      "IQ300",
+      "java"
+    ],
+    "short": "It's thrown when a thread's call stack exceeds its allotted size, almost always due to uncontrolled or excessively deep recursion — a missing or incorrect base case, or a recursive algorithm applied to input far larger than expected. It's a",
+    "answer": "It's thrown when a thread's call stack exceeds its allotted size, almost always due to uncontrolled or excessively deep recursion — a missing or incorrect base case, or a recursive algorithm applied to input far larger than expected. It's an \\<code>Error\\</code>, not an exception, signaling a serious, usually unrecoverable, program state.",
+    "code": "",
+    "followups": [],
+    "mistakes": [],
+    "interview": "It's thrown when a thread's call stack exceeds its allotted size, almost always due to uncontrolled or excessively deep recursion — a missing or incorrect base case, or a recursive algorithm applied to input far larger than expected. It's an \\Error\\, not an exception, signaling a serious, usually unrecoverable, program",
+    "source": "IQ300",
+    "topic": "java"
+  },
+  {
+    "id": "iq-006",
+    "title": "What causes an `OutOfMemoryError`?",
+    "level": "L1",
+    "tags": [
+      "IQ300",
+      "java"
+    ],
+    "short": "It occurs when the JVM cannot allocate more memory in a given region because it's exhausted and garbage collection can't free enough space. Common causes: memory leaks (objects unintentionally kept reachable, e.g. via static collections or ",
+    "answer": "It occurs when the JVM cannot allocate more memory in a given region because it's exhausted and garbage collection can't free enough space. Common causes: memory leaks (objects unintentionally kept reachable, e.g. via static collections or unclosed resources), too many large objects, an undersized heap for the workload, or excessive thread creation (each thread reserves stack memory, causing \\<code>OutOfMemoryError: unable to create new native thread\\</code>).",
+    "code": "",
+    "followups": [],
+    "mistakes": [],
+    "interview": "It occurs when the JVM cannot allocate more memory in a given region because it's exhausted and garbage collection can't free enough space. Common causes: memory leaks (objects unintentionally kept reachable, e.g. via static collections or unclosed resources), too many large objects, an undersized heap for the workload",
+    "source": "IQ300",
+    "topic": "java"
+  },
+  {
+    "id": "iq-007",
+    "title": "Explain garbage collection in Java.",
+    "level": "L2",
+    "tags": [
+      "IQ300",
+      "java"
+    ],
+    "short": "GC automatically reclaims heap memory occupied by objects no longer reachable from GC roots. Most collectors use a generational hypothesis — most objects die young — so the heap is split into a young generation (Eden + Survivor spaces, coll",
+    "answer": "GC automatically reclaims heap memory occupied by objects no longer reachable from GC roots. Most collectors use a generational hypothesis — most objects die young — so the heap is split into a young generation (Eden + Survivor spaces, collected frequently with fast \"minor GC\") and an old generation (collected less often with a heavier \"major/full GC\"). Objects surviving several minor collections are promoted to old gen. The process is mark (find reachable objects), and then sweep/compact (reclaim and optionally defragment memory).",
+    "code": "",
+    "followups": [],
+    "mistakes": [],
+    "interview": "GC automatically reclaims heap memory occupied by objects no longer reachable from GC roots. Most collectors use a generational hypothesis — most objects die young — so the heap is split into a young generation (Eden + Survivor spaces, collected frequently with fast \"minor GC\") and an old generation (collected less oft",
+    "source": "IQ300",
+    "topic": "java"
+  },
+  {
+    "id": "iq-008",
+    "title": "What are the different garbage collectors?",
+    "level": "L2",
+    "tags": [
+      "IQ300",
+      "java"
+    ],
+    "short": "Serial GC (single-threaded, good for small apps), Parallel GC (multi-threaded, throughput-focused, was the Java 8 default), CMS (Concurrent Mark Sweep, deprecated/removed, low-pause but caused fragmentation), G1 (Garbage First, default sinc",
+    "answer": "Serial GC (single-threaded, good for small apps), Parallel GC (multi-threaded, throughput-focused, was the Java 8 default), CMS (Concurrent Mark Sweep, deprecated/removed, low-pause but caused fragmentation), G1 (Garbage First, default since Java 9, region-based with predictable pause targets), ZGC and Shenandoah (ultra-low-latency, sub-millisecond pause collectors for very large heaps, production-ready in recent LTS releases).",
+    "code": "",
+    "followups": [],
+    "mistakes": [],
+    "interview": "Serial GC (single-threaded, good for small apps), Parallel GC (multi-threaded, throughput-focused, was the Java 8 default), CMS (Concurrent Mark Sweep, deprecated/removed, low-pause but caused fragmentation), G1 (Garbage First, default since Java 9, region-based with predictable pause targets), ZGC and Shenandoah (ultr",
+    "source": "IQ300",
+    "topic": "java"
+  },
+  {
+    "id": "iq-009",
+    "title": "How does G1 GC work?",
+    "level": "L1",
+    "tags": [
+      "IQ300",
+      "java"
+    ],
+    "short": "G1 divides the heap into many equally sized regions instead of contiguous young/old spaces. It performs concurrent marking to find live objects, then prioritizes collecting the regions with the most garbage first (\"Garbage First\"), copying ",
+    "answer": "G1 divides the heap into many equally sized regions instead of contiguous young/old spaces. It performs concurrent marking to find live objects, then prioritizes collecting the regions with the most garbage first (\"Garbage First\"), copying live objects into new regions to compact memory as it goes. It aims to meet a configurable pause-time goal (\\<code>-XX\\:MaxGCPauseMillis\\</code>) by choosing how many regions to collect in each cycle, giving much more predictable pauses than older generational collectors.",
+    "code": "",
+    "followups": [],
+    "mistakes": [],
+    "interview": "G1 divides the heap into many equally sized regions instead of contiguous young/old spaces. It performs concurrent marking to find live objects, then prioritizes collecting the regions with the most garbage first (\"Garbage First\"), copying live objects into new regions to compact memory as it goes. It aims to meet a co",
+    "source": "IQ300",
+    "topic": "java"
+  },
+  {
+    "id": "iq-010",
+    "title": "What is the difference between `==` and `.equals()`?",
+    "level": "L1",
+    "tags": [
+      "IQ300",
+      "java"
+    ],
+    "short": "\\==\\ compares references for objects (whether both variables point to the same memory location) and values for primitives. \\.equals()\\ is a method that, by default in \\Object\\, behaves like \\==\\, but is commonly overridden (e.g. in \\String\\",
+    "answer": "\\<code>==\\</code> compares references for objects (whether both variables point to the same memory location) and values for primitives. \\<code>.equals()\\</code> is a method that, by default in \\<code>Object\\</code>, behaves like \\<code>==\\</code>, but is commonly overridden (e.g. in \\<code>String\\</code>, wrapper classes, or custom classes) to compare logical/content equality instead of identity.",
+    "code": "",
+    "followups": [],
+    "mistakes": [],
+    "interview": "\\==\\ compares references for objects (whether both variables point to the same memory location) and values for primitives. \\.equals()\\ is a method that, by default in \\Object\\, behaves like \\==\\, but is commonly overridden (e.g. in \\String\\, wrapper classes, or custom classes) to compare logical/content equality instea",
+    "source": "IQ300",
+    "topic": "java"
+  },
+  {
+    "id": "iq-011",
+    "title": "Difference between `String`, `StringBuilder`, and `StringBuffer`.",
+    "level": "L1",
+    "tags": [
+      "IQ300",
+      "java"
+    ],
+    "short": "\\String\\ is immutable — every modification creates a new object, which is wasteful for heavy concatenation. \\StringBuilder\\ is a mutable, resizable character sequence, fast, but not thread-safe. \\StringBuffer\\ is the same mutable API but wi",
+    "answer": "\\<code>String\\</code> is immutable — every modification creates a new object, which is wasteful for heavy concatenation. \\<code>StringBuilder\\</code> is a mutable, resizable character sequence, fast, but not thread-safe. \\<code>StringBuffer\\</code> is the same mutable API but with synchronized methods, making it thread-safe at the cost of performance. Prefer \\<code>StringBuilder\\</code> unless the object is shared across threads.",
+    "code": "",
+    "followups": [],
+    "mistakes": [],
+    "interview": "\\String\\ is immutable — every modification creates a new object, which is wasteful for heavy concatenation. \\StringBuilder\\ is a mutable, resizable character sequence, fast, but not thread-safe. \\StringBuffer\\ is the same mutable API but with synchronized methods, making it thread-safe at the cost of performance. Prefe",
+    "source": "IQ300",
+    "topic": "java"
+  },
+  {
+    "id": "iq-012",
+    "title": "What is string interning?",
+    "level": "L1",
+    "tags": [
+      "IQ300",
+      "java"
+    ],
+    "short": "String interning is the JVM's practice of storing one canonical copy of each distinct string literal in a special memory region called the string pool (part of the heap since Java 7). String literals are automatically interned; \\new String(",
+    "answer": "String interning is the JVM's practice of storing one canonical copy of each distinct string literal in a special memory region called the string pool (part of the heap since Java 7). String literals are automatically interned; \\<code>new String(\"x\")\\</code> creates a separate object even for an identical value, and calling \\<code>.intern()\\</code> on it forces it into the pool, so two interned equal strings will pass a \\<code>==\\</code> check.",
+    "code": "",
+    "followups": [],
+    "mistakes": [],
+    "interview": "String interning is the JVM's practice of storing one canonical copy of each distinct string literal in a special memory region called the string pool (part of the heap since Java 7). String literals are automatically interned; \\new String(\"x\")\\ creates a separate object even for an identical value, and calling \\.inter",
+    "source": "IQ300",
+    "topic": "java"
+  },
+  {
+    "id": "iq-013",
+    "title": "Why is `String` immutable?",
+    "level": "L1",
+    "tags": [
+      "IQ300",
+      "java"
+    ],
+    "short": "Immutability makes strings safe to share via the string pool (saving memory), inherently thread-safe with no synchronization needed, safe as hash keys (the hash code can be cached since it never changes), and secure for things like class lo",
+    "answer": "Immutability makes strings safe to share via the string pool (saving memory), inherently thread-safe with no synchronization needed, safe as hash keys (the hash code can be cached since it never changes), and secure for things like class loading and network connections where a mutable string could be altered mid-use to bypass security checks.",
+    "code": "",
+    "followups": [],
+    "mistakes": [],
+    "interview": "Immutability makes strings safe to share via the string pool (saving memory), inherently thread-safe with no synchronization needed, safe as hash keys (the hash code can be cached since it never changes), and secure for things like class loading and network connections where a mutable string could be altered mid-use to",
+    "source": "IQ300",
+    "topic": "java"
+  },
+  {
+    "id": "iq-014",
+    "title": "Explain pass-by-value in Java.",
+    "level": "L1",
+    "tags": [
+      "IQ300",
+      "java"
+    ],
+    "short": "Java is always pass-by-value. For primitives, the actual value is copied into the method parameter. For objects, the value of the reference (the memory address) is copied — so the method gets its own copy of the reference, but that copy sti",
+    "answer": "Java is always pass-by-value. For primitives, the actual value is copied into the method parameter. For objects, the value of the reference (the memory address) is copied — so the method gets its own copy of the reference, but that copy still points to the same object. This is why mutating the object's fields through the copied reference is visible to the caller, but reassigning the parameter to a new object is not.",
+    "code": "",
+    "followups": [],
+    "mistakes": [],
+    "interview": "Java is always pass-by-value. For primitives, the actual value is copied into the method parameter. For objects, the value of the reference (the memory address) is copied — so the method gets its own copy of the reference, but that copy still points to the same object. This is why mutating the object's fields through t",
+    "source": "IQ300",
+    "topic": "java"
+  },
+  {
+    "id": "iq-015",
+    "title": "Can we modify an object passed to a method?",
+    "level": "L1",
+    "tags": [
+      "IQ300",
+      "java"
+    ],
+    "short": "Yes — since the reference itself is copied but points to the same object, calling mutator methods or changing fields on that object inside the method affects the original object the caller sees. However, reassigning the local parameter vari",
+    "answer": "Yes — since the reference itself is copied but points to the same object, calling mutator methods or changing fields on that object inside the method affects the original object the caller sees. However, reassigning the local parameter variable to point to a different object has no effect outside the method, because only the copy of the reference was changed, not the caller's variable.",
+    "code": "",
+    "followups": [],
+    "mistakes": [],
+    "interview": "Yes — since the reference itself is copied but points to the same object, calling mutator methods or changing fields on that object inside the method affects the original object the caller sees. However, reassigning the local parameter variable to point to a different object has no effect outside the method, because on",
+    "source": "IQ300",
+    "topic": "java"
+  },
+  {
+    "id": "iq-016",
+    "title": "What is autoboxing and unboxing?",
+    "level": "L1",
+    "tags": [
+      "IQ300",
+      "java"
+    ],
+    "short": "Autoboxing is the compiler automatically converting a primitive (e.g. \\int\\) into its wrapper object (\\Integer\\) when an object is required, such as adding to a collection. Unboxing is the reverse — converting a wrapper object back to its p",
+    "answer": "Autoboxing is the compiler automatically converting a primitive (e.g. \\<code>int\\</code>) into its wrapper object (\\<code>Integer\\</code>) when an object is required, such as adding to a collection. Unboxing is the reverse — converting a wrapper object back to its primitive. This happens implicitly, e.g. \\<code>Integer i = 5;\\</code> and \\<code>int j = i;\\</code>, but has costs: extra object creation, potential \\<code>NullPointerException\\</code> on unboxing a null, and caching quirks for values -128 to 127.",
+    "code": "",
+    "followups": [],
+    "mistakes": [],
+    "interview": "Autoboxing is the compiler automatically converting a primitive (e.g. \\int\\) into its wrapper object (\\Integer\\) when an object is required, such as adding to a collection. Unboxing is the reverse — converting a wrapper object back to its primitive. This happens implicitly, e.g. \\Integer i = 5;\\ and \\int j = i;\\, but h",
+    "source": "IQ300",
+    "topic": "java"
+  },
+  {
+    "id": "iq-017",
+    "title": "Difference between primitive types and wrapper classes.",
+    "level": "L1",
+    "tags": [
+      "IQ300",
+      "java"
+    ],
+    "short": "Primitives (\\int\\, \\double\\, \\boolean\\, etc.) hold raw values directly on the stack, have no methods, and can't be null. Wrapper classes (\\Integer\\, \\Double\\, \\Boolean\\) are objects stored on the heap, can be null, carry utility methods (pa",
+    "answer": "Primitives (\\<code>int\\</code>, \\<code>double\\</code>, \\<code>boolean\\</code>, etc.) hold raw values directly on the stack, have no methods, and can't be null. Wrapper classes (\\<code>Integer\\</code>, \\<code>Double\\</code>, \\<code>Boolean\\</code>) are objects stored on the heap, can be null, carry utility methods (parsing, comparison), and are required by generics and collections since those only work with objects.",
+    "code": "",
+    "followups": [],
+    "mistakes": [],
+    "interview": "Primitives (\\int\\, \\double\\, \\boolean\\, etc.) hold raw values directly on the stack, have no methods, and can't be null. Wrapper classes (\\Integer\\, \\Double\\, \\Boolean\\) are objects stored on the heap, can be null, carry utility methods (parsing, comparison), and are required by generics and collections since those onl",
+    "source": "IQ300",
+    "topic": "java"
+  },
+  {
+    "id": "iq-018",
+    "title": "What is the difference between `HashMap`, `LinkedHashMap`, `TreeMap`, and `ConcurrentHashMap`?",
+    "level": "L1",
+    "tags": [
+      "IQ300",
+      "java"
+    ],
+    "short": "\\HashMap\\ offers O(1) average access with no ordering guarantee and isn't thread-safe. \\LinkedHashMap\\ extends it while maintaining insertion (or access) order via an internal doubly linked list. \\TreeMap\\ is backed by a red-black tree, kee",
+    "answer": "\\<code>HashMap\\</code> offers O(1) average access with no ordering guarantee and isn't thread-safe. \\<code>LinkedHashMap\\</code> extends it while maintaining insertion (or access) order via an internal doubly linked list. \\<code>TreeMap\\</code> is backed by a red-black tree, keeping keys sorted (natural order or a \\<code>Comparator\\</code>), giving O(log n) operations. \\<code>ConcurrentHashMap\\</code> is a thread-safe map using fine-grained locking/CAS on internal segments/nodes, allowing high concurrent read/write throughput without locking the whole map.",
+    "code": "",
+    "followups": [],
+    "mistakes": [],
+    "interview": "\\HashMap\\ offers O(1) average access with no ordering guarantee and isn't thread-safe. \\LinkedHashMap\\ extends it while maintaining insertion (or access) order via an internal doubly linked list. \\TreeMap\\ is backed by a red-black tree, keeping keys sorted (natural order or a \\Comparator\\), giving O(log n) operations. ",
+    "source": "IQ300",
+    "topic": "java"
+  },
+  {
+    "id": "iq-019",
+    "title": "How does `HashMap` work internally?",
+    "level": "L2",
+    "tags": [
+      "IQ300",
+      "java"
+    ],
+    "short": "Internally it's an array of buckets (\\Node[]\\). A key's \\hashCode()\\ is passed through a spreading function and masked to pick a bucket index. Each bucket holds a linked list of entries with that index; since Java 8, if a bucket's list grow",
+    "answer": "Internally it's an array of buckets (\\<code>Node[]\\</code>). A key's \\<code>hashCode()\\</code> is passed through a spreading function and masked to pick a bucket index. Each bucket holds a linked list of entries with that index; since Java 8, if a bucket's list grows beyond a threshold (8) and the table is large enough, it converts to a red-black tree for faster worst-case lookups. Get/put operations compute the bucket, then walk the list/tree comparing hash and \\<code>equals()\\</code> to find the exact key. The table resizes (doubles) when the load factor threshold is exceeded.",
+    "code": "",
+    "followups": [],
+    "mistakes": [],
+    "interview": "Internally it's an array of buckets (\\Node[]\\). A key's \\hashCode()\\ is passed through a spreading function and masked to pick a bucket index. Each bucket holds a linked list of entries with that index; since Java 8, if a bucket's list grows beyond a threshold (8) and the table is large enough, it converts to a red-bla",
+    "source": "IQ300",
+    "topic": "java"
+  },
+  {
+    "id": "iq-020",
+    "title": "What happens when two keys have the same hash code?",
+    "level": "L1",
+    "tags": [
+      "IQ300",
+      "java"
+    ],
+    "short": "They land in the same bucket, causing a collision. \\HashMap\\ stores both entries in that bucket's linked list (or tree once large enough) and distinguishes them using \\equals()\\ during lookup — hash code narrows down the bucket, \\equals()\\ ",
+    "answer": "They land in the same bucket, causing a collision. \\<code>HashMap\\</code> stores both entries in that bucket's linked list (or tree once large enough) and distinguishes them using \\<code>equals()\\</code> during lookup — hash code narrows down the bucket, \\<code>equals()\\</code> confirms the exact match.",
+    "code": "",
+    "followups": [],
+    "mistakes": [],
+    "interview": "They land in the same bucket, causing a collision. \\HashMap\\ stores both entries in that bucket's linked list (or tree once large enough) and distinguishes them using \\equals()\\ during lookup — hash code narrows down the bucket, \\equals()\\ confirms the exact match.",
+    "source": "IQ300",
+    "topic": "java"
+  },
+  {
+    "id": "iq-021",
+    "title": "Explain hash collision handling.",
+    "level": "L1",
+    "tags": [
+      "IQ300",
+      "java"
+    ],
+    "short": "Java's \\HashMap\\ uses separate chaining: colliding entries in the same bucket are stored together, originally as a linked list, and — since Java 8 — as a balanced red-black tree once a bucket has 8+ entries and the table has at least 64 buc",
+    "answer": "Java's \\<code>HashMap\\</code> uses separate chaining: colliding entries in the same bucket are stored together, originally as a linked list, and — since Java 8 — as a balanced red-black tree once a bucket has 8+ entries and the table has at least 64 buckets, improving worst-case lookup from O(n) to O(log n). This mitigates deliberate hash-flooding attacks and pathological clustering.",
+    "code": "",
+    "followups": [],
+    "mistakes": [],
+    "interview": "Java's \\HashMap\\ uses separate chaining: colliding entries in the same bucket are stored together, originally as a linked list, and — since Java 8 — as a balanced red-black tree once a bucket has 8+ entries and the table has at least 64 buckets, improving worst-case lookup from O(n) to O(log n). This mitigates delibera",
+    "source": "IQ300",
+    "topic": "java"
+  },
+  {
+    "id": "iq-022",
+    "title": "Why should `hashCode()` and `equals()` be overridden together?",
+    "level": "L1",
+    "tags": [
+      "IQ300",
+      "java"
+    ],
+    "short": "Hash-based collections rely on the contract that equal objects (per \\equals()\\) must produce the same \\hashCode()\\. If you override only \\equals()\\, two \"equal\" objects could land in different buckets and a \\HashMap\\/\\HashSet\\ would fail to",
+    "answer": "Hash-based collections rely on the contract that equal objects (per \\<code>equals()\\</code>) must produce the same \\<code>hashCode()\\</code>. If you override only \\<code>equals()\\</code>, two \"equal\" objects could land in different buckets and a \\<code>HashMap\\</code>/\\<code>HashSet\\</code> would fail to find a stored entry via \\<code>get()\\</code>/\\<code>contains()\\</code> even though logically it's present, silently breaking the collection's correctness.",
+    "code": "",
+    "followups": [],
+    "mistakes": [],
+    "interview": "Hash-based collections rely on the contract that equal objects (per \\equals()\\) must produce the same \\hashCode()\\. If you override only \\equals()\\, two \"equal\" objects could land in different buckets and a \\HashMap\\/\\HashSet\\ would fail to find a stored entry via \\get()\\/\\contains()\\ even though logically it's present",
+    "source": "IQ300",
+    "topic": "java"
+  },
+  {
+    "id": "iq-023",
+    "title": "Difference between `ArrayList` and `LinkedList`.",
+    "level": "L1",
+    "tags": [
+      "IQ300",
+      "java"
+    ],
+    "short": "\\ArrayList\\ is backed by a resizable array — O(1) random access by index but O(n) insert/remove in the middle (needs shifting elements). \\LinkedList\\ is a doubly linked list — O(1) insert/remove at known nodes (including as a \\Deque\\) but O",
+    "answer": "\\<code>ArrayList\\</code> is backed by a resizable array — O(1) random access by index but O(n) insert/remove in the middle (needs shifting elements). \\<code>LinkedList\\</code> is a doubly linked list — O(1) insert/remove at known nodes (including as a \\<code>Deque\\</code>) but O(n) random access since it must traverse from an end. \\<code>ArrayList\\</code> is generally preferred for most use cases due to better cache locality and lower per-element overhead.",
+    "code": "",
+    "followups": [],
+    "mistakes": [],
+    "interview": "\\ArrayList\\ is backed by a resizable array — O(1) random access by index but O(n) insert/remove in the middle (needs shifting elements). \\LinkedList\\ is a doubly linked list — O(1) insert/remove at known nodes (including as a \\Deque\\) but O(n) random access since it must traverse from an end. \\ArrayList\\ is generally p",
+    "source": "IQ300",
+    "topic": "java"
+  },
+  {
+    "id": "iq-024",
+    "title": "Difference between `List`, `Set`, and `Map`.",
+    "level": "L1",
+    "tags": [
+      "IQ300",
+      "java"
+    ],
+    "short": "\\List\\ is an ordered, index-based collection that allows duplicates. \\Set\\ stores unique elements with no duplicates and generally no index-based access. \\Map\\ stores key-value pairs with unique keys, offering fast lookup by key rather than",
+    "answer": "\\<code>List\\</code> is an ordered, index-based collection that allows duplicates. \\<code>Set\\</code> stores unique elements with no duplicates and generally no index-based access. \\<code>Map\\</code> stores key-value pairs with unique keys, offering fast lookup by key rather than by position. All three are core parts of the Collections Framework but serve different access patterns.",
+    "code": "",
+    "followups": [],
+    "mistakes": [],
+    "interview": "\\List\\ is an ordered, index-based collection that allows duplicates. \\Set\\ stores unique elements with no duplicates and generally no index-based access. \\Map\\ stores key-value pairs with unique keys, offering fast lookup by key rather than by position. All three are core parts of the Collections Framework but serve di",
+    "source": "IQ300",
+    "topic": "java"
+  },
+  {
+    "id": "iq-025",
+    "title": "Explain `HashSet` internally.",
+    "level": "L2",
+    "tags": [
+      "IQ300",
+      "java"
+    ],
+    "short": "\\HashSet\\ is backed internally by a \\HashMap\\ — each element added is stored as a key in that map with a fixed dummy value (a constant \\PRESENT\\ object). So its performance characteristics (O(1) average add/contains/remove, no guaranteed or",
+    "answer": "\\<code>HashSet\\</code> is backed internally by a \\<code>HashMap\\</code> — each element added is stored as a key in that map with a fixed dummy value (a constant \\<code>PRESENT\\</code> object). So its performance characteristics (O(1) average add/contains/remove, no guaranteed order, reliance on \\<code>hashCode()\\</code>/\\<code>equals()\\</code>) mirror \\<code>HashMap\\</code>'s exactly.",
+    "code": "",
+    "followups": [],
+    "mistakes": [],
+    "interview": "\\HashSet\\ is backed internally by a \\HashMap\\ — each element added is stored as a key in that map with a fixed dummy value (a constant \\PRESENT\\ object). So its performance characteristics (O(1) average add/contains/remove, no guaranteed order, reliance on \\hashCode()\\/\\equals()\\) mirror \\HashMap\\'s exactly.",
+    "source": "IQ300",
+    "topic": "java"
+  },
+  {
+    "id": "iq-026",
+    "title": "What is fail-fast and fail-safe iteration?",
+    "level": "L1",
+    "tags": [
+      "IQ300",
+      "java"
+    ],
+    "short": "Fail-fast iterators (used by most Collections Framework classes like \\ArrayList\\, \\HashMap\\) throw \\ConcurrentModificationException\\ if the collection is structurally modified while iterating, detected via a modCount check — this surfaces b",
+    "answer": "Fail-fast iterators (used by most Collections Framework classes like \\<code>ArrayList\\</code>, \\<code>HashMap\\</code>) throw \\<code>ConcurrentModificationException\\</code> if the collection is structurally modified while iterating, detected via a modCount check — this surfaces bugs early rather than giving inconsistent results. Fail-safe iterators (e.g. \\<code>CopyOnWriteArrayList\\</code>, \\<code>ConcurrentHashMap\\</code>) iterate over a snapshot or use safe internal structures, so concurrent modification doesn't throw, though the iterator may not reflect the very latest changes.",
+    "code": "",
+    "followups": [],
+    "mistakes": [],
+    "interview": "Fail-fast iterators (used by most Collections Framework classes like \\ArrayList\\, \\HashMap\\) throw \\ConcurrentModificationException\\ if the collection is structurally modified while iterating, detected via a modCount check — this surfaces bugs early rather than giving inconsistent results. Fail-safe iterators (e.g. \\Co",
+    "source": "IQ300",
+    "topic": "java"
+  },
+  {
+    "id": "iq-027",
+    "title": "Difference between `Iterator` and `ListIterator`.",
+    "level": "L1",
+    "tags": [
+      "IQ300",
+      "java"
+    ],
+    "short": "\\Iterator\\ supports forward-only traversal with \\hasNext()\\/\\next()\\/\\remove()\\ and works on any \\Collection\\. \\ListIterator\\ extends it for \\List\\s specifically, adding backward traversal (\\hasPrevious()\\/\\previous()\\), index access (\\next",
+    "answer": "\\<code>Iterator\\</code> supports forward-only traversal with \\<code>hasNext()\\</code>/\\<code>next()\\</code>/\\<code>remove()\\</code> and works on any \\<code>Collection\\</code>. \\<code>ListIterator\\</code> extends it for \\<code>List\\</code>s specifically, adding backward traversal (\\<code>hasPrevious()\\</code>/\\<code>previous()\\</code>), index access (\\<code>nextIndex()\\</code>/\\<code>previousIndex()\\</code>), and in-place modification via \\<code>set()\\</code> and \\<code>add()\\</code>.",
+    "code": "",
+    "followups": [],
+    "mistakes": [],
+    "interview": "\\Iterator\\ supports forward-only traversal with \\hasNext()\\/\\next()\\/\\remove()\\ and works on any \\Collection\\. \\ListIterator\\ extends it for \\List\\s specifically, adding backward traversal (\\hasPrevious()\\/\\previous()\\), index access (\\nextIndex()\\/\\previousIndex()\\), and in-place modification via \\set()\\ and \\add()\\.",
+    "source": "IQ300",
+    "topic": "java"
+  },
+  {
+    "id": "iq-028",
+    "title": "What are immutable collections?",
+    "level": "L1",
+    "tags": [
+      "IQ300",
+      "java"
+    ],
+    "short": "Collections whose contents can't be changed after creation — any mutating call (\\add\\, \\remove\\, \\set\\) throws \\UnsupportedOperationException\\. Created via \\List.of()\\, \\Map.of()\\, \\Set.of()\\ (Java 9+), or wrapped with \\Collections.unmodifi",
+    "answer": "Collections whose contents can't be changed after creation — any mutating call (\\<code>add\\</code>, \\<code>remove\\</code>, \\<code>set\\</code>) throws \\<code>UnsupportedOperationException\\</code>. Created via \\<code>List.of()\\</code>, \\<code>Map.of()\\</code>, \\<code>Set.of()\\</code> (Java 9+), or wrapped with \\<code>Collections.unmodifiableList()\\</code> (a view over a mutable list, which can still change if the underlying list changes). They're useful for thread safety and defensive API design.",
+    "code": "",
+    "followups": [],
+    "mistakes": [],
+    "interview": "Collections whose contents can't be changed after creation — any mutating call (\\add\\, \\remove\\, \\set\\) throws \\UnsupportedOperationException\\. Created via \\List.of()\\, \\Map.of()\\, \\Set.of()\\ (Java 9+), or wrapped with \\Collections.unmodifiableList()\\ (a view over a mutable list, which can still change if the underlyin",
+    "source": "IQ300",
+    "topic": "java"
+  },
+  {
+    "id": "iq-029",
+    "title": "What is the time complexity of common collection operations?",
+    "level": "L1",
+    "tags": [
+      "IQ300",
+      "java"
+    ],
+    "short": "\\ArrayList\\: get O(1), add at end amortized O(1), add/remove at index O(n). \\LinkedList\\: get O(n), add/remove at known node O(1). \\HashMap\\/\\HashSet\\: get/put/contains average O(1), worst case O(log n) with treeified buckets. \\TreeMap\\/\\Tr",
+    "answer": "\\<code>ArrayList\\</code>: get O(1), add at end amortized O(1), add/remove at index O(n). \\<code>LinkedList\\</code>: get O(n), add/remove at known node O(1). \\<code>HashMap\\</code>/\\<code>HashSet\\</code>: get/put/contains average O(1), worst case O(log n) with treeified buckets. \\<code>TreeMap\\</code>/\\<code>TreeSet\\</code>: get/put/contains O(log n). \\<code>ArrayDeque\\</code> as a stack/queue: O(1) at both ends.",
+    "code": "",
+    "followups": [],
+    "mistakes": [],
+    "interview": "\\ArrayList\\: get O(1), add at end amortized O(1), add/remove at index O(n). \\LinkedList\\: get O(n), add/remove at known node O(1). \\HashMap\\/\\HashSet\\: get/put/contains average O(1), worst case O(log n) with treeified buckets. \\TreeMap\\/\\TreeSet\\: get/put/contains O(log n). \\ArrayDeque\\ as a stack/queue: O(1) at both e",
+    "source": "IQ300",
+    "topic": "java"
+  },
+  {
+    "id": "iq-030",
+    "title": "What is the `Comparable` interface?",
+    "level": "L1",
+    "tags": [
+      "IQ300",
+      "java"
+    ],
+    "short": "\\Comparable\\ is implemented by a class itself to define its single \"natural ordering\" via \\compareTo(T other)\\. It's used implicitly by sorted collections (\\TreeSet\\, \\TreeMap\\) and \\Collections.sort()\\ when no external comparator is suppli",
+    "answer": "\\<code>Comparable<T>\\</code> is implemented by a class itself to define its single \"natural ordering\" via \\<code>compareTo(T other)\\</code>. It's used implicitly by sorted collections (\\<code>TreeSet\\</code>, \\<code>TreeMap\\</code>) and \\<code>Collections.sort()\\</code> when no external comparator is supplied.",
+    "code": "",
+    "followups": [],
+    "mistakes": [],
+    "interview": "\\Comparable\\ is implemented by a class itself to define its single \"natural ordering\" via \\compareTo(T other)\\. It's used implicitly by sorted collections (\\TreeSet\\, \\TreeMap\\) and \\Collections.sort()\\ when no external comparator is supplied.",
+    "source": "IQ300",
+    "topic": "java"
+  },
+  {
+    "id": "iq-031",
+    "title": "What is the `Comparator` interface?",
+    "level": "L1",
+    "tags": [
+      "IQ300",
+      "java"
+    ],
+    "short": "\\Comparator\\ is a separate strategy object implementing \\compare(T a, T b)\\, defined outside the class being compared. It lets you supply multiple different orderings for the same type without modifying the class, and is commonly built with",
+    "answer": "\\<code>Comparator<T>\\</code> is a separate strategy object implementing \\<code>compare(T a, T b)\\</code>, defined outside the class being compared. It lets you supply multiple different orderings for the same type without modifying the class, and is commonly built with lambdas or chained via \\<code>Comparator.comparing().thenComparing()\\</code>.",
+    "code": "",
+    "followups": [],
+    "mistakes": [],
+    "interview": "\\Comparator\\ is a separate strategy object implementing \\compare(T a, T b)\\, defined outside the class being compared. It lets you supply multiple different orderings for the same type without modifying the class, and is commonly built with lambdas or chained via \\Comparator.comparing().thenComparing()\\.",
+    "source": "IQ300",
+    "topic": "java"
+  },
+  {
+    "id": "iq-032",
+    "title": "Difference between `Comparable` and `Comparator`.",
+    "level": "L1",
+    "tags": [
+      "IQ300",
+      "java"
+    ],
+    "short": "\\Comparable\\ defines one natural ordering inside the class (\\compareTo\\); \\Comparator\\ defines external, pluggable orderings (\\compare\\) and lets you have as many different sort strategies as needed for the same class without touching its s",
+    "answer": "\\<code>Comparable\\</code> defines one natural ordering inside the class (\\<code>compareTo\\</code>); \\<code>Comparator\\</code> defines external, pluggable orderings (\\<code>compare\\</code>) and lets you have as many different sort strategies as needed for the same class without touching its source.",
+    "code": "",
+    "followups": [],
+    "mistakes": [],
+    "interview": "\\Comparable\\ defines one natural ordering inside the class (\\compareTo\\); \\Comparator\\ defines external, pluggable orderings (\\compare\\) and lets you have as many different sort strategies as needed for the same class without touching its source.",
+    "source": "IQ300",
+    "topic": "java"
+  },
+  {
+    "id": "iq-033",
+    "title": "Explain lambda expressions.",
+    "level": "L1",
+    "tags": [
+      "IQ300",
+      "java"
+    ],
+    "short": "Lambdas are concise, anonymous implementations of a functional interface's single abstract method, written as \\(params) -> expression/block\\. They eliminate boilerplate anonymous inner classes for things like \\Runnable\\, \\Comparator\\, or st",
+    "answer": "Lambdas are concise, anonymous implementations of a functional interface's single abstract method, written as \\<code>(params) -> expression/block\\</code>. They eliminate boilerplate anonymous inner classes for things like \\<code>Runnable\\</code>, \\<code>Comparator\\</code>, or stream operations, and capture effectively-final variables from the enclosing scope.",
+    "code": "",
+    "followups": [],
+    "mistakes": [],
+    "interview": "Lambdas are concise, anonymous implementations of a functional interface's single abstract method, written as \\(params) -> expression/block\\. They eliminate boilerplate anonymous inner classes for things like \\Runnable\\, \\Comparator\\, or stream operations, and capture effectively-final variables from the enclosing scop",
+    "source": "IQ300",
+    "topic": "java"
+  },
+  {
+    "id": "iq-034",
+    "title": "What are functional interfaces?",
+    "level": "L1",
+    "tags": [
+      "IQ300",
+      "java"
+    ],
+    "short": "Interfaces with exactly one abstract method (optionally with default/static methods too), which can be implemented via a lambda or method reference. Common built-in ones from \\java.util.function\\: \\Function\\, \\Supplier\\, \\Consumer\\, \\Predic",
+    "answer": "Interfaces with exactly one abstract method (optionally with default/static methods too), which can be implemented via a lambda or method reference. Common built-in ones from \\<code>java.util.function\\</code>: \\<code>Function<T,R>\\</code>, \\<code>Supplier<T>\\</code>, \\<code>Consumer<T>\\</code>, \\<code>Predicate<T>\\</code>, \\<code>BiFunction\\</code>. The \\<code>@FunctionalInterface\\</code> annotation documents intent and enables compiler enforcement.",
+    "code": "",
+    "followups": [],
+    "mistakes": [],
+    "interview": "Interfaces with exactly one abstract method (optionally with default/static methods too), which can be implemented via a lambda or method reference. Common built-in ones from \\java.util.function\\: \\Function\\, \\Supplier\\, \\Consumer\\, \\Predicate\\, \\BiFunction\\. The \\@FunctionalInterface\\ annotation documents intent and e",
+    "source": "IQ300",
+    "topic": "java"
+  },
+  {
+    "id": "iq-035",
+    "title": "What are method references?",
+    "level": "L1",
+    "tags": [
+      "IQ300",
+      "java"
+    ],
+    "short": "Shorthand syntax for a lambda that just calls an existing method, e.g. \\String::toUpperCase\\ instead of \\s -> s.toUpperCase()\\. Four forms exist: static method (\\ClassName::staticMethod\\), instance method of a particular object (\\obj::metho",
+    "answer": "Shorthand syntax for a lambda that just calls an existing method, e.g. \\<code>String::toUpperCase\\</code> instead of \\<code>s -> s.toUpperCase()\\</code>. Four forms exist: static method (\\<code>ClassName::staticMethod\\</code>), instance method of a particular object (\\<code>obj::method\\</code>), instance method of an arbitrary object of a type (\\<code>ClassName::instanceMethod\\</code>), and constructor references (\\<code>ClassName::new\\</code>).",
+    "code": "",
+    "followups": [],
+    "mistakes": [],
+    "interview": "Shorthand syntax for a lambda that just calls an existing method, e.g. \\String::toUpperCase\\ instead of \\s -> s.toUpperCase()\\. Four forms exist: static method (\\ClassName::staticMethod\\), instance method of a particular object (\\obj::method\\), instance method of an arbitrary object of a type (\\ClassName::instanceMetho",
+    "source": "IQ300",
+    "topic": "java"
+  },
+  {
+    "id": "iq-036",
+    "title": "Explain the Stream API.",
+    "level": "L1",
+    "tags": [
+      "IQ300",
+      "java"
+    ],
+    "short": "Streams provide a declarative, functional pipeline for processing sequences of elements: a source (collection, array, etc.), zero or more intermediate operations (\\map\\, \\filter\\, \\sorted\\) that are lazy and return a new stream, and one ter",
+    "answer": "Streams provide a declarative, functional pipeline for processing sequences of elements: a source (collection, array, etc.), zero or more intermediate operations (\\<code>map\\</code>, \\<code>filter\\</code>, \\<code>sorted\\</code>) that are lazy and return a new stream, and one terminal operation (\\<code>collect\\</code>, \\<code>forEach\\</code>, \\<code>reduce\\</code>) that triggers actual execution. Streams don't store data and can only be consumed once; they also support parallel execution via \\<code>parallelStream()\\</code>.",
+    "code": "",
+    "followups": [],
+    "mistakes": [],
+    "interview": "Streams provide a declarative, functional pipeline for processing sequences of elements: a source (collection, array, etc.), zero or more intermediate operations (\\map\\, \\filter\\, \\sorted\\) that are lazy and return a new stream, and one terminal operation (\\collect\\, \\forEach\\, \\reduce\\) that triggers actual execution.",
+    "source": "IQ300",
+    "topic": "java"
+  },
+  {
+    "id": "iq-037",
+    "title": "Difference between `map()` and `flatMap()`.",
+    "level": "L1",
+    "tags": [
+      "IQ300",
+      "java"
+    ],
+    "short": "\\map()\\ transforms each element into exactly one new element (a 1:1 transformation), e.g. \\String -> Integer\\. \\flatMap()\\ transforms each element into a stream of elements and then flattens all those streams into a single stream, useful wh",
+    "answer": "\\<code>map()\\</code> transforms each element into exactly one new element (a 1:1 transformation), e.g. \\<code>String -> Integer\\</code>. \\<code>flatMap()\\</code> transforms each element into a stream of elements and then flattens all those streams into a single stream, useful when each input maps to zero, one, or many outputs (e.g. flattening a list of lists into one list).",
+    "code": "",
+    "followups": [],
+    "mistakes": [],
+    "interview": "\\map()\\ transforms each element into exactly one new element (a 1:1 transformation), e.g. \\String -> Integer\\. \\flatMap()\\ transforms each element into a stream of elements and then flattens all those streams into a single stream, useful when each input maps to zero, one, or many outputs (e.g. flattening a list of list",
+    "source": "IQ300",
+    "topic": "java"
+  },
+  {
+    "id": "iq-038",
+    "title": "Difference between `filter()` and `peek()`.",
+    "level": "L1",
+    "tags": [
+      "IQ300",
+      "java"
+    ],
+    "short": "\\filter()\\ is an intermediate operation that removes elements not matching a predicate, shrinking the stream. \\peek()\\ passes every element through unchanged, purely for observing/side-effects like logging or debugging — it should not be us",
+    "answer": "\\<code>filter()\\</code> is an intermediate operation that removes elements not matching a predicate, shrinking the stream. \\<code>peek()\\</code> passes every element through unchanged, purely for observing/side-effects like logging or debugging — it should not be used to modify shared state or drive the actual computation, and may not even execute if the terminal operation doesn't need it.",
+    "code": "",
+    "followups": [],
+    "mistakes": [],
+    "interview": "\\filter()\\ is an intermediate operation that removes elements not matching a predicate, shrinking the stream. \\peek()\\ passes every element through unchanged, purely for observing/side-effects like logging or debugging — it should not be used to modify shared state or drive the actual computation, and may not even exec",
+    "source": "IQ300",
+    "topic": "java"
+  },
+  {
+    "id": "iq-039",
+    "title": "What are terminal and intermediate stream operations?",
+    "level": "L1",
+    "tags": [
+      "IQ300",
+      "java"
+    ],
+    "short": "Intermediate operations (\\map\\, \\filter\\, \\sorted\\, \\distinct\\, \\limit\\) are lazy, return a new stream, and can be chained. Terminal operations (\\collect\\, \\forEach\\, \\reduce\\, \\count\\, \\anyMatch\\) trigger the actual traversal of the pipeli",
+    "answer": "Intermediate operations (\\<code>map\\</code>, \\<code>filter\\</code>, \\<code>sorted\\</code>, \\<code>distinct\\</code>, \\<code>limit\\</code>) are lazy, return a new stream, and can be chained. Terminal operations (\\<code>collect\\</code>, \\<code>forEach\\</code>, \\<code>reduce\\</code>, \\<code>count\\</code>, \\<code>anyMatch\\</code>) trigger the actual traversal of the pipeline and produce a result or side-effect; once called, the stream is consumed and can't be reused.",
+    "code": "",
+    "followups": [],
+    "mistakes": [],
+    "interview": "Intermediate operations (\\map\\, \\filter\\, \\sorted\\, \\distinct\\, \\limit\\) are lazy, return a new stream, and can be chained. Terminal operations (\\collect\\, \\forEach\\, \\reduce\\, \\count\\, \\anyMatch\\) trigger the actual traversal of the pipeline and produce a result or side-effect; once called, the stream is consumed and ",
+    "source": "IQ300",
+    "topic": "java"
+  },
+  {
+    "id": "iq-040",
+    "title": "What is `Optional`?",
+    "level": "L1",
+    "tags": [
+      "IQ300",
+      "java"
+    ],
+    "short": "\\Optional\\ is a container object that may or may not hold a non-null value, used as a return type to explicitly signal \"this might have no result\" instead of returning null. It offers methods like \\isPresent()\\, \\orElse()\\, \\orElseThrow()\\,",
+    "answer": "\\<code>Optional<T>\\</code> is a container object that may or may not hold a non-null value, used as a return type to explicitly signal \"this might have no result\" instead of returning null. It offers methods like \\<code>isPresent()\\</code>, \\<code>orElse()\\</code>, \\<code>orElseThrow()\\</code>, and \\<code>map()\\</code> to handle the absent case fluently and avoid scattered null checks.",
+    "code": "",
+    "followups": [],
+    "mistakes": [],
+    "interview": "\\Optional\\ is a container object that may or may not hold a non-null value, used as a return type to explicitly signal \"this might have no result\" instead of returning null. It offers methods like \\isPresent()\\, \\orElse()\\, \\orElseThrow()\\, and \\map()\\ to handle the absent case fluently and avoid scattered null checks.",
+    "source": "IQ300",
+    "topic": "java"
+  },
+  {
+    "id": "iq-041",
+    "title": "When should `Optional` be used?",
+    "level": "L1",
+    "tags": [
+      "IQ300",
+      "java"
+    ],
+    "short": "Mainly as a return type for methods where \"no result\" is a legitimate, expected outcome (e.g. a repository lookup that might not find anything) — signaling to callers they must handle absence. It's generally discouraged as a field type, met",
+    "answer": "Mainly as a return type for methods where \"no result\" is a legitimate, expected outcome (e.g. a repository lookup that might not find anything) — signaling to callers they must handle absence. It's generally discouraged as a field type, method parameter, or in collections, since it adds overhead and doesn't serialize well; a null-check or empty collection is often more idiomatic there.",
+    "code": "",
+    "followups": [],
+    "mistakes": [],
+    "interview": "Mainly as a return type for methods where \"no result\" is a legitimate, expected outcome (e.g. a repository lookup that might not find anything) — signaling to callers they must handle absence. It's generally discouraged as a field type, method parameter, or in collections, since it adds overhead and doesn't serialize w",
+    "source": "IQ300",
+    "topic": "java"
+  },
+  {
+    "id": "iq-042",
+    "title": "Explain exception handling in Java.",
+    "level": "L1",
+    "tags": [
+      "IQ300",
+      "java"
+    ],
+    "short": "Java uses try/catch/finally blocks to handle abnormal conditions. Code that might throw goes in \\try\\; \\catch\\ blocks handle specific exception types; \\finally\\ runs regardless of whether an exception occurred, typically for cleanup. Except",
+    "answer": "Java uses try/catch/finally blocks to handle abnormal conditions. Code that might throw goes in \\<code>try\\</code>; \\<code>catch\\</code> blocks handle specific exception types; \\<code>finally\\</code> runs regardless of whether an exception occurred, typically for cleanup. Exceptions form a hierarchy under \\<code>Throwable\\</code>, split into checked exceptions (must be declared or caught) and unchecked exceptions (\\<code>RuntimeException\\</code> and subclasses, not enforced by the compiler).",
+    "code": "",
+    "followups": [],
+    "mistakes": [],
+    "interview": "Java uses try/catch/finally blocks to handle abnormal conditions. Code that might throw goes in \\try\\; \\catch\\ blocks handle specific exception types; \\finally\\ runs regardless of whether an exception occurred, typically for cleanup. Exceptions form a hierarchy under \\Throwable\\, split into checked exceptions (must be ",
+    "source": "IQ300",
+    "topic": "java"
+  },
+  {
+    "id": "iq-043",
+    "title": "Difference between checked and unchecked exceptions.",
+    "level": "L1",
+    "tags": [
+      "IQ300",
+      "java"
+    ],
+    "short": "Checked exceptions (e.g. \\IOException\\, \\SQLException\\) extend \\Exception\\ but not \\RuntimeException\\, and the compiler forces you to either catch them or declare them with \\throws\\ — they represent recoverable conditions external to the pr",
+    "answer": "Checked exceptions (e.g. \\<code>IOException\\</code>, \\<code>SQLException\\</code>) extend \\<code>Exception\\</code> but not \\<code>RuntimeException\\</code>, and the compiler forces you to either catch them or declare them with \\<code>throws\\</code> — they represent recoverable conditions external to the program. Unchecked exceptions extend \\<code>RuntimeException\\</code> (e.g. \\<code>NullPointerException\\</code>, \\<code>IllegalArgumentException\\</code>) and aren't checked at compile time — they typically represent programming errors.",
+    "code": "",
+    "followups": [],
+    "mistakes": [],
+    "interview": "Checked exceptions (e.g. \\IOException\\, \\SQLException\\) extend \\Exception\\ but not \\RuntimeException\\, and the compiler forces you to either catch them or declare them with \\throws\\ — they represent recoverable conditions external to the program. Unchecked exceptions extend \\RuntimeException\\ (e.g. \\NullPointerExceptio",
+    "source": "IQ300",
+    "topic": "java"
+  },
+  {
+    "id": "iq-044",
+    "title": "What is a custom exception?",
+    "level": "L1",
+    "tags": [
+      "IQ300",
+      "java"
+    ],
+    "short": "A user-defined class extending \\Exception\\ (checked) or \\RuntimeException\\ (unchecked) to represent a domain-specific error condition, often carrying extra context (an error code, the offending entity id). E.g. \\class InsufficientFundsExcep",
+    "answer": "A user-defined class extending \\<code>Exception\\</code> (checked) or \\<code>RuntimeException\\</code> (unchecked) to represent a domain-specific error condition, often carrying extra context (an error code, the offending entity id). E.g. \\<code>class InsufficientFundsException extends RuntimeException\\</code>, used to make error handling and API contracts clearer than reusing generic exceptions.",
+    "code": "",
+    "followups": [],
+    "mistakes": [],
+    "interview": "A user-defined class extending \\Exception\\ (checked) or \\RuntimeException\\ (unchecked) to represent a domain-specific error condition, often carrying extra context (an error code, the offending entity id). E.g. \\class InsufficientFundsException extends RuntimeException\\, used to make error handling and API contracts cl",
+    "source": "IQ300",
+    "topic": "java"
+  },
+  {
+    "id": "iq-045",
+    "title": "Difference between `throw` and `throws`.",
+    "level": "L1",
+    "tags": [
+      "IQ300",
+      "java"
+    ],
+    "short": "\\throw\\ is a statement used inside a method body to actually raise/instantiate a specific exception instance at runtime. \\throws\\ is a keyword in a method's signature declaring which checked exceptions that method might propagate to its cal",
+    "answer": "\\<code>throw\\</code> is a statement used inside a method body to actually raise/instantiate a specific exception instance at runtime. \\<code>throws\\</code> is a keyword in a method's signature declaring which checked exceptions that method might propagate to its caller, without itself raising anything.",
+    "code": "",
+    "followups": [],
+    "mistakes": [],
+    "interview": "\\throw\\ is a statement used inside a method body to actually raise/instantiate a specific exception instance at runtime. \\throws\\ is a keyword in a method's signature declaring which checked exceptions that method might propagate to its caller, without itself raising anything.",
+    "source": "IQ300",
+    "topic": "java"
+  },
+  {
+    "id": "iq-046",
+    "title": "What is try-with-resources?",
+    "level": "L1",
+    "tags": [
+      "IQ300",
+      "java"
+    ],
+    "short": "A try statement (\\try (Resource r = ...) { }\\) that automatically closes any resource implementing \\AutoCloseable\\ at the end of the block — including if an exception is thrown — eliminating the need for manual \\finally { r.close(); }\\ boil",
+    "answer": "A try statement (\\<code>try (Resource r = ...) { }\\</code>) that automatically closes any resource implementing \\<code>AutoCloseable\\</code> at the end of the block — including if an exception is thrown — eliminating the need for manual \\<code>finally { r.close(); }\\</code> boilerplate and preventing resource leaks like unclosed streams or connections.",
+    "code": "",
+    "followups": [],
+    "mistakes": [],
+    "interview": "A try statement (\\try (Resource r = ...) { }\\) that automatically closes any resource implementing \\AutoCloseable\\ at the end of the block — including if an exception is thrown — eliminating the need for manual \\finally { r.close(); }\\ boilerplate and preventing resource leaks like unclosed streams or connections.",
+    "source": "IQ300",
+    "topic": "java"
+  },
+  {
+    "id": "iq-047",
+    "title": "Explain serialization and deserialization.",
+    "level": "L1",
+    "tags": [
+      "IQ300",
+      "java"
+    ],
+    "short": "Serialization converts an object's state into a byte stream (implementing \\Serializable\\) so it can be persisted to disk or sent over a network. Deserialization reverses the process, reconstructing an object from that byte stream. A \\serial",
+    "answer": "Serialization converts an object's state into a byte stream (implementing \\<code>Serializable\\</code>) so it can be persisted to disk or sent over a network. Deserialization reverses the process, reconstructing an object from that byte stream. A \\<code>serialVersionUID\\</code> field is used to verify class version compatibility between the serialized and deserializing sides.",
+    "code": "",
+    "followups": [],
+    "mistakes": [],
+    "interview": "Serialization converts an object's state into a byte stream (implementing \\Serializable\\) so it can be persisted to disk or sent over a network. Deserialization reverses the process, reconstructing an object from that byte stream. A \\serialVersionUID\\ field is used to verify class version compatibility between the seri",
+    "source": "IQ300",
+    "topic": "java"
+  },
+  {
+    "id": "iq-048",
+    "title": "What is the `transient` keyword?",
+    "level": "L1",
+    "tags": [
+      "IQ300",
+      "java"
+    ],
+    "short": "It marks a field to be excluded from the default Java serialization process — when the object is serialized, that field is skipped (and comes back as its default value, e.g. null or 0, on deserialization). It's typically used for sensitive ",
+    "answer": "It marks a field to be excluded from the default Java serialization process — when the object is serialized, that field is skipped (and comes back as its default value, e.g. null or 0, on deserialization). It's typically used for sensitive data (passwords) or derived/non-serializable fields (like a \\<code>Thread\\</code> or cache).",
+    "code": "",
+    "followups": [],
+    "mistakes": [],
+    "interview": "It marks a field to be excluded from the default Java serialization process — when the object is serialized, that field is skipped (and comes back as its default value, e.g. null or 0, on deserialization). It's typically used for sensitive data (passwords) or derived/non-serializable fields (like a \\Thread\\ or cache).",
+    "source": "IQ300",
+    "topic": "java"
+  },
+  {
+    "id": "iq-049",
+    "title": "What is the `volatile` keyword?",
+    "level": "L1",
+    "tags": [
+      "IQ300",
+      "java"
+    ],
+    "short": "It guarantees visibility of a variable's value across threads — any write to a volatile field is immediately visible to subsequent reads by other threads (it prevents caching the value in a CPU register/local cache and disables certain comp",
+    "answer": "It guarantees visibility of a variable's value across threads — any write to a volatile field is immediately visible to subsequent reads by other threads (it prevents caching the value in a CPU register/local cache and disables certain compiler reorderings). It does not, however, guarantee atomicity for compound operations like increment.",
+    "code": "",
+    "followups": [],
+    "mistakes": [],
+    "interview": "It guarantees visibility of a variable's value across threads — any write to a volatile field is immediately visible to subsequent reads by other threads (it prevents caching the value in a CPU register/local cache and disables certain compiler reorderings). It does not, however, guarantee atomicity for compound operat",
+    "source": "IQ300",
+    "topic": "java"
+  },
+  {
+    "id": "iq-050",
+    "title": "What is the `synchronized` keyword?",
+    "level": "L1",
+    "tags": [
+      "IQ300",
+      "java"
+    ],
+    "short": "It provides mutual exclusion — only one thread can execute a synchronized block/method on a given monitor (object lock) at a time, and it also establishes a happens-before relationship ensuring visibility of changes made inside the block to",
+    "answer": "It provides mutual exclusion — only one thread can execute a synchronized block/method on a given monitor (object lock) at a time, and it also establishes a happens-before relationship ensuring visibility of changes made inside the block to subsequent threads that acquire the same lock. Can be applied to instance methods (locks on \\<code>this\\</code>), static methods (locks on the Class object), or arbitrary blocks with an explicit monitor object.",
+    "code": "",
+    "followups": [],
+    "mistakes": [],
+    "interview": "It provides mutual exclusion — only one thread can execute a synchronized block/method on a given monitor (object lock) at a time, and it also establishes a happens-before relationship ensuring visibility of changes made inside the block to subsequent threads that acquire the same lock. Can be applied to instance metho",
+    "source": "IQ300",
+    "topic": "java"
+  },
+  {
+    "id": "iq-051",
+    "title": "Difference between `volatile` and `synchronized`.",
+    "level": "L1",
+    "tags": [
+      "IQ300",
+      "java"
+    ],
+    "short": "\\volatile\\ only guarantees visibility of a single variable's latest value across threads, with no locking and no atomicity for compound actions. \\synchronized\\ guarantees both visibility and mutual exclusion (atomicity) for an entire block ",
+    "answer": "\\<code>volatile\\</code> only guarantees visibility of a single variable's latest value across threads, with no locking and no atomicity for compound actions. \\<code>synchronized\\</code> guarantees both visibility and mutual exclusion (atomicity) for an entire block of code, but at the cost of blocking other threads and higher overhead.",
+    "code": "",
+    "followups": [],
+    "mistakes": [],
+    "interview": "\\volatile\\ only guarantees visibility of a single variable's latest value across threads, with no locking and no atomicity for compound actions. \\synchronized\\ guarantees both visibility and mutual exclusion (atomicity) for an entire block of code, but at the cost of blocking other threads and higher overhead.",
+    "source": "IQ300",
+    "topic": "java"
+  },
+  {
+    "id": "iq-052",
+    "title": "What is a race condition?",
+    "level": "L1",
+    "tags": [
+      "IQ300",
+      "java"
+    ],
+    "short": "A race condition occurs when multiple threads access and modify shared mutable state concurrently, and the final outcome depends on the unpredictable timing/interleaving of their operations — e.g. two threads both reading a counter, increme",
+    "answer": "A race condition occurs when multiple threads access and modify shared mutable state concurrently, and the final outcome depends on the unpredictable timing/interleaving of their operations — e.g. two threads both reading a counter, incrementing locally, and writing back, causing one update to be lost. Fixed with synchronization, locks, or atomic classes.",
+    "code": "",
+    "followups": [],
+    "mistakes": [],
+    "interview": "A race condition occurs when multiple threads access and modify shared mutable state concurrently, and the final outcome depends on the unpredictable timing/interleaving of their operations — e.g. two threads both reading a counter, incrementing locally, and writing back, causing one update to be lost. Fixed with synch",
+    "source": "IQ300",
+    "topic": "java"
+  },
+  {
+    "id": "iq-053",
+    "title": "What is a deadlock?",
+    "level": "L1",
+    "tags": [
+      "IQ300",
+      "java"
+    ],
+    "short": "A deadlock happens when two or more threads are each waiting on a lock held by another thread in the group, forming a cycle where none can proceed — e.g. Thread A holds lock 1 and waits for lock 2, while Thread B holds lock 2 and waits for ",
+    "answer": "A deadlock happens when two or more threads are each waiting on a lock held by another thread in the group, forming a cycle where none can proceed — e.g. Thread A holds lock 1 and waits for lock 2, while Thread B holds lock 2 and waits for lock 1.",
+    "code": "",
+    "followups": [],
+    "mistakes": [],
+    "interview": "A deadlock happens when two or more threads are each waiting on a lock held by another thread in the group, forming a cycle where none can proceed — e.g. Thread A holds lock 1 and waits for lock 2, while Thread B holds lock 2 and waits for lock 1.",
+    "source": "IQ300",
+    "topic": "java"
+  },
+  {
+    "id": "iq-054",
+    "title": "How can a deadlock be prevented?",
+    "level": "L1",
+    "tags": [
+      "IQ300",
+      "java"
+    ],
+    "short": "Always acquire multiple locks in a fixed, consistent global order across all threads; use timed lock attempts (\\tryLock\\ with a timeout) so a thread can back off instead of waiting forever; minimize the scope and number of nested locks; and",
+    "answer": "Always acquire multiple locks in a fixed, consistent global order across all threads; use timed lock attempts (\\<code>tryLock\\</code> with a timeout) so a thread can back off instead of waiting forever; minimize the scope and number of nested locks; and prefer higher-level concurrency utilities (\\<code>ConcurrentHashMap\\</code>, \\<code>java.util.concurrent\\</code> classes) over manual fine-grained locking where possible.",
+    "code": "",
+    "followups": [],
+    "mistakes": [],
+    "interview": "Always acquire multiple locks in a fixed, consistent global order across all threads; use timed lock attempts (\\tryLock\\ with a timeout) so a thread can back off instead of waiting forever; minimize the scope and number of nested locks; and prefer higher-level concurrency utilities (\\ConcurrentHashMap\\, \\java.util.conc",
+    "source": "IQ300",
+    "topic": "java"
+  },
+  {
+    "id": "iq-055",
+    "title": "Explain `ReentrantLock`.",
+    "level": "L1",
+    "tags": [
+      "IQ300",
+      "java"
+    ],
+    "short": "\\ReentrantLock\\ is an explicit lock implementation (\\java.util.concurrent.locks\\) offering capabilities beyond \\synchronized\\: \\tryLock()\\ with optional timeout (avoids indefinite blocking), interruptible lock acquisition, fairness policies",
+    "answer": "\\<code>ReentrantLock\\</code> is an explicit lock implementation (\\<code>java.util.concurrent.locks\\</code>) offering capabilities beyond \\<code>synchronized\\</code>: \\<code>tryLock()\\</code> with optional timeout (avoids indefinite blocking), interruptible lock acquisition, fairness policies (FIFO ordering of waiting threads), and the ability to check lock status. It's reentrant, meaning the same thread can acquire it again without deadlocking itself, but must explicitly \\<code>unlock()\\</code> — usually in a \\<code>finally\\</code> block.",
+    "code": "",
+    "followups": [],
+    "mistakes": [],
+    "interview": "\\ReentrantLock\\ is an explicit lock implementation (\\java.util.concurrent.locks\\) offering capabilities beyond \\synchronized\\: \\tryLock()\\ with optional timeout (avoids indefinite blocking), interruptible lock acquisition, fairness policies (FIFO ordering of waiting threads), and the ability to check lock status. It's ",
+    "source": "IQ300",
+    "topic": "java"
+  },
+  {
+    "id": "iq-056",
+    "title": "Difference between `wait()`, `notify()`, and `notifyAll()`.",
+    "level": "L1",
+    "tags": [
+      "IQ300",
+      "java"
+    ],
+    "short": "All three are defined on \\Object\\ and must be called within a synchronized block on that object's monitor. \\wait()\\ releases the lock and suspends the thread until notified. \\notify()\\ wakes up one arbitrary waiting thread on that monitor. ",
+    "answer": "All three are defined on \\<code>Object\\</code> and must be called within a synchronized block on that object's monitor. \\<code>wait()\\</code> releases the lock and suspends the thread until notified. \\<code>notify()\\</code> wakes up one arbitrary waiting thread on that monitor. \\<code>notifyAll()\\</code> wakes up all waiting threads, letting them re-compete for the lock — generally safer to avoid missed signals or starvation.",
+    "code": "",
+    "followups": [],
+    "mistakes": [],
+    "interview": "All three are defined on \\Object\\ and must be called within a synchronized block on that object's monitor. \\wait()\\ releases the lock and suspends the thread until notified. \\notify()\\ wakes up one arbitrary waiting thread on that monitor. \\notifyAll()\\ wakes up all waiting threads, letting them re-compete for the lock",
+    "source": "IQ300",
+    "topic": "java"
+  },
+  {
+    "id": "iq-057",
+    "title": "Difference between `Runnable` and `Callable`.",
+    "level": "L1",
+    "tags": [
+      "IQ300",
+      "java"
+    ],
+    "short": "\\Runnable\\'s \\run()\\ method returns no result and can't throw checked exceptions. \\Callable\\'s \\call()\\ method returns a value of type V and can throw checked exceptions — useful with \\ExecutorService.submit()\\ when you need a result or nee",
+    "answer": "\\<code>Runnable\\</code>'s \\<code>run()\\</code> method returns no result and can't throw checked exceptions. \\<code>Callable<V>\\</code>'s \\<code>call()\\</code> method returns a value of type V and can throw checked exceptions — useful with \\<code>ExecutorService.submit()\\</code> when you need a result or need to propagate a checked exception, typically wrapped in a \\<code>Future\\</code>.",
+    "code": "",
+    "followups": [],
+    "mistakes": [],
+    "interview": "\\Runnable\\'s \\run()\\ method returns no result and can't throw checked exceptions. \\Callable\\'s \\call()\\ method returns a value of type V and can throw checked exceptions — useful with \\ExecutorService.submit()\\ when you need a result or need to propagate a checked exception, typically wrapped in a \\Future\\.",
+    "source": "IQ300",
+    "topic": "java"
+  },
+  {
+    "id": "iq-058",
+    "title": "What is `Future`?",
+    "level": "L1",
+    "tags": [
+      "IQ300",
+      "java"
+    ],
+    "short": "\\Future\\ represents the pending result of an asynchronous computation submitted to an \\ExecutorService\\. You can poll \\isDone()\\, block for the result with \\get()\\ (optionally with a timeout), or attempt to \\cancel()\\ the task. Its main lim",
+    "answer": "\\<code>Future<V>\\</code> represents the pending result of an asynchronous computation submitted to an \\<code>ExecutorService\\</code>. You can poll \\<code>isDone()\\</code>, block for the result with \\<code>get()\\</code> (optionally with a timeout), or attempt to \\<code>cancel()\\</code> the task. Its main limitation is that composing/chaining futures or reacting to completion isn't built in.",
+    "code": "",
+    "followups": [],
+    "mistakes": [],
+    "interview": "\\Future\\ represents the pending result of an asynchronous computation submitted to an \\ExecutorService\\. You can poll \\isDone()\\, block for the result with \\get()\\ (optionally with a timeout), or attempt to \\cancel()\\ the task. Its main limitation is that composing/chaining futures or reacting to completion isn't built",
+    "source": "IQ300",
+    "topic": "java"
+  },
+  {
+    "id": "iq-059",
+    "title": "What is `CompletableFuture`?",
+    "level": "L1",
+    "tags": [
+      "IQ300",
+      "java"
+    ],
+    "short": "An enhanced \\Future\\ (Java 8+) supporting composable, non-blocking asynchronous pipelines — chaining with \\thenApply\\, \\thenCompose\\, \\thenCombine\\, handling errors with \\exceptionally\\/\\handle\\, and combining multiple futures with \\allOf\\/",
+    "answer": "An enhanced \\<code>Future\\</code> (Java 8+) supporting composable, non-blocking asynchronous pipelines — chaining with \\<code>thenApply\\</code>, \\<code>thenCompose\\</code>, \\<code>thenCombine\\</code>, handling errors with \\<code>exceptionally\\</code>/\\<code>handle\\</code>, and combining multiple futures with \\<code>allOf\\</code>/\\<code>anyOf\\</code>. It can be manually completed (\\<code>complete()\\</code>), making it useful for bridging callback-based APIs into a fluent, functional style.",
+    "code": "",
+    "followups": [],
+    "mistakes": [],
+    "interview": "An enhanced \\Future\\ (Java 8+) supporting composable, non-blocking asynchronous pipelines — chaining with \\thenApply\\, \\thenCompose\\, \\thenCombine\\, handling errors with \\exceptionally\\/\\handle\\, and combining multiple futures with \\allOf\\/\\anyOf\\. It can be manually completed (\\complete()\\), making it useful for bridg",
+    "source": "IQ300",
+    "topic": "java"
+  },
+  {
+    "id": "iq-060",
+    "title": "How does a thread pool work?",
+    "level": "L1",
+    "tags": [
+      "IQ300",
+      "java"
+    ],
+    "short": "A thread pool maintains a set of reusable worker threads and a task queue. Submitted tasks are queued and picked up by available worker threads, avoiding the overhead of creating/destroying a thread per task. Pools typically have core and m",
+    "answer": "A thread pool maintains a set of reusable worker threads and a task queue. Submitted tasks are queued and picked up by available worker threads, avoiding the overhead of creating/destroying a thread per task. Pools typically have core and maximum size settings, a keep-alive time for idle threads beyond the core size, and a rejection policy for when the queue is full.",
+    "code": "",
+    "followups": [],
+    "mistakes": [],
+    "interview": "A thread pool maintains a set of reusable worker threads and a task queue. Submitted tasks are queued and picked up by available worker threads, avoiding the overhead of creating/destroying a thread per task. Pools typically have core and maximum size settings, a keep-alive time for idle threads beyond the core size, a",
+    "source": "IQ300",
+    "topic": "java"
+  },
+  {
+    "id": "iq-061",
+    "title": "Difference between fixed and cached thread pools.",
+    "level": "L1",
+    "tags": [
+      "IQ300",
+      "java"
+    ],
+    "short": "\\newFixedThreadPool(n)\\ keeps a constant number of threads alive, queuing excess tasks — predictable resource usage, good for CPU-bound or rate-limited workloads. \\newCachedThreadPool()\\ creates new threads as needed with no upper bound (re",
+    "answer": "\\<code>newFixedThreadPool(n)\\</code> keeps a constant number of threads alive, queuing excess tasks — predictable resource usage, good for CPU-bound or rate-limited workloads. \\<code>newCachedThreadPool()\\</code> creates new threads as needed with no upper bound (reusing idle ones, killing them after 60s idle) — good for many short-lived, bursty tasks, but risks unbounded thread creation under heavy sustained load.",
+    "code": "",
+    "followups": [],
+    "mistakes": [],
+    "interview": "\\newFixedThreadPool(n)\\ keeps a constant number of threads alive, queuing excess tasks — predictable resource usage, good for CPU-bound or rate-limited workloads. \\newCachedThreadPool()\\ creates new threads as needed with no upper bound (reusing idle ones, killing them after 60s idle) — good for many short-lived, burst",
+    "source": "IQ300",
+    "topic": "java"
+  },
+  {
+    "id": "iq-062",
+    "title": "Explain `ExecutorService`.",
+    "level": "L1",
+    "tags": [
+      "IQ300",
+      "java"
+    ],
+    "short": "\\ExecutorService\\ is the core abstraction for managing a pool of threads and executing asynchronous tasks, decoupling task submission from thread management. It offers \\submit()\\/\\execute()\\ for running tasks, returns \\Future\\s for results,",
+    "answer": "\\<code>ExecutorService\\</code> is the core abstraction for managing a pool of threads and executing asynchronous tasks, decoupling task submission from thread management. It offers \\<code>submit()\\</code>/\\<code>execute()\\</code> for running tasks, returns \\<code>Future\\</code>s for results, and provides lifecycle control via \\<code>shutdown()\\</code>/\\<code>shutdownNow()\\</code>/\\<code>awaitTermination()\\</code>. Common implementations come from the \\<code>Executors\\</code> factory (fixed, cached, scheduled, single-thread pools) or, for finer control, \\<code>ThreadPoolExecutor\\</code> directly.",
+    "code": "",
+    "followups": [],
+    "mistakes": [],
+    "interview": "\\ExecutorService\\ is the core abstraction for managing a pool of threads and executing asynchronous tasks, decoupling task submission from thread management. It offers \\submit()\\/\\execute()\\ for running tasks, returns \\Future\\s for results, and provides lifecycle control via \\shutdown()\\/\\shutdownNow()\\/\\awaitTerminati",
+    "source": "IQ300",
+    "topic": "java"
+  },
+  {
+    "id": "iq-063",
+    "title": "What is thread starvation?",
+    "level": "L1",
+    "tags": [
+      "IQ300",
+      "java"
+    ],
+    "short": "Starvation occurs when a thread is perpetually denied access to a resource it needs (CPU time, a lock) because other threads are continuously favored — e.g. low-priority threads never getting scheduled, or a non-fair lock repeatedly grantin",
+    "answer": "Starvation occurs when a thread is perpetually denied access to a resource it needs (CPU time, a lock) because other threads are continuously favored — e.g. low-priority threads never getting scheduled, or a non-fair lock repeatedly granting access to newer requesters over one that's been waiting a long time.",
+    "code": "",
+    "followups": [],
+    "mistakes": [],
+    "interview": "Starvation occurs when a thread is perpetually denied access to a resource it needs (CPU time, a lock) because other threads are continuously favored — e.g. low-priority threads never getting scheduled, or a non-fair lock repeatedly granting access to newer requesters over one that's been waiting a long time.",
+    "source": "IQ300",
+    "topic": "java"
+  },
+  {
+    "id": "iq-064",
+    "title": "What is livelock?",
+    "level": "L1",
+    "tags": [
+      "IQ300",
+      "java"
+    ],
+    "short": "A livelock is like a deadlock but the threads aren't blocked — they're actively responding to each other in a way that prevents any progress, e.g. two threads each repeatedly stepping aside for the other in a corridor, never actually passin",
+    "answer": "A livelock is like a deadlock but the threads aren't blocked — they're actively responding to each other in a way that prevents any progress, e.g. two threads each repeatedly stepping aside for the other in a corridor, never actually passing. Unlike a deadlock, the threads are busy, just unproductively.",
+    "code": "",
+    "followups": [],
+    "mistakes": [],
+    "interview": "A livelock is like a deadlock but the threads aren't blocked — they're actively responding to each other in a way that prevents any progress, e.g. two threads each repeatedly stepping aside for the other in a corridor, never actually passing. Unlike a deadlock, the threads are busy, just unproductively.",
+    "source": "IQ300",
+    "topic": "java"
+  },
+  {
+    "id": "iq-065",
+    "title": "What is the producer-consumer problem?",
+    "level": "L1",
+    "tags": [
+      "IQ300",
+      "java"
+    ],
+    "short": "A classic concurrency pattern where one or more producer threads generate data and place it in a shared buffer/queue, and one or more consumer threads remove and process it. The challenge is coordinating so producers block/wait when the buf",
+    "answer": "A classic concurrency pattern where one or more producer threads generate data and place it in a shared buffer/queue, and one or more consumer threads remove and process it. The challenge is coordinating so producers block/wait when the buffer is full and consumers block/wait when it's empty, without race conditions — commonly solved with a \\<code>BlockingQueue\\</code>, which handles this coordination internally.",
+    "code": "",
+    "followups": [],
+    "mistakes": [],
+    "interview": "A classic concurrency pattern where one or more producer threads generate data and place it in a shared buffer/queue, and one or more consumer threads remove and process it. The challenge is coordinating so producers block/wait when the buffer is full and consumers block/wait when it's empty, without race conditions — ",
+    "source": "IQ300",
+    "topic": "java"
+  },
+  {
+    "id": "iq-066",
+    "title": "How would you print numbers from 1 to N using multiple threads?",
+    "level": "L1",
+    "tags": [
+      "IQ300",
+      "java"
+    ],
+    "short": "A common approach uses a shared counter and a lock (or a semaphore/condition-based turn system) so threads take turns: each thread acquires the lock, checks if it's its turn (e.g. based on counter % numberOfThreads), prints, increments, and",
+    "answer": "A common approach uses a shared counter and a lock (or a semaphore/condition-based turn system) so threads take turns: each thread acquires the lock, checks if it's its turn (e.g. based on counter % numberOfThreads), prints, increments, and notifies the others. In practice, \\<code>ReentrantLock\\</code> with \\<code>Condition\\</code> objects per thread, or a simple \\<code>synchronized\\</code> block with \\<code>wait/notifyAll\\</code>, cleanly enforces the ordered handoff.",
+    "code": "",
+    "followups": [],
+    "mistakes": [],
+    "interview": "A common approach uses a shared counter and a lock (or a semaphore/condition-based turn system) so threads take turns: each thread acquires the lock, checks if it's its turn (e.g. based on counter % numberOfThreads), prints, increments, and notifies the others. In practice, \\ReentrantLock\\ with \\Condition\\ objects per ",
+    "source": "IQ300",
+    "topic": "java"
+  },
+  {
+    "id": "iq-067",
+    "title": "Explain `AtomicInteger`.",
+    "level": "L1",
+    "tags": [
+      "IQ300",
+      "java"
+    ],
+    "short": "\\AtomicInteger\\ (java.util.concurrent.atomic) provides lock-free, thread-safe operations on a single int value using low-level CAS (compare-and-swap) CPU instructions instead of synchronization. Methods like \\incrementAndGet()\\, \\compareAnd",
+    "answer": "\\<code>AtomicInteger\\</code> (java.util.concurrent.atomic) provides lock-free, thread-safe operations on a single int value using low-level CAS (compare-and-swap) CPU instructions instead of synchronization. Methods like \\<code>incrementAndGet()\\</code>, \\<code>compareAndSet()\\</code>, and \\<code>addAndGet()\\</code> are atomic, making it far more efficient than synchronizing around a plain int for simple counters.",
+    "code": "",
+    "followups": [],
+    "mistakes": [],
+    "interview": "\\AtomicInteger\\ (java.util.concurrent.atomic) provides lock-free, thread-safe operations on a single int value using low-level CAS (compare-and-swap) CPU instructions instead of synchronization. Methods like \\incrementAndGet()\\, \\compareAndSet()\\, and \\addAndGet()\\ are atomic, making it far more efficient than synchron",
+    "source": "IQ300",
+    "topic": "java"
+  },
+  {
+    "id": "iq-068",
+    "title": "What is `ConcurrentHashMap` and why is it thread-safe?",
+    "level": "L1",
+    "tags": [
+      "IQ300",
+      "java"
+    ],
+    "short": "It's a thread-safe hash map designed for high concurrency. Instead of locking the whole map (like a synchronized \\HashMap\\), it uses fine-grained synchronization — historically per-segment locks, and since Java 8, per-bucket CAS operations ",
+    "answer": "It's a thread-safe hash map designed for high concurrency. Instead of locking the whole map (like a synchronized \\<code>HashMap\\</code>), it uses fine-grained synchronization — historically per-segment locks, and since Java 8, per-bucket CAS operations and synchronized blocks only on the specific bin being modified — allowing many threads to read and write different parts of the map simultaneously without blocking each other.",
+    "code": "",
+    "followups": [],
+    "mistakes": [],
+    "interview": "It's a thread-safe hash map designed for high concurrency. Instead of locking the whole map (like a synchronized \\HashMap\\), it uses fine-grained synchronization — historically per-segment locks, and since Java 8, per-bucket CAS operations and synchronized blocks only on the specific bin being modified — allowing many ",
+    "source": "IQ300",
+    "topic": "java"
+  },
+  {
+    "id": "iq-282",
+    "title": "How did you handle concurrency?",
+    "level": "L2",
+    "tags": [
+      "IQ300",
+      "java"
+    ],
+    "short": "Discuss specific mechanisms used: thread-safe collections (\\ConcurrentHashMap\\), atomic classes for counters, proper use of \\@Transactional\\ and optimistic/pessimistic locking for shared data, thread pool sizing/isolation (bulkheads) for do",
+    "answer": "Discuss specific mechanisms used: thread-safe collections (\\<code>ConcurrentHashMap\\</code>), atomic classes for counters, proper use of \\<code>@Transactional\\</code> and optimistic/pessimistic locking for shared data, thread pool sizing/isolation (bulkheads) for downstream calls, and how you tested for and avoided race conditions/deadlocks in your actual code.",
+    "code": "",
+    "followups": [],
+    "mistakes": [],
+    "interview": "Discuss specific mechanisms used: thread-safe collections (\\ConcurrentHashMap\\), atomic classes for counters, proper use of \\@Transactional\\ and optimistic/pessimistic locking for shared data, thread pool sizing/isolation (bulkheads) for downstream calls, and how you tested for and avoided race conditions/deadlocks in ",
+    "source": "IQ300",
+    "topic": "java"
+  },
+  {
+    "id": "iq-288",
+    "title": "Explain a memory leak issue you encountered.",
+    "level": "L1",
+    "tags": [
+      "IQ300",
+      "java"
+    ],
+    "short": "Describe how it manifested (gradually increasing heap usage, eventual \\OutOfMemoryError\\), how you diagnosed it (heap dump analysis, profiler, monitoring trends), the actual root cause (e.g. an unbounded cache, unclosed resources, a static ",
+    "answer": "Describe how it manifested (gradually increasing heap usage, eventual \\<code>OutOfMemoryError\\</code>), how you diagnosed it (heap dump analysis, profiler, monitoring trends), the actual root cause (e.g. an unbounded cache, unclosed resources, a static collection accumulating entries), and the fix — again, tie it to a real incident if you have one.",
+    "code": "",
+    "followups": [],
+    "mistakes": [],
+    "interview": "Describe how it manifested (gradually increasing heap usage, eventual \\OutOfMemoryError\\), how you diagnosed it (heap dump analysis, profiler, monitoring trends), the actual root cause (e.g. an unbounded cache, unclosed resources, a static collection accumulating entries), and the fix — again, tie it to a real incident",
+    "source": "IQ300",
+    "topic": "java"
+  },
+  {
+    "id": "iq-289",
+    "title": "Explain a deadlock issue you encountered.",
+    "level": "L1",
+    "tags": [
+      "IQ300",
+      "java"
+    ],
+    "short": "Describe the symptom (requests hanging/timing out), how you identified it (thread dump analysis showing two threads each blocked waiting for a lock the other held), the root cause (inconsistent lock acquisition order, or a long-held pessimi",
+    "answer": "Describe the symptom (requests hanging/timing out), how you identified it (thread dump analysis showing two threads each blocked waiting for a lock the other held), the root cause (inconsistent lock acquisition order, or a long-held pessimistic DB lock), and the fix (consistent lock ordering, shorter transactions, switching to optimistic locking).",
+    "code": "",
+    "followups": [],
+    "mistakes": [],
+    "interview": "Describe the symptom (requests hanging/timing out), how you identified it (thread dump analysis showing two threads each blocked waiting for a lock the other held), the root cause (inconsistent lock acquisition order, or a long-held pessimistic DB lock), and the fix (consistent lock ordering, shorter transactions, swit",
+    "source": "IQ300",
+    "topic": "java"
+  },
+  {
+    "id": "iq-309",
+    "title": "Explain `ConcurrentHashMap` internals.",
+    "level": "L1",
+    "tags": [
+      "IQ300",
+      "java"
+    ],
+    "short": "Since Java 8, it's backed by an array of nodes (bins), using CAS (compare-and-swap) operations for lock-free updates to empty bins, and only synchronizing on the specific bin (not the whole map) when there's a collision to resolve — dramati",
+    "answer": "Since Java 8, it's backed by an array of nodes (bins), using CAS (compare-and-swap) operations for lock-free updates to empty bins, and only synchronizing on the specific bin (not the whole map) when there's a collision to resolve — dramatically improving concurrent throughput versus a fully synchronized map. Reads generally don't block at all, since fields are volatile and node structures updated safely for visibility.",
+    "code": "",
+    "followups": [],
+    "mistakes": [],
+    "interview": "Since Java 8, it's backed by an array of nodes (bins), using CAS (compare-and-swap) operations for lock-free updates to empty bins, and only synchronizing on the specific bin (not the whole map) when there's a collision to resolve — dramatically improving concurrent throughput versus a fully synchronized map. Reads gen",
+    "source": "IQ300",
+    "topic": "java"
+  },
+  {
+    "id": "iq-310",
+    "title": "Explain `CompletableFuture` chaining.",
+    "level": "L1",
+    "tags": [
+      "IQ300",
+      "java"
+    ],
+    "short": "Chaining lets you compose asynchronous steps declaratively: \\thenApply\\ transforms the result once available (like \\map\\), \\thenCompose\\ flattens a step that itself returns another \\CompletableFuture\\ (avoiding nested futures, like \\flatMap",
+    "answer": "Chaining lets you compose asynchronous steps declaratively: \\<code>thenApply\\</code> transforms the result once available (like \\<code>map\\</code>), \\<code>thenCompose\\</code> flattens a step that itself returns another \\<code>CompletableFuture\\</code> (avoiding nested futures, like \\<code>flatMap\\</code>), and \\<code>thenCombine\\</code> merges results from two independent futures once both complete — letting you build non-blocking, multi-step async pipelines without manually managing callbacks or threads.",
+    "code": "",
+    "followups": [],
+    "mistakes": [],
+    "interview": "Chaining lets you compose asynchronous steps declaratively: \\thenApply\\ transforms the result once available (like \\map\\), \\thenCompose\\ flattens a step that itself returns another \\CompletableFuture\\ (avoiding nested futures, like \\flatMap\\), and \\thenCombine\\ merges results from two independent futures once both comp",
+    "source": "IQ300",
+    "topic": "java"
+  },
+  {
+    "id": "iq-314",
+    "title": "Explain thread pool sizing.",
+    "level": "L1",
+    "tags": [
+      "IQ300",
+      "java"
+    ],
+    "short": "For CPU-bound work, the optimal pool size is roughly the number of available CPU cores (more threads just adds context-switching overhead). For I/O-bound work, where threads spend most time waiting, a larger pool is beneficial — a common fo",
+    "answer": "For CPU-bound work, the optimal pool size is roughly the number of available CPU cores (more threads just adds context-switching overhead). For I/O-bound work, where threads spend most time waiting, a larger pool is beneficial — a common formula is \\<code>threads = cores \\* (1 + wait\\_time/compute\\_time)\\</code> — so the right size depends heavily on the nature of the workload and should be validated with load testing, not just guessed.",
+    "code": "",
+    "followups": [],
+    "mistakes": [],
+    "interview": "For CPU-bound work, the optimal pool size is roughly the number of available CPU cores (more threads just adds context-switching overhead). For I/O-bound work, where threads spend most time waiting, a larger pool is beneficial — a common formula is \\threads = cores \\* (1 + wait\\_time/compute\\_time)\\ — so the right size",
+    "source": "IQ300",
+    "topic": "java"
+  },
+  {
+    "id": "iq-315",
+    "title": "Explain CPU-bound vs I/O-bound tasks.",
+    "level": "L1",
+    "tags": [
+      "IQ300",
+      "java"
+    ],
+    "short": "CPU-bound tasks spend most of their time actively computing (e.g. complex calculations, encryption), and are limited by processor speed/core count — more threads than cores doesn't help. I/O-bound tasks spend most of their time waiting on e",
+    "answer": "CPU-bound tasks spend most of their time actively computing (e.g. complex calculations, encryption), and are limited by processor speed/core count — more threads than cores doesn't help. I/O-bound tasks spend most of their time waiting on external operations (network calls, disk, database) with the CPU largely idle during that wait — these benefit from more threads (or non-blocking/async models) than there are CPU cores, since threads are mostly waiting rather than computing.",
+    "code": "",
+    "followups": [],
+    "mistakes": [],
+    "interview": "CPU-bound tasks spend most of their time actively computing (e.g. complex calculations, encryption), and are limited by processor speed/core count — more threads than cores doesn't help. I/O-bound tasks spend most of their time waiting on external operations (network calls, disk, database) with the CPU largely idle dur",
+    "source": "IQ300",
+    "topic": "java"
+  },
+  {
+    "id": "iq-329",
+    "title": "Explain how you would investigate high CPU usage in a Java service.",
+    "level": "L1",
+    "tags": [
+      "IQ300",
+      "java"
+    ],
+    "short": "Take a thread dump (or use a profiler) during the high-CPU window to see which threads are consuming CPU and what they're doing (e.g. a tight loop, excessive GC activity, inefficient regex/serialization), correlate with GC logs to rule out ",
+    "answer": "Take a thread dump (or use a profiler) during the high-CPU window to see which threads are consuming CPU and what they're doing (e.g. a tight loop, excessive GC activity, inefficient regex/serialization), correlate with GC logs to rule out excessive garbage collection, and check for recent code changes or unusual traffic patterns (e.g. a hot endpoint being hit far more than normal) that line up with the onset.",
+    "code": "",
+    "followups": [],
+    "mistakes": [],
+    "interview": "Take a thread dump (or use a profiler) during the high-CPU window to see which threads are consuming CPU and what they're doing (e.g. a tight loop, excessive GC activity, inefficient regex/serialization), correlate with GC logs to rule out excessive garbage collection, and check for recent code changes or unusual traff",
+    "source": "IQ300",
+    "topic": "java"
+  },
+  {
+    "id": "iq-330",
+    "title": "Explain how you would investigate a memory leak in production.",
+    "level": "L1",
+    "tags": [
+      "IQ300",
+      "java"
+    ],
+    "short": "Monitor heap usage trends over time — a genuine leak shows a steady climb that doesn't recover after GC. Capture a heap dump (ideally two, to diff) and analyze it with a tool like Eclipse MAT to find which object type is accumulating and it",
+    "answer": "Monitor heap usage trends over time — a genuine leak shows a steady climb that doesn't recover after GC. Capture a heap dump (ideally two, to diff) and analyze it with a tool like Eclipse MAT to find which object type is accumulating and its retention path (what's holding a reference to it) — common culprits are unbounded caches, listeners/callbacks never unregistered, or static collections that keep growing.",
+    "code": "",
+    "followups": [],
+    "mistakes": [],
+    "interview": "Monitor heap usage trends over time — a genuine leak shows a steady climb that doesn't recover after GC. Capture a heap dump (ideally two, to diff) and analyze it with a tool like Eclipse MAT to find which object type is accumulating and its retention path (what's holding a reference to it) — common culprits are unboun",
+    "source": "IQ300",
+    "topic": "java"
+  },
+  {
+    "topic": "java",
+    "level": "L2",
+    "title": "Why is String immutable in Java?",
+    "tags": [
+      "String",
+      "Immutability"
+    ],
+    "short": "String cannot be changed after creation; operations create new String values.",
+    "answer": "Immutability makes String safe to share, enables string pooling, simplifies caching and hashing, and avoids surprising changes when a String is used as a map key. Its internal representation is private and String does not expose mutating operations.",
+    "code": "String a = \"java\";\nString b = a.concat(\" backend\");\nSystem.out.println(a); // java\nSystem.out.println(b); // java backend",
+    "followups": [
+      "Why is String a good HashMap key?",
+      "What is the String pool?",
+      "StringBuilder vs StringBuffer?"
+    ],
+    "mistakes": [
+      "Saying concat changes the original String.",
+      "Assuming immutability means no new objects are created."
+    ],
+    "interview": "String is immutable, which makes it safe to share and hash, supports the string pool, and prevents a caller from changing a value after it has been passed around.",
+    "source": "V9",
+    "id": "v9-001"
+  },
+  {
+    "topic": "java",
+    "level": "L2",
+    "title": "Explain the String pool.",
+    "tags": [
+      "String",
+      "JVM"
+    ],
+    "short": "The JVM maintains a pool of canonical String literals so identical literals can share storage.",
+    "answer": "A literal such as \"java\" is normally interned in the String pool. If the same literal appears again, the references can point to the same pooled object. new String(\"java\") creates a distinct object, while intern() returns the pooled representation.",
+    "code": "String a = \"java\";\nString b = \"java\";\nString c = new String(\"java\");\nSystem.out.println(a == b); // true\nSystem.out.println(a == c); // false\nSystem.out.println(a == c.intern()); // true",
+    "followups": [
+      "Where is the String pool located in modern JVMs?",
+      "Why should == not be used for String content?"
+    ],
+    "mistakes": [
+      "Treating all Strings as pooled.",
+      "Using == instead of equals() for content comparison."
+    ],
+    "interview": "The String pool stores canonical representations of literals. It reduces duplicate literal objects, but explicitly created Strings can still live outside the pool.",
+    "source": "V9",
+    "id": "v9-002"
+  },
+  {
+    "topic": "java",
+    "level": "L2",
+    "title": "What is defensive copying?",
+    "tags": [
+      "Immutability",
+      "Collections"
+    ],
+    "short": "Defensive copying protects mutable internal state by copying objects at boundaries.",
+    "answer": "If a class stores a mutable List or Date supplied by a caller, the caller could otherwise mutate the class state. A defensive copy is made on input and often again on output. For modern Java, immutable collections can also help when the data itself is immutable.",
+    "code": "class Team {\n    private final List<String> players;\n    Team(List<String> players) {\n        this.players = new ArrayList<>(players);\n    }\n    List<String> players() {\n        return List.copyOf(players);\n    }\n}",
+    "followups": [
+      "Why is returning the internal list dangerous?",
+      "List.copyOf vs Collections.unmodifiableList?"
+    ],
+    "mistakes": [
+      "Only copying on construction but exposing the internal list.",
+      "Assuming an unmodifiable view always makes the underlying data immutable."
+    ],
+    "interview": "Defensive copying prevents external code from changing internal mutable state. I use copies or immutable collections at API boundaries.",
+    "source": "V9",
+    "id": "v9-003"
+  },
+  {
+    "topic": "java",
+    "level": "L2",
+    "title": "What is the difference between shallow copy and deep copy?",
+    "tags": [
+      "Objects",
+      "Copying"
+    ],
+    "short": "A shallow copy copies the outer object while nested references remain shared; a deep copy also duplicates the nested mutable state.",
+    "answer": "For an object containing a mutable Address, a shallow copy can leave both objects pointing to the same Address. Mutating that Address then affects both copies. Deep copying duplicates the object graph that must be independently mutable.",
+    "code": "class Person {\n    String name;\n    Address address;\n}\n// Shallow copy: new Person with the same address reference.\n// Deep copy: new Person with a copied Address object.",
+    "followups": [
+      "How would you deep copy safely?",
+      "Why can serialization-based copying be problematic?"
+    ],
+    "mistakes": [
+      "Calling clone() a universal deep-copy solution.",
+      "Ignoring cycles and shared references in object graphs."
+    ],
+    "interview": "Shallow copy duplicates the outer object; deep copy duplicates the mutable nested state that should not be shared.",
+    "source": "V9",
+    "id": "v9-004"
+  },
+  {
+    "topic": "java",
+    "level": "L2",
+    "title": "Explain covariant return types.",
+    "tags": [
+      "OOP",
+      "Inheritance"
+    ],
+    "short": "An overriding method can return a subtype of the return type declared by the parent method.",
+    "answer": "Java allows an overriding method to narrow the return type covariantly. This improves usability because callers of the subclass can receive the more specific type without an explicit cast.",
+    "code": "class Animal {}\nclass Dog extends Animal {}\nclass Parent { Animal create() { return new Animal(); } }\nclass Child extends Parent { @Override Dog create() { return new Dog(); } }",
+    "followups": [
+      "Can parameters be narrowed when overriding?",
+      "How is covariance different from method overloading?"
+    ],
+    "mistakes": [
+      "Calling contravariant parameter changes valid overriding.",
+      "Confusing overload resolution with overriding."
+    ],
+    "interview": "Covariant returns let an overriding method return a more specific subtype while preserving the parent contract.",
+    "source": "V9",
+    "id": "v9-005"
+  },
+  {
+    "topic": "java",
+    "level": "L3",
+    "title": "What is the Java Memory Model?",
+    "tags": [
+      "Concurrency",
+      "JMM"
+    ],
+    "short": "The Java Memory Model defines how threads interact through memory and what visibility and ordering guarantees synchronization constructs provide.",
+    "answer": "The JMM explains happens-before relationships. synchronized, volatile, final-field guarantees and concurrent utilities establish visibility and ordering rules. Without a happens-before relationship, one thread is not guaranteed to observe another thread's writes in the expected order.",
+    "code": "class Flag {\n    private volatile boolean ready;\n    void publish() { ready = true; }\n    boolean isReady() { return ready; }\n}",
+    "followups": [
+      "What does volatile guarantee?",
+      "Does volatile make i++ atomic?",
+      "What establishes happens-before?"
+    ],
+    "mistakes": [
+      "Saying volatile makes compound operations atomic.",
+      "Assuming CPU cache behavior alone defines Java semantics."
+    ],
+    "interview": "The JMM gives Java its visibility and ordering rules across threads. I reason about shared state using happens-before rather than relying on timing or CPU behavior.",
+    "source": "V9",
+    "id": "v9-006"
+  },
+  {
+    "topic": "java",
+    "level": "L2",
+    "title": "Why is i++ not atomic?",
+    "tags": [
+      "Concurrency",
+      "Atomic"
+    ],
+    "short": "Increment consists of read, modify and write operations, so multiple threads can lose updates.",
+    "answer": "For a shared int, i++ can read the same old value in two threads and both write the same incremented result. AtomicInteger provides an atomic increment operation using concurrency primitives.",
+    "code": "AtomicInteger counter = new AtomicInteger();\ncounter.incrementAndGet();",
+    "followups": [
+      "When would synchronized be preferable?",
+      "How does compareAndSet work?"
+    ],
+    "mistakes": [
+      "Calling i++ atomic because int reads/writes are atomic.",
+      "Using AtomicInteger without considering the larger invariant."
+    ],
+    "interview": "i++ is a read-modify-write sequence, not one atomic action. AtomicInteger or locking is needed when multiple threads update shared state.",
+    "source": "V9",
+    "id": "v9-007"
+  },
+  {
+    "topic": "java",
+    "level": "L3",
+    "title": "When should you use AtomicInteger versus synchronized?",
+    "tags": [
+      "Concurrency",
+      "Atomic"
+    ],
+    "short": "AtomicInteger is useful for independent atomic state updates; synchronized is better when multiple variables or invariants must change together.",
+    "answer": "Atomic classes provide lock-free-style atomic operations for specific state transitions. If a business operation requires checking and updating several fields consistently, a synchronized block or Lock can protect the whole invariant.",
+    "code": "AtomicInteger count = new AtomicInteger();\ncount.incrementAndGet();\n\nsynchronized (lock) {\n    balance -= amount;\n    ledger.add(amount);\n}",
+    "followups": [
+      "What is compareAndSet?",
+      "Can multiple atomic variables replace a lock for every design?"
+    ],
+    "mistakes": [
+      "Choosing atomics for a multi-field invariant.",
+      "Assuming atomic means globally thread-safe for surrounding business logic."
+    ],
+    "interview": "I use atomics for simple independent counters or state transitions. For a compound invariant, I prefer a lock around the whole critical section.",
+    "source": "V9",
+    "id": "v9-008"
+  },
+  {
+    "topic": "java",
+    "level": "L2",
+    "title": "What is ThreadLocal and when can it be dangerous?",
+    "tags": [
+      "Concurrency",
+      "ThreadLocal"
+    ],
+    "short": "ThreadLocal gives each thread its own value, but values can leak across reused thread-pool threads if not removed.",
+    "answer": "ThreadLocal is useful for request-scoped context in synchronous code, but application servers reuse worker threads. If a large object or security context remains attached, it can survive beyond the request. Call remove() in cleanup code when appropriate.",
+    "code": "private static final ThreadLocal<String> REQUEST_ID = new ThreadLocal<>();\ntry {\n    REQUEST_ID.set(\"abc\");\n    // work\n} finally {\n    REQUEST_ID.remove();\n}",
+    "followups": [
+      "Does ThreadLocal work across async thread switches?",
+      "Why are virtual threads different for ThreadLocal usage?"
+    ],
+    "mistakes": [
+      "Treating ThreadLocal as global storage.",
+      "Forgetting cleanup with thread pools."
+    ],
+    "interview": "ThreadLocal isolates values per thread, but pooled threads live for many requests, so I always consider lifecycle and cleanup.",
+    "source": "V9",
+    "id": "v9-009"
+  },
+  {
+    "topic": "java",
+    "level": "L3",
+    "title": "What are virtual threads in Java 21?",
+    "tags": [
+      "Java 21",
+      "Concurrency",
+      "Virtual Threads"
+    ],
+    "short": "Virtual threads are lightweight JVM-managed threads designed for high-concurrency blocking workloads.",
+    "answer": "A virtual thread is cheap compared with a platform thread and can be parked when it blocks, allowing the JVM to reuse carrier threads. They are especially useful for request-per-task applications that perform blocking I/O. They do not make CPU-bound work faster.",
+    "code": "try (var executor = Executors.newVirtualThreadPerTaskExecutor()) {\n    Future<String> f = executor.submit(() -> callRemoteService());\n    System.out.println(f.get());\n}",
+    "followups": [
+      "Virtual threads vs reactive programming?",
+      "Should CPU-bound work use virtual threads?",
+      "What is pinning?"
+    ],
+    "mistakes": [
+      "Saying virtual threads are faster CPU threads.",
+      "Creating unbounded external resources simply because threads are cheap."
+    ],
+    "interview": "Virtual threads improve scalability for large numbers of mostly blocking tasks. They reduce thread-management cost but do not remove CPU, database or downstream bottlenecks.",
+    "source": "V9",
+    "id": "v9-010"
+  },
+  {
+    "topic": "java",
+    "level": "L2",
+    "title": "What is try-with-resources?",
+    "tags": [
+      "Exceptions",
+      "Resource Handling"
+    ],
+    "short": "It automatically closes AutoCloseable resources when leaving the try block, including when an exception occurs.",
+    "answer": "The compiler generates cleanup logic around resources declared in the try header. If both the body and close operation throw, the close exception can become a suppressed exception.",
+    "code": "try (BufferedReader reader = Files.newBufferedReader(Path.of(\"input.txt\"))) {\n    System.out.println(reader.readLine());\n}",
+    "followups": [
+      "What are suppressed exceptions?",
+      "What interface must a resource implement?"
+    ],
+    "mistakes": [
+      "Manually closing resources in a finally block when try-with-resources is clearer.",
+      "Ignoring close failures completely."
+    ],
+    "interview": "try-with-resources gives deterministic cleanup for AutoCloseable resources and correctly handles exceptional paths and suppressed exceptions.",
+    "source": "V9",
+    "id": "v9-011"
+  },
+  {
+    "topic": "java",
+    "subtopic": "jvm",
+    "level": "L3",
+    "title": "Diagnose a Java memory leak in production",
+    "tags": [
+      "java",
+      "L3",
+      "Production"
+    ],
+    "short": "Use heap evidence and GC behavior to distinguish retained objects from high allocation.",
+    "answer": "Compare post-GC heap trends, capture a heap dump, inspect dominators and GC roots, then identify the retaining path. Common causes include unbounded caches, static collections, listeners, ThreadLocals and long-lived executors. Validate the fix with the same workload.",
+    "code": "jcmd <pid> GC.heap_dump /tmp/app.hprof",
+    "followups": [
+      "Leak vs high allocation?",
+      "How do you investigate native memory?"
+    ],
+    "mistakes": [
+      "Assuming every OOM is a heap leak."
+    ],
+    "interview": "I first prove retention after GC, then use a heap dump and GC roots to find who is keeping the objects alive. I fix the owner and verify post-GC usage stabilizes.",
+    "source": "V10",
+    "id": "v10-001"
+  },
+  {
+    "topic": "java",
+    "subtopic": "concurrency",
+    "level": "L3",
+    "title": "Explain Java Memory Model and happens-before",
+    "tags": [
+      "java",
+      "L3",
+      "Production"
+    ],
+    "short": "The JMM defines visibility and ordering between threads; happens-before gives a guarantee that one action is visible before another.",
+    "answer": "Locks, volatile writes/reads, thread start/join and concurrent utilities establish happens-before relationships. Without them, compiler and CPU reordering means another thread is not guaranteed to observe a write when expected.",
+    "code": "volatile boolean ready;\nint value;\n// value write before ready=true is visible to a reader that sees ready=true.",
+    "followups": [
+      "Why is volatile not enough for i++?",
+      "What is safe publication?"
+    ],
+    "mistakes": [
+      "Saying volatile makes every operation atomic."
+    ],
+    "interview": "I use JMM-defined happens-before relationships instead of timing assumptions. Volatile gives visibility and ordering for the variable, but not atomicity for compound operations.",
+    "source": "V10",
+    "id": "v10-002"
+  },
+  {
+    "topic": "java",
+    "subtopic": "concurrency",
+    "level": "L3",
+    "title": "When would you use Atomic classes or VarHandle?",
+    "tags": [
+      "java",
+      "L3",
+      "Production"
+    ],
+    "short": "Use them for narrow atomic state transitions where lock-free coordination is justified.",
+    "answer": "Atomic classes provide common CAS operations; VarHandle exposes lower-level memory access modes. They work well for independent counters and state machines, while locks are often clearer for multi-field invariants.",
+    "code": "AtomicInteger count = new AtomicInteger();\ncount.incrementAndGet();",
+    "followups": [
+      "Explain CAS and ABA.",
+      "When can lock-free code be slower?"
+    ],
+    "mistakes": [
+      "Assuming lock-free always means faster."
+    ],
+    "interview": "I choose the simplest correct primitive. Atomics are excellent for independent state; synchronized or Lock is preferable when several values must change together.",
+    "source": "V10",
+    "id": "v10-003"
+  },
+  {
+    "topic": "java",
+    "subtopic": "concurrency",
+    "level": "L3",
+    "title": "Explain virtual threads for backend services",
+    "tags": [
+      "java",
+      "L3",
+      "Production"
+    ],
+    "short": "Virtual threads make large numbers of blocking I/O tasks cheap to park, but do not increase CPU capacity or database capacity.",
+    "answer": "They are scheduled on carrier threads and are useful for request-per-task workloads. You still need bounded downstream resources, connection pools and backpressure because cheap concurrency can overwhelm dependencies.",
+    "code": "try (var executor = Executors.newVirtualThreadPerTaskExecutor()) { executor.submit(() -> callBlockingApi()); }",
+    "followups": [
+      "What causes virtual-thread pinning?",
+      "When would reactive programming still help?"
+    ],
+    "mistakes": [
+      "Treating virtual threads as unlimited throughput."
+    ],
+    "interview": "I would use virtual threads for I/O-heavy blocking workloads while still limiting DB connections and downstream concurrency.",
+    "source": "V10",
+    "id": "v10-004"
+  },
+  {
+    "topic": "java",
+    "subtopic": "jvm",
+    "level": "L3",
+    "title": "How do you diagnose CPU spikes in Java?",
+    "tags": [
+      "java",
+      "L3",
+      "Production"
+    ],
+    "short": "Correlate CPU, thread state, GC and code-level profiles during the spike.",
+    "answer": "Use JFR or async-profiler, thread dumps and GC logs. Check hot methods, serialization, regex, logging, busy loops, GC CPU and traffic changes. Compare with a healthy period.",
+    "code": "jcmd <pid> JFR.start duration=60s filename=/tmp/spike.jfr",
+    "followups": [
+      "How do you distinguish lock contention from CPU work?",
+      "What does a thread dump show?"
+    ],
+    "mistakes": [
+      "Changing JVM settings before profiling."
+    ],
+    "interview": "I first establish whether CPU is application code, GC or JVM overhead. Then I profile during the incident and fix the measured hotspot.",
+    "source": "V10",
+    "id": "v10-005"
+  },
+  {
+    "topic": "java",
+    "subtopic": "concurrency",
+    "level": "L3",
+    "title": "How do you prevent ThreadLocal leaks?",
+    "tags": [
+      "java",
+      "L3",
+      "Production"
+    ],
+    "short": "Clear request-specific ThreadLocal state when pooled tasks finish.",
+    "answer": "ThreadLocal values belong to worker threads, which live much longer than requests. Always remove context in finally blocks and be careful when crossing executor boundaries.",
+    "code": "try { context.set(id); work(); } finally { context.remove(); }",
+    "followups": [
+      "Does ThreadLocal propagate to async tasks?",
+      "How does ThreadLocalMap work?"
+    ],
+    "mistakes": [
+      "Assuming ThreadLocal follows tasks automatically."
+    ],
+    "interview": "ThreadLocal is thread-scoped, not request-scoped. In pools I always clean it up to prevent memory retention and context leakage.",
+    "source": "V10",
+    "id": "v10-006"
+  },
+  {
+    "topic": "java",
+    "subtopic": "concurrency",
+    "level": "L3",
+    "title": "How would you investigate a Java deadlock?",
+    "tags": [
+      "java",
+      "L3",
+      "Production"
+    ],
+    "short": "Use thread dumps to identify the circular wait and then fix lock ordering or ownership.",
+    "answer": "Look for BLOCKED threads, lock owners and cycles. Multiple dumps help confirm the condition. Durable fixes include consistent acquisition order, smaller critical sections or redesigning shared state.",
+    "code": "jcmd <pid> Thread.print > /tmp/threads.txt",
+    "followups": [
+      "Deadlock vs livelock?",
+      "How does tryLock help?"
+    ],
+    "mistakes": [
+      "Looking only at CPU usage."
+    ],
+    "interview": "I map the lock ownership cycle from a thread dump back to code, then remove the circular dependency rather than relying on a restart.",
+    "source": "V10",
+    "id": "v10-007"
+  },
+  {
+    "topic": "java",
+    "subtopic": "jvm",
+    "level": "L3",
+    "title": "How do you safely publish immutable Java state?",
+    "tags": [
+      "java",
+      "L3",
+      "Production"
+    ],
+    "short": "Construct it fully, use final fields and publish the reference through a JMM-safe mechanism.",
+    "answer": "Final fields protect construction semantics; volatile, synchronization, concurrent collections or static initialization can establish visibility of the reference. Mutable inputs should be defensively copied.",
+    "code": "private volatile Config config;\nvoid publish(Config c) { config = c; }",
+    "followups": [
+      "Why do final fields matter?",
+      "Can an immutable object be unsafely published?"
+    ],
+    "mistakes": [
+      "Assuming immutability alone guarantees visibility."
+    ],
+    "interview": "I combine immutability with safe publication. Immutability removes mutation races, while safe publication guarantees other threads see the intended state.",
+    "source": "V10",
+    "id": "v10-008"
+  },
+  {
+    "topic": "java",
+    "subtopic": "jvm",
+    "level": "L3",
+    "title": "How do you tune Java performance scientifically?",
+    "tags": [
+      "java",
+      "L3",
+      "Production"
+    ],
+    "short": "Profile first, change one bottleneck, and compare against a reproducible baseline.",
+    "answer": "Correlate throughput and p99 latency with CPU, allocation, GC, locks, DB and downstream latency. Use JFR, async-profiler and load tests. Avoid tuning from folklore.",
+    "code": "// Baseline -> profile -> targeted change -> same workload -> compare p99.",
+    "followups": [
+      "JFR vs async-profiler?",
+      "Why p99 instead of average?"
+    ],
+    "mistakes": [
+      "Changing heap/GC settings without evidence."
+    ],
+    "interview": "I do not tune the JVM blindly. I establish a baseline, identify the dominant bottleneck, make one change and verify it under the same workload.",
+    "source": "V10",
+    "id": "v10-009"
+  },
+  {
+    "topic": "java",
+    "subtopic": "concurrency",
+    "level": "L3",
+    "title": "Explain ForkJoinPool work stealing",
+    "tags": [
+      "java",
+      "L3",
+      "Production"
+    ],
+    "short": "Workers use local deques and steal tasks from other workers when idle, making it effective for CPU-bound fork/join work.",
+    "answer": "Blocking I/O can occupy workers and reduce effective parallelism. Dedicated executors are safer for blocking workloads.",
+    "code": "ForkJoinPool pool = new ForkJoinPool(8);",
+    "followups": [
+      "How does CompletableFuture choose an executor?",
+      "How do you isolate blocking calls?"
+    ],
+    "mistakes": [
+      "Using the common pool for blocking database calls."
+    ],
+    "interview": "ForkJoinPool is optimized for parallel CPU work. I avoid unbounded blocking operations in the common pool because they can starve unrelated tasks.",
+    "source": "V10",
+    "id": "v10-010"
+  },
+  {
+    "topic": "java",
+    "subtopic": "concurrency",
+    "level": "L3",
+    "title": "What is false sharing?",
+    "tags": [
+      "java",
+      "L3",
+      "Production"
+    ],
+    "short": "Independent hot variables on the same CPU cache line can cause unnecessary cache invalidation between cores.",
+    "answer": "It matters mainly in highly concurrent low-latency code. Padding or layout annotations can help, but only after measurement with a benchmark or profiler.",
+    "code": "// Validate with JMH before introducing padding.",
+    "followups": [
+      "How do you benchmark it?",
+      "What is cache-line contention?"
+    ],
+    "mistakes": [
+      "Adding padding without evidence."
+    ],
+    "interview": "I treat false sharing as a measured hardware-level optimization, not a default design rule.",
+    "source": "V10",
+    "id": "v10-011"
+  },
+  {
+    "id": "v10.1-033",
+    "title": "CPU usage spikes after switching to parallel streams",
+    "level": "L3",
+    "tags": [
+      "parallel stream",
+      "forkjoinpool",
+      "cpu",
+      "Production Scenario",
+      "V10.1"
+    ],
+    "short": "Parallel streams can increase throughput for suitable CPU-bound workloads, but they also consume shared executor capacity.",
+    "answer": "I would profile CPU and common-pool contention first. If the workload is already concurrent or too small, sequential processing may be faster. For isolated batch work I would use a dedicated executor with controlled parallelism.",
+    "code": "Remove parallelism if the workload is small or already concurrent. For controlled background workloads, use an appropriately sized executor instead of allowing common-pool work to compete with unrelated tasks.",
+    "followups": [
+      "When is parallelStream appropriate?",
+      "How does the common ForkJoinPool work?",
+      "How do virtual threads differ from parallel streams?"
+    ],
+    "mistakes": [
+      "Using parallel streams for blocking I/O.",
+      "Assuming more parallelism always means more throughput."
+    ],
+    "interview": "I would not assume parallelStream is automatically faster. I would benchmark it and check whether it competes with other workloads for the common pool.",
+    "source": "V10.1",
+    "topic": "java",
+    "subtopic": "concurrency",
+    "scenario": "A batch endpoint uses parallelStream() and production CPU reaches 100%, while unrelated requests become slower.",
+    "investigation": "Inspect ForkJoinPool activity, CPU profiles and request concurrency. Determine whether the work is CPU-bound and whether parallelism is competing with request threads.",
+    "resolution": "Remove parallelism if the workload is small or already concurrent. For controlled background workloads, use an appropriately sized executor instead of allowing common-pool work to compete with unrelated tasks.",
+    "prevention": "Benchmark realistic data sizes and concurrency. Treat the common ForkJoinPool as shared infrastructure rather than a free worker pool."
+  },
+  {
+    "id": "v10.1-034",
+    "title": "ThreadLocal data leaks between requests in a pooled executor",
+    "level": "L3",
+    "tags": [
+      "threadlocal",
+      "thread pool",
+      "memory leak",
+      "Production Scenario",
+      "V10.1"
+    ],
+    "short": "ThreadLocal is thread-scoped, not request-scoped; pooled threads survive after a request finishes.",
+    "answer": "I would always clear ThreadLocal state in a finally block when using it with thread pools. For modern applications I would consider explicit context objects or framework-supported context propagation instead.",
+    "code": "Use try/finally to remove ThreadLocal values, or prefer explicit context propagation mechanisms. Avoid storing large request objects in ThreadLocal.",
+    "followups": [
+      "Why can ThreadLocal cause memory leaks?",
+      "How does InheritableThreadLocal differ?",
+      "How does this interact with virtual threads?"
+    ],
+    "mistakes": [
+      "Setting ThreadLocal without remove().",
+      "Assuming a pooled thread is destroyed after each request."
+    ],
+    "interview": "ThreadLocal is safe only when its lifecycle matches the thread. In a pool, that means I must clean it after every task.",
+    "source": "V10.1",
+    "topic": "java",
+    "subtopic": "concurrency",
+    "scenario": "A request stores user context in ThreadLocal. A later request handled by the same pooled thread unexpectedly sees the previous request’s value.",
+    "investigation": "Inspect where ThreadLocal is set and removed. Confirm thread reuse and whether exceptions can bypass cleanup.",
+    "resolution": "Use try/finally to remove ThreadLocal values, or prefer explicit context propagation mechanisms. Avoid storing large request objects in ThreadLocal.",
+    "prevention": "Add tests for thread reuse and monitor memory retention. Keep request context scoped and cleaned deterministically."
+  },
+  {
+    "id": "v10.1-035",
+    "title": "A synchronized section becomes a throughput bottleneck",
+    "level": "L3",
+    "tags": [
+      "synchronized",
+      "contention",
+      "performance",
+      "Production Scenario",
+      "V10.1"
+    ],
+    "short": "Synchronization provides correctness but can serialize throughput when a hot shared lock protects too much work.",
+    "answer": "I would profile lock contention, minimize the critical section and look for key-based partitioning. If the access pattern fits, ConcurrentHashMap or finer-grained synchronization can improve concurrency.",
+    "code": "Reduce the critical section, use concurrent data structures where appropriate and partition state by key so independent operations do not share one lock. Do not replace synchronized with another lock without measuring.",
+    "followups": [
+      "How does ConcurrentHashMap reduce contention?",
+      "When is ReadWriteLock useful?",
+      "What is lock striping?"
+    ],
+    "mistakes": [
+      "Removing synchronization without proving thread safety.",
+      "Holding a lock while performing remote I/O."
+    ],
+    "interview": "The question is not whether synchronized is slow; it is whether the critical section creates unnecessary contention.",
+    "source": "V10.1",
+    "topic": "java",
+    "subtopic": "concurrency",
+    "scenario": "A high-throughput service synchronizes access to a shared map. As traffic increases, thread contention grows and throughput stops scaling.",
+    "investigation": "Use thread dumps and profiling to measure monitor contention and time spent inside the critical section. Determine whether the shared state can be partitioned.",
+    "resolution": "Reduce the critical section, use concurrent data structures where appropriate and partition state by key so independent operations do not share one lock. Do not replace synchronized with another lock without measuring.",
+    "prevention": "Track lock contention and benchmark with realistic concurrency. Design shared state to minimize contention from the start."
+  },
+  {
+    "id": "v10.1-036",
+    "title": "GC pauses cause intermittent latency spikes",
+    "level": "L3",
+    "tags": [
+      "gc",
+      "latency",
+      "jvm",
+      "Production Scenario",
+      "V10.1"
+    ],
+    "short": "GC tuning starts with understanding allocation and pause behavior; collector flags are not a substitute for profiling.",
+    "answer": "I would correlate p99 latency with GC events, then profile allocation and object lifetime. I would first reduce unnecessary allocation and only then tune collector and heap settings based on measured behavior.",
+    "code": "Reduce unnecessary allocations, investigate object lifetime and choose/tune a collector appropriate to the latency and heap requirements. Avoid changing GC settings blindly.",
+    "followups": [
+      "G1 versus ZGC?",
+      "How do you identify allocation hotspots?",
+      "What is a memory leak versus high allocation rate?"
+    ],
+    "mistakes": [
+      "Increasing heap without analyzing pauses.",
+      "Changing collectors without baseline measurements."
+    ],
+    "interview": "I would prove the latency correlation with GC logs and metrics before changing JVM flags.",
+    "source": "V10.1",
+    "topic": "java",
+    "subtopic": "jvm",
+    "scenario": "A Java service has normal average latency but p99 latency spikes every few minutes. GC logs show long pauses during the same periods.",
+    "investigation": "Correlate GC pause times with request latency, allocation rate, heap occupancy and old-generation collections. Inspect allocation hotspots with profiling.",
+    "resolution": "Reduce unnecessary allocations, investigate object lifetime and choose/tune a collector appropriate to the latency and heap requirements. Avoid changing GC settings blindly.",
+    "prevention": "Track pause time, allocation rate, heap occupancy and p99 latency together. Load-test with production-like object allocation patterns."
+  },
+  {
+    "id": "v10.1-037",
+    "title": "A CompletableFuture chain silently stops after an exception",
+    "level": "L3",
+    "tags": [
+      "completablefuture",
+      "exception handling",
+      "async",
+      "Production Scenario",
+      "V10.1"
+    ],
+    "short": "CompletableFuture exceptions complete the future exceptionally; they do not automatically behave like synchronous exceptions.",
+    "answer": "I would inspect the chain for exceptional completion and ensure the final future is observed. I would use handle or exceptionally for recovery and whenComplete for cleanup, while preserving the failure when recovery is not possible.",
+    "code": "Make exceptional paths explicit and return a terminal future that callers can observe. Use handle or exceptionally for recovery and whenComplete for side-effect cleanup/logging.",
+    "followups": [
+      "thenApply versus thenCompose?",
+      "What happens when an executor rejects a task?",
+      "How do you cancel a future chain?"
+    ],
+    "mistakes": [
+      "Assuming try/catch around submit catches async exceptions.",
+      "Ignoring the final future."
+    ],
+    "interview": "Async errors live in the future. If nobody observes the final stage, the business failure can become invisible.",
+    "source": "V10.1",
+    "topic": "java",
+    "subtopic": "concurrency",
+    "scenario": "A multi-step asynchronous workflow produces no final result for some requests. Logs show an exception in an intermediate stage but no response handling.",
+    "investigation": "Inspect the future chain and exceptional completion paths. Check whether exceptionally/handle/whenComplete is used and whether the final future is awaited.",
+    "resolution": "Make exceptional paths explicit and return a terminal future that callers can observe. Use handle or exceptionally for recovery and whenComplete for side-effect cleanup/logging.",
+    "prevention": "Test both success and failure paths for every asynchronous workflow and propagate correlation IDs through async boundaries."
+  },
+  {
+    "id": "v10.5-scenario-24",
+    "title": "A service leaks ThreadLocal state between requests",
+    "level": "L3",
+    "tags": [
+      "java",
+      "threadlocal",
+      "memory-leak"
+    ],
+    "short": "ThreadLocal values belong to the worker thread, not the request. In pooled executors, the same thread can process many requests.",
+    "answer": "I would treat ThreadLocal as thread-scoped state and ensure every set has a corresponding remove in a finally block. For request context, I would prefer framework-managed mechanisms when possible. I would also test thread reuse explicitly.",
+    "code": "",
+    "followups": [
+      "Why is ThreadLocal useful?",
+      "Why can it cause memory leaks?"
+    ],
+    "mistakes": [
+      "Do not assume a pooled thread is dedicated to one request."
+    ],
+    "interview": "The bug can become both a data-isolation problem and a memory-retention problem.",
+    "source": "V10.5",
+    "topic": "java",
+    "subtopic": "concurrency",
+    "scenario": "A long-running servlet application shows request/user context from one request appearing in a later request handled by the same worker thread.",
+    "investigation": "Inspect ThreadLocal usage and thread-pool lifecycle. Check whether values are removed in finally blocks and whether pooled threads are reused across requests.",
+    "prevention": "Set request-scoped context at the boundary and always remove ThreadLocal values in finally. Prefer framework-managed request context where available."
+  },
+  {
+    "id": "v10.5-scenario-25",
+    "title": "CompletableFuture chain silently loses exceptions",
+    "level": "L2",
+    "tags": [
+      "java",
+      "completablefuture",
+      "async"
+    ],
+    "short": "CompletableFuture failures are stored in the future. They do not automatically become visible to the caller unless the chain is observed or joined.",
+    "answer": "I would ensure the controller or service returns the composed future or explicitly waits at the correct boundary. Then I would handle failures with exceptionally or handle and log the original cause with correlation context.",
+    "code": "",
+    "followups": [
+      "thenCompose vs thenApply?",
+      "How do you add a timeout to a future?"
+    ],
+    "mistakes": [
+      "Do not ignore a future returned by an important operation."
+    ],
+    "interview": "The interview trap is assuming asynchronous exceptions behave exactly like synchronous exceptions.",
+    "source": "V10.5",
+    "topic": "java",
+    "subtopic": "concurrency",
+    "scenario": "An asynchronous workflow returns a successful HTTP response even though one of the CompletableFuture stages failed.",
+    "investigation": "Trace the future chain and inspect whether exceptionally/handle/whenComplete or join/get is used. Check whether a failed stage is created but its result is ignored.",
+    "prevention": "Compose the futures into one returned future, handle exceptions explicitly at the boundary, and avoid launching independent futures whose failures are never observed."
+  },
+  {
+    "id": "v10.5-scenario-26",
+    "title": "JVM GC pauses increase after a traffic increase",
+    "level": "L3",
+    "tags": [
+      "java",
+      "jvm",
+      "gc",
+      "performance"
+    ],
+    "short": "GC latency is influenced by allocation rate, live-set size and collector behavior, not simply by total heap size.",
+    "answer": "I would first correlate GC pauses with latency and inspect allocation and promotion rates. Then I would determine whether the issue is excessive allocation, an unexpectedly large live set or collector configuration. I would change one variable at a time and validate with realistic load.",
+    "code": "",
+    "followups": [
+      "How does G1 work at a high level?",
+      "What is a memory leak in Java?"
+    ],
+    "mistakes": [
+      "Do not equate high heap usage with a GC bug automatically."
+    ],
+    "interview": "Never start by increasing the heap without understanding why the live set or allocation rate changed.",
+    "source": "V10.5",
+    "topic": "java",
+    "subtopic": "jvm",
+    "scenario": "p99 latency increases because occasional GC pauses grow from tens of milliseconds to over a second after traffic increases.",
+    "investigation": "Inspect allocation rate, heap occupancy, GC pause times, old-generation promotion and object-retention patterns. Correlate GC events with request latency.",
+    "prevention": "Reduce unnecessary allocations, investigate retained objects, choose/tune the collector based on measured behavior, size the heap appropriately and validate changes with production-like load."
+  },
+  {
+    "id": "v10.6-java-01",
+    "topic": "java",
+    "level": "L3",
+    "title": "What is the happens-before relationship in Java?",
+    "tags": [
+      "JMM",
+      "Concurrency"
+    ],
+    "short": "Happens-before defines an ordering that guarantees visibility of one action to another thread.",
+    "answer": "It is established by synchronization actions such as unlocking then locking the same monitor, volatile writes/read pairs, thread start/join and other concurrency constructs. It is stronger than simply saying one line executed earlier in wall-clock time.",
+    "code": null,
+    "followups": [
+      "Does volatile create happens-before?",
+      "Can instruction reordering break an unsynchronized program?"
+    ],
+    "mistakes": [],
+    "interview": "Happens-before is the JMM visibility and ordering guarantee. I look for an established synchronization edge rather than assuming timing makes a write visible.",
+    "source": "V10.6",
+    "subtopic": "concurrency",
+    "subtopicName": "Concurrency & Multithreading",
+    "scenario": "Happens-before defines an ordering that guarantees visibility of one action to another thread.",
+    "investigation": "Start with metrics and traces, identify the failing boundary, compare latency/error rates and inspect resource saturation before changing configuration.",
+    "prevention": "Use explicit timeouts, bounded resources, automated tests and alerts around the failure mode so the same issue is detected early."
+  },
+  {
+    "id": "v10.6-java-02",
+    "topic": "java",
+    "level": "L3",
+    "title": "Why is double-checked locking safe only with volatile?",
+    "tags": [
+      "Concurrency",
+      "Singleton"
+    ],
+    "short": "The singleton reference must be volatile so publication and initialization writes are correctly ordered.",
+    "answer": "Without volatile, a thread can observe a non-null reference before all constructor writes are visible because publication and initialization can be reordered. Volatile prevents that unsafe publication pattern.",
+    "code": null,
+    "followups": [
+      "Why is the first null check needed?",
+      "Can an enum singleton avoid this complexity?"
+    ],
+    "mistakes": [],
+    "interview": "Double-checked locking needs a volatile instance reference. The volatile write publishes the fully initialized object with the required visibility and ordering guarantees.",
+    "source": "V10.6",
+    "subtopic": "concurrency",
+    "subtopicName": "Concurrency & Multithreading"
+  },
+  {
+    "id": "v10.6-java-03",
+    "topic": "java",
+    "level": "L3",
+    "title": "What is CAS and how is it used in Java concurrency?",
+    "tags": [
+      "Concurrency",
+      "Atomic"
+    ],
+    "short": "Compare-and-set atomically changes a value only if it still equals an expected value.",
+    "answer": "AtomicInteger and many concurrent structures use CAS loops. CAS avoids blocking for some operations, but high contention can cause repeated retries and does not automatically solve multi-variable invariants.",
+    "code": null,
+    "followups": [
+      "CAS vs synchronized?",
+      "What happens under high contention?"
+    ],
+    "mistakes": [],
+    "interview": "CAS is an optimistic atomic primitive: compare the current value with the expected value and update only when they match. Java atomics build lock-free algorithms from it.",
+    "source": "V10.6",
+    "subtopic": "concurrency",
+    "subtopicName": "Concurrency & Multithreading"
+  },
+  {
+    "id": "v10.6-java-04",
+    "topic": "java",
+    "level": "L3",
+    "title": "What is a lock-free algorithm?",
+    "tags": [
+      "Concurrency",
+      "Performance"
+    ],
+    "short": "A lock-free algorithm guarantees that system-wide progress continues even if individual threads are delayed.",
+    "answer": "It commonly uses atomic operations such as CAS. Lock-free does not mean wait-free: one thread can still starve while others make progress.",
+    "code": null,
+    "followups": [
+      "Lock-free vs wait-free?",
+      "Where are lock-free structures useful?"
+    ],
+    "mistakes": [],
+    "interview": "Lock-free means some thread can always make progress. I would use it only when the workload justifies the complexity and after measuring contention.",
+    "source": "V10.6",
+    "subtopic": "concurrency",
+    "subtopicName": "Concurrency & Multithreading"
+  },
+  {
+    "id": "v10.6-java-05",
+    "topic": "java",
+    "level": "L3",
+    "title": "What is the ABA problem?",
+    "tags": [
+      "Concurrency",
+      "CAS"
+    ],
+    "short": "ABA occurs when a value changes from A to B and back to A, making a CAS unable to detect that an intermediate change happened.",
+    "answer": "Algorithms can use stamped or versioned references to distinguish logically different states that have the same raw value. It matters in non-blocking algorithms and reused nodes.",
+    "code": null,
+    "followups": [
+      "How does AtomicStampedReference help?",
+      "Can ABA matter in ordinary HashMap code?"
+    ],
+    "mistakes": [],
+    "interview": "The ABA problem is a false assumption that A is unchanged because the current value is A. Version stamps can make the state transition detectable.",
+    "source": "V10.6",
+    "subtopic": "concurrency",
+    "subtopicName": "Concurrency & Multithreading"
+  },
+  {
+    "id": "v10.6-java-06",
+    "topic": "java",
+    "level": "L2",
+    "title": "How does String.intern() work?",
+    "tags": [
+      "String",
+      "JVM"
+    ],
+    "short": "intern returns a canonical pooled representation of a string.",
+    "answer": "The JVM maintains a string pool. Interning can reduce duplicate string storage when there are many repeated values, but excessive interning can increase pool pressure and should not be used as a generic performance trick.",
+    "code": null,
+    "followups": [
+      "Is the string pool on the heap?",
+      "When can interning hurt performance?"
+    ],
+    "mistakes": [],
+    "interview": "intern gives equal strings a shared canonical instance. I use it only when profiling and data characteristics justify it.",
+    "source": "V10.6",
+    "subtopic": "jvm",
+    "subtopicName": "JVM, Internals & Performance"
+  },
+  {
+    "id": "v10.6-java-07",
+    "topic": "java",
+    "level": "L3",
+    "title": "What is escape analysis in the JVM?",
+    "tags": [
+      "JVM",
+      "Performance"
+    ],
+    "short": "Escape analysis lets the JVM determine whether an object or lock escapes a method or thread.",
+    "answer": "The JIT can use that information for optimizations such as scalar replacement and lock elimination in suitable cases. It is an optimization, so application code should not depend on a specific optimization occurring.",
+    "code": null,
+    "followups": [
+      "What is scalar replacement?",
+      "Can all short-lived objects be stack allocated?"
+    ],
+    "mistakes": [],
+    "interview": "Escape analysis can let the JIT eliminate allocations or synchronization when it proves they are unnecessary. I treat it as a runtime optimization and verify with profiling.",
+    "source": "V10.6",
+    "subtopic": "jvm",
+    "subtopicName": "JVM, Internals & Performance"
+  },
+  {
+    "id": "v10.6-java-08",
+    "topic": "java",
+    "level": "L2",
+    "title": "How does JIT compilation improve Java performance?",
+    "tags": [
+      "JVM",
+      "JIT"
+    ],
+    "short": "The JIT compiles frequently executed bytecode into optimized native machine code at runtime.",
+    "answer": "It uses runtime profiling to optimize hot paths, inline calls, eliminate checks and apply speculative optimizations. Deoptimization can occur when assumptions stop being valid.",
+    "code": null,
+    "followups": [
+      "What is deoptimization?",
+      "Why are cold-start benchmarks different?"
+    ],
+    "mistakes": [],
+    "interview": "Java starts with bytecode execution and the JIT optimizes hot code using runtime information. Warm-up and workload shape therefore matter in benchmarks.",
+    "source": "V10.6",
+    "subtopic": "jvm",
+    "subtopicName": "JVM, Internals & Performance"
+  },
+  {
+    "id": "v10.6-java-09",
+    "topic": "java",
+    "level": "L2",
+    "title": "What is class initialization order in Java?",
+    "tags": [
+      "JVM",
+      "Classes"
+    ],
+    "short": "Class initialization runs static initialization when the class is first actively used.",
+    "answer": "Superclass initialization precedes subclass initialization, and static fields/blocks execute in textual order within a class. Initialization is synchronized by the JVM so the class is initialized once.",
+    "code": null,
+    "followups": [
+      "When is a class initialized?",
+      "Does loading equal initialization?"
+    ],
+    "mistakes": [],
+    "interview": "I remember the order as parent class initialization first, then the subclass, with static fields and blocks following source order.",
+    "source": "V10.6",
+    "subtopic": "jvm",
+    "subtopicName": "JVM, Internals & Performance"
+  },
+  {
+    "id": "v10.6-java-10",
+    "topic": "java",
+    "level": "L3",
+    "title": "How can ClassLoader leaks happen in application servers?",
+    "tags": [
+      "JVM",
+      "ClassLoader"
+    ],
+    "short": "A class loader can remain reachable through threads, ThreadLocals, static references or registered callbacks after an application is undeployed.",
+    "answer": "If the loader cannot be garbage collected, all classes and metadata it loaded may remain reachable, causing metaspace growth across redeployments.",
+    "code": null,
+    "followups": [
+      "How do you diagnose a classloader leak?",
+      "Why are thread pools involved?"
+    ],
+    "mistakes": [],
+    "interview": "In containers I look for long-lived threads, ThreadLocals, static caches and libraries that retain the application ClassLoader. Cleanup at shutdown is essential.",
+    "source": "V10.6",
+    "subtopic": "jvm",
+    "subtopicName": "JVM, Internals & Performance"
+  },
+  {
+    "id": "v10.6-java-11",
+    "topic": "java",
+    "level": "L2",
+    "title": "What is the difference between heap and metaspace?",
+    "tags": [
+      "JVM",
+      "Memory"
+    ],
+    "short": "Heap stores ordinary Java objects, while metaspace stores class metadata outside the traditional Java heap.",
+    "answer": "Heap pressure usually manifests as GC and heap OOMs. Metaspace pressure can grow when many classes or class loaders are created, especially in plugin or redeployment scenarios.",
+    "code": null,
+    "followups": [
+      "Can metaspace trigger OutOfMemoryError?",
+      "What causes metaspace growth?"
+    ],
+    "mistakes": [],
+    "interview": "Heap and metaspace are different memory areas with different failure symptoms. I check the correct metric before tuning -Xmx or metaspace settings.",
+    "source": "V10.6",
+    "subtopic": "jvm",
+    "subtopicName": "JVM, Internals & Performance"
+  },
+  {
+    "id": "v10.6-java-12",
+    "topic": "java",
+    "level": "L2",
+    "title": "How do records affect equality and immutability?",
+    "tags": [
+      "Java 17",
+      "Records"
+    ],
+    "short": "Records provide concise data carriers with generated accessors, equals, hashCode and toString based on components.",
+    "answer": "A record is shallowly immutable: its component references are final, but referenced mutable objects can still change. Records are excellent for value-like DTOs and keys.",
+    "code": null,
+    "followups": [
+      "Are records deeply immutable?",
+      "Can records extend a class?"
+    ],
+    "mistakes": [],
+    "interview": "Records reduce boilerplate for value objects. I still consider defensive copies when a component is a mutable collection or array.",
+    "source": "V10.6",
+    "subtopic": "java8",
+    "subtopicName": "Java 8+ & Functional"
+  },
+  {
+    "id": "v10.6-java-13",
+    "topic": "java",
+    "level": "L2",
+    "title": "What are sealed classes useful for?",
+    "tags": [
+      "Java 17",
+      "OOP"
+    ],
+    "short": "Sealed classes restrict which classes can extend or implement a type.",
+    "answer": "They make a closed hierarchy explicit and can improve modeling and exhaustiveness in pattern matching. The permitted subclasses must follow the sealing rules.",
+    "code": null,
+    "followups": [
+      "Sealed vs final?",
+      "Can a sealed class have an indirect subclass?"
+    ],
+    "mistakes": [],
+    "interview": "Sealed classes are useful when a domain has a deliberately closed set of variants, such as payment states or command results.",
+    "source": "V10.6",
+    "subtopic": "java8",
+    "subtopicName": "Java 8+ & Functional"
+  },
+  {
+    "id": "v10.6-java-14",
+    "topic": "java",
+    "level": "L2",
+    "title": "What is pattern matching for instanceof?",
+    "tags": [
+      "Java 17",
+      "Language Features"
+    ],
+    "short": "Pattern matching lets an instanceof test declare and bind the matching variable.",
+    "answer": "It reduces repetitive casts and makes conditional logic clearer. The variable's scope follows the compiler's flow analysis.",
+    "code": null,
+    "followups": [
+      "How does flow scoping work?",
+      "Does it eliminate ClassCastException?"
+    ],
+    "mistakes": [],
+    "interview": "It combines the type check and cast, improving readability without changing the underlying object model.",
+    "source": "V10.6",
+    "subtopic": "java8",
+    "subtopicName": "Java 8+ & Functional"
+  },
+  {
+    "id": "v10.6-java-15",
+    "topic": "java",
+    "level": "L3",
+    "title": "What is structured concurrency conceptually?",
+    "tags": [
+      "Java 21",
+      "Concurrency"
+    ],
+    "short": "Structured concurrency treats related concurrent tasks as one scoped unit of work.",
+    "answer": "The parent task controls the lifetime of child tasks, making cancellation, failure propagation and resource management easier to reason about. In Java it is associated with newer concurrency APIs and remains a design concept worth understanding.",
+    "code": null,
+    "followups": [
+      "How does cancellation propagate?",
+      "How is it different from CompletableFuture?"
+    ],
+    "mistakes": [],
+    "interview": "Structured concurrency makes concurrent subtasks have a clear parent scope, so failures and cancellation can be handled together instead of leaving orphaned work.",
+    "source": "V10.6",
+    "subtopic": "concurrency",
+    "subtopicName": "Concurrency & Multithreading"
+  },
+  {
+    "id": "v10.6-java-16",
+    "topic": "java",
+    "level": "L2",
+    "title": "How does interruption work in Java?",
+    "tags": [
+      "Concurrency",
+      "Threads"
+    ],
+    "short": "Interruption is a cooperative cancellation signal delivered to a thread.",
+    "answer": "Blocking methods may throw InterruptedException, while code should either propagate it or restore the interrupt flag after handling it. Swallowing interruption can break shutdown and cancellation behavior.",
+    "code": null,
+    "followups": [
+      "Why restore the flag?",
+      "Is interrupt the same as stopping a thread?"
+    ],
+    "mistakes": [],
+    "interview": "I treat interruption as a cancellation request. If I catch InterruptedException and cannot propagate it, I restore the interrupt flag with Thread.currentThread().interrupt().",
+    "source": "V10.6",
+    "subtopic": "concurrency",
+    "subtopicName": "Concurrency & Multithreading"
+  },
+  {
+    "id": "v10.6-java-19",
+    "topic": "java",
+    "level": "L2",
+    "title": "How do you benchmark Java code correctly?",
+    "tags": [
+      "Performance",
+      "JMH"
+    ],
+    "short": "Microbenchmarks must account for warm-up, JIT optimization, dead-code elimination and measurement noise.",
+    "answer": "JMH handles forks, warm-up iterations and measurement infrastructure. For production decisions, microbenchmarks should complement end-to-end profiling rather than replace it.",
+    "code": null,
+    "followups": [
+      "Why are warm-ups needed?",
+      "What is dead-code elimination?"
+    ],
+    "mistakes": [],
+    "interview": "I use JMH for small JVM benchmarks and real workload tests for service behavior. I never trust a single System.nanoTime loop as a performance conclusion.",
+    "source": "V10.6",
+    "subtopic": "java8",
+    "subtopicName": "Java 8+ & Functional"
+  },
+  {
+    "id": "v10.6-java-20",
+    "topic": "java",
+    "level": "L2",
+    "title": "What is the difference between fail-fast and fail-safe iteration?",
+    "tags": [
+      "Collections",
+      "Iterator"
+    ],
+    "short": "Fail-fast iterators may detect structural modification and throw ConcurrentModificationException, while snapshot or concurrent collections use different semantics.",
+    "answer": "Fail-fast is a best-effort bug detector, not a thread-safety guarantee. CopyOnWriteArrayList iterates over a snapshot, while concurrent collections provide their own weakly consistent semantics.",
+    "code": null,
+    "followups": [
+      "Why is ConcurrentModificationException not guaranteed?",
+      "How does CopyOnWriteArrayList work?"
+    ],
+    "mistakes": [],
+    "interview": "Concurrent iteration semantics depend on the collection. I never use fail-fast behavior as synchronization.",
+    "source": "V10.6",
+    "subtopic": "collections",
+    "subtopicName": "Collections & Generics"
+  },
+  {
+    "id": "v10.6-java-21",
+    "topic": "java",
+    "level": "L3",
+    "title": "What is the difference between AtomicReference and synchronized state?",
+    "tags": [
+      "Concurrency",
+      "Atomic"
+    ],
+    "short": "AtomicReference updates one reference atomically without a traditional monitor.",
+    "answer": "AtomicReference uses CAS-style updates for a single reference. It is useful for lock-free state transitions, but if several fields must change together a monitor or another coordinated design may be clearer.",
+    "code": null,
+    "followups": [
+      "What is compareAndSet?",
+      "When is synchronized simpler?"
+    ],
+    "mistakes": [
+      "Do not assume atomic reference updates make a multi-step workflow atomic."
+    ],
+    "interview": "I choose AtomicReference when one state reference can be updated atomically. If the invariant spans multiple mutable fields, I prefer a lock or immutable state object swapped as one reference.",
+    "source": "V10.6",
+    "subtopic": "concurrency",
+    "subtopicName": "Concurrency & Multithreading"
+  }
+]
