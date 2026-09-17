@@ -1,0 +1,164 @@
+import React, { memo, useCallback, useDeferredValue, useEffect, useMemo, useState } from 'react';
+import { getFollowupAnswer } from '../data/followupAnswers';
+import { matchesQuery } from '../utils/search';
+import { perfEnabled } from '../utils/performance';
+import { useProgress } from '../hooks/useProgress';
+
+const asArray = value => Array.isArray(value) ? value : value ? [value] : [];
+const progressKeyFor = label => {
+  const normalized = label.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+  const aliases = {
+    'cloud-aws': 'cloud',
+    'cloud-aws-learning': 'cloud',
+    'end-to-end-production-engineering': 'production',
+    'deep-learning-architecture': 'deep-dive',
+    'internal-workings': 'internal',
+    'github-actions': 'github-actions'
+  };
+  return aliases[normalized] || normalized;
+};
+
+const LearningCard = memo(function LearningCard({ item, open, onToggle, lab, config, completeId, isComplete, onComplete }) {
+  const followups = asArray(item.followups);
+  const traps = asArray(item.traps);
+  const number = item.id?.split('-').pop();
+  const followupAnswer = (question, index) => item.followupAnswers?.[index] || getFollowupAnswer(item.id, index, question) || 'Answer not added yet.';
+
+  return (
+    <article className="lesson-card scenario-card">
+      <button
+        type="button"
+        className="lesson-head"
+        onClick={() => onToggle(item.id)}
+        aria-expanded={open}
+        aria-controls={`lesson-${item.id}`}
+      >
+        <span className="q-number">{number}</span>
+        <span className="lesson-title">
+          <strong>{item.title}</strong>
+          <span className="meta">
+            <i className="level">{item.level}</i>
+            <i>{lab ? config.labMeta : (item.topic || item.subtopic || config.lessonMeta)}</i>
+          </span>
+        </span>
+        <span className="chevron" aria-hidden="true">{open ? '⌃' : '⌄'}</span>
+      </button>
+
+      {open && (
+        <div id={`lesson-${item.id}`} className="lesson-body scenario-body">
+          <div className="explain-section">
+            <div className="section-kicker">{lab ? config.labFirstLabel : 'WHAT IS IT?'}</div>
+            <p>{lab ? (item.situation ?? item.objective ?? item.symptom ?? item.goal) : item.what}</p>
+          </div>
+
+          <div className="explain-section">
+            <div className="section-kicker">{lab ? config.labSecondLabel : 'HOW IT WORKS'}</div>
+            <p>{lab ? (item.goal ?? item.approach ?? item.diagnosis ?? item.design) : item.how}</p>
+          </div>
+
+          {(item.code || item.commands || item.steps) && (
+            <div className="explain-section">
+              <div className="section-kicker">{lab ? config.labThirdLabel : 'IMPLEMENTATION / EXAMPLE'}</div>
+              {lab && item.steps && <ol className="mistake-list" style={{ marginBottom: 10 }}>{item.steps.map((step, index) => <li key={`${item.id}-step-${index}`}>{step}</li>)}</ol>}
+              <pre>{lab && item.commands ? item.commands.join('\n') : item.code}</pre>
+            </div>
+          )}
+
+          {!lab && item.realWorld && (
+            <div className="explain-section">
+              <div className="section-kicker">REAL-WORLD PERSPECTIVE</div>
+              <p>{item.realWorld}</p>
+            </div>
+          )}
+
+          <div className="explain-section interview-script">
+            <span className="script-label">INTERVIEW DELIVERY</span>
+            <p>{item.delivery}</p>
+          </div>
+
+          {followups.length > 0 && (
+            <div className="explain-section">
+              <div className="section-kicker">EXPECTED FOLLOW-UPS</div>
+              <div className="followup-list">
+                {followups.map((question, index) => (
+                  <details className="followup-item" key={`${item.id}-followup-${index}`}>
+                    <summary>{question.question ?? question}</summary>
+                    <div className="followup-answer">
+                      <strong>Answer</strong>
+                      <p>{question.answer ?? followupAnswer(question.question ?? question, index)}</p>
+                    </div>
+                  </details>
+                ))}
+              </div>
+            </div>
+          )}
+
+          <div className="lesson-completion">
+            <div><span>{isComplete(completeId) ? 'MASTERED' : 'READY TO MASTER'}</span><small>{isComplete(completeId) ? 'You marked this item complete.' : 'Mark this item complete after you can explain it without notes.'}</small></div>
+            <button type="button" className={isComplete(completeId) ? 'completion-btn complete' : 'completion-btn'} onClick={() => onComplete(completeId)}>{isComplete(completeId) ? '✓ Completed' : 'Mark complete'}</button>
+          </div>
+
+          {traps.length > 0 && (
+            <div className="explain-section mistake-section">
+              <div className="section-kicker">{lab ? config.labTrapsLabel : 'COMMON TRAPS'}</div>
+              <ul className="mistake-list">{traps.map((trap, index) => <li key={`${item.id}-trap-${index}`}>{trap}</li>)}</ul>
+            </div>
+          )}
+        </div>
+      )}
+    </article>
+  );
+});
+
+export default function LearningPage({ config }) {
+  const [tab, setTab] = useState(config.defaultTab || 'lessons');
+  const [level, setLevel] = useState('all');
+  const [query, setQuery] = useState('');
+  const deferredQuery = useDeferredValue(query);
+  const [open, setOpen] = useState({});
+  const { isComplete, toggleComplete, resetProgress } = useProgress();
+  const progressPrefix = config.progressKey || progressKeyFor(config.label);
+  const source = tab === 'lessons' ? config.lessons : config.labs;
+  const fields = config.searchFields || ['title', 'what', 'how', 'code', 'delivery', 'followups', 'realWorld', 'topic', 'subtopic'];
+  const filtered = useMemo(() => {
+    const started = perfEnabled() ? performance.now() : 0;
+    const result = source.filter(item => (level === 'all' || item.level === level) && matchesQuery(item, deferredQuery, fields));
+    if (perfEnabled()) console.info(`[perf] ${config.label} filter: ${(performance.now() - started).toFixed(2)} ms (${result.length}/${source.length})`);
+    return result;
+  }, [source, level, deferredQuery, fields, config.label]);
+  const expandAll = () => setOpen(Object.fromEntries(filtered.map(item => [item.id, true])));
+  const completedCount = source.filter(item => isComplete(`${progressPrefix}:${tab}:${item.id}`)).length;
+  const completionPercent = source.length ? Math.round((completedCount / source.length) * 100) : 0;
+  useEffect(() => {
+    if (perfEnabled()) {
+      requestAnimationFrame(() => console.info(`[perf] ${config.label} DOM: ${document.querySelectorAll('.lesson-card').length} cards rendered`));
+    }
+  }, [filtered.length, config.label]);
+
+  const toggleItem = useCallback(id => setOpen(previous => ({ ...previous, [id]: !previous[id] })), []);
+
+  return (
+    <section className="learning-page" aria-label={`${config.label} learning`}>
+      <div className="learning-hero scenario-hero">
+        <span className="pill">{config.pill}</span>
+        <h2>{config.hero[0]}<br /><em>{config.hero[1]}</em></h2>
+        <p>{config.description}</p>
+        <div className="learning-flow">{config.flow.map((step, index) => <React.Fragment key={step}><span>{step}</span>{index < config.flow.length - 1 && <b>→</b>}</React.Fragment>)}</div>
+      </div>
+
+      <div className="learning-toolbar" role="search" aria-label={`Search and filter ${config.label}`}>
+        <div className="search"><span>⌕</span><input type="search" value={query} onChange={event => setQuery(event.target.value)} placeholder={config.placeholder} aria-label={`Search ${config.label}`} /></div>
+        <div className="filters" role="group" aria-label="Filter by level">{['all', 'L1', 'L2', 'L3'].map(value => <button type="button" key={value} className={level === value ? 'filter active' : 'filter'} onClick={() => setLevel(value)} aria-pressed={level === value}>{value === 'all' ? 'All levels' : value}</button>)}</div>
+      </div>
+
+      <div className="subtopic-row" role="tablist" aria-label={`${config.label} content type`}>
+        <button type="button" className={tab === 'lessons' ? 'subtopic active' : 'subtopic'} onClick={() => { setTab('lessons'); setOpen({}); }} aria-selected={tab === 'lessons'} role="tab">{config.lessonIcon} {config.lessonTab} <small>{config.lessons.length}</small></button>
+        <button type="button" className={tab === 'labs' ? 'subtopic active' : 'subtopic'} onClick={() => { setTab('labs'); setOpen({}); }} aria-selected={tab === 'labs'} role="tab">{config.labIcon} {config.labTab} <small>{config.labs.length}</small></button>
+      </div>
+
+      <div className="learning-progress-strip"><div><span>YOUR MASTERY</span><b>{completionPercent}%</b></div><div className="learning-progress-track"><i style={{ width: `${completionPercent}%` }} /></div><small>{completedCount} of {source.length} {tab === 'lessons' ? 'lessons' : 'labs'} completed</small><button type="button" className="progress-reset" onClick={resetProgress}>Reset progress</button></div>
+      <div className="result-row" aria-live="polite"><span><b>{tab === 'lessons' ? config.lessonTab : config.labTab}</b> · {filtered.length} items</span><button type="button" onClick={expandAll}>Expand all</button><button type="button" onClick={() => setOpen({})}>Collapse all</button></div>
+      <section className="lesson-list">{filtered.map(item => { const completeId = `${progressPrefix}:${tab}:${item.id}`; return <LearningCard key={item.id} item={item} lab={tab === 'labs'} config={config} completeId={completeId} isComplete={isComplete} onComplete={toggleComplete} open={!!open[item.id]} onToggle={toggleItem} />; })}</section>
+    </section>
+  );
+}
