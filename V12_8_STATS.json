@@ -1,0 +1,20 @@
+{
+  "version": "V12.8",
+  "backend_questions": 1000,
+  "react_lessons": 45,
+  "javascript_lessons": 70,
+  "new_react_lessons": 15,
+  "new_javascript_lessons": 30,
+  "typescript": "deferred",
+  "ui": "sidebar/navigation locked; scrollbar hover/scroll behavior retained",
+  "focus": [
+    "deeper React learning",
+    "deeper JavaScript learning",
+    "internals",
+    "production patterns",
+    "performance",
+    "security",
+    "testing",
+    "full-stack foundations"
+  ]
+}
