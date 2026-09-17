@@ -1,0 +1,13 @@
+{
+  "version": "24.2.0",
+  "focus": "shared learning architecture and search",
+  "contentExpansion": false,
+  "genericLearningPage": true,
+  "sharedSearchUtility": true,
+  "refactoredLearningPages": 10,
+  "backendQuestionsSearchUpdated": true,
+  "practicalLabsSearchUpdated": true,
+  "customScrollbarChanged": false,
+  "routingBaseline": "V24.1",
+  "uiRedesign": false
+}
